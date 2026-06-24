@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Web Trading Center</title>
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --panel-bg: #161920;
+            --accent-color: #00ffaa;
+            --text-color: #ffffff;
+            --text-muted: #7f8c9d;
+            --border-color: #242b35;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--panel-bg);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+        }
+
+        .nav-buttons button {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .nav-buttons button:hover {
+            background-color: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .controls-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .game-filter-select, .nav-tabs button {
+            background-color: var(--panel-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .nav-tabs button.active {
+            background-color: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--panel-bg);
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background-color: #0f1115;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .item-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .item-card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex; 
+            flex-direction: row; 
+            align-items: stretch;
+        }
+
+        .item-image-container {
+            width: 160px; 
+            background-color: #0f1115;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+            border-right: 1px solid var(--border-color); 
+            flex-shrink: 0;
+        }
+
+        .item-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .item-game-badge {
+            background-color: #242b35;
+            color: var(--accent-color);
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            width: fit-content;
+        }
+
+        .item-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 4px 0;
+            color: #fff;
+        }
+
+        .item-stat {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .item-stat strong {
+            color: #fff;
+        }
+
+        .ps-link {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            background-color: #0077ff;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            width: fit-content;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🎮 Roblox Exchange Center</div>
+        <div class="nav-buttons" id="authButtons">
+            <span id="userGreeting" style="margin-right: 15px; color: var(--accent-color); font-weight: bold;"></span>
+            <button onclick="openModal('loginModal')" id="loginBtn">Sign Up / Log In</button>
+            <button onclick="logout()" id="logoutBtn" class="hidden">Log Out</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="controls-section">
+            <div class="nav-tabs">
+                <button class="active" id="viewTab" onclick="switchTab('view')">View Listings</button>
+                <button id="uploadTab" onclick="switchTab('upload')">+ Upload Item</button>
+            </div>
+
+            <div>
+                <select id="gameFilter" class="game-filter-select" onchange="renderItems()">
+                    <option value="All">All Games</option>
+                    <option value="Grow A Garden">Grow A Garden (GaG)</option>
+                    <option value="Grow A Garden 2">Grow A Garden 2 (GaG 2)</option>
+                    <option value="Steal A Brainrot">Steal A Brainrot (SAB)</option>
+                    <option value="Kick A Lucky Block">Kick A Lucky Block (KALB)</option>
+                    <option value="Blox Fruits">Blox Fruits (BF)</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="feedSection">
+            <div class="item-grid" id="itemGrid"></div>
+        </div>
+
+        <!-- UPLOAD SECTION -->
+        <div id="uploadSection" class="hidden" style="max-width: 600px; margin: 0 auto; background: var(--panel-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <h2 style="margin-top:0; color: var(--accent-color);">Post Trade Item</h2>
+            <form id="uploadForm" onsubmit="handleUpload(event)">
+                
+                <div class="form-group">
+                    <label>Game Type:</label>
+                    <select id="formGameType" onchange="updateFormFields()" required>
+                        <option value="Grow A Garden">Grow A Garden (GaG)</option>
+                        <option value="Grow A Garden 2">Grow A Garden 2 (GaG 2)</option>
+                        <option value="Steal A Brainrot">Steal A Brainrot (SAB)</option>
+                        <option value="Kick A Lucky Block">Kick A Lucky Block (KALB)</option>
+                        <option value="Blox Fruits">Blox Fruits (BF)</option>
+                    </select>
+                </div>
+
+                <!-- SELECTION DROPDOWN -->
+                <div class="form-group">
+                    <label>Select Item Name:</label>
+                    <select id="formItemName" onchange="checkCustomItem()" required></select>
+                </div>
+
+                <!-- DYNAMIC TEXTBOX FOR UNLISTED CUSTOM ITEMS -->
+                <div class="form-group hidden" id="fieldCustomItem">
+                    <label style="color: var(--accent-color); font-weight: bold;">Type Custom Item Name:</label>
+                    <input type="text" id="formCustomItemName" placeholder="Enter the exact missing item name...">
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Image Directly From Files (+):</label>
+                    <input type="file" id="formImage" accept="image/*" onchange="previewImage(event)">
+                    <input type="hidden" id="imageDataUrl">
+                </div>
+
+                <div class="form-group" id="fieldWorth">
+                    <label id="labelWorth">Value / Worth:</label>
+                    <input type="text" id="formWorth" placeholder="Enter target trade value/price expectations...">
+                </div>
+
+                <div class="form-group" id="fieldKg">
+                    <label>Weight (KG):</label>
+                    <input type="text" id="formKg" placeholder="e.g., 45 kg">
+                </div>
+
+                <div class="form-group" id="fieldMutation">
+                    <label>Mutation Variant / Trait Aura:</label>
+                    <input type="text" id="formMutation" placeholder="e.g., Glitched, Shiny, Shadow, Overlord">
+                </div>
+
+                <!-- SESSION IDENTITY BOUND TRADER FIELD -->
+                <div class="form-group">
+                    <label>Your Verified Profile Identity (Session Protected):</label>
+                    <input type="text" id="formUserIdentity" style="background-color: #1a1f26; color: var(--accent-color); font-weight: bold;" required readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Private Server Link (Optional):</label>
+                    <input type="url" id="formPsLink" placeholder="https://www.roblox.com/games/share?code=...">
+                </div>
+
+                <button type="submit" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Post Item Details</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SIGN UP / LOGIN AUTH MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Account Sign Up / Log In</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">You are required to verify your active session name profile before updating or publishing assets into our network feed database.</p>
+            <div class="form-group">
+                <label>Enter Roblox Username:</label>
+                <input type="text" id="authUsername" placeholder="Enter username exactly..." required>
+            </div>
+            <button onclick="login()" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Register Identity</button>
+            <button onclick="closeModal('loginModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 5px;">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const gameItemsDatabase = {
+            "Grow A Garden": { 
+                items: [
+                    "Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Venus Fly Trap Seed", "Venom Spitter Seed", "Poison Apple Seed", "Magic Mushroom Seed", "Golden Leaf Seed",
+                    "Bamboo Seed", "Poison Ivy Seed", "Pomegranate Seed", "Sunflower Seed", "Glow Mushroom Seed", "Horned Melon Seed", "Dragon Fruit Seed",
+                    "Carrot Seed", "Strawberry Seed", "Blueberry Seed", "Tomato Seed", "Green Bean Seed", "Corn Seed", "Banana Seed", "Grape Seed", "Mango Seed", "Tulip Seed", "Baby Cactus Seed", "Cactus Seed"
+                ], 
+                fields: { worth: "Coin Value", kg: true, mutation: true }
+            },
+            "Grow A Garden 2": { 
+                items: [
+                    "Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"
+                ], 
+                fields: { worth: "Night Essence Crystals", kg: true, mutation: true }
+            },
+            "Steal A Brainrot": { 
+                items: [
+                    "Garama", "Madundung", "La Taco Combinasion", "Hydra Dragon Cannelloni", "Burguro", "Fryuro", "Lavadorito Spinito", "Ketupat Kepat",
+                    "Strawberry Elephant", "Cooki and Milki", "Esok Sekolah", "Spinny Hammy GALAXY", "Ketchuru", "Musturu",
+                    "Los Candies", "Cerberus", "La Secret Combinasion", "Mieteteira Bicicleteira", "List List List Sahur", "Chicleteria Noelteira", "Los Nooo My Hotspitsitos", "Skibidi Toilet Box", "Grimace Shake Formula", "Sigma Core Alpha", "GigaChad Slab"
+                ], 
+                fields: { worth: "Passive M/s Valuation", kg: false, mutation: true }
+            },
+            "Kick A Lucky Block": { 
+                items: [
+                    "Mythic Base Unit", "Celestial Base Unit", "Legendary Base Unit", "Rare Base Unit", "Common Base Unit", "Uncommon Base Unit", "Epic Base Unit",
+                    "Noobini Pizzalini", "Austroman Statue", "Gangster Footera", "Sigma Diamond Crown", "Alpha Wolf Trophy", "Skibidi Subwoofer", "Rizzler Pillar",
+                    "Void Matrix Block", "Chaos Matrix Cube", "Galaxy Singularity Block", "Quantum Core Block"
+                ], 
+                fields: { worth: "Multiplier Value Rate", kg: true, mutation: false }
+            },
+            "Blox Fruits": { 
+                items: [
+                    "Kitsune Fruit (Physical)", "Dragon Fruit (Physical)", "Leopard Fruit (Physical)", "Dough Fruit (Physical)", "T-Rex Fruit (Physical)", "Mammoth Fruit (Physical)", "Spirit Fruit (Physical)", "Control Fruit (Physical)", "Venom Fruit (Physical)", "Shadow Fruit (Physical)", "Gravity Fruit (Physical)",
+                    "Buddha Fruit (Physical)", "Portal Fruit (Physical)", "Rumble Fruit (Physical)", "Blizzard Fruit (Physical)", "Sound Fruit (Physical)", "Pain Fruit (Physical)", "Quake Fruit (Physical)", "Love Fruit (Physical)", "Spider Fruit (Physical)", "Phoenix Fruit (Physical)",
+                    "Ghost Fruit (Physical)", "Magma Fruit (Physical)", "Light Fruit (Physical)", "Rubber Fruit (Physical)", "Barrier Fruit (Physical)", "Diamond Fruit (Physical)",
+                    "Ice Fruit (Physical)", "Sand Fruit (Physical)", "Dark Fruit (Physical)", "Falcon Fruit (Physical)", "Flame Fruit (Physical)",
+                    "Rocket Fruit (Physical)", "Spin Fruit (Physical)", "Chop Fruit (Physical)", "Spring Fruit (Physical)", "Bomb Fruit (Physical)", "Smoke Fruit (Physical)", "Spike Fruit (Physical)",
+                    "Dark Blade Gamepass Box", "Fruit Notifier Pass Box", "+1 Storage Capacity Pass", "2x Money Pass", "2x Mastery Pass", "Fast Boats Pass", "Permanent Kitsune Fruit", "Permanent Dragon Fruit", "Permanent Leopard Fruit", "Permanent Dough Fruit", "Permanent Buddha Fruit", "Permanent Portal Fruit"
+                ], 
+                fields: { worth: "Counter Offer Expectation", kg: false, mutation: false }
+            }
+        };
+
+        // FIXED: Completely removed initial fake data shown in image 1000030280.jpg to allow real user generation tracking
+        let trades = JSON.parse(localStorage.getItem('roblox_final_trades_v4')) || [];
+        let currentUser = localStorage.getItem('roblox_user') || "";
+
+        function init() {
+            updateAuthUI();
+            updateFormFields();
+            renderItems();
+        }
+
+        function switchTab(tab) {
+            if(tab === 'upload') {
+                if(!currentUser) {
+                    alert("Unauthorized access: Complete the verification profile step by clicking 'Sign Up / Log In' first!");
+                    openModal('loginModal');
+                    return;
+                }
+                document.getElementById('uploadSection').classList.remove('hidden');
+                document.getElementById('feedSection').classList.add('hidden');
+                document.getElementById('uploadTab').classList.add('active');
+                document.getElementById('viewTab').classList.remove('active');
+            } else {
+                document.getElementById('uploadSection').classList.add('hidden');
+                document.getElementById('feedSection').classList.remove('hidden');
+                document.getElementById('uploadTab').classList.remove('active');
+                document.getElementById('viewTab').classList.add('active');
+            }
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function login() {
+            const name = document.getElementById('authUsername').value.trim();
+            if(name) {
+                localStorage.setItem('roblox_user', name);
+                currentUser = name;
+                updateAuthUI();
+                closeModal('loginModal');
+            } else {
+                alert("Provide a valid profile username.");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('roblox_user');
+            currentUser = "";
+            updateAuthUI();
+            switchTab('view');
+        }
+
+        function updateAuthUI() {
+            const greeting = document.getElementById('userGreeting');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const uploadIdentityInput = document.getElementById('formUserIdentity');
+
+            if(currentUser) {
+                greeting.textContent = `Active User: ${currentUser}`;
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                uploadIdentityInput.value = currentUser; 
+            } else {
+                greeting.textContent = "";
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                uploadIdentityInput.value = "";
+            }
+        }
+
+        function updateFormFields() {
+            const selectedGame = document.getElementById('formGameType').value;
+            const config = gameItemsDatabase[selectedGame];
+            
+            document.getElementById('labelWorth').textContent = config.fields.worth + ":";
+            
+            document.getElementById('fieldWorth').style.display = config.fields.worth ? 'block' : 'none';
+            document.getElementById('fieldKg').style.display = config.fields.kg ? 'block' : 'none';
+            document.getElementById('fieldMutation').style.display = config.fields.mutation ? 'block' : 'none';
+
+            const itemDropdown = document.getElementById('formItemName');
+            itemDropdown.innerHTML = "";
+            
+            config.items.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                itemDropdown.appendChild(opt);
+            });
+
+            // ADDED: Option for items not listed in choices database
+            let customOpt = document.createElement('option');
+            customOpt.value = "CUSTOM_ITEM_VAL";
+            customOpt.textContent = "➕ Other / Custom Item (Type custom name below)";
+            itemDropdown.appendChild(customOpt);
+
+            checkCustomItem();
+        }
+
+        // ADDED: Monitors dropdown selection to show/hide missing custom item text field input
+        function checkCustomItem() {
+            const dropdown = document.getElementById('formItemName');
+            const customItemField = document.getElementById('fieldCustomItem');
+            const customInput = document.getElementById('formCustomItemName');
+
+            if(dropdown.value === "CUSTOM_ITEM_VAL") {
+                customItemField.classList.remove('hidden');
+                customInput.required = true;
+            } else {
+                customItemField.classList.add('hidden');
+                customInput.required = false;
+                customInput.value = "";
+            }
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(){
+                document.getElementById('imageDataUrl').value = reader.result;
+            }
+            if(file) reader.readAsDataURL(file);
+        }
+
+        function handleUpload(e) {
+            e.preventDefault();
+            if(!currentUser) {
+                alert("Verification failed. Session expired or missing.");
+                return;
+            }
+
+            const game = document.getElementById('formGameType').value;
+            let name = document.getElementById('formItemName').value;
+            
+            // FIXED: If user chooses custom option, fallback to the text box input field data string
+            if(name === "CUSTOM_ITEM_VAL") {
+                name = document.getElementById('formCustomItemName').value.trim();
+                if(!name) {
+                    alert("Please provide a valid custom item name.");
+                    return;
+                }
+            }
+
+            const imageStr = document.getElementById('imageDataUrl').value || "📦";
+            const worth = document.getElementById('formWorth').value;
+            const kg = document.getElementById('formKg').value;
+            const mutation = document.getElementById('formMutation').value;
+            const psLink = document.getElementById('formPsLink').value;
+
+            const newPost = {
+                id: Date.now(),
+                creator: currentUser, 
+                game, name, worth, kg, mutation, psLink,
+                image: imageStr
+            };
+
+            trades.unshift(newPost);
+            localStorage.setItem('roblox_final_trades_v4', JSON.stringify(trades));
+            document.getElementById('uploadForm').reset();
+            document.getElementById('imageDataUrl').value = "";
+            
+            updateAuthUI();
+            alert("Success! Your trade listing was saved.");
+            switchTab('view');
+            renderItems();
+        }
+
+        function renderItems() {
+            const container = document.getElementById('itemGrid');
+            const filterValue = document.getElementById('gameFilter').value;
+            container.innerHTML = "";
+
+            const filtered = trades.filter(post => filterValue === 'All' || post.game === filterValue);
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No active real user transactions available for this view. Get started by uploading a trade!</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+
+                let imgRender = item.image.startsWith('data:') 
+                    ? `<img src="${item.image}" alt="item Image">` 
+                    : `<span>${item.image}</span>`;
+
+                card.innerHTML = `
+                    <div class="item-image-container">${imgRender}</div>
+                    <div class="item-details">
+                        <span class="item-game-badge">${item.game}</span>
+                        <div class="item-title">${item.name}</div>
+                        <div class="item-stat">Posted By Trader: <strong>${item.creator}</strong></div>
+                        ${item.worth ? `<div class="item-stat">Value Data: <strong>${item.worth}</strong></div>` : ''}
+                        ${item.kg ? `<div class="item-stat">Weight Metrics: <strong>${item.kg}</strong></div>` : ''}
+                        ${item.mutation ? `<div class="item-stat">Trait Mutation: <strong>${item.mutation}</strong></div>` : ''}
+                        ${item.psLink ? `<a href="${item.psLink}" target="_blank" class="ps-link">Join Private Server</a>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
