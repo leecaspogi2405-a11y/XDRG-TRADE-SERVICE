@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Web Trading Center</title>
+    <title>XDRG TRADING SERVICE.ROBLOX</title>
     <style>
         :root {
             --bg-color: #0f1115;
@@ -31,6 +31,19 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--border-color);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .site-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .logo {
@@ -334,7 +347,10 @@
 <body>
 
     <header>
-        <div class="logo">🎮 Roblox Exchange Center</div>
+        <div class="logo-container">
+            <img src="https://cdn.discordapp.com/attachments/1501911631708422215/1519291570048860322/orca-image-1542816814.jpeg.jpg?ex=6a3d0609&is=6a3bb489&hm=2e089cbe47c460fa52c8c9c1d9ce5504ffbc549325956153b8d5698da440c15a&" alt="Site Logo" class="site-logo">
+            <div class="logo">XDRG TRADING SERVICE.ROBLOX</div>
+        </div>
         <div class="nav-buttons" id="authButtons">
             <span id="userGreeting" style="margin-right: 15px; color: var(--accent-color); font-weight: bold;"></span>
             <button onclick="openModal('loginModal')" id="loginBtn">Sign Up / Log In</button>
@@ -372,7 +388,7 @@
         </div>
 
         <div id="uploadSection" class="hidden" style="max-width: 600px; margin: 0 auto; background: var(--panel-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <h2 style="margin-top:0; color: var(--accent-color);">Post Trade Item</h2>
+            <h2 id="uploadFormHeader" style="margin-top:0; color: var(--accent-color);">Post Trade Item</h2>
             <form id="uploadForm" onsubmit="handleUpload(event)">
                 
                 <div class="form-group">
@@ -432,7 +448,7 @@
                     <input type="url" id="formPsLink" placeholder="https://www.roblox.com/games/share?code=...">
                 </div>
 
-                <button type="submit" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Post Item Details</button>
+                <button type="submit" id="formSubmitBtn" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Post Item Details</button>
             </form>
         </div>
     </div>
@@ -502,6 +518,7 @@
         let trades = JSON.parse(localStorage.getItem('roblox_final_trades_v5')) || [];
         let inbox = JSON.parse(localStorage.getItem('roblox_trade_inbox_v5')) || [];
         let currentUser = localStorage.getItem('roblox_user_email') || "";
+        let editingListingId = null; // Track item currently being modified
 
         function init() {
             updateAuthUI();
@@ -530,6 +547,15 @@
                     openModal('loginModal');
                     return;
                 }
+                
+                // Clear any leftover edit states if clicking upload fresh
+                editingListingId = null;
+                document.getElementById('uploadFormHeader').textContent = "Post Trade Item";
+                document.getElementById('formSubmitBtn').textContent = "Post Item Details";
+                document.getElementById('uploadForm').reset();
+                document.getElementById('imageDataUrl').value = "";
+                updateFormFields();
+
                 document.getElementById('uploadSection').classList.remove('hidden');
                 document.getElementById('uploadTab').classList.add('active');
             } else if (tab === 'inbox') {
@@ -671,30 +697,110 @@
             }
 
             const stockCount = parseInt(document.getElementById('formStock').value) || 1;
-            const imageStr = document.getElementById('imageDataUrl').value || "📦";
+            let imageStr = document.getElementById('imageDataUrl').value;
+            
+            // If editing and no new image is uploaded, retain original image
+            if (!imageStr) {
+                if (editingListingId) {
+                    const originalItem = trades.find(t => t.id === editingListingId);
+                    imageStr = originalItem ? originalItem.image : "📦";
+                } else {
+                    imageStr = "📦";
+                }
+            }
+
             const worth = document.getElementById('formWorth').value;
             const kg = document.getElementById('formKg').value;
             const mutation = document.getElementById('formMutation').value;
             const psLink = document.getElementById('formPsLink').value;
 
-            const newPost = {
-                id: Date.now(),
-                creator: currentUser, 
-                game, name, worth, kg, mutation, psLink, stock: stockCount,
-                image: imageStr,
-                likes: 0,
-                likedBy: [],
-                comments: []
-            };
+            if (editingListingId) {
+                // Update processing engine block
+                const itemIndex = trades.findIndex(t => t.id === editingListingId);
+                if (itemIndex !== -1) {
+                    trades[itemIndex].game = game;
+                    trades[itemIndex].name = name;
+                    trades[itemIndex].stock = stockCount;
+                    trades[itemIndex].image = imageStr;
+                    trades[itemIndex].worth = worth;
+                    trades[itemIndex].kg = kg;
+                    trades[itemIndex].mutation = mutation;
+                    trades[itemIndex].psLink = psLink;
+                    alert("Success! Listing updated successfully.");
+                } else {
+                    alert("Error processing updates: Product profile matching tracking block failed.");
+                }
+                editingListingId = null;
+            } else {
+                // Create processing engine block
+                const newPost = {
+                    id: Date.now(),
+                    creator: currentUser, 
+                    game, name, worth, kg, mutation, psLink, stock: stockCount,
+                    image: imageStr,
+                    likes: 0,
+                    likedBy: [],
+                    comments: []
+                };
+                trades.unshift(newPost);
+                alert("Success! Listing updated into local storage system feeds.");
+            }
 
-            trades.unshift(newPost);
             saveDataStore();
             document.getElementById('uploadForm').reset();
             document.getElementById('imageDataUrl').value = "";
             
             updateAuthUI();
-            alert("Success! Listing updated into local storage system feeds.");
             switchTab('view');
+        }
+
+        // Developer Actions: Edit Setup System
+        function startEditListing(itemId) {
+            const item = trades.find(t => t.id === itemId);
+            if (!item) return;
+
+            editingListingId = itemId;
+
+            // Interface view alignment engine switches
+            document.getElementById('uploadSection').classList.remove('hidden');
+            document.getElementById('feedSection').classList.add('hidden');
+            document.getElementById('inboxSection').classList.add('hidden');
+            document.getElementById('uploadTab').classList.add('active');
+            document.getElementById('viewTab').classList.remove('active');
+            document.getElementById('inboxTab').classList.remove('active');
+
+            // Adjust form text contexts
+            document.getElementById('uploadFormHeader').textContent = "Modify Trade Item Metrics";
+            document.getElementById('formSubmitBtn').textContent = "Save Changes & Apply Updates";
+
+            // Push state variables into views
+            document.getElementById('formGameType').value = item.game;
+            updateFormFields();
+
+            const itemDropdown = document.getElementById('formItemName');
+            const config = gameItemsDatabase[item.game];
+            if (config && config.items.includes(item.name)) {
+                itemDropdown.value = item.name;
+            } else {
+                itemDropdown.value = "CUSTOM_ITEM_VAL";
+                checkCustomItem();
+                document.getElementById('formCustomItemName').value = item.name;
+            }
+
+            document.getElementById('formStock').value = item.stock;
+            document.getElementById('imageDataUrl').value = item.image.startsWith('data:') ? item.image : "";
+            document.getElementById('formWorth').value = item.worth || "";
+            document.getElementById('formKg').value = item.kg || "";
+            document.getElementById('formMutation').value = item.mutation || "";
+            document.getElementById('formPsLink').value = item.psLink || "";
+        }
+
+        // Developer Actions: Delete Engine Block
+        function deleteListing(itemId) {
+            if (!confirm("Are you completely sure you want to remove this transaction block from local logs permanently?")) return;
+            trades = trades.filter(t => t.id !== itemId);
+            saveDataStore();
+            renderItems();
         }
 
         function toggleLike(itemId) {
@@ -877,6 +983,8 @@
                     </div>
                 `).join('');
 
+                const isOwner = currentUser && item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim();
+
                 card.innerHTML = `
                     <div class="item-main-content">
                         <div class="item-image-container">${imgRender}</div>
@@ -894,10 +1002,19 @@
                     
                     <div class="interaction-bar">
                         <button class="interact-btn" onclick="toggleLike(${item.id})">👍 Like (${itemLikes})</button>
-                        ${currentUser && item.creator !== currentUser && currentStock > 0 ? `
+                        
+                        ${currentUser && !isOwner && currentStock > 0 ? `
                             <button class="interact-btn trade-action-btn" onclick="sendTradeRequest(${item.id})">🤝 Send Trade Offer</button>
                         ` : ''}
-                        ${currentStock <= 0 ? `<span style="color: var(--decline-color); font-weight: bold; margin-left: auto;">SOLD OUT</span>` : ''}
+
+                        ${isOwner ? `
+                            <button class="interact-btn" style="border-color: #ffaa00; color: #ffaa00; margin-left: auto;" onclick="startEditListing(${item.id})">✏️ Edit</button>
+                            <button class="interact-btn" style="border-color: var(--decline-color); color: var(--decline-color);" onclick="deleteListing(${item.id})">🗑️ Delete</button>
+                        ` : ''}
+                        
+                        ${currentStock <= 0 ? `
+                            <span style="color: var(--decline-color); font-weight: bold; ${isOwner ? 'margin-left: 10px;' : 'margin-left: auto;'}">SOLD OUT</span>
+                        ` : ''}
                     </div>
 
                     <div class="comments-section">
