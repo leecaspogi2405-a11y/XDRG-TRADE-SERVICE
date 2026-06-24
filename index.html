@@ -194,7 +194,7 @@
         <div class="nav-buttons" id="authButtons">
             <span id="userGreeting" style="margin-right: 15px; color: var(--accent-color); font-weight: bold;"></span>
             <button onclick="openModal('loginModal')" id="loginBtn">Sign Up / Log In</button>
-            <button onclick="logout()" id="logoutBtn" class="hidden">Log Out</button>
+            <button onclick="window.logout()" id="logoutBtn" class="hidden">Log Out</button>
         </div>
     </header>
 
@@ -207,8 +207,8 @@
             </div>
 
             <div class="search-container">
-                <input type="text" id="userSearchBar" class="search-bar-input" placeholder="🔍 Search friend's email..." oninput="renderItems()">
-                <select id="gameFilter" class="game-filter-select" onchange="renderItems()">
+                <input type="text" id="userSearchBar" class="search-bar-input" placeholder="🔍 Search friend's email...">
+                <select id="gameFilter" class="game-filter-select">
                     <option value="All">All Games</option>
                     <option value="Grow A Garden">Grow A Garden (GaG)</option>
                     <option value="Grow A Garden 2">Grow A Garden 2 (GaG 2)</option>
@@ -230,11 +230,11 @@
 
         <div id="uploadSection" class="hidden" style="max-width: 600px; margin: 0 auto; background: var(--panel-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color);">
             <h2 id="uploadFormHeader" style="margin-top:0; color: var(--accent-color);">Post Trade Item</h2>
-            <form id="uploadForm" onsubmit="handleUpload(event)">
+            <form id="uploadForm">
                 
                 <div class="form-group">
                     <label>Game Type:</label>
-                    <select id="formGameType" onchange="updateFormFields()" required>
+                    <select id="formGameType" required>
                         <option value="Grow A Garden">Grow A Garden (GaG)</option>
                         <option value="Grow A Garden 2">Grow A Garden 2 (GaG 2)</option>
                         <option value="Steal A Brainrot">Steal A Brainrot (SAB)</option>
@@ -245,7 +245,7 @@
 
                 <div class="form-group">
                     <label>Select Item Name:</label>
-                    <select id="formItemName" onchange="checkCustomItem()" required></select>
+                    <select id="formItemName" required></select>
                 </div>
 
                 <div class="form-group hidden" id="fieldCustomItem">
@@ -260,7 +260,7 @@
 
                 <div class="form-group">
                     <label>Upload Image Directly From Files (+):</label>
-                    <input type="file" id="formImage" accept="image/*" onchange="previewImage(event)">
+                    <input type="file" id="formImage" accept="image/*">
                     <input type="hidden" id="imageDataUrl">
                 </div>
 
@@ -302,12 +302,30 @@
                 <label>Enter Registered Account Email:</label>
                 <input type="email" id="authEmail" placeholder="creator@example.com" required>
             </div>
-            <button onclick="login()" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Verify & Register Identity</button>
+            <button onclick="window.login()" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Verify & Register Identity</button>
             <button onclick="closeModal('loginModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 5px;">Cancel</button>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Ang iyong verified Firebase Config Matrix
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8cWqDhvzq2qGMeiFICTcFLAXSlg1rne0",
+            authDomain: "xdrg-trade-service.firebaseapp.com",
+            projectId: "xdrg-trade-service",
+            storageBucket: "xdrg-trade-service.firebasestorage.app",
+            messagingSenderId: "560761615319",
+            appId: "1:560761615319:web:7bf9834c997298c2231192",
+            measurementId: "G-80X5XBG17C",
+            databaseURL: "https://xdrg-trade-service-default-rtdb.firebaseio.com/"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
         const gameItemsDatabase = {
             "Grow A Garden": { items: ["Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"], fields: { worth: "Coin Value", kg: true, mutation: true } },
             "Grow A Garden 2": { items: ["Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Venus Fly Trap Seed", "Venom Spitter Seed", "Poison Apple Seed", "Magic Mushroom Seed", "Golden Leaf Seed", "Bamboo Seed", "Poison Ivy Seed", "Pomegranate Seed", "Sunflower Seed", "Glow Mushroom Seed", "Horned Melon Seed", "Dragon Fruit Seed", "Carrot Seed", "Strawberry Seed", "Blueberry Seed", "Tomato Seed", "Green Bean Seed", "Corn Seed", "Banana Seed", "Grape Seed", "Mango Seed", "Tulip Seed", "Baby Cactus Seed", "Cactus Seed"], fields: { worth: "Night Essence Crystals", kg: true, mutation: true } },
@@ -319,37 +337,40 @@
         const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
         const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519274522593857596/1795331117.png?ex=6a3cf628&is=6a3ba4a8&hm=55c227a30e67a986f05f87eb82edfcc52e1a8946e95d6661c10dcefc99b5dfda&";
 
-        // MOCK DATA: This ensures the website is never empty on a new device!
-        const initialMockPosts = [
-            { id: 1, creator: "ProFarmer_X@gmail.com", game: "Grow A Garden", name: "Radiant Sun Sprout", stock: 1, image: "📦", worth: "5M", kg: "2", mutation: "Shiny", psLink: "", likes: 12, likedBy: [], comments: [] },
-            { id: 2, creator: "NightHarvester@gmail.com", game: "Grow A Garden 2", name: "Moon Bloom Seed", stock: 3, image: "📦", worth: "10K", kg: "1", mutation: "Shadow", psLink: "", likes: 5, likedBy: [], comments: [] },
-            { id: 3, creator: "MemeHoarder@gmail.com", game: "Steal A Brainrot", name: "Skibidi Toilet Box", stock: 5, image: "📦", worth: "500", kg: "", mutation: "Glitched", psLink: "", likes: 8, likedBy: [], comments: [] }
-        ];
-
-        // Local Storage State Engines
-        let trades = JSON.parse(localStorage.getItem('roblox_final_trades_v5'));
-        if (!trades || trades.length === 0) {
-            trades = initialMockPosts; // Load the mock data if local storage is empty
-            localStorage.setItem('roblox_final_trades_v5', JSON.stringify(trades));
-        }
-
-        let inbox = JSON.parse(localStorage.getItem('roblox_trade_inbox_v5')) || [];
+        let tradesArray = [];
+        let inboxArray = [];
         let currentUser = localStorage.getItem('roblox_user_email') || "";
         let editingListingId = null;
 
-        function init() {
+        // Globalized Triggers for UI HTML onClick Attributes
+        window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; }
+        window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; }
+
+        window.login = function() {
+            const emailInput = document.getElementById('authEmail').value.trim();
+            if(emailInput && emailInput.includes('@')) {
+                localStorage.setItem('roblox_user_email', emailInput);
+                currentUser = emailInput;
+                updateAuthUI();
+                closeModal('loginModal');
+                updateInboxBadge();
+                renderItems();
+                renderInbox();
+            } else {
+                alert("Please provide a valid comprehensive email formatting layout address.");
+            }
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('roblox_user_email');
+            currentUser = "";
             updateAuthUI();
-            updateFormFields();
-            renderItems();
+            window.switchTab('view');
             updateInboxBadge();
+            renderItems();
         }
 
-        function saveDataStore() {
-            localStorage.setItem('roblox_final_trades_v5', JSON.stringify(trades));
-            localStorage.setItem('roblox_trade_inbox_v5', JSON.stringify(inbox));
-        }
-
-        function switchTab(tab) {
+        window.switchTab = function(tab) {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('feedSection').classList.add('hidden');
             document.getElementById('inboxSection').classList.add('hidden');
@@ -388,33 +409,8 @@
             }
         }
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function login() {
-            const emailInput = document.getElementById('authEmail').value.trim();
-            if(emailInput && emailInput.includes('@')) {
-                localStorage.setItem('roblox_user_email', emailInput);
-                currentUser = emailInput;
-                updateAuthUI();
-                closeModal('loginModal');
-                updateInboxBadge();
-                renderItems();
-            } else {
-                alert("Please provide a valid comprehensive email formatting layout address.");
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('roblox_user_email');
-            currentUser = "";
-            updateAuthUI();
-            switchTab('view');
-            updateInboxBadge();
-            renderItems();
-        }
-
         function getCreatorLabelHtml(email) {
+            if(!email) return "Unknown";
             const cleanEmail = email.toLowerCase().trim();
             if(verifiedEmails.includes(cleanEmail)) {
                 return `<strong>${email}</strong> <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">`;
@@ -483,16 +479,16 @@
             }
         }
 
-        function previewImage(event) {
+        document.getElementById('formImage').addEventListener('change', function(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = function(){
                 document.getElementById('imageDataUrl').value = reader.result;
             }
             if(file) reader.readAsDataURL(file);
-        }
+        });
 
-        function handleUpload(e) {
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
             e.preventDefault();
             if(!currentUser) {
                 alert("Verification engine validation mismatch error code.");
@@ -515,7 +511,7 @@
             
             if (!imageStr) {
                 if (editingListingId) {
-                    const originalItem = trades.find(t => t.id === editingListingId);
+                    const originalItem = tradesArray.find(t => t.id === editingListingId);
                     imageStr = originalItem ? originalItem.image : "📦";
                 } else {
                     imageStr = "📦";
@@ -528,45 +524,47 @@
             const psLink = document.getElementById('formPsLink').value;
 
             if (editingListingId) {
-                const itemIndex = trades.findIndex(t => t.id === editingListingId);
-                if (itemIndex !== -1) {
-                    trades[itemIndex].game = game;
-                    trades[itemIndex].name = name;
-                    trades[itemIndex].stock = stockCount;
-                    trades[itemIndex].image = imageStr;
-                    trades[itemIndex].worth = worth;
-                    trades[itemIndex].kg = kg;
-                    trades[itemIndex].mutation = mutation;
-                    trades[itemIndex].psLink = psLink;
-                    alert("Success! Listing updated successfully.");
-                } else {
-                    alert("Error processing updates: Product profile matching tracking block failed.");
-                }
-                editingListingId = null;
+                // UPDATE CURRENT LISTING METRICS TO FIREBASE
+                const updates = {};
+                updates[`/trades/${editingListingId}/game`] = game;
+                updates[`/trades/${editingListingId}/name`] = name;
+                updates[`/trades/${editingListingId}/stock`] = stockCount;
+                updates[`/trades/${editingListingId}/image`] = imageStr;
+                updates[`/trades/${editingListingId}/worth`] = worth;
+                updates[`/trades/${editingListingId}/kg`] = kg;
+                updates[`/trades/${editingListingId}/mutation`] = mutation;
+                updates[`/trades/${editingListingId}/psLink`] = psLink;
+
+                update(ref(db), updates).then(() => {
+                    alert("Success! Listing updated globally.");
+                    editingListingId = null;
+                    window.switchTab('view');
+                });
             } else {
-                const newPost = {
-                    id: Date.now(),
+                // PUSH NEW ENTRY INTO FIREBASE CLOUD FEEDS
+                const tradesRef = ref(db, 'trades');
+                const newPostRef = push(tradesRef);
+                const generatedId = newPostRef.key;
+
+                const newPostData = {
+                    id: generatedId,
                     creator: currentUser, 
                     game, name, worth, kg, mutation, psLink, stock: stockCount,
                     image: imageStr,
-                    likes: 0,
-                    likedBy: [],
-                    comments: []
+                    likes: 0
                 };
-                trades.unshift(newPost);
-                alert("Success! Listing updated into local storage system feeds.");
+
+                set(newPostRef, newPostData).then(() => {
+                    alert("Success! Listing pushed live into Global Cloud feeds.");
+                    document.getElementById('uploadForm').reset();
+                    document.getElementById('imageDataUrl').value = "";
+                    window.switchTab('view');
+                });
             }
+        });
 
-            saveDataStore();
-            document.getElementById('uploadForm').reset();
-            document.getElementById('imageDataUrl').value = "";
-            
-            updateAuthUI();
-            switchTab('view');
-        }
-
-        function startEditListing(itemId) {
-            const item = trades.find(t => t.id === itemId);
+        window.startEditListing = function(itemId) {
+            const item = tradesArray.find(t => t.id === itemId);
             if (!item) return;
 
             editingListingId = itemId;
@@ -601,35 +599,36 @@
             document.getElementById('formPsLink').value = item.psLink || "";
         }
 
-        function deleteListing(itemId) {
-            if (!confirm("Are you completely sure you want to remove this transaction block from local logs permanently?")) return;
-            trades = trades.filter(t => t.id !== itemId);
-            saveDataStore();
-            renderItems();
+        window.deleteListing = function(itemId) {
+            if (!confirm("Are you completely sure you want to remove this transaction block globally?")) return;
+            remove(ref(db, `trades/${itemId}`)).then(() => {
+                alert("Listing deleted successfully.");
+            });
         }
 
-        function toggleLike(itemId) {
+        window.toggleLike = function(itemId) {
             if(!currentUser) {
                 alert("Login required to interact with listings.");
                 return;
             }
-            const item = trades.find(t => t.id === itemId);
+            const item = tradesArray.find(t => t.id === itemId);
             if(item) {
-                if(!item.likedBy) item.likedBy = [];
-                const index = item.likedBy.indexOf(currentUser);
+                let likedBy = item.likedBy ? Object.values(item.likedBy) : [];
+                let likedKeys = item.likedBy ? Object.keys(item.likedBy) : [];
+                
+                const index = likedBy.indexOf(currentUser);
                 if(index === -1) {
-                    item.likedBy.push(currentUser);
-                    item.likes = (item.likes || 0) + 1;
+                    push(ref(db, `trades/${itemId}/likedBy`), currentUser);
+                    update(ref(db, `trades/${itemId}`), { likes: (item.likes || 0) + 1 });
                 } else {
-                    item.likedBy.splice(index, 1);
-                    item.likes = Math.max(0, (item.likes || 1) - 1);
+                    const targetKey = likedKeys[index];
+                    remove(ref(db, `trades/${itemId}/likedBy/${targetKey}`));
+                    update(ref(db, `trades/${itemId}`), { likes: Math.max(0, (item.likes || 1) - 1) });
                 }
-                saveDataStore();
-                renderItems();
             }
         }
 
-        function submitComment(e, itemId) {
+        window.submitComment = function(e, itemId) {
             e.preventDefault();
             if(!currentUser) {
                 alert("Login required to submit messages.");
@@ -639,27 +638,23 @@
             const text = input.value.trim();
             if(!text) return;
 
-            const item = trades.find(t => t.id === itemId);
-            if(item) {
-                if(!item.comments) item.comments = [];
-                item.comments.push({
-                    user: currentUser,
-                    text: text,
-                    timestamp: new Date().toLocaleTimeString()
-                });
-                saveDataStore();
+            const commentRef = ref(db, `trades/${itemId}/comments`);
+            push(commentRef, {
+                user: currentUser,
+                text: text,
+                timestamp: new Date().toLocaleTimeString()
+            }).then(() => {
                 input.value = "";
-                renderItems();
-            }
+            });
         }
 
-        function sendTradeRequest(itemId) {
+        window.sendTradeRequest = function(itemId) {
             if(!currentUser) {
                 alert("Log in to send trade offers.");
                 openModal('loginModal');
                 return;
             }
-            const item = trades.find(t => t.id === itemId);
+            const item = tradesArray.find(t => t.id === itemId);
             if(!item) return;
 
             if(item.creator === currentUser) {
@@ -667,8 +662,11 @@
                 return;
             }
 
+            const inboxRef = ref(db, 'inbox');
+            const newOfferRef = push(inboxRef);
+            
             const newOffer = {
-                id: Date.now(),
+                id: newOfferRef.key,
                 itemId: item.id,
                 itemName: item.name,
                 to: item.creator,
@@ -676,38 +674,32 @@
                 status: 'pending'
             };
 
-            inbox.unshift(newOffer);
-            saveDataStore();
-            alert(`Trade offer sent directly to ${item.creator}'s inbox!`);
-            updateInboxBadge();
+            set(newOfferRef, newOffer).then(() => {
+                alert(`Trade offer sent directly to ${item.creator}'s inbox!`);
+            });
         }
 
-        function processTradeOffer(offerId, action) {
-            const offer = inbox.find(i => i.id === offerId);
+        window.processTradeOffer = function(offerId, action) {
+            const offer = inboxArray.find(i => i.id === offerId);
             if(!offer) return;
 
             if(action === 'accept') {
-                const item = trades.find(t => t.id === offer.itemId);
+                const item = tradesArray.find(t => t.id === offer.itemId);
                 if(!item) {
                     alert("Item no longer exists.");
-                    offer.status = 'expired';
+                    update(ref(db, `inbox/${offerId}`), { status: 'expired' });
                 } else if((item.stock || 0) <= 0) {
                     alert("Transaction failed: This item has no stock available!");
-                    offer.status = 'out-of-stock';
+                    update(ref(db, `inbox/${offerId}`), { status: 'out-of-stock' });
                 } else {
-                    item.stock -= 1; 
-                    offer.status = 'accepted';
-                    saveDataStore();
+                    update(ref(db, `trades/${item.id}`), { stock: item.stock - 1 });
+                    update(ref(db, `inbox/${offerId}`), { status: 'accepted' });
                     alert(`Trade Accepted! Stock updated successfully.`);
                 }
             } else {
-                offer.status = 'declined';
-                saveDataStore();
+                update(ref(db, `inbox/${offerId}`), { status: 'declined' });
                 alert("Trade request declined.");
             }
-
-            renderInbox();
-            updateInboxBadge();
         }
 
         function updateInboxBadge() {
@@ -715,15 +707,16 @@
                 document.getElementById('inboxBadge').textContent = "";
                 return;
             }
-            const pendingCount = inbox.filter(i => i.to === currentUser && i.status === 'pending').length;
+            const pendingCount = inboxArray.filter(i => i.to === currentUser && i.status === 'pending').length;
             document.getElementById('inboxBadge').textContent = pendingCount > 0 ? `(${pendingCount})` : "";
         }
 
         function renderInbox() {
             const container = document.getElementById('inboxGrid');
+            if(!container) return;
             container.innerHTML = "";
             
-            const userOffers = inbox.filter(i => i.to === currentUser);
+            const userOffers = inboxArray.filter(i => i.to === currentUser);
 
             if(userOffers.length === 0) {
                 container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">Your messaging inbox is currently empty.</div>`;
@@ -741,8 +734,8 @@
                             <span style="color: #ddd;">Do you want to accept the Trade with ${offer.from}? Chat this user so you can easily Trade Each other!</span>
                         </div>
                         <div class="inbox-actions">
-                            <button class="btn-accept" onclick="processTradeOffer(${offer.id}, 'accept')">Accept</button>
-                            <button class="btn-decline" onclick="processTradeOffer(${offer.id}, 'decline')">Decline</button>
+                            <button class="btn-accept" onclick="processTradeOffer('${offer.id}', 'accept')">Accept</button>
+                            <button class="btn-decline" onclick="processTradeOffer('${offer.id}', 'decline')">Decline</button>
                         </div>
                     `;
                 } else {
@@ -760,14 +753,14 @@
 
         function renderItems() {
             const container = document.getElementById('itemGrid');
+            if(!container) return;
             const filterValue = document.getElementById('gameFilter').value;
             const searchQuery = document.getElementById('userSearchBar').value.toLowerCase().trim();
             container.innerHTML = "";
 
-            // FILTERING LOGIC (Includes the new Search Bar for Friend's Email)
-            const filtered = trades.filter(post => {
+            const filtered = tradesArray.filter(post => {
                 const matchesGame = (filterValue === 'All' || post.game === filterValue);
-                const matchesSearch = post.creator.toLowerCase().includes(searchQuery);
+                const matchesSearch = post.creator && post.creator.toLowerCase().includes(searchQuery);
                 return matchesGame && matchesSearch;
             });
 
@@ -780,21 +773,21 @@
                 const card = document.createElement('div');
                 card.className = 'item-card';
 
-                let imgRender = item.image.startsWith('data:') 
+                let imgRender = (item.image && item.image.startsWith('data:')) 
                     ? `<img src="${item.image}" alt="item Image">` 
-                    : `<span>${item.image}</span>`;
+                    : `<span>${item.image || '📦'}</span>`;
 
                 const itemLikes = item.likes || 0;
-                const commentsArray = item.comments || [];
+                const commentsArray = item.comments ? Object.values(item.comments) : [];
                 const currentStock = item.stock !== undefined ? item.stock : 1;
 
                 let commentItemsHtml = commentsArray.map(c => `
                     <div class="comment-item">
-                        <span style="color: var(--accent-color); font-weight:bold;">${c.user.split('@')[0]}:</span> ${c.text}
+                        <span style="color: var(--accent-color); font-weight:bold;">${c.user ? c.user.split('@')[0] : 'User'}:</span> ${c.text || ''}
                     </div>
                 `).join('');
 
-                const isOwner = currentUser && item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim();
+                const isOwner = currentUser && item.creator && item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim();
 
                 card.innerHTML = `
                     <div class="item-main-content">
@@ -812,15 +805,15 @@
                     </div>
                     
                     <div class="interaction-bar">
-                        <button class="interact-btn" onclick="toggleLike(${item.id})">👍 Like (${itemLikes})</button>
+                        <button class="interact-btn" onclick="toggleLike('${item.id}')">👍 Like (${itemLikes})</button>
                         
                         ${currentUser && !isOwner && currentStock > 0 ? `
-                            <button class="interact-btn trade-action-btn" onclick="sendTradeRequest(${item.id})">🤝 Send Trade Offer</button>
+                            <button class="interact-btn trade-action-btn" onclick="sendTradeRequest('${item.id}')">🤝 Send Trade Offer</button>
                         ` : ''}
 
                         ${isOwner ? `
-                            <button class="interact-btn" style="border-color: #ffaa00; color: #ffaa00; margin-left: auto;" onclick="startEditListing(${item.id})">✏️ Edit</button>
-                            <button class="interact-btn" style="border-color: var(--decline-color); color: var(--decline-color);" onclick="deleteListing(${item.id})">🗑️ Delete</button>
+                            <button class="interact-btn" style="border-color: #ffaa00; color: #ffaa00; margin-left: auto;" onclick="startEditListing('${item.id}')">✏️ Edit</button>
+                            <button class="interact-btn" style="border-color: var(--decline-color); color: var(--decline-color);" onclick="deleteListing('${item.id}')">🗑️ Delete</button>
                         ` : ''}
                         
                         ${currentStock <= 0 ? `
@@ -829,7 +822,7 @@
                     </div>
 
                     <div class="comments-section">
-                        <form onsubmit="submitComment(event, ${item.id})" class="comment-box">
+                        <form onsubmit="submitComment(event, '${item.id}')" class="comment-box">
                             <input type="text" id="commentInput-${item.id}" placeholder="Type community comment text..." required>
                             <button type="submit" class="interact-btn">Post</button>
                         </form>
@@ -840,7 +833,43 @@
             });
         }
 
-        window.onload = init;
+        // FIREBASE LIVE REAL-TIME LISTENERS (Dito nangyayari ang tunay na sync)
+        onValue(ref(db, 'trades'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // Pinapantay ang format at sinisiguradong reverse chronological (bagong post nasa taas)
+                tradesArray = Object.keys(data).map(key => {
+                    return { ...data[key], id: key };
+                }).reverse();
+            } else {
+                tradesArray = [];
+            }
+            renderItems();
+        });
+
+        onValue(ref(db, 'inbox'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                inboxArray = Object.keys(data).map(key => {
+                    return { ...data[key], id: key };
+                }).reverse();
+            } else {
+                inboxArray = [];
+            }
+            updateInboxBadge();
+            renderInbox();
+        });
+
+        // Event Triggers for Dropdown and Search Inputs
+        document.getElementById('gameFilter').addEventListener('change', renderItems);
+        document.getElementById('userSearchBar').addEventListener('input', renderItems);
+        document.getElementById('formGameType').addEventListener('change', updateFormFields);
+        document.getElementById('formItemName').addEventListener('change', checkCustomItem);
+
+        // Lifecycle Inits
+        updateAuthUI();
+        updateFormFields();
+        updateInboxBadge();
     </script>
 </body>
 </html>
