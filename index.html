@@ -85,21 +85,38 @@
             gap: 15px;
         }
 
-        .game-filter-select, .nav-tabs button {
+        .nav-tabs button, .game-filter-select, .search-bar-input {
             background-color: var(--panel-bg);
             color: var(--text-color);
             border: 1px solid var(--border-color);
             padding: 10px 20px;
             border-radius: 5px;
             font-size: 16px;
-            cursor: pointer;
         }
+
+        .nav-tabs button { cursor: pointer; }
 
         .nav-tabs button.active {
             background-color: var(--accent-color);
             color: #000;
             border-color: var(--accent-color);
             font-weight: bold;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar-input {
+            width: 250px;
+            padding: 10px;
+        }
+
+        .search-bar-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
         }
 
         .modal {
@@ -121,226 +138,49 @@
             border: 1px solid var(--border-color);
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            color: #bbb;
-            font-size: 14px;
-        }
-
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; color: #bbb; font-size: 14px; }
         .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            background-color: #0f1115;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            border-radius: 4px;
-            box-sizing: border-box;
+            width: 100%; padding: 10px; background-color: #0f1115;
+            border: 1px solid var(--border-color); color: var(--text-color);
+            border-radius: 4px; box-sizing: border-box;
         }
 
-        .item-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .item-card {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex; 
-            flex-direction: column; 
-        }
-
-        .item-main-content {
-            display: flex;
-            flex-direction: row;
-            align-items: stretch;
-        }
-
+        .item-grid { display: flex; flex-direction: column; gap: 20px; }
+        .item-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+        .item-main-content { display: flex; flex-direction: row; align-items: stretch; }
+        
         .item-image-container {
-            width: 160px; 
-            background-color: #0f1115;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 50px;
-            border-right: 1px solid var(--border-color); 
-            flex-shrink: 0;
+            width: 160px; background-color: #0f1115; display: flex; justify-content: center;
+            align-items: center; font-size: 50px; border-right: 1px solid var(--border-color); flex-shrink: 0;
         }
-
-        .item-image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .item-details {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            flex-grow: 1;
-            justify-content: center;
-        }
-
-        .item-game-badge {
-            background-color: #242b35;
-            color: var(--accent-color);
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            width: fit-content;
-        }
-
-        .item-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 4px 0;
-            color: #fff;
-        }
-
-        .item-stat {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        .item-stat strong {
-            color: #fff;
-        }
-
-        .verified-badge {
-            width: 16px;
-            height: 16px;
-            vertical-align: middle;
-            margin-left: 4px;
-            display: inline-block;
-        }
-
-        .interaction-bar {
-            background-color: #1a1f29;
-            padding: 10px 20px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .interact-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .interact-btn:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        .trade-action-btn {
-            background-color: var(--accent-color) !important;
-            color: #000 !important;
-            margin-left: auto;
-        }
-
-        .comments-section {
-            background-color: #12151c;
-            padding: 15px 20px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .comment-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .comment-box input {
-            flex-grow: 1;
-            padding: 8px;
-            background-color: #0f1115;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            border-radius: 4px;
-        }
-
-        .comment-list {
-            max-height: 150px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .comment-item {
-            font-size: 13px;
-            background: #161920;
-            padding: 6px 10px;
-            border-radius: 4px;
-            border-left: 3px solid var(--accent-color);
-        }
-
-        .inbox-card {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-
-        .inbox-actions {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-accept {
-            background-color: var(--accept-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .btn-decline {
-            background-color: var(--decline-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .ps-link {
-            display: inline-block;
-            background-color: #0077ff;
-            color: white;
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: bold;
-            width: fit-content;
-        }
-
+        .item-image-container img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .item-details { padding: 20px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; justify-content: center; }
+        .item-game-badge { background-color: #242b35; color: var(--accent-color); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; width: fit-content; }
+        .item-title { font-size: 20px; font-weight: bold; margin: 4px 0; color: #fff; }
+        .item-stat { font-size: 14px; color: var(--text-muted); }
+        .item-stat strong { color: #fff; }
+        
+        .verified-badge { width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; display: inline-block; }
+        
+        .interaction-bar { background-color: #1a1f29; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; gap: 15px; align-items: center; }
+        .interact-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .interact-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        .trade-action-btn { background-color: var(--accent-color) !important; color: #000 !important; margin-left: auto; }
+        
+        .comments-section { background-color: #12151c; padding: 15px 20px; border-top: 1px solid var(--border-color); }
+        .comment-box { display: flex; gap: 10px; margin-bottom: 10px; }
+        .comment-box input { flex-grow: 1; padding: 8px; background-color: #0f1115; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; }
+        .comment-list { max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+        .comment-item { font-size: 13px; background: #161920; padding: 6px 10px; border-radius: 4px; border-left: 3px solid var(--accent-color); }
+        
+        .inbox-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 15px; }
+        .inbox-actions { margin-top: 15px; display: flex; gap: 10px; }
+        .btn-accept { background-color: var(--accept-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-decline { background-color: var(--decline-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .ps-link { display: inline-block; background-color: #0077ff; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: bold; width: fit-content; }
+        
         .hidden { display: none !important; }
     </style>
 </head>
@@ -366,7 +206,8 @@
                 <button id="inboxTab" onclick="switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
             </div>
 
-            <div>
+            <div class="search-container">
+                <input type="text" id="userSearchBar" class="search-bar-input" placeholder="🔍 Search friend's email..." oninput="renderItems()">
                 <select id="gameFilter" class="game-filter-select" onchange="renderItems()">
                     <option value="All">All Games</option>
                     <option value="Grow A Garden">Grow A Garden (GaG)</option>
@@ -468,57 +309,33 @@
 
     <script>
         const gameItemsDatabase = {
-            "Grow A Garden": { 
-                items: [
-                    "Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"
-                ], 
-                fields: { worth: "Coin Value", kg: true, mutation: true }
-            },
-            "Grow A Garden 2": { 
-                items: [
-                    "Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Venus Fly Trap Seed", "Venom Spitter Seed", "Poison Apple Seed", "Magic Mushroom Seed", "Golden Leaf Seed",
-                    "Bamboo Seed", "Poison Ivy Seed", "Pomegranate Seed", "Sunflower Seed", "Glow Mushroom Seed", "Horned Melon Seed", "Dragon Fruit Seed",
-                    "Carrot Seed", "Strawberry Seed", "Blueberry Seed", "Tomato Seed", "Green Bean Seed", "Corn Seed", "Banana Seed", "Grape Seed", "Mango Seed", "Tulip Seed", "Baby Cactus Seed", "Cactus Seed"
-                ], 
-                fields: { worth: "Night Essence Crystals", kg: true, mutation: true }
-            },
-            "Steal A Brainrot": { 
-                items: [
-                    "Garama", "Madundung", "La Taco Combinasion", "Hydra Dragon Cannelloni", "Burguro", "Fryuro", "Lavadorito Spinito", "Ketupat Kepat",
-                    "Strawberry Elephant", "Cooki and Milki", "Esok Sekolah", "Spinny Hammy GALAXY", "Ketchuru", "Musturu",
-                    "Los Candies", "Cerberus", "La Secret Combinasion", "Mieteteira Bicicleteira", "List List List Sahur", "Chicleteria Noelteira", "Los Nooo My Hotspitsitos", "Skibidi Toilet Box", "Grimace Shake Formula", "Sigma Core Alpha", "GigaChad Slab"
-                ], 
-                fields: { worth: "Passive M/s Valuation", kg: false, mutation: true }
-            },
-            "Kick A Lucky Block": { 
-                items: [
-                    "Mythic Base Unit", "Celestial Base Unit", "Legendary Base Unit", "Rare Base Unit", "Common Base Unit", "Uncommon Base Unit", "Epic Base Unit",
-                    "Noobini Pizzalini", "Austroman Statue", "Gangster Footera", "Sigma Diamond Crown", "Alpha Wolf Trophy", "Skibidi Subwoofer", "Rizzler Pillar",
-                    "Void Matrix Block", "Chaos Matrix Cube", "Galaxy Singularity Block", "Quantum Core Block"
-                ], 
-                fields: { worth: "Multiplier Value Rate", kg: true, mutation: false }
-            },
-            "Blox Fruits": { 
-                items: [
-                    "Kitsune Fruit (Physical)", "Dragon Fruit (Physical)", "Leopard Fruit (Physical)", "Dough Fruit (Physical)", "T-Rex Fruit (Physical)", "Mammoth Fruit (Physical)", "Spirit Fruit (Physical)", "Control Fruit (Physical)", "Venom Fruit (Physical)", "Shadow Fruit (Physical)", "Gravity Fruit (Physical)",
-                    "Buddha Fruit (Physical)", "Portal Fruit (Physical)", "Rumble Fruit (Physical)", "Blizzard Fruit (Physical)", "Sound Fruit (Physical)", "Pain Fruit (Physical)", "Quake Fruit (Physical)", "Love Fruit (Physical)", "Spider Fruit (Physical)", "Phoenix Fruit (Physical)",
-                    "Ghost Fruit (Physical)", "Magma Fruit (Physical)", "Light Fruit (Physical)", "Rubber Fruit (Physical)", "Barrier Fruit (Physical)", "Diamond Fruit (Physical)",
-                    "Ice Fruit (Physical)", "Sand Fruit (Physical)", "Dark Fruit (Physical)", "Falcon Fruit (Physical)", "Flame Fruit (Physical)",
-                    "Rocket Fruit (Physical)", "Spin Fruit (Physical)", "Chop Fruit (Physical)", "Spring Fruit (Physical)", "Bomb Fruit (Physical)", "Smoke Fruit (Physical)", "Spike Fruit (Physical)",
-                    "Dark Blade Gamepass Box", "Fruit Notifier Pass Box", "+1 Storage Capacity Pass", "2x Money Pass", "2x Mastery Pass", "Fast Boats Pass", "Permanent Kitsune Fruit", "Permanent Dragon Fruit", "Permanent Leopard Fruit", "Permanent Dough Fruit", "Permanent Buddha Fruit", "Permanent Portal Fruit"
-                ], 
-                fields: { worth: "Counter Offer Expectation", kg: false, mutation: false }
-            }
+            "Grow A Garden": { items: ["Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"], fields: { worth: "Coin Value", kg: true, mutation: true } },
+            "Grow A Garden 2": { items: ["Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Venus Fly Trap Seed", "Venom Spitter Seed", "Poison Apple Seed", "Magic Mushroom Seed", "Golden Leaf Seed", "Bamboo Seed", "Poison Ivy Seed", "Pomegranate Seed", "Sunflower Seed", "Glow Mushroom Seed", "Horned Melon Seed", "Dragon Fruit Seed", "Carrot Seed", "Strawberry Seed", "Blueberry Seed", "Tomato Seed", "Green Bean Seed", "Corn Seed", "Banana Seed", "Grape Seed", "Mango Seed", "Tulip Seed", "Baby Cactus Seed", "Cactus Seed"], fields: { worth: "Night Essence Crystals", kg: true, mutation: true } },
+            "Steal A Brainrot": { items: ["Garama", "Madundung", "La Taco Combinasion", "Hydra Dragon Cannelloni", "Burguro", "Fryuro", "Lavadorito Spinito", "Ketupat Kepat", "Strawberry Elephant", "Cooki and Milki", "Esok Sekolah", "Spinny Hammy GALAXY", "Ketchuru", "Musturu", "Los Candies", "Cerberus", "La Secret Combinasion", "Mieteteira Bicicleteira", "List List List Sahur", "Chicleteria Noelteira", "Los Nooo My Hotspitsitos", "Skibidi Toilet Box", "Grimace Shake Formula", "Sigma Core Alpha", "GigaChad Slab"], fields: { worth: "Passive M/s Valuation", kg: false, mutation: true } },
+            "Kick A Lucky Block": { items: ["Mythic Base Unit", "Celestial Base Unit", "Legendary Base Unit", "Rare Base Unit", "Common Base Unit", "Uncommon Base Unit", "Epic Base Unit", "Noobini Pizzalini", "Austroman Statue", "Gangster Footera", "Sigma Diamond Crown", "Alpha Wolf Trophy", "Skibidi Subwoofer", "Rizzler Pillar", "Void Matrix Block", "Chaos Matrix Cube", "Galaxy Singularity Block", "Quantum Core Block"], fields: { worth: "Multiplier Value Rate", kg: true, mutation: false } },
+            "Blox Fruits": { items: ["Kitsune Fruit (Physical)", "Dragon Fruit (Physical)", "Leopard Fruit (Physical)", "Dough Fruit (Physical)", "T-Rex Fruit (Physical)", "Mammoth Fruit (Physical)", "Spirit Fruit (Physical)", "Control Fruit (Physical)", "Venom Fruit (Physical)", "Shadow Fruit (Physical)", "Gravity Fruit (Physical)", "Buddha Fruit (Physical)", "Portal Fruit (Physical)", "Rumble Fruit (Physical)", "Blizzard Fruit (Physical)", "Sound Fruit (Physical)", "Pain Fruit (Physical)", "Quake Fruit (Physical)", "Love Fruit (Physical)", "Spider Fruit (Physical)", "Phoenix Fruit (Physical)", "Ghost Fruit (Physical)", "Magma Fruit (Physical)", "Light Fruit (Physical)", "Rubber Fruit (Physical)", "Barrier Fruit (Physical)", "Diamond Fruit (Physical)", "Ice Fruit (Physical)", "Sand Fruit (Physical)", "Dark Fruit (Physical)", "Falcon Fruit (Physical)", "Flame Fruit (Physical)", "Rocket Fruit (Physical)", "Spin Fruit (Physical)", "Chop Fruit (Physical)", "Spring Fruit (Physical)", "Bomb Fruit (Physical)", "Smoke Fruit (Physical)", "Spike Fruit (Physical)", "Dark Blade Gamepass Box", "Fruit Notifier Pass Box", "+1 Storage Capacity Pass", "2x Money Pass", "2x Mastery Pass", "Fast Boats Pass", "Permanent Kitsune Fruit", "Permanent Dragon Fruit", "Permanent Leopard Fruit", "Permanent Dough Fruit", "Permanent Buddha Fruit", "Permanent Portal Fruit"], fields: { worth: "Counter Offer Expectation", kg: false, mutation: false } }
         };
 
         const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
         const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519274522593857596/1795331117.png?ex=6a3cf628&is=6a3ba4a8&hm=55c227a30e67a986f05f87eb82edfcc52e1a8946e95d6661c10dcefc99b5dfda&";
 
+        // MOCK DATA: This ensures the website is never empty on a new device!
+        const initialMockPosts = [
+            { id: 1, creator: "ProFarmer_X@gmail.com", game: "Grow A Garden", name: "Radiant Sun Sprout", stock: 1, image: "📦", worth: "5M", kg: "2", mutation: "Shiny", psLink: "", likes: 12, likedBy: [], comments: [] },
+            { id: 2, creator: "NightHarvester@gmail.com", game: "Grow A Garden 2", name: "Moon Bloom Seed", stock: 3, image: "📦", worth: "10K", kg: "1", mutation: "Shadow", psLink: "", likes: 5, likedBy: [], comments: [] },
+            { id: 3, creator: "MemeHoarder@gmail.com", game: "Steal A Brainrot", name: "Skibidi Toilet Box", stock: 5, image: "📦", worth: "500", kg: "", mutation: "Glitched", psLink: "", likes: 8, likedBy: [], comments: [] }
+        ];
+
         // Local Storage State Engines
-        let trades = JSON.parse(localStorage.getItem('roblox_final_trades_v5')) || [];
+        let trades = JSON.parse(localStorage.getItem('roblox_final_trades_v5'));
+        if (!trades || trades.length === 0) {
+            trades = initialMockPosts; // Load the mock data if local storage is empty
+            localStorage.setItem('roblox_final_trades_v5', JSON.stringify(trades));
+        }
+
         let inbox = JSON.parse(localStorage.getItem('roblox_trade_inbox_v5')) || [];
         let currentUser = localStorage.getItem('roblox_user_email') || "";
-        let editingListingId = null; // Track item currently being modified
+        let editingListingId = null;
 
         function init() {
             updateAuthUI();
@@ -547,15 +364,12 @@
                     openModal('loginModal');
                     return;
                 }
-                
-                // Clear any leftover edit states if clicking upload fresh
                 editingListingId = null;
                 document.getElementById('uploadFormHeader').textContent = "Post Trade Item";
                 document.getElementById('formSubmitBtn').textContent = "Post Item Details";
                 document.getElementById('uploadForm').reset();
                 document.getElementById('imageDataUrl').value = "";
                 updateFormFields();
-
                 document.getElementById('uploadSection').classList.remove('hidden');
                 document.getElementById('uploadTab').classList.add('active');
             } else if (tab === 'inbox') {
@@ -699,7 +513,6 @@
             const stockCount = parseInt(document.getElementById('formStock').value) || 1;
             let imageStr = document.getElementById('imageDataUrl').value;
             
-            // If editing and no new image is uploaded, retain original image
             if (!imageStr) {
                 if (editingListingId) {
                     const originalItem = trades.find(t => t.id === editingListingId);
@@ -715,7 +528,6 @@
             const psLink = document.getElementById('formPsLink').value;
 
             if (editingListingId) {
-                // Update processing engine block
                 const itemIndex = trades.findIndex(t => t.id === editingListingId);
                 if (itemIndex !== -1) {
                     trades[itemIndex].game = game;
@@ -732,7 +544,6 @@
                 }
                 editingListingId = null;
             } else {
-                // Create processing engine block
                 const newPost = {
                     id: Date.now(),
                     creator: currentUser, 
@@ -754,14 +565,11 @@
             switchTab('view');
         }
 
-        // Developer Actions: Edit Setup System
         function startEditListing(itemId) {
             const item = trades.find(t => t.id === itemId);
             if (!item) return;
 
             editingListingId = itemId;
-
-            // Interface view alignment engine switches
             document.getElementById('uploadSection').classList.remove('hidden');
             document.getElementById('feedSection').classList.add('hidden');
             document.getElementById('inboxSection').classList.add('hidden');
@@ -769,11 +577,9 @@
             document.getElementById('viewTab').classList.remove('active');
             document.getElementById('inboxTab').classList.remove('active');
 
-            // Adjust form text contexts
             document.getElementById('uploadFormHeader').textContent = "Modify Trade Item Metrics";
             document.getElementById('formSubmitBtn').textContent = "Save Changes & Apply Updates";
 
-            // Push state variables into views
             document.getElementById('formGameType').value = item.game;
             updateFormFields();
 
@@ -795,7 +601,6 @@
             document.getElementById('formPsLink').value = item.psLink || "";
         }
 
-        // Developer Actions: Delete Engine Block
         function deleteListing(itemId) {
             if (!confirm("Are you completely sure you want to remove this transaction block from local logs permanently?")) return;
             trades = trades.filter(t => t.id !== itemId);
@@ -956,9 +761,15 @@
         function renderItems() {
             const container = document.getElementById('itemGrid');
             const filterValue = document.getElementById('gameFilter').value;
+            const searchQuery = document.getElementById('userSearchBar').value.toLowerCase().trim();
             container.innerHTML = "";
 
-            const filtered = trades.filter(post => filterValue === 'All' || post.game === filterValue);
+            // FILTERING LOGIC (Includes the new Search Bar for Friend's Email)
+            const filtered = trades.filter(post => {
+                const matchesGame = (filterValue === 'All' || post.game === filterValue);
+                const matchesSearch = post.creator.toLowerCase().includes(searchQuery);
+                return matchesGame && matchesSearch;
+            });
 
             if(filtered.length === 0) {
                 container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No active transactions found matching filters.</div>`;
