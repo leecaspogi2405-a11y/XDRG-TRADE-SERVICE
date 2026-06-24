@@ -12,6 +12,8 @@
             --text-color: #ffffff;
             --text-muted: #7f8c9d;
             --border-color: #242b35;
+            --decline-color: #ff4a4a;
+            --accept-color: #00cc7a;
         }
 
         body {
@@ -139,7 +141,12 @@
             border-radius: 8px;
             overflow: hidden;
             display: flex; 
-            flex-direction: row; 
+            flex-direction: column; 
+        }
+
+        .item-main-content {
+            display: flex;
+            flex-direction: row;
             align-items: stretch;
         }
 
@@ -196,14 +203,125 @@
             color: #fff;
         }
 
+        .verified-badge {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-left: 4px;
+            display: inline-block;
+        }
+
+        .interaction-bar {
+            background-color: #1a1f29;
+            padding: 10px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .interact-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .interact-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .trade-action-btn {
+            background-color: var(--accent-color) !important;
+            color: #000 !important;
+            margin-left: auto;
+        }
+
+        .comments-section {
+            background-color: #12151c;
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .comment-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comment-box input {
+            flex-grow: 1;
+            padding: 8px;
+            background-color: #0f1115;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .comment-list {
+            max-height: 150px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .comment-item {
+            font-size: 13px;
+            background: #161920;
+            padding: 6px 10px;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .inbox-card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .inbox-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-accept {
+            background-color: var(--accept-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-decline {
+            background-color: var(--decline-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
         .ps-link {
-            display: block;
-            margin-top: 10px;
-            text-align: center;
+            display: inline-block;
             background-color: #0077ff;
             color: white;
             text-decoration: none;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 4px;
             font-size: 13px;
             font-weight: bold;
@@ -229,6 +347,7 @@
             <div class="nav-tabs">
                 <button class="active" id="viewTab" onclick="switchTab('view')">View Listings</button>
                 <button id="uploadTab" onclick="switchTab('upload')">+ Upload Item</button>
+                <button id="inboxTab" onclick="switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
             </div>
 
             <div>
@@ -247,7 +366,11 @@
             <div class="item-grid" id="itemGrid"></div>
         </div>
 
-        <!-- UPLOAD SECTION -->
+        <div id="inboxSection" class="hidden">
+            <h2 style="color: var(--accent-color); margin-top: 0;">Your Trade Offers & Messaging Inbox</h2>
+            <div id="inboxGrid"></div>
+        </div>
+
         <div id="uploadSection" class="hidden" style="max-width: 600px; margin: 0 auto; background: var(--panel-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color);">
             <h2 style="margin-top:0; color: var(--accent-color);">Post Trade Item</h2>
             <form id="uploadForm" onsubmit="handleUpload(event)">
@@ -263,16 +386,19 @@
                     </select>
                 </div>
 
-                <!-- SELECTION DROPDOWN -->
                 <div class="form-group">
                     <label>Select Item Name:</label>
                     <select id="formItemName" onchange="checkCustomItem()" required></select>
                 </div>
 
-                <!-- DYNAMIC TEXTBOX FOR UNLISTED CUSTOM ITEMS -->
                 <div class="form-group hidden" id="fieldCustomItem">
                     <label style="color: var(--accent-color); font-weight: bold;">Type Custom Item Name:</label>
                     <input type="text" id="formCustomItemName" placeholder="Enter the exact missing item name...">
+                </div>
+
+                <div class="form-group">
+                    <label>Initial Product Inventory Stock Count:</label>
+                    <input type="number" id="formStock" value="1" min="1" placeholder="e.g. 10" required>
                 </div>
 
                 <div class="form-group">
@@ -296,9 +422,8 @@
                     <input type="text" id="formMutation" placeholder="e.g., Glitched, Shiny, Shadow, Overlord">
                 </div>
 
-                <!-- SESSION IDENTITY BOUND TRADER FIELD -->
                 <div class="form-group">
-                    <label>Your Verified Profile Identity (Session Protected):</label>
+                    <label>Your Verified Profile Identity (Session Protected Email):</label>
                     <input type="text" id="formUserIdentity" style="background-color: #1a1f26; color: var(--accent-color); font-weight: bold;" required readonly>
                 </div>
 
@@ -312,16 +437,15 @@
         </div>
     </div>
 
-    <!-- SIGN UP / LOGIN AUTH MODAL -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Account Sign Up / Log In</h3>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">You are required to verify your active session name profile before updating or publishing assets into our network feed database.</p>
+            <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Secure Email Access Portal</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Please authenticate utilizing your secure account email format verification line to securely track correspondence logs and trade requests.</p>
             <div class="form-group">
-                <label>Enter Roblox Username:</label>
-                <input type="text" id="authUsername" placeholder="Enter username exactly..." required>
+                <label>Enter Registered Account Email:</label>
+                <input type="email" id="authEmail" placeholder="creator@example.com" required>
             </div>
-            <button onclick="login()" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Register Identity</button>
+            <button onclick="login()" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Verify & Register Identity</button>
             <button onclick="closeModal('loginModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 5px;">Cancel</button>
         </div>
     </div>
@@ -330,15 +454,15 @@
         const gameItemsDatabase = {
             "Grow A Garden": { 
                 items: [
-                    "Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Venus Fly Trap Seed", "Venom Spitter Seed", "Poison Apple Seed", "Magic Mushroom Seed", "Golden Leaf Seed",
-                    "Bamboo Seed", "Poison Ivy Seed", "Pomegranate Seed", "Sunflower Seed", "Glow Mushroom Seed", "Horned Melon Seed", "Dragon Fruit Seed",
-                    "Carrot Seed", "Strawberry Seed", "Blueberry Seed", "Tomato Seed", "Green Bean Seed", "Corn Seed", "Banana Seed", "Grape Seed", "Mango Seed", "Tulip Seed", "Baby Cactus Seed", "Cactus Seed"
+                    "Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"
                 ], 
                 fields: { worth: "Coin Value", kg: true, mutation: true }
             },
             "Grow A Garden 2": { 
                 items: [
-                    "Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"
+                    "Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Venus Fly Trap Seed", "Venom Spitter Seed", "Poison Apple Seed", "Magic Mushroom Seed", "Golden Leaf Seed",
+                    "Bamboo Seed", "Poison Ivy Seed", "Pomegranate Seed", "Sunflower Seed", "Glow Mushroom Seed", "Horned Melon Seed", "Dragon Fruit Seed",
+                    "Carrot Seed", "Strawberry Seed", "Blueberry Seed", "Tomato Seed", "Green Bean Seed", "Corn Seed", "Banana Seed", "Grape Seed", "Mango Seed", "Tulip Seed", "Baby Cactus Seed", "Cactus Seed"
                 ], 
                 fields: { worth: "Night Essence Crystals", kg: true, mutation: true }
             },
@@ -371,32 +495,56 @@
             }
         };
 
-        // FIXED: Completely removed initial fake data shown in image 1000030280.jpg to allow real user generation tracking
-        let trades = JSON.parse(localStorage.getItem('roblox_final_trades_v4')) || [];
-        let currentUser = localStorage.getItem('roblox_user') || "";
+        const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
+        const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519274522593857596/1795331117.png?ex=6a3cf628&is=6a3ba4a8&hm=55c227a30e67a986f05f87eb82edfcc52e1a8946e95d6661c10dcefc99b5dfda&";
+
+        // Local Storage State Engines
+        let trades = JSON.parse(localStorage.getItem('roblox_final_trades_v5')) || [];
+        let inbox = JSON.parse(localStorage.getItem('roblox_trade_inbox_v5')) || [];
+        let currentUser = localStorage.getItem('roblox_user_email') || "";
 
         function init() {
             updateAuthUI();
             updateFormFields();
             renderItems();
+            updateInboxBadge();
+        }
+
+        function saveDataStore() {
+            localStorage.setItem('roblox_final_trades_v5', JSON.stringify(trades));
+            localStorage.setItem('roblox_trade_inbox_v5', JSON.stringify(inbox));
         }
 
         function switchTab(tab) {
+            document.getElementById('uploadSection').classList.add('hidden');
+            document.getElementById('feedSection').classList.add('hidden');
+            document.getElementById('inboxSection').classList.add('hidden');
+            
+            document.getElementById('uploadTab').classList.remove('active');
+            document.getElementById('viewTab').classList.remove('active');
+            document.getElementById('inboxTab').classList.remove('active');
+
             if(tab === 'upload') {
                 if(!currentUser) {
-                    alert("Unauthorized access: Complete the verification profile step by clicking 'Sign Up / Log In' first!");
+                    alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
                     openModal('loginModal');
                     return;
                 }
                 document.getElementById('uploadSection').classList.remove('hidden');
-                document.getElementById('feedSection').classList.add('hidden');
                 document.getElementById('uploadTab').classList.add('active');
-                document.getElementById('viewTab').classList.remove('active');
+            } else if (tab === 'inbox') {
+                if(!currentUser) {
+                    alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
+                    openModal('loginModal');
+                    return;
+                }
+                document.getElementById('inboxSection').classList.remove('hidden');
+                document.getElementById('inboxTab').classList.add('active');
+                renderInbox();
             } else {
-                document.getElementById('uploadSection').classList.add('hidden');
                 document.getElementById('feedSection').classList.remove('hidden');
-                document.getElementById('uploadTab').classList.remove('active');
                 document.getElementById('viewTab').classList.add('active');
+                renderItems();
             }
         }
 
@@ -404,22 +552,34 @@
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         function login() {
-            const name = document.getElementById('authUsername').value.trim();
-            if(name) {
-                localStorage.setItem('roblox_user', name);
-                currentUser = name;
+            const emailInput = document.getElementById('authEmail').value.trim();
+            if(emailInput && emailInput.includes('@')) {
+                localStorage.setItem('roblox_user_email', emailInput);
+                currentUser = emailInput;
                 updateAuthUI();
                 closeModal('loginModal');
+                updateInboxBadge();
+                renderItems();
             } else {
-                alert("Provide a valid profile username.");
+                alert("Please provide a valid comprehensive email formatting layout address.");
             }
         }
 
         function logout() {
-            localStorage.removeItem('roblox_user');
+            localStorage.removeItem('roblox_user_email');
             currentUser = "";
             updateAuthUI();
             switchTab('view');
+            updateInboxBadge();
+            renderItems();
+        }
+
+        function getCreatorLabelHtml(email) {
+            const cleanEmail = email.toLowerCase().trim();
+            if(verifiedEmails.includes(cleanEmail)) {
+                return `<strong>${email}</strong> <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">`;
+            }
+            return `<strong>${email}</strong>`;
         }
 
         function updateAuthUI() {
@@ -429,7 +589,7 @@
             const uploadIdentityInput = document.getElementById('formUserIdentity');
 
             if(currentUser) {
-                greeting.textContent = `Active User: ${currentUser}`;
+                greeting.innerHTML = `Session Account: ${getCreatorLabelHtml(currentUser)}`;
                 loginBtn.classList.add('hidden');
                 logoutBtn.classList.remove('hidden');
                 uploadIdentityInput.value = currentUser; 
@@ -446,7 +606,6 @@
             const config = gameItemsDatabase[selectedGame];
             
             document.getElementById('labelWorth').textContent = config.fields.worth + ":";
-            
             document.getElementById('fieldWorth').style.display = config.fields.worth ? 'block' : 'none';
             document.getElementById('fieldKg').style.display = config.fields.kg ? 'block' : 'none';
             document.getElementById('fieldMutation').style.display = config.fields.mutation ? 'block' : 'none';
@@ -461,7 +620,6 @@
                 itemDropdown.appendChild(opt);
             });
 
-            // ADDED: Option for items not listed in choices database
             let customOpt = document.createElement('option');
             customOpt.value = "CUSTOM_ITEM_VAL";
             customOpt.textContent = "➕ Other / Custom Item (Type custom name below)";
@@ -470,7 +628,6 @@
             checkCustomItem();
         }
 
-        // ADDED: Monitors dropdown selection to show/hide missing custom item text field input
         function checkCustomItem() {
             const dropdown = document.getElementById('formItemName');
             const customItemField = document.getElementById('fieldCustomItem');
@@ -498,22 +655,22 @@
         function handleUpload(e) {
             e.preventDefault();
             if(!currentUser) {
-                alert("Verification failed. Session expired or missing.");
+                alert("Verification engine validation mismatch error code.");
                 return;
             }
 
             const game = document.getElementById('formGameType').value;
             let name = document.getElementById('formItemName').value;
             
-            // FIXED: If user chooses custom option, fallback to the text box input field data string
             if(name === "CUSTOM_ITEM_VAL") {
                 name = document.getElementById('formCustomItemName').value.trim();
                 if(!name) {
-                    alert("Please provide a valid custom item name.");
+                    alert("Please specify unlisted data metrics name.");
                     return;
                 }
             }
 
+            const stockCount = parseInt(document.getElementById('formStock').value) || 1;
             const imageStr = document.getElementById('imageDataUrl').value || "📦";
             const worth = document.getElementById('formWorth').value;
             const kg = document.getElementById('formKg').value;
@@ -523,19 +680,171 @@
             const newPost = {
                 id: Date.now(),
                 creator: currentUser, 
-                game, name, worth, kg, mutation, psLink,
-                image: imageStr
+                game, name, worth, kg, mutation, psLink, stock: stockCount,
+                image: imageStr,
+                likes: 0,
+                likedBy: [],
+                comments: []
             };
 
             trades.unshift(newPost);
-            localStorage.setItem('roblox_final_trades_v4', JSON.stringify(trades));
+            saveDataStore();
             document.getElementById('uploadForm').reset();
             document.getElementById('imageDataUrl').value = "";
             
             updateAuthUI();
-            alert("Success! Your trade listing was saved.");
+            alert("Success! Listing updated into local storage system feeds.");
             switchTab('view');
-            renderItems();
+        }
+
+        function toggleLike(itemId) {
+            if(!currentUser) {
+                alert("Login required to interact with listings.");
+                return;
+            }
+            const item = trades.find(t => t.id === itemId);
+            if(item) {
+                if(!item.likedBy) item.likedBy = [];
+                const index = item.likedBy.indexOf(currentUser);
+                if(index === -1) {
+                    item.likedBy.push(currentUser);
+                    item.likes = (item.likes || 0) + 1;
+                } else {
+                    item.likedBy.splice(index, 1);
+                    item.likes = Math.max(0, (item.likes || 1) - 1);
+                }
+                saveDataStore();
+                renderItems();
+            }
+        }
+
+        function submitComment(e, itemId) {
+            e.preventDefault();
+            if(!currentUser) {
+                alert("Login required to submit messages.");
+                return;
+            }
+            const input = document.getElementById(`commentInput-${itemId}`);
+            const text = input.value.trim();
+            if(!text) return;
+
+            const item = trades.find(t => t.id === itemId);
+            if(item) {
+                if(!item.comments) item.comments = [];
+                item.comments.push({
+                    user: currentUser,
+                    text: text,
+                    timestamp: new Date().toLocaleTimeString()
+                });
+                saveDataStore();
+                input.value = "";
+                renderItems();
+            }
+        }
+
+        function sendTradeRequest(itemId) {
+            if(!currentUser) {
+                alert("Log in to send trade offers.");
+                openModal('loginModal');
+                return;
+            }
+            const item = trades.find(t => t.id === itemId);
+            if(!item) return;
+
+            if(item.creator === currentUser) {
+                alert("You cannot trade with yourself.");
+                return;
+            }
+
+            const newOffer = {
+                id: Date.now(),
+                itemId: item.id,
+                itemName: item.name,
+                to: item.creator,
+                from: currentUser,
+                status: 'pending'
+            };
+
+            inbox.unshift(newOffer);
+            saveDataStore();
+            alert(`Trade offer sent directly to ${item.creator}'s inbox!`);
+            updateInboxBadge();
+        }
+
+        function processTradeOffer(offerId, action) {
+            const offer = inbox.find(i => i.id === offerId);
+            if(!offer) return;
+
+            if(action === 'accept') {
+                const item = trades.find(t => t.id === offer.itemId);
+                if(!item) {
+                    alert("Item no longer exists.");
+                    offer.status = 'expired';
+                } else if((item.stock || 0) <= 0) {
+                    alert("Transaction failed: This item has no stock available!");
+                    offer.status = 'out-of-stock';
+                } else {
+                    item.stock -= 1; 
+                    offer.status = 'accepted';
+                    saveDataStore();
+                    alert(`Trade Accepted! Stock updated successfully.`);
+                }
+            } else {
+                offer.status = 'declined';
+                saveDataStore();
+                alert("Trade request declined.");
+            }
+
+            renderInbox();
+            updateInboxBadge();
+        }
+
+        function updateInboxBadge() {
+            if(!currentUser) {
+                document.getElementById('inboxBadge').textContent = "";
+                return;
+            }
+            const pendingCount = inbox.filter(i => i.to === currentUser && i.status === 'pending').length;
+            document.getElementById('inboxBadge').textContent = pendingCount > 0 ? `(${pendingCount})` : "";
+        }
+
+        function renderInbox() {
+            const container = document.getElementById('inboxGrid');
+            container.innerHTML = "";
+            
+            const userOffers = inbox.filter(i => i.to === currentUser);
+
+            if(userOffers.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">Your messaging inbox is currently empty.</div>`;
+                return;
+            }
+
+            userOffers.forEach(offer => {
+                const card = document.createElement('div');
+                card.className = 'inbox-card';
+                
+                if(offer.status === 'pending') {
+                    card.innerHTML = `
+                        <div style="font-size: 16px; line-height: 1.5;">
+                            <strong>Incoming Trade Request for item:</strong> <span style="color: var(--accent-color); font-weight: bold;">${offer.itemName}</span><br>
+                            <span style="color: #ddd;">Do you want to accept the Trade with ${offer.from}? Chat this user so you can easily Trade Each other!</span>
+                        </div>
+                        <div class="inbox-actions">
+                            <button class="btn-accept" onclick="processTradeOffer(${offer.id}, 'accept')">Accept</button>
+                            <button class="btn-decline" onclick="processTradeOffer(${offer.id}, 'decline')">Decline</button>
+                        </div>
+                    `;
+                } else {
+                    let statusColor = offer.status === 'accepted' ? 'var(--accept-color)' : 'var(--decline-color)';
+                    card.innerHTML = `
+                        <div style="font-size: 14px; color: var(--text-muted);">
+                            Trade Request for <strong>${offer.itemName}</strong> from <strong>${offer.from}</strong> has been 
+                            <span style="color: ${statusColor}; font-weight: bold; text-transform: uppercase;">${offer.status}</span>.
+                        </div>
+                    `;
+                }
+                container.appendChild(card);
+            });
         }
 
         function renderItems() {
@@ -546,7 +855,7 @@
             const filtered = trades.filter(post => filterValue === 'All' || post.game === filterValue);
 
             if(filtered.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No active real user transactions available for this view. Get started by uploading a trade!</div>`;
+                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No active transactions found matching filters.</div>`;
                 return;
             }
 
@@ -558,16 +867,45 @@
                     ? `<img src="${item.image}" alt="item Image">` 
                     : `<span>${item.image}</span>`;
 
+                const itemLikes = item.likes || 0;
+                const commentsArray = item.comments || [];
+                const currentStock = item.stock !== undefined ? item.stock : 1;
+
+                let commentItemsHtml = commentsArray.map(c => `
+                    <div class="comment-item">
+                        <span style="color: var(--accent-color); font-weight:bold;">${c.user.split('@')[0]}:</span> ${c.text}
+                    </div>
+                `).join('');
+
                 card.innerHTML = `
-                    <div class="item-image-container">${imgRender}</div>
-                    <div class="item-details">
-                        <span class="item-game-badge">${item.game}</span>
-                        <div class="item-title">${item.name}</div>
-                        <div class="item-stat">Posted By Trader: <strong>${item.creator}</strong></div>
-                        ${item.worth ? `<div class="item-stat">Value Data: <strong>${item.worth}</strong></div>` : ''}
-                        ${item.kg ? `<div class="item-stat">Weight Metrics: <strong>${item.kg}</strong></div>` : ''}
-                        ${item.mutation ? `<div class="item-stat">Trait Mutation: <strong>${item.mutation}</strong></div>` : ''}
-                        ${item.psLink ? `<a href="${item.psLink}" target="_blank" class="ps-link">Join Private Server</a>` : ''}
+                    <div class="item-main-content">
+                        <div class="item-image-container">${imgRender}</div>
+                        <div class="item-details">
+                            <span class="item-game-badge">${item.game}</span>
+                            <div class="item-title">${item.name}</div>
+                            <div class="item-stat">Posted By Trader: ${getCreatorLabelHtml(item.creator)}</div>
+                            <div class="item-stat">Stock Remaining: <strong style="color: var(--accent-color);">${currentStock}</strong></div>
+                            ${item.worth ? `<div class="item-stat">Value Data: <strong>${item.worth}</strong></div>` : ''}
+                            ${item.kg ? `<div class="item-stat">Weight Metrics: <strong>${item.kg}</strong></div>` : ''}
+                            ${item.mutation ? `<div class="item-stat">Trait Mutation: <strong>${item.mutation}</strong></div>` : ''}
+                            ${item.psLink ? `<div style="margin-top: 5px;"><a href="${item.psLink}" target="_blank" class="ps-link">Join Private Server</a></div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-bar">
+                        <button class="interact-btn" onclick="toggleLike(${item.id})">👍 Like (${itemLikes})</button>
+                        ${currentUser && item.creator !== currentUser && currentStock > 0 ? `
+                            <button class="interact-btn trade-action-btn" onclick="sendTradeRequest(${item.id})">🤝 Send Trade Offer</button>
+                        ` : ''}
+                        ${currentStock <= 0 ? `<span style="color: var(--decline-color); font-weight: bold; margin-left: auto;">SOLD OUT</span>` : ''}
+                    </div>
+
+                    <div class="comments-section">
+                        <form onsubmit="submitComment(event, ${item.id})" class="comment-box">
+                            <input type="text" id="commentInput-${item.id}" placeholder="Type community comment text..." required>
+                            <button type="submit" class="interact-btn">Post</button>
+                        </form>
+                        <div class="comment-list">${commentItemsHtml || '<span style="color: var(--text-muted); font-size: 12px;">No comments posted yet.</span>'}</div>
                     </div>
                 `;
                 container.appendChild(card);
