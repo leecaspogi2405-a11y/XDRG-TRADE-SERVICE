@@ -183,6 +183,14 @@
         
         .hidden { display: none !important; }
     </style>
+
+    <!-- Global WebView Debugger Catcher -->
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert("🔴 MOBILE APK CRASH DETECTED:\n\nError: " + message + "\nLine: " + lineno + "\nSource: " + source);
+            return false;
+        };
+    </script>
 </head>
 <body>
 
@@ -307,11 +315,12 @@
         </div>
     </div>
 
+    <!-- Firebase Integration Engine -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Ang iyong verified Firebase Config Matrix
+        // *** KOPYAHIN AT TUGMAAN MULA SA FIREBASE REALTIME DATABASE FEEDS MO ***
         const firebaseConfig = {
             apiKey: "AIzaSyD8cWqDhvzq2qGMeiFICTcFLAXSlg1rne0",
             authDomain: "xdrg-trade-service.firebaseapp.com",
@@ -320,6 +329,7 @@
             messagingSenderId: "560761615319",
             appId: "1:560761615319:web:7bf9834c997298c2231192",
             measurementId: "G-80X5XBG17C",
+            // PAALALA: Kung gawa sa Singapore ang DB mo, dapat ang dulo nito ay .asia-southeast1.firebasedatabase.app/
             databaseURL: "https://xdrg-trade-service-default-rtdb.firebaseio.com/"
         };
 
@@ -342,7 +352,6 @@
         let currentUser = localStorage.getItem('roblox_user_email') || "";
         let editingListingId = null;
 
-        // Globalized Triggers for UI HTML onClick Attributes
         window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; }
         window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; }
 
@@ -428,12 +437,16 @@
                 greeting.innerHTML = `Session Account: ${getCreatorLabelHtml(currentUser)}`;
                 loginBtn.classList.add('hidden');
                 logoutBtn.classList.remove('hidden');
-                uploadIdentityInput.value = currentUser; 
+                if(uploadIdentityInput) {
+                    uploadIdentityInput.value = currentUser;
+                }
             } else {
                 greeting.textContent = "";
                 loginBtn.classList.remove('hidden');
                 logoutBtn.classList.add('hidden');
-                uploadIdentityInput.value = "";
+                if(uploadIdentityInput) {
+                    uploadIdentityInput.value = "";
+                }
             }
         }
 
@@ -462,6 +475,12 @@
             itemDropdown.appendChild(customOpt);
 
             checkCustomItem();
+            
+            // Paniguro para magkalaman ang identity field kapag nagpalit ng fields
+            const uploadIdentityInput = document.getElementById('formUserIdentity');
+            if(uploadIdentityInput && currentUser) {
+                uploadIdentityInput.value = currentUser;
+            }
         }
 
         function checkCustomItem() {
@@ -481,6 +500,12 @@
 
         document.getElementById('formImage').addEventListener('change', function(event) {
             const file = event.target.files[0];
+            if (file && file.size > 1048576) { 
+                alert("File too large! Please choose an image smaller than 1MB to prevent Firebase rejection.");
+                event.target.value = "";
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function(){
                 document.getElementById('imageDataUrl').value = reader.result;
@@ -490,8 +515,12 @@
 
         document.getElementById('uploadForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Checkpoint alert para malaman kung gumagana ang button press
+            alert("Checking Session Token...");
+
             if(!currentUser) {
-                alert("Verification engine validation mismatch error code.");
+                alert("Verification engine validation mismatch error code. Please login again.");
                 return;
             }
 
@@ -523,8 +552,9 @@
             const mutation = document.getElementById('formMutation').value;
             const psLink = document.getElementById('formPsLink').value;
 
+            alert("Sending transaction packet to Firebase cloud...");
+
             if (editingListingId) {
-                // UPDATE CURRENT LISTING METRICS TO FIREBASE
                 const updates = {};
                 updates[`/trades/${editingListingId}/game`] = game;
                 updates[`/trades/${editingListingId}/name`] = name;
@@ -539,9 +569,10 @@
                     alert("Success! Listing updated globally.");
                     editingListingId = null;
                     window.switchTab('view');
+                }).catch(err => {
+                    alert("CRITICAL FIREBASE ERROR (Edit): " + err.message);
                 });
             } else {
-                // PUSH NEW ENTRY INTO FIREBASE CLOUD FEEDS
                 const tradesRef = ref(db, 'trades');
                 const newPostRef = push(tradesRef);
                 const generatedId = newPostRef.key;
@@ -559,6 +590,8 @@
                     document.getElementById('uploadForm').reset();
                     document.getElementById('imageDataUrl').value = "";
                     window.switchTab('view');
+                }).catch(err => {
+                    alert("CRITICAL FIREBASE ERROR (Publish): " + err.message);
                 });
             }
         });
@@ -603,7 +636,7 @@
             if (!confirm("Are you completely sure you want to remove this transaction block globally?")) return;
             remove(ref(db, `trades/${itemId}`)).then(() => {
                 alert("Listing deleted successfully.");
-            });
+            }).catch(err => alert("Delete Error: " + err.message));
         }
 
         window.toggleLike = function(itemId) {
@@ -619,11 +652,11 @@
                 const index = likedBy.indexOf(currentUser);
                 if(index === -1) {
                     push(ref(db, `trades/${itemId}/likedBy`), currentUser);
-                    update(ref(db, `trades/${itemId}`), { likes: (item.likes || 0) + 1 });
+                    update(ref(db, `trades/${itemId}`), { likes: (item.likes || 0) + 1 }).catch(err => alert("Like Error: " + err.message));
                 } else {
                     const targetKey = likedKeys[index];
                     remove(ref(db, `trades/${itemId}/likedBy/${targetKey}`));
-                    update(ref(db, `trades/${itemId}`), { likes: Math.max(0, (item.likes || 1) - 1) });
+                    update(ref(db, `trades/${itemId}`), { likes: Math.max(0, (item.likes || 1) - 1) }).catch(err => alert("Unlike Error: " + err.message));
                 }
             }
         }
@@ -645,7 +678,7 @@
                 timestamp: new Date().toLocaleTimeString()
             }).then(() => {
                 input.value = "";
-            });
+            }).catch(err => alert("Comment Error: " + err.message));
         }
 
         window.sendTradeRequest = function(itemId) {
@@ -676,7 +709,7 @@
 
             set(newOfferRef, newOffer).then(() => {
                 alert(`Trade offer sent directly to ${item.creator}'s inbox!`);
-            });
+            }).catch(err => alert("Trade Request Error: " + err.message));
         }
 
         window.processTradeOffer = function(offerId, action) {
@@ -833,11 +866,9 @@
             });
         }
 
-        // FIREBASE LIVE REAL-TIME LISTENERS (Dito nangyayari ang tunay na sync)
         onValue(ref(db, 'trades'), (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                // Pinapantay ang format at sinisiguradong reverse chronological (bagong post nasa taas)
                 tradesArray = Object.keys(data).map(key => {
                     return { ...data[key], id: key };
                 }).reverse();
@@ -845,6 +876,8 @@
                 tradesArray = [];
             }
             renderItems();
+        }, (err) => {
+            alert("Firebase Sync Error (Trades): " + err.message);
         });
 
         onValue(ref(db, 'inbox'), (snapshot) => {
@@ -858,15 +891,15 @@
             }
             updateInboxBadge();
             renderInbox();
+        }, (err) => {
+            alert("Firebase Sync Error (Inbox): " + err.message);
         });
 
-        // Event Triggers for Dropdown and Search Inputs
         document.getElementById('gameFilter').addEventListener('change', renderItems);
         document.getElementById('userSearchBar').addEventListener('input', renderItems);
         document.getElementById('formGameType').addEventListener('change', updateFormFields);
         document.getElementById('formItemName').addEventListener('change', checkCustomItem);
 
-        // Lifecycle Inits
         updateAuthUI();
         updateFormFields();
         updateInboxBadge();
