@@ -334,7 +334,7 @@
         };
 
         const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
-        const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519274522593857596/1795331117.png?ex=6a3cf628&is=6a3ba4a8&hm=55c227a30e67a986f05f87eb82edfcc52e1a8946e95d6661c10dcefc99b5dfda&";
+        const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519654119353221210/1000030631.png?ex=6a3e57af&is=6a3d062f&hm=f5e27828d282be493d90fa81a93cca58b760a643b459d5b8f54fbf17a0536254&";
 
         let trades = [];
         let inbox = [];
@@ -561,12 +561,10 @@
                 timestamp: Date.now()
             };
 
-            // DITO YUNG FIX! Wala na yung mga nagpapa-crash na []
             if (editingListingId) {
                 const existingItem = trades.find(t => t.id === editingListingId);
                 targetPayload.likes = existingItem ? (existingItem.likes || 0) : 0;
                 
-                // Keep existing likedBy and comments if they exist, but avoid passing empty arrays
                 if (existingItem && existingItem.likedBy) targetPayload.likedBy = existingItem.likedBy;
                 if (existingItem && existingItem.comments) targetPayload.comments = existingItem.comments;
 
@@ -577,7 +575,6 @@
                     }).catch(err => alert("Sync Failed: " + err.message));
             } else {
                 targetPayload.likes = 0;
-                // HINDI NA TAYO MAG-A-ADD NG likedBy: [] AT comments: []
 
                 push(ref(db, 'trades'), targetPayload)
                     .then(() => {
@@ -650,7 +647,6 @@
                     likesCount = Math.max(0, likesCount - 1);
                 }
 
-                // DITO YUNG FIX PARA SA LIKE CRASH KAPAG NAGING EMPTY
                 update(ref(db, `trades/${itemId}`), {
                     likes: likesCount,
                     likedBy: likedByArray.length > 0 ? likedByArray : null
@@ -691,7 +687,7 @@
             const item = trades.find(t => t.id === itemId);
             if(!item) return;
 
-            if(item.creator === currentUser) {
+            if(item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim()) {
                 alert("You cannot trade with yourself.");
                 return;
             }
@@ -740,7 +736,7 @@
                 document.getElementById('inboxBadge').textContent = "";
                 return;
             }
-            const pendingCount = inbox.filter(i => i.to === currentUser && i.status === 'pending').length;
+            const pendingCount = inbox.filter(i => i.to && i.to.toLowerCase().trim() === currentUser.toLowerCase().trim() && i.status === 'pending').length;
             document.getElementById('inboxBadge').textContent = pendingCount > 0 ? `(${pendingCount})` : "";
         };
 
@@ -748,7 +744,7 @@
             const container = document.getElementById('inboxGrid');
             container.innerHTML = "";
             
-            const userOffers = inbox.filter(i => i.to === currentUser);
+            const userOffers = inbox.filter(i => i.to && i.to.toLowerCase().trim() === currentUser.toLowerCase().trim());
 
             if(userOffers.length === 0) {
                 container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">Your messaging inbox is currently empty.</div>`;
