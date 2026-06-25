@@ -146,24 +146,6 @@
             border-radius: 4px; box-sizing: border-box;
         }
 
-        .toggle-upload-btn {
-            background-color: #1c2331;
-            color: var(--accent-color);
-            border: 1px dashed var(--accent-color);
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        .toggle-upload-btn:hover {
-            background-color: var(--accent-color);
-            color: #000;
-        }
-
         .item-grid { display: flex; flex-direction: column; gap: 20px; }
         .item-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
         .item-main-content { display: flex; flex-direction: row; align-items: stretch; }
@@ -220,7 +202,8 @@
     <div class="container">
         <div class="controls-section">
             <div class="nav-tabs">
-                <button class="active" id="viewTab" onclick="window.switchTab('view')">View Listings Feed</button>
+                <button class="active" id="viewTab" onclick="window.switchTab('view')">View Listings</button>
+                <button id="uploadTab" onclick="window.switchTab('upload')">+ Upload Item</button>
                 <button id="inboxTab" onclick="window.switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
             </div>
 
@@ -238,79 +221,77 @@
         </div>
 
         <div id="feedSection">
-            <button class="toggle-upload-btn" id="toggleUploadBtn" onclick="window.toggleUploadPanel()">➕ Open Post Item Dropdown Form Panel</button>
-            
-            <div id="uploadSection" class="hidden" style="max-width: 100%; margin: 0 auto 30px auto; background: var(--panel-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color);">
-                <h2 id="uploadFormHeader" style="margin-top:0; color: var(--accent-color);">Post Trade Item</h2>
-                <form id="uploadForm" onsubmit="window.handleUpload(event)">
-                    
-                    <div class="form-group">
-                        <label>Game Type:</label>
-                        <select id="formGameType" onchange="window.updateFormFields()" required>
-                            <option value="Grow A Garden">Grow A Garden (GaG)</option>
-                            <option value="Grow A Garden 2">Grow A Garden 2 (GaG 2)</option>
-                            <option value="Steal A Brainrot">Steal A Brainrot (SAB)</option>
-                            <option value="Kick A Lucky Block">Kick A Lucky Block (KALB)</option>
-                            <option value="Blox Fruits">Blox Fruits (BF)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Select Item Name:</label>
-                        <select id="formItemName" onchange="window.checkCustomItem()" required></select>
-                    </div>
-
-                    <div class="form-group hidden" id="fieldCustomItem">
-                        <label style="color: var(--accent-color); font-weight: bold;">Type Custom Item Name:</label>
-                        <input type="text" id="formCustomItemName" placeholder="Enter the exact missing item name...">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Initial Product Inventory Stock Count:</label>
-                        <input type="number" id="formStock" value="1" min="1" placeholder="e.g. 10" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Upload Image Directly From Files (+):</label>
-                        <input type="file" id="formImage" accept="image/*" onchange="window.previewImage(event)">
-                        <input type="hidden" id="imageDataUrl">
-                    </div>
-
-                    <div class="form-group" id="fieldWorth">
-                        <label id="labelWorth">Value / Worth:</label>
-                        <input type="text" id="formWorth" placeholder="Enter target trade value/price expectations...">
-                    </div>
-
-                    <div class="form-group" id="fieldKg">
-                        <label>Weight (KG):</label>
-                        <input type="text" id="formKg" placeholder="e.g., 45 kg">
-                    </div>
-
-                    <div class="form-group" id="fieldMutation">
-                        <label>Mutation Variant / Trait Aura:</label>
-                        <input type="text" id="formMutation" placeholder="e.g., Glitched, Shiny, Shadow, Overlord">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Your Verified Profile Identity (Session Protected Email):</label>
-                        <input type="text" id="formUserIdentity" style="background-color: #1a1f26; color: var(--accent-color); font-weight: bold;" required readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Private Server Link (Optional):</label>
-                        <input type="url" id="formPsLink" placeholder="https://www.roblox.com/games/share?code=...">
-                    </div>
-
-                    <button type="submit" id="formSubmitBtn" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Post Item Details</button>
-                </form>
-            </div>
-
             <div class="item-grid" id="itemGrid"></div>
         </div>
 
         <div id="inboxSection" class="hidden">
             <h2 style="color: var(--accent-color); margin-top: 0;">Your Trade Offers & Messaging Inbox</h2>
             <div id="inboxGrid"></div>
+        </div>
+
+        <div id="uploadSection" class="hidden" style="max-width: 600px; margin: 0 auto; background: var(--panel-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <h2 id="uploadFormHeader" style="margin-top:0; color: var(--accent-color);">Post Trade Item</h2>
+            <form id="uploadForm" onsubmit="window.handleUpload(event)">
+                
+                <div class="form-group">
+                    <label>Game Type:</label>
+                    <select id="formGameType" onchange="window.updateFormFields()" required>
+                        <option value="Grow A Garden">Grow A Garden (GaG)</option>
+                        <option value="Grow A Garden 2">Grow A Garden 2 (GaG 2)</option>
+                        <option value="Steal A Brainrot">Steal A Brainrot (SAB)</option>
+                        <option value="Kick A Lucky Block">Kick A Lucky Block (KALB)</option>
+                        <option value="Blox Fruits">Blox Fruits (BF)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Item Name:</label>
+                    <select id="formItemName" onchange="window.checkCustomItem()" required></select>
+                </div>
+
+                <div class="form-group hidden" id="fieldCustomItem">
+                    <label style="color: var(--accent-color); font-weight: bold;">Type Custom Item Name:</label>
+                    <input type="text" id="formCustomItemName" placeholder="Enter the exact missing item name...">
+                </div>
+
+                <div class="form-group">
+                    <label>Initial Product Inventory Stock Count:</label>
+                    <input type="number" id="formStock" value="1" min="1" placeholder="e.g. 10" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Image Directly From Files (+):</label>
+                    <input type="file" id="formImage" accept="image/*" onchange="window.previewImage(event)">
+                    <input type="hidden" id="imageDataUrl">
+                </div>
+
+                <div class="form-group" id="fieldWorth">
+                    <label id="labelWorth">Value / Worth:</label>
+                    <input type="text" id="formWorth" placeholder="Enter target trade value/price expectations...">
+                </div>
+
+                <div class="form-group" id="fieldKg">
+                    <label>Weight (KG):</label>
+                    <input type="text" id="formKg" placeholder="e.g., 45 kg">
+                </div>
+
+                <div class="form-group" id="fieldMutation">
+                    <label>Mutation Variant / Trait Aura:</label>
+                    <input type="text" id="formMutation" placeholder="e.g., Glitched, Shiny, Shadow, Overlord">
+                </div>
+
+                <div class="form-group">
+                    <label>Your Verified Profile Identity (Session Protected Email):</label>
+                    <input type="text" id="formUserIdentity" style="background-color: #1a1f26; color: var(--accent-color); font-weight: bold;" required readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Private Server Link (Optional):</label>
+                    <input type="url" id="formPsLink" placeholder="https://www.roblox.com/games/share?code=...">
+                </div>
+
+                <button type="submit" id="formSubmitBtn" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Post Item Details</button>
+            </form>
         </div>
     </div>
 
@@ -363,30 +344,30 @@
         window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; };
         window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
-        window.toggleUploadPanel = function() {
-            if(!currentUser) {
-                alert("Please log in first before checking layout options!");
-                window.openModal('loginModal');
-                return;
-            }
-            const panel = document.getElementById('uploadSection');
-            const btn = document.getElementById('toggleUploadBtn');
-            if(panel.classList.contains('hidden')) {
-                panel.classList.remove('hidden');
-                btn.textContent = "➖ Close Post Item Dropdown Form Panel";
-            } else {
-                panel.classList.add('hidden');
-                btn.textContent = "➕ Open Post Item Dropdown Form Panel";
-            }
-        };
-
         window.switchTab = function(tab) {
+            document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('feedSection').classList.add('hidden');
             document.getElementById('inboxSection').classList.add('hidden');
+            
+            document.getElementById('uploadTab').classList.remove('active');
             document.getElementById('viewTab').classList.remove('active');
             document.getElementById('inboxTab').classList.remove('active');
 
-            if (tab === 'inbox') {
+            if(tab === 'upload') {
+                if(!currentUser) {
+                    alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
+                    window.openModal('loginModal');
+                    return;
+                }
+                editingListingId = null;
+                document.getElementById('uploadFormHeader').textContent = "Post Trade Item";
+                document.getElementById('formSubmitBtn').textContent = "Post Item Details";
+                document.getElementById('uploadForm').reset();
+                document.getElementById('imageDataUrl').value = "";
+                window.updateFormFields();
+                document.getElementById('uploadSection').classList.remove('hidden');
+                document.getElementById('uploadTab').classList.add('active');
+            } else if (tab === 'inbox') {
                 if(!currentUser) {
                     alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
                     window.openModal('loginModal');
@@ -410,7 +391,7 @@
                 updateAuthUI();
                 window.closeModal('loginModal');
                 window.updateInboxBadge();
-                window.renderItems();
+                window.switchTab('view');
             } else {
                 alert("Please provide a valid comprehensive email formatting layout address.");
             }
@@ -420,8 +401,6 @@
             localStorage.removeItem('roblox_user_email');
             currentUser = "";
             updateAuthUI();
-            document.getElementById('uploadSection').classList.add('hidden');
-            document.getElementById('toggleUploadBtn').textContent = "➕ Open Post Item Dropdown Form Panel";
             window.switchTab('view');
             window.updateInboxBadge();
             window.renderItems();
@@ -497,38 +476,13 @@
             }
         };
 
-        // Automatic Canvas Size Downscaler to protect Realtime Database limits
+        // Fix: Instantly record raw Base64 string into payload to completely skip mobile engine delay
         window.previewImage = function(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e){
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 200;
-                    const MAX_HEIGHT = 200;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    document.getElementById('imageDataUrl').value = canvas.toDataURL('image/jpeg', 0.7);
-                };
-                img.src = e.target.result;
+                document.getElementById('imageDataUrl').value = e.target.result;
             }
             reader.readAsDataURL(file);
         };
@@ -590,9 +544,9 @@
                 }
             }
 
-            const worth = document.getElementById('formWorth').value;
-            const kg = document.getElementById('formKg').value;
-            const mutation = document.getElementById('formMutation').value;
+            const worth = document.getElementById('formWorth').value.trim();
+            const kg = document.getElementById('formKg').value.trim();
+            const mutation = document.getElementById('formMutation').value.trim();
             const psLink = document.getElementById('formPsLink').value;
 
             const targetPayload = {
@@ -601,10 +555,10 @@
                 name: name,
                 stock: stockCount,
                 image: imageStr,
-                worth: worth,
-                kg: kg,
-                mutation: mutation,
-                psLink: psLink,
+                worth: worth || "None",
+                kg: kg || "N/A->Seed",
+                mutation: mutation || "N/A->Seed",
+                psLink: psLink || "",
                 timestamp: Date.now()
             };
 
@@ -616,7 +570,6 @@
 
                 update(ref(db, `trades/${editingListingId}`), targetPayload)
                     .then(() => {
-                        alert("Success! Listing metrics modified and synchronized.");
                         finalizeReset();
                     }).catch(err => alert("Sync Failed: " + err.message));
             } else {
@@ -626,7 +579,6 @@
 
                 push(ref(db, 'trades'), targetPayload)
                     .then(() => {
-                        alert("Success! Listing pushed cleanly to Firebase Database.");
                         finalizeReset();
                     }).catch(err => alert("Upload Failed: " + err.message));
             }
@@ -635,10 +587,6 @@
                 editingListingId = null;
                 document.getElementById('uploadForm').reset();
                 document.getElementById('imageDataUrl').value = "";
-                document.getElementById('uploadSection').classList.add('hidden');
-                document.getElementById('toggleUploadBtn').textContent = "➕ Open Post Item Dropdown Form Panel";
-                document.getElementById('uploadFormHeader').textContent = "Post Trade Item";
-                document.getElementById('formSubmitBtn').textContent = "Post Item Details";
                 window.switchTab('view');
             }
         };
@@ -648,10 +596,8 @@
             if (!item) return;
 
             editingListingId = itemId;
-            window.switchTab('view');
+            window.switchTab('upload');
             
-            document.getElementById('uploadSection').classList.remove('hidden');
-            document.getElementById('toggleUploadBtn').textContent = "➖ Close Post Item Dropdown Form Panel";
             document.getElementById('uploadFormHeader').textContent = "Modify Trade Item Metrics";
             document.getElementById('formSubmitBtn').textContent = "Save Changes & Apply Updates";
 
@@ -669,19 +615,16 @@
             }
 
             document.getElementById('formStock').value = item.stock;
-            document.getElementById('imageDataUrl').value = item.image.startsWith('data:') ? item.image : "";
-            document.getElementById('formWorth').value = item.worth || "";
-            document.getElementById('formKg').value = item.kg || "";
-            document.getElementById('formMutation').value = item.mutation || "";
+            document.getElementById('imageDataUrl').value = (item.image && item.image.startsWith('data:')) ? item.image : "";
+            document.getElementById('formWorth').value = item.worth === "None" ? "" : (item.worth || "");
+            document.getElementById('formKg').value = item.kg === "N/A->Seed" ? "" : (item.kg || "");
+            document.getElementById('formMutation').value = item.mutation === "N/A->Seed" ? "" : (item.mutation || "");
             document.getElementById('formPsLink').value = item.psLink || "";
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.deleteListing = function(itemId) {
             if (!confirm("Are you completely sure you want to remove this transaction block from Firebase logs permanently?")) return;
             remove(ref(db, `trades/${itemId}`))
-                .then(() => alert("Listing wiped out from the server database."))
                 .catch(err => alert("Error deleting: " + err.message));
         };
 
@@ -857,9 +800,9 @@
                 const card = document.createElement('div');
                 card.className = 'item-card';
 
-                let imgRender = item.image.startsWith('data:') 
+                let imgRender = (item.image && (item.image.startsWith('data:') || item.image.startsWith('http'))) 
                     ? `<img src="${item.image}" alt="item Image">` 
-                    : `<span>${item.image}</span>`;
+                    : `<span>${item.image || '📦'}</span>`;
 
                 const itemLikes = item.likes || 0;
                 const commentsArray = item.comments ? Object.values(item.comments) : [];
@@ -873,6 +816,7 @@
 
                 const isOwner = currentUser && item.creator && item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim();
 
+                // Fix: Added explicit strict default fallback placeholders to match image 1000030366.jpg
                 card.innerHTML = `
                     <div class="item-main-content">
                         <div class="item-image-container">${imgRender}</div>
@@ -881,9 +825,9 @@
                             <div class="item-title">${item.name}</div>
                             <div class="item-stat">Posted By Trader: ${getCreatorLabelHtml(item.creator)}</div>
                             <div class="item-stat">Stock Remaining: <strong style="color: var(--accent-color);">${currentStock}</strong></div>
-                            ${item.worth ? `<div class="item-stat">Value Data: <strong>${item.worth}</strong></div>` : ''}
-                            ${item.kg ? `<div class="item-stat">Weight Metrics: <strong>${item.kg}</strong></div>` : ''}
-                            ${item.mutation ? `<div class="item-stat">Trait Mutation: <strong>${item.mutation}</strong></div>` : ''}
+                            <div class="item-stat">Value Data: <strong>${item.worth || 'None'}</strong></div>
+                            <div class="item-stat">Weight Metrics: <strong>${item.kg || 'N/A->Seed'}</strong></div>
+                            <div class="item-stat">Trait Mutation: <strong>${item.mutation || 'N/A->Seed'}</strong></div>
                             ${item.psLink ? `<div style="margin-top: 5px;"><a href="${item.psLink}" target="_blank" class="ps-link">Join Private Server</a></div>` : ''}
                         </div>
                     </div>
