@@ -476,7 +476,6 @@
             }
         };
 
-        // Fix: Instantly record raw Base64 string into payload to completely skip mobile engine delay
         window.previewImage = function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -562,24 +561,28 @@
                 timestamp: Date.now()
             };
 
+            // DITO YUNG FIX! Wala na yung mga nagpapa-crash na []
             if (editingListingId) {
                 const existingItem = trades.find(t => t.id === editingListingId);
                 targetPayload.likes = existingItem ? (existingItem.likes || 0) : 0;
-                targetPayload.likedBy = existingItem ? (existingItem.likedBy || []) : [];
-                targetPayload.comments = existingItem ? (existingItem.comments || []) : [];
+                
+                // Keep existing likedBy and comments if they exist, but avoid passing empty arrays
+                if (existingItem && existingItem.likedBy) targetPayload.likedBy = existingItem.likedBy;
+                if (existingItem && existingItem.comments) targetPayload.comments = existingItem.comments;
 
                 update(ref(db, `trades/${editingListingId}`), targetPayload)
                     .then(() => {
                         finalizeReset();
+                        alert("Item Successfully Updated!");
                     }).catch(err => alert("Sync Failed: " + err.message));
             } else {
                 targetPayload.likes = 0;
-                targetPayload.likedBy = [];
-                targetPayload.comments = [];
+                // HINDI NA TAYO MAG-A-ADD NG likedBy: [] AT comments: []
 
                 push(ref(db, 'trades'), targetPayload)
                     .then(() => {
                         finalizeReset();
+                        alert("Item Successfully Uploaded to Firebase!");
                     }).catch(err => alert("Upload Failed: " + err.message));
             }
 
@@ -647,9 +650,10 @@
                     likesCount = Math.max(0, likesCount - 1);
                 }
 
+                // DITO YUNG FIX PARA SA LIKE CRASH KAPAG NAGING EMPTY
                 update(ref(db, `trades/${itemId}`), {
                     likes: likesCount,
-                    likedBy: likedByArray
+                    likedBy: likedByArray.length > 0 ? likedByArray : null
                 });
             }
         };
@@ -816,7 +820,6 @@
 
                 const isOwner = currentUser && item.creator && item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim();
 
-                // Fix: Added explicit strict default fallback placeholders to match image 1000030366.jpg
                 card.innerHTML = `
                     <div class="item-main-content">
                         <div class="item-image-container">${imgRender}</div>
