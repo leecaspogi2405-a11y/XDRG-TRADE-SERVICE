@@ -14,6 +14,7 @@
             --border-color: #242b35;
             --decline-color: #ff4a4a;
             --accept-color: #00cc7a;
+            --warning-color: #ffaa00;
         }
 
         body {
@@ -62,6 +63,7 @@
             cursor: pointer;
             border-radius: 4px;
             font-weight: bold;
+            transition: all 0.2s ease;
         }
 
         .nav-buttons button:hover {
@@ -85,13 +87,20 @@
             gap: 15px;
         }
 
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
         .nav-tabs button, .game-filter-select, .search-bar-input {
             background-color: var(--panel-bg);
             color: var(--text-color);
             border: 1px solid var(--border-color);
             padding: 10px 20px;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 15px;
+            transition: all 0.2s ease;
         }
 
         .nav-tabs button { cursor: pointer; }
@@ -111,10 +120,9 @@
 
         .search-bar-input {
             width: 250px;
-            padding: 10px;
         }
 
-        .search-bar-input:focus {
+        .search-bar-input:focus, .game-filter-select:focus {
             outline: none;
             border-color: var(--accent-color);
         }
@@ -140,16 +148,38 @@
 
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 6px; color: #bbb; font-size: 14px; }
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%; padding: 10px; background-color: #0f1115;
             border: 1px solid var(--border-color); color: var(--text-color);
             border-radius: 4px; box-sizing: border-box;
+            font-family: inherit;
+        }
+        .form-group textarea { resize: vertical; height: 100px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--accent-color);
+        }
+
+        .lockout-msg {
+            background-color: rgba(255, 74, 74, 0.15);
+            border: 1px solid var(--decline-color);
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
         }
 
         .item-grid { display: flex; flex-direction: column; gap: 20px; }
         .item-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
         .item-main-content { display: flex; flex-direction: row; align-items: stretch; }
         
+        @media(max-width: 768px) {
+            .item-main-content { flex-direction: column; }
+            .item-image-container { width: 100% !important; border-right: none !important; border-bottom: 1px solid var(--border-color); }
+        }
+
         .item-image-container {
             width: 160px; background-color: #0f1115; display: flex; justify-content: center;
             align-items: center; font-size: 50px; border-right: 1px solid var(--border-color); flex-shrink: 0;
@@ -174,7 +204,7 @@
         .comment-box { display: flex; gap: 10px; margin-bottom: 10px; }
         .comment-box input { flex-grow: 1; padding: 8px; background-color: #0f1115; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; }
         .comment-list { max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-        .comment-item { font-size: 13px; background: #161920; padding: 6px 10px; border-radius: 4px; border-left: 3px solid var(--accent-color); }
+        .comment-item { font-size: 13px; background: #161920; padding: 6px 10px; border-radius: 4px; border-left: 3px solid var(--accent-color); line-height: 1.4; }
         
         .inbox-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 15px; }
         .inbox-actions { margin-top: 15px; display: flex; gap: 10px; }
@@ -182,7 +212,24 @@
         .btn-decline { background-color: var(--decline-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .ps-link { display: inline-block; background-color: #0077ff; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: bold; width: fit-content; }
         
+        /* Settings Sublayout Panel Styles */
+        .settings-layout { display: grid; grid-template-columns: 250px 1fr; gap: 30px; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; min-height: 550px; }
+        @media(max-width: 768px) { .settings-layout { grid-template-columns: 1fr; } }
+        .settings-sidebar { background: #11141a; border-right: 1px solid var(--border-color); padding: 20px 10px; display: flex; flex-direction: column; gap: 8px; }
+        .settings-sidebar-btn { background: transparent; border: none; color: var(--text-muted); text-align: left; padding: 12px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s ease; }
+        .settings-sidebar-btn:hover, .settings-sidebar-btn.active { color: var(--accent-color); background: rgba(0, 255, 170, 0.05); }
+        .settings-pane { padding: 30px; display: none; }
+        .settings-pane.active { display: block; }
+        .settings-pane h3 { margin-top: 0; margin-bottom: 20px; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        
+        /* Tutorial Grid Elements */
+        .tutorial-step { margin-bottom: 25px; padding-left: 15px; border-left: 3px solid var(--accent-color); }
+        .tutorial-step h4 { margin: 0 0 8px 0; color: #fff; font-size: 16px; }
+        .tutorial-step p { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+
         .hidden { display: none !important; }
+        .toggle-switch { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 12px; }
+        .toggle-switch input { width: auto; margin: 0; }
     </style>
 </head>
 <body>
@@ -205,6 +252,7 @@
                 <button class="active" id="viewTab" onclick="window.switchTab('view')">View Listings</button>
                 <button id="uploadTab" onclick="window.switchTab('upload')">+ Upload Item</button>
                 <button id="inboxTab" onclick="window.switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
+                <button id="settingsTab" onclick="window.switchTab('settings')">⚙️ Account Settings & Help</button>
             </div>
 
             <div class="search-container">
@@ -293,24 +341,152 @@
                 <button type="submit" id="formSubmitBtn" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Post Item Details</button>
             </form>
         </div>
+
+        <div id="settingsSection" class="hidden">
+            <div class="settings-layout">
+                <div class="settings-sidebar">
+                    <button class="settings-sidebar-btn active" id="paneBtn-profile" onclick="window.switchSettingsPane('profile')">👤 Profile Info</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-security" onclick="window.switchSettingsPane('security')">🔒 Security Settings</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-notifications" onclick="window.switchSettingsPane('notifications')">🔔 Notifications</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-linked" onclick="window.switchSettingsPane('linked')">🔗 Linked Accounts</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-tutorial" onclick="window.switchSettingsPane('tutorial')">📖 Service Tutorial</button>
+                </div>
+                
+                <div class="settings-content">
+                    <div class="settings-pane active" id="pane-profile">
+                        <h3>Account Profile Information</h3>
+                        <form onsubmit="window.saveProfileSettings(event)">
+                            <div class="form-group">
+                                <label>Creator / Display Name:</label>
+                                <input type="text" id="settingsDisplayName" placeholder="Enter custom display nickname...">
+                            </div>
+                            <div class="form-group">
+                                <label>Backup Gmail Contact (Optional):</label>
+                                <input type="email" id="settingsBackupEmail" placeholder="backup@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Phone Line Number (Optional):</label>
+                                <input type="tel" id="settingsPhoneNumber" placeholder="+63 912 345 6789">
+                            </div>
+                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Update Profile Metadata</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-security">
+                        <h3>Security & Password Management</h3>
+                        <form onsubmit="window.updateUserPassword(event)">
+                            <div class="form-group">
+                                <label>Current Active Password Verification Line:</label>
+                                <input type="password" id="securityCurrentPassword" required placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password Assignment:</label>
+                                <input type="password" id="securityNewPassword" required placeholder="••••••••">
+                            </div>
+                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Renew Password Matrix</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-notifications">
+                        <h3>Notification Metric Sync Preferences</h3>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifyNewUploads" onchange="window.saveNotificationToggles()">
+                                <span>Alert me regarding newly uploaded structural store catalog entries</span>
+                            </label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifyLikesComments" onchange="window.saveNotificationToggles()">
+                                <span>Notify me whenever players evaluate likes or append community comments to my posts</span>
+                            </label>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-muted);">Settings save automatically upon parameter interaction toggles.</p>
+                    </div>
+
+                    <div class="settings-pane" id="pane-linked">
+                        <h3>Connected Cross-Platform Networks</h3>
+                        <form onsubmit="window.saveLinkedAccounts(event)">
+                            <div class="form-group">
+                                <label>Roblox Account Username Link:</label>
+                                <input type="text" id="linkRoblox" placeholder="e.g., RobloxDev_X">
+                            </div>
+                            <div class="form-group">
+                                <label>YouTube Video Channel Handle:</label>
+                                <input type="text" id="linkYoutube" placeholder="@YourChannelName">
+                            </div>
+                            <div class="form-group">
+                                <label>Facebook Identity URL:</label>
+                                <input type="url" id="linkFacebook" placeholder="https://facebook.com/profile.id...">
+                            </div>
+                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Link Accounts</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-bugs">
+                        <h3>System Integrity Error & Bug Transmission Logs</h3>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Encountered technical exceptions? Transmit metrics here. Bug data pipelines route cleanly into the database inbox allocated to devxdragon3@gmail.com.</p>
+                        <form onsubmit="window.submitPlatformBug(event)">
+                            <div class="form-group">
+                                <label>Describe the Bug / Technical Exception:</label>
+                                <textarea id="bugDescription" required placeholder="Provide clear steps to reproduce the layout error or transaction processing fault..."></textarea>
+                            </div>
+                            <button type="submit" style="background: var(--decline-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">File Bug Report Ticket</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-tutorial">
+                        <h3>Trading Service Interactive Guide</h3>
+                        
+                        <div class="tutorial-step">
+                            <h4>Step 1: Authenticate or Claim Profile Identity</h4>
+                            <p>Access the 'Sign Up / Log In' access portal in the navigation header. Input an email line along with a secure management pass phrase. If the tracking email does not yet exist on the network, the database automatically logs registration keys securely.</p>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <h4>Step 2: Post Catalog Inventory Listings</h4>
+                            <p>Select the '+ Upload Item' action link. Choose your game module (e.g., Grow A Garden, Kick A Lucky Block, Steal A Brainrot), fill out explicit weight criteria, mutation aura attributes, values data, and append private matching target server interaction URLs.</p>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <h4>Step 3: Negotiating Safe Virtual Transactions</h4>
+                            <p>Browse through listings to target items. Click 'Send Trade Offer' to dispatch transaction logs. The listing author instantly tracks incoming offers within their inbox dashboard, retaining options to Accept or Decline instantly.</p>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <h4>Step 4: Real-time Communication Integration</h4>
+                            <p>Utilize embedded item feedback comment blocks directly inside structural item listings to finalize configurations, trade variables, meeting coordinates, or cross-platform item updates securely.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Secure Email Access Portal</h3>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Please authenticate utilizing your secure account email format verification line to securely track correspondence logs and trade requests.</p>
-            <div class="form-group">
-                <label>Enter Registered Account Email:</label>
-                <input type="email" id="authEmail" placeholder="creator@example.com" required>
-            </div>
-            <button onclick="window.login()" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Verify & Register Identity</button>
+            <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Secure Access Portal</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Please authenticate utilizing your secure account email format verification line to track correspondence logs and trade requests.</p>
+            
+            <div id="loginLockoutContainer" class="hidden"></div>
+
+            <form id="modalLoginForm" onsubmit="window.login(event)">
+                <div class="form-group">
+                    <label>Account Registration Email:</label>
+                    <input type="email" id="authEmail" placeholder="creator@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Secure Authentication Password:</label>
+                    <input type="password" id="authPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" id="authSubmitButton" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Verify & Sync Profile Identity</button>
+            </form>
             <button onclick="window.closeModal('loginModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 5px;">Cancel</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue, update, remove, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD8cWqDhvzq2qGMeiFICTcFLAXSlg1rne0",
@@ -339,19 +515,34 @@
         let trades = [];
         let inbox = [];
         let currentUser = localStorage.getItem('roblox_user_email') || "";
+        let currentProfileMetadata = null;
         let editingListingId = null;
+        let activeLockoutIntervalId = null;
 
-        window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; };
+        // Sanitization helper ensuring structural node integrity inside Firebase paths
+        function escapeEmailPath(email) {
+            return email.toLowerCase().replace(/\./g, '_').replace(/@/g, '_at_');
+        }
+
+        window.openModal = function(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+            if(id === 'loginModal') {
+                clearInterval(activeLockoutIntervalId);
+                document.getElementById('loginLockoutContainer').className = 'hidden';
+            }
+        };
         window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
         window.switchTab = function(tab) {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('feedSection').classList.add('hidden');
             document.getElementById('inboxSection').classList.add('hidden');
+            document.getElementById('settingsSection').classList.add('hidden');
             
             document.getElementById('uploadTab').classList.remove('active');
             document.getElementById('viewTab').classList.remove('active');
             document.getElementById('inboxTab').classList.remove('active');
+            document.getElementById('settingsTab').classList.remove('active');
 
             if(tab === 'upload') {
                 if(!currentUser) {
@@ -376,6 +567,12 @@
                 document.getElementById('inboxSection').classList.remove('hidden');
                 document.getElementById('inboxTab').classList.add('active');
                 window.renderInbox();
+            } else if (tab === 'settings') {
+                document.getElementById('settingsSection').classList.remove('hidden');
+                document.getElementById('settingsTab').classList.add('active');
+                if(currentUser) {
+                    window.loadProfilePaneFields();
+                }
             } else {
                 document.getElementById('feedSection').classList.remove('hidden');
                 document.getElementById('viewTab').classList.add('active');
@@ -383,23 +580,125 @@
             }
         };
 
-        window.login = function() {
-            const emailInput = document.getElementById('authEmail').value.trim();
-            if(emailInput && emailInput.includes('@')) {
-                localStorage.setItem('roblox_user_email', emailInput);
-                currentUser = emailInput;
-                updateAuthUI();
-                window.closeModal('loginModal');
-                window.updateInboxBadge();
-                window.switchTab('view');
-            } else {
-                alert("Please provide a valid comprehensive email formatting layout address.");
-            }
+        window.switchSettingsPane = function(paneId) {
+            document.querySelectorAll('.settings-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.settings-sidebar-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`pane-${paneId}`).classList.add('active');
+            document.getElementById(`paneBtn-${paneId}`).classList.add('active');
         };
+
+        // Persistent Security Logic: Failed Attempts and Lockout Trackers
+        window.login = function(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('authEmail').value.trim();
+            const passwordInput = document.getElementById('authPassword').value;
+
+            if(!emailInput || !emailInput.includes('@')) {
+                alert("Please provide a valid comprehensive email layout address.");
+                return;
+            }
+
+            const cleanKey = escapeEmailPath(emailInput);
+            const now = Date.now();
+
+            // Evaluate persistent browser storage restrictions first
+            const localLockoutTime = parseInt(localStorage.getItem(`lockout_until_${cleanKey}`)) || 0;
+            if(now < localLockoutTime) {
+                enforceUIVisualLockout(localLockoutTime);
+                return;
+            }
+
+            const userRef = ref(db, `users/${cleanKey}`);
+            get(userRef).then((snapshot) => {
+                if(!snapshot.exists()) {
+                    // Registration Flow
+                    const registrationPayload = {
+                        email: emailInput,
+                        password: passwordInput,
+                        displayName: emailInput.split('@')[0],
+                        backupEmail: "",
+                        phoneNumber: "",
+                        notifyNewUploads: true,
+                        notifyLikesComments: true,
+                        linkRoblox: "",
+                        linkYoutube: "",
+                        linkFacebook: ""
+                    };
+                    update(userRef, registrationPayload).then(() => {
+                        localStorage.removeItem(`failed_attempts_${cleanKey}`);
+                        localStorage.removeItem(`lockout_until_${cleanKey}`);
+                        processSuccessfulAuthentication(emailInput);
+                    });
+                } else {
+                    // Existing Profile Verification Check
+                    const accountData = snapshot.val();
+                    if(accountData.password === passwordInput) {
+                        localStorage.removeItem(`failed_attempts_${cleanKey}`);
+                        localStorage.removeItem(`lockout_until_${cleanKey}`);
+                        processSuccessfulAuthentication(emailInput);
+                    } else {
+                        // Increment Brute Force Attack Count metrics
+                        let currentFailures = (parseInt(localStorage.getItem(`failed_attempts_${cleanKey}`)) || 0) + 1;
+                        localStorage.setItem(`failed_attempts_${cleanKey}`, currentFailures);
+
+                        let waitDurationMs = 0;
+                        if(currentFailures >= 10) {
+                            waitDurationMs = 24 * 60 * 60 * 1000; // 24-Hour Cooldown Limit Rule
+                            alert("Security Violation Block triggered: 10 failed identification signatures. This terminal is locked for 24 hours.");
+                        } else {
+                            waitDurationMs = 30 * 1000; // Standard 30-Second Retrial Lockout Check
+                            alert("Incorrect login password token verification match. Please check credentials and try again.");
+                        }
+
+                        const targetLockoutExpiration = Date.now() + waitDurationMs;
+                        localStorage.setItem(`lockout_until_${cleanKey}`, targetLockoutExpiration);
+                        enforceUIVisualLockout(targetLockoutExpiration);
+                    }
+                }
+            }).catch(err => alert("Identification Portal Network Failure: " + err.message));
+        };
+
+        function enforceUIVisualLockout(lockoutEpoch) {
+            const container = document.getElementById('loginLockoutContainer');
+            container.className = 'lockout-msg';
+            
+            clearInterval(activeLockoutIntervalId);
+            
+            function updateMessage() {
+                const totalSecondsLeft = Math.ceil((lockoutEpoch - Date.now()) / 1000);
+                if(totalSecondsLeft <= 0) {
+                    container.className = 'hidden';
+                    clearInterval(activeLockoutIntervalId);
+                } else {
+                    if (totalSecondsLeft > 3600) {
+                        const hours = Math.floor(totalSecondsLeft / 3600);
+                        const mins = Math.floor((totalSecondsLeft % 3600) / 60);
+                        container.textContent = `AUTHENTICATION LOCKED: Security system alert. Please retry in ${hours}h ${mins}m.`;
+                    } else {
+                        container.textContent = `AUTHENTICATION RETRY DELAY ACTIVE: Please wait ${totalSecondsLeft} seconds before verifying.`;
+                    }
+                }
+            }
+            updateMessage();
+            activeLockoutIntervalId = setInterval(updateMessage, 1000);
+        }
+
+        function processSuccessfulAuthentication(verifiedEmail) {
+            localStorage.setItem('roblox_user_email', verifiedEmail);
+            currentUser = verifiedEmail;
+            updateAuthUI();
+            window.closeModal('loginModal');
+            window.updateInboxBadge();
+            window.loadProfilePaneFields();
+            window.switchTab('view');
+            alert("Identification confirmed. Welcome back.");
+        }
 
         window.logout = function() {
             localStorage.removeItem('roblox_user_email');
             currentUser = "";
+            currentProfileMetadata = null;
             updateAuthUI();
             window.switchTab('view');
             window.updateInboxBadge();
@@ -409,10 +708,27 @@
         function getCreatorLabelHtml(email) {
             if(!email) return "Unknown Trader";
             const cleanEmail = email.toLowerCase().trim();
-            if(verifiedEmails.includes(cleanEmail)) {
-                return `<strong>${email}</strong> <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">`;
+            
+            let nameString = email;
+            if (currentProfileMetadata && currentUser && cleanEmail === currentUser.toLowerCase().trim() && currentProfileMetadata.displayName) {
+                nameString = currentProfileMetadata.displayName;
             }
-            return `<strong>${email}</strong>`;
+
+            if(verifiedEmails.includes(cleanEmail)) {
+                return `<strong>${nameString}</strong> <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">`;
+            }
+            return `<strong>${nameString}</strong>`;
+        }
+
+        function getCommentCreatorLabelHtml(email, fallbackName) {
+            if(!email) return "Trader";
+            const cleanEmail = email.toLowerCase().trim();
+            const cleanLabel = fallbackName || email.split('@')[0];
+            
+            if(verifiedEmails.includes(cleanEmail)) {
+                return `<span style="color: var(--accent-color); font-weight:bold;">${cleanLabel}</span> <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">`;
+            }
+            return `<span style="color: var(--accent-color); font-weight:bold;">${cleanLabel}</span>`;
         }
 
         function updateAuthUI() {
@@ -422,7 +738,7 @@
             const uploadIdentityInput = document.getElementById('formUserIdentity');
 
             if(currentUser) {
-                greeting.innerHTML = `Session Account: ${getCreatorLabelHtml(currentUser)}`;
+                greeting.innerHTML = `Session: ${getCreatorLabelHtml(currentUser)}`;
                 loginBtn.classList.add('hidden');
                 logoutBtn.classList.remove('hidden');
                 uploadIdentityInput.value = currentUser; 
@@ -433,6 +749,123 @@
                 uploadIdentityInput.value = "";
             }
         }
+
+        // Account Profile & Database Form Integration Logic
+        window.loadProfilePaneFields = function() {
+            if(!currentUser) return;
+            const cleanKey = escapeEmailPath(currentUser);
+            get(ref(db, `users/${cleanKey}`)).then((snapshot) => {
+                if(snapshot.exists()) {
+                    const data = snapshot.val();
+                    currentProfileMetadata = data;
+                    
+                    document.getElementById('settingsDisplayName').value = data.displayName || "";
+                    document.getElementById('settingsBackupEmail').value = data.backupEmail || "";
+                    document.getElementById('settingsPhoneNumber').value = data.phoneNumber || "";
+                    
+                    document.getElementById('notifyNewUploads').checked = data.notifyNewUploads !== false;
+                    document.getElementById('notifyLikesComments').checked = data.notifyLikesComments !== false;
+                    
+                    document.getElementById('linkRoblox').value = data.linkRoblox || "";
+                    document.getElementById('linkYoutube').value = data.linkYoutube || "";
+                    document.getElementById('linkFacebook').value = data.linkFacebook || "";
+                    
+                    updateAuthUI();
+                }
+            });
+        };
+
+        window.saveProfileSettings = function(e) {
+            e.preventDefault();
+            if(!currentUser) return;
+            const cleanKey = escapeEmailPath(currentUser);
+            
+            const pName = document.getElementById('settingsDisplayName').value.trim();
+            const pBackup = document.getElementById('settingsBackupEmail').value.trim();
+            const pPhone = document.getElementById('settingsPhoneNumber').value.trim();
+            
+            update(ref(db, `users/${cleanKey}`), {
+                displayName: pName,
+                backupEmail: pBackup,
+                phoneNumber: pPhone
+            }).then(() => {
+                alert("Account metadata fields synchronized safely.");
+                window.loadProfilePaneFields();
+            });
+        };
+
+        window.updateUserPassword = function(e) {
+            e.preventDefault();
+            if(!currentUser) return;
+            
+            const currentPassInput = document.getElementById('securityCurrentPassword').value;
+            const newPassInput = document.getElementById('securityNewPassword').value;
+            const cleanKey = escapeEmailPath(currentUser);
+            
+            const targetRef = ref(db, `users/${cleanKey}`);
+            get(targetRef).then((snapshot) => {
+                if(snapshot.exists() && snapshot.val().password === currentPassInput) {
+                    update(targetRef, { password: newPassInput }).then(() => {
+                        alert("Security credentials modified successfully.");
+                        document.getElementById('securityCurrentPassword').value = "";
+                        document.getElementById('securityNewPassword').value = "";
+                    });
+                } else {
+                    alert("Verification mismatch exception: Active structural validation password line is incorrect.");
+                }
+            });
+        };
+
+        window.saveNotificationToggles = function() {
+            if(!currentUser) return;
+            const cleanKey = escapeEmailPath(currentUser);
+            update(ref(db, `users/${cleanKey}`), {
+                notifyNewUploads: document.getElementById('notifyNewUploads').checked,
+                notifyLikesComments: document.getElementById('notifyLikesComments').checked
+            });
+        };
+
+        window.saveLinkedAccounts = function(e) {
+            e.preventDefault();
+            if(!currentUser) return;
+            const cleanKey = escapeEmailPath(currentUser);
+            
+            update(ref(db, `users/${cleanKey}`), {
+                linkRoblox: document.getElementById('linkRoblox').value.trim(),
+                linkYoutube: document.getElementById('linkYoutube').value.trim(),
+                linkFacebook: document.getElementById('linkFacebook').value.trim()
+            }).then(() => alert("Cross-platform networking profiles synchronized."));
+        };
+
+        window.submitPlatformBug = function(e) {
+            e.preventDefault();
+            const textDesc = document.getElementById('bugDescription').value.trim();
+            if(!textDesc) return;
+            
+            const activeReporter = currentUser || "Anonymous_Visitor";
+            
+            // Build a specialized alert notification block directly inside the target developer's inbox structure
+            const bugPayload = {
+                itemId: "BUG_TICKET",
+                itemName: "🚨 EMERGENCY PLATFORM BUG REPORT",
+                to: "devxdragon3@gmail.com",
+                from: activeReporter,
+                status: "pending",
+                timestamp: Date.now()
+            };
+            
+            push(ref(db, 'inbox'), bugPayload).then(() => {
+                // Duplicate into an isolated system error bucket for logs redundancy
+                push(ref(db, 'bug_reports'), {
+                    reportedBy: activeReporter,
+                    description: textDesc,
+                    timestamp: Date.now()
+                }).then(() => {
+                    alert("Technical exception ticket dispatched to devxdragon3@gmail.com's inbox records.");
+                    document.getElementById('bugDescription').value = "";
+                });
+            });
+        };
 
         window.updateFormFields = function() {
             const selectedGame = document.getElementById('formGameType').value;
@@ -488,25 +921,13 @@
 
         onValue(ref(db, 'trades'), (snapshot) => {
             const data = snapshot.val();
-            if (data) {
-                trades = Object.keys(data).map(key => {
-                    return { id: key, ...data[key] };
-                }).reverse();
-            } else {
-                trades = [];
-            }
+            trades = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
             window.renderItems();
         });
 
         onValue(ref(db, 'inbox'), (snapshot) => {
             const data = snapshot.val();
-            if (data) {
-                inbox = Object.keys(data).map(key => {
-                    return { id: key, ...data[key] };
-                }).reverse();
-            } else {
-                inbox = [];
-            }
+            inbox = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
             window.updateInboxBadge();
             if (!document.getElementById('inboxSection').classList.contains('hidden')) {
                 window.renderInbox();
@@ -564,7 +985,6 @@
             if (editingListingId) {
                 const existingItem = trades.find(t => t.id === editingListingId);
                 targetPayload.likes = existingItem ? (existingItem.likes || 0) : 0;
-                
                 if (existingItem && existingItem.likedBy) targetPayload.likedBy = existingItem.likedBy;
                 if (existingItem && existingItem.comments) targetPayload.comments = existingItem.comments;
 
@@ -575,7 +995,6 @@
                     }).catch(err => alert("Sync Failed: " + err.message));
             } else {
                 targetPayload.likes = 0;
-
                 push(ref(db, 'trades'), targetPayload)
                     .then(() => {
                         finalizeReset();
@@ -624,8 +1043,7 @@
 
         window.deleteListing = function(itemId) {
             if (!confirm("Are you completely sure you want to remove this transaction block from Firebase logs permanently?")) return;
-            remove(ref(db, `trades/${itemId}`))
-                .catch(err => alert("Error deleting: " + err.message));
+            remove(ref(db, `trades/${itemId}`)).catch(err => alert("Error deleting: " + err.message));
         };
 
         window.toggleLike = function(itemId) {
@@ -667,14 +1085,21 @@
             const item = trades.find(t => t.id === itemId);
             if(item) {
                 let commentsArray = item.comments ? Object.values(item.comments) : [];
+                
+                // Track display nickname variant if config keys align cleanly
+                let currentDisplayNameSeed = currentUser.split('@')[0];
+                if(currentProfileMetadata && currentProfileMetadata.displayName) {
+                    currentDisplayNameSeed = currentProfileMetadata.displayName;
+                }
+
                 commentsArray.push({
                     user: currentUser,
+                    userDisplayName: currentDisplayNameSeed,
                     text: text,
                     timestamp: new Date().toLocaleTimeString()
                 });
 
-                update(ref(db, `trades/${itemId}`), { comments: commentsArray })
-                    .then(() => { input.value = ""; });
+                update(ref(db, `trades/${itemId}`), { comments: commentsArray }).then(() => { input.value = ""; });
             }
         };
 
@@ -701,8 +1126,7 @@
                 timestamp: Date.now()
             };
 
-            push(ref(db, 'inbox'), newOffer)
-                .then(() => alert(`Trade offer sent directly to ${item.creator}'s inbox!`));
+            push(ref(db, 'inbox'), newOffer).then(() => alert(`Trade offer sent directly to ${item.creator}'s inbox!`));
         };
 
         window.processTradeOffer = function(offerId, action) {
@@ -710,6 +1134,12 @@
             if(!offer) return;
 
             if(action === 'accept') {
+                if(offer.itemId === "BUG_TICKET") {
+                    update(ref(db, `inbox/${offerId}`), { status: 'reviewed' });
+                    alert("Bug Ticket marked as reviewed inside technical data logs.");
+                    return;
+                }
+
                 const item = trades.find(t => t.id === offer.itemId);
                 if(!item) {
                     alert("Item no longer exists on the database network.");
@@ -719,15 +1149,14 @@
                     update(ref(db, `inbox/${offerId}`), { status: 'out-of-stock' });
                 } else {
                     const finalStock = item.stock - 1;
-                    update(ref(db, `trades/${offer.itemId}`), { stock: finalStock })
-                        .then(() => {
-                            update(ref(db, `inbox/${offerId}`), { status: 'accepted' });
-                            alert(`Trade Accepted! Stock updated successfully.`);
-                        });
+                    update(ref(db, `trades/${offer.itemId}`), { stock: finalStock }).then(() => {
+                        update(ref(db, `inbox/${offerId}`), { status: 'accepted' });
+                        alert(`Trade Accepted! Stock updated successfully.`);
+                    });
                 }
             } else {
-                update(ref(db, `inbox/${offerId}`), { status: 'declined' })
-                    .then(() => alert("Trade request declined."));
+                const targetStatus = offer.itemId === "BUG_TICKET" ? "dismissed" : "declined";
+                update(ref(db, `inbox/${offerId}`), { status: targetStatus }).then(() => alert("Request processed."));
             }
         };
 
@@ -756,21 +1185,34 @@
                 card.className = 'inbox-card';
                 
                 if(offer.status === 'pending') {
-                    card.innerHTML = `
-                        <div style="font-size: 16px; line-height: 1.5;">
-                            <strong>Incoming Trade Request for item:</strong> <span style="color: var(--accent-color); font-weight: bold;">${offer.itemName}</span><br>
-                            <span style="color: #ddd;">Do you want to accept the Trade with ${offer.from}? Chat this user so you can easily Trade Each other!</span>
-                        </div>
-                        <div class="inbox-actions">
-                            <button class="btn-accept" onclick="window.processTradeOffer('${offer.id}', 'accept')">Accept</button>
-                            <button class="btn-decline" onclick="window.processTradeOffer('${offer.id}', 'decline')">Decline</button>
-                        </div>
-                    `;
+                    if(offer.itemId === "BUG_TICKET") {
+                        card.innerHTML = `
+                            <div style="font-size: 16px; line-height: 1.5; border-left: 4px solid var(--decline-color); padding-left: 10px;">
+                                <strong style="color:var(--decline-color);">${offer.itemName}</strong><br>
+                                <span style="color: #ddd;">Dispatched by System Reporter: <strong>${offer.from}</strong></span>
+                            </div>
+                            <div class="inbox-actions">
+                                <button class="btn-accept" onclick="window.processTradeOffer('${offer.id}', 'accept')">Mark as Reviewed</button>
+                                <button class="btn-decline" onclick="window.processTradeOffer('${offer.id}', 'decline')">Dismiss Log</button>
+                            </div>
+                        `;
+                    } else {
+                        card.innerHTML = `
+                            <div style="font-size: 16px; line-height: 1.5;">
+                                <strong>Incoming Trade Request for item:</strong> <span style="color: var(--accent-color); font-weight: bold;">${offer.itemName}</span><br>
+                                <span style="color: #ddd;">Do you want to accept the Trade with ${offer.from}? Chat this user so you can easily Trade Each other!</span>
+                            </div>
+                            <div class="inbox-actions">
+                                <button class="btn-accept" onclick="window.processTradeOffer('${offer.id}', 'accept')">Accept</button>
+                                <button class="btn-decline" onclick="window.processTradeOffer('${offer.id}', 'decline')">Decline</button>
+                            </div>
+                        `;
+                    }
                 } else {
-                    let statusColor = offer.status === 'accepted' ? 'var(--accept-color)' : 'var(--decline-color)';
+                    let statusColor = (offer.status === 'accepted' || offer.status === 'reviewed') ? 'var(--accept-color)' : 'var(--decline-color)';
                     card.innerHTML = `
                         <div style="font-size: 14px; color: var(--text-muted);">
-                            Trade Request for <strong>${offer.itemName}</strong> from <strong>${offer.from}</strong> has been 
+                            Transaction metric for <strong>${offer.itemName}</strong> from <strong>${offer.from}</strong> marked as: 
                             <span style="color: ${statusColor}; font-weight: bold; text-transform: uppercase;">${offer.status}</span>.
                         </div>
                     `;
@@ -801,7 +1243,7 @@
                 card.className = 'item-card';
 
                 let imgRender = (item.image && (item.image.startsWith('data:') || item.image.startsWith('http'))) 
-                    ? `<img src="${item.image}" alt="item Image">` 
+                    ? `<img src="${item.image}" alt="Item Image">` 
                     : `<span>${item.image || '📦'}</span>`;
 
                 const itemLikes = item.likes || 0;
@@ -810,7 +1252,7 @@
 
                 let commentItemsHtml = commentsArray.map(c => `
                     <div class="comment-item">
-                        <span style="color: var(--accent-color); font-weight:bold;">${c.user ? c.user.split('@')[0] : 'Trader'}:</span> ${c.text}
+                        ${getCommentCreatorLabelHtml(c.user, c.userDisplayName)}: ${c.text}
                     </div>
                 `).join('');
 
@@ -860,8 +1302,12 @@
             });
         };
 
+        // Initialize Workspace Framework Components
         updateAuthUI();
         window.updateFormFields();
+        if(currentUser) {
+            window.loadProfilePaneFields();
+        }
     </script>
 </body>
 </html>
