@@ -32,6 +32,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .logo-container {
@@ -45,7 +47,7 @@
             height: 45px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--accent-color);
+            background-color: #242b35;
         }
 
         .logo {
@@ -55,12 +57,18 @@
             letter-spacing: 1px;
         }
 
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
         .nav-buttons button {
             background-color: transparent;
             color: var(--text-color);
             border: 1px solid var(--border-color);
             padding: 8px 16px;
-            margin-left: 10px;
             cursor: pointer;
             border-radius: 4px;
             font-weight: bold;
@@ -84,7 +92,6 @@
         }
 
         .update-banner a {
-            color: #fff;
             background: var(--accent-color);
             color: #000;
             padding: 5px 15px;
@@ -173,11 +180,6 @@
         .form-group textarea { resize: vertical; height: 100px; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-color); }
 
-        .lockout-msg {
-            background-color: rgba(255, 74, 74, 0.15); border: 1px solid var(--decline-color);
-            color: #ff6b6b; padding: 10px; border-radius: 4px; font-size: 13px; margin-bottom: 15px; text-align: center; font-weight: bold;
-        }
-
         .item-grid { display: flex; flex-direction: column; gap: 20px; }
         .item-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
         .item-main-content { display: flex; flex-direction: row; align-items: stretch; }
@@ -185,22 +187,24 @@
         @media(max-width: 768px) {
             .item-main-content { flex-direction: column; }
             .item-image-container { width: 100% !important; border-right: none !important; border-bottom: 1px solid var(--border-color); }
-            .chat-layout { flex-direction: column; }
-            .chat-sidebar { width: 100% !important; max-height: 200px; }
-            .chat-window { width: 100% !important; }
         }
 
-        .item-image-container { width: 160px; background-color: #0f1115; display: flex; justify-content: center; align-items: center; font-size: 50px; border-right: 1px solid var(--border-color); flex-shrink: 0; height: 160px; overflow: hidden; }
+        .item-image-container {
+            width: 160px; background-color: #0f1115; display: flex; justify-content: center;
+            align-items: center; font-size: 50px; border-right: 1px solid var(--border-color); flex-shrink: 0;
+            height: 160px; overflow: hidden;
+        }
         .item-image-container img { width: 100%; height: 100%; object-fit: cover; }
+        
         .item-details { padding: 20px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; justify-content: center; }
         .item-game-badge { background-color: #242b35; color: var(--accent-color); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; width: fit-content; }
         .item-title { font-size: 20px; font-weight: bold; margin: 4px 0; color: #fff; }
         .item-stat { font-size: 14px; color: var(--text-muted); }
         .item-stat strong { color: #fff; }
         
-        .verified-badge { width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; display: inline-block; }
+        .verified-badge { width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; display: inline-block; border-radius: 50%; }
         
-        .interaction-bar { background-color: #1a1f29; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; gap: 15px; align-items: center; flex-wrap: wrap;}
+        .interaction-bar { background-color: #1a1f29; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .interact-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
         .interact-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
         .trade-action-btn { background-color: var(--accent-color) !important; color: #000 !important; margin-left: auto; }
@@ -209,54 +213,61 @@
         .comment-box { display: flex; gap: 10px; margin-bottom: 10px; }
         .comment-box input { flex-grow: 1; padding: 8px; background-color: #0f1115; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; }
         .comment-list { max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-        .comment-item { font-size: 13px; background: #161920; padding: 6px 10px; border-radius: 4px; border-left: 3px solid var(--accent-color); line-height: 1.4; display: flex; justify-content: space-between; align-items: center; }
-        .reply-btn { background: none; border: none; color: var(--accent-color); font-size: 11px; cursor: pointer; text-decoration: underline; padding: 0; }
+        .comment-item { font-size: 13px; background: #161920; padding: 8px 12px; border-radius: 4px; border-left: 3px solid var(--accent-color); line-height: 1.4; position: relative;}
+        .reply-btn { font-size: 11px; color: var(--text-muted); cursor: pointer; float: right; margin-left: 10px; transition: color 0.2s; text-decoration: underline; }
+        .reply-btn:hover { color: var(--accent-color); }
         
         .inbox-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 15px; }
         .inbox-actions { margin-top: 15px; display: flex; gap: 10px; }
         .btn-accept { background-color: var(--accept-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-decline { background-color: var(--decline-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .ps-link { display: inline-block; background-color: #0077ff; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: bold; width: fit-content; }
         
-        /* Chat Layout Styles */
-        .chat-layout { display: flex; gap: 20px; height: 550px; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; }
-        .chat-sidebar { width: 30%; background: #12151c; border-right: 1px solid var(--border-color); border-radius: 8px; overflow-y: auto; display: flex; flex-direction: column; }
-        .chat-sidebar-user { padding: 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 10px; color: #fff; font-size: 14px; font-weight: bold; transition: background 0.2s; }
-        .chat-sidebar-user:hover { background: #1a1f29; color: var(--accent-color); }
-        .chat-window { width: 70%; display: flex; flex-direction: column; background: #0f1115; border-radius: 8px; border: 1px solid var(--border-color); }
-        .chat-header { padding: 15px; background: #1a1f26; border-bottom: 1px solid var(--border-color); font-weight: bold; color: var(--accent-color); border-radius: 8px 8px 0 0; }
-        .chat-messages { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .chat-msg { max-width: 75%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
-        .chat-msg.sent { align-self: flex-end; background: var(--accent-color); color: #000; border-bottom-right-radius: 4px; font-weight: bold; }
-        .chat-msg.received { align-self: flex-start; background: #242b35; color: #fff; border-bottom-left-radius: 4px; }
-        .chat-input-area { display: flex; padding: 15px; background: #1a1f26; border-top: 1px solid var(--border-color); border-radius: 0 0 8px 8px; gap: 10px; }
-        .chat-input-area input { flex-grow: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--border-color); background: #0f1115; color: #fff; outline: none; }
-        .chat-input-area input:focus { border-color: var(--accent-color); }
-        .chat-input-area button { background: var(--accent-color); color: #000; border: none; padding: 0 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-
-        /* Settings Sublayout Panel Styles */
-        .settings-layout { display: grid; grid-template-columns: 250px 1fr; gap: 30px; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; min-height: 550px; }
-        .settings-sidebar { background: #11141a; border-right: 1px solid var(--border-color); padding: 20px 10px; display: flex; flex-direction: column; gap: 8px; }
+        /* Fixed Settings Layout - Hindi na hati */
+        .settings-layout { display: flex; flex-direction: row; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; min-height: 550px; }
+        .settings-sidebar { width: 250px; background: #11141a; border-right: 1px solid var(--border-color); padding: 20px 10px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+        .settings-content { flex-grow: 1; width: 100%; box-sizing: border-box; }
+        @media(max-width: 768px) { 
+            .settings-layout { flex-direction: column; } 
+            .settings-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); flex-direction: row; overflow-x: auto; padding: 10px; }
+            .settings-sidebar-btn { white-space: nowrap; }
+        }
         .settings-sidebar-btn { background: transparent; border: none; color: var(--text-muted); text-align: left; padding: 12px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s ease; }
         .settings-sidebar-btn:hover, .settings-sidebar-btn.active { color: var(--accent-color); background: rgba(0, 255, 170, 0.05); }
         .settings-pane { padding: 30px; display: none; }
         .settings-pane.active { display: block; }
-        .settings-pane h3 { margin-top: 0; margin-bottom: 20px; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         
-        .tutorial-step { margin-bottom: 25px; padding-left: 15px; border-left: 3px solid var(--accent-color); }
-        .tutorial-step h4 { margin: 0 0 8px 0; color: #fff; font-size: 16px; }
-        .tutorial-step p { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+        /* Chat / Messenger UI Elements */
+        .chat-layout { display: flex; flex-direction: row; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; height: 600px; }
+        .chat-sidebar { width: 280px; background: #11141a; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; }
+        .chat-sidebar-header { padding: 15px; background: #0f1115; border-bottom: 1px solid var(--border-color); font-weight: bold; color: var(--accent-color); }
+        .chat-list { overflow-y: auto; flex-grow: 1; }
+        .chat-user-item { padding: 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.2s; }
+        .chat-user-item:hover, .chat-user-item.active { background: rgba(0, 255, 170, 0.1); border-left: 3px solid var(--accent-color); }
+        .chat-user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #242b35; }
+        .chat-user-info { display: flex; flex-direction: column; overflow: hidden; }
+        .chat-user-name { font-weight: bold; font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .chat-window { flex-grow: 1; display: flex; flex-direction: column; background: #0f1115; width: 100%; box-sizing: border-box; }
+        .chat-window-header { padding: 15px; background: #161920; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px; font-weight: bold; }
+        .chat-messages { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .chat-bubble { max-width: 70%; padding: 10px 15px; border-radius: 15px; font-size: 14px; word-break: break-word; line-height: 1.4; }
+        .chat-bubble.sent { background: var(--accent-color); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-bubble.received { background: #242b35; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-input-area { padding: 15px; background: #161920; border-top: 1px solid var(--border-color); display: flex; gap: 10px; }
+        .chat-input-area input { flex-grow: 1; padding: 12px; background: #0f1115; border: 1px solid var(--border-color); color: #fff; border-radius: 20px; outline: none; }
+        .chat-input-area button { padding: 10px 20px; background: var(--accent-color); color: #000; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .chat-input-area button:disabled { background: #242b35; color: #7f8c9d; cursor: not-allowed; }
+        @media(max-width: 768px) {
+            .chat-layout { flex-direction: column; }
+            .chat-sidebar { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
 
         .hidden { display: none !important; }
         .toggle-switch { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 12px; }
-        .toggle-switch input { width: auto; margin: 0; }
-
-        .profile-pic-preview { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); background-color: #0f1115; display: inline-block; vertical-align: middle; margin-right: 15px; }
-        .modal-profile-pic { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color); background-color: #0f1115; margin: 0 auto 15px auto; display: block; }
         .profile-data-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
         .profile-data-label { color: var(--text-muted); font-size: 14px; font-weight: bold; }
         .profile-data-value { color: #fff; font-size: 14px; text-align: right; word-break: break-all; }
-        
+        .modal-profile-pic { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color); margin: 0 auto 15px auto; display: block; }
         .admin-badge-ui { background: var(--warning-color); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; vertical-align: middle; }
     </style>
 </head>
@@ -266,8 +277,8 @@
 
     <header>
         <div class="logo-container">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23161920'/><circle cx='50' cy='50' r='40' fill='none' stroke='%2300ffaa' stroke-width='8'/><path d='M35 35l30 30m0-30L35 65' stroke='%2300ffaa' stroke-width='8' stroke-linecap='round'/></svg>" alt="Site Logo" class="site-logo">
-            <div class="logo">XDRG TRADING SERVICE</div>
+            <img src="https://cdn.discordapp.com/attachments/1501911631708422215/1519291570048860322/orca-image-1542816814.jpeg.jpg?ex=6a3d0609&is=6a3bb489&hm=2e089cbe47c460fa52c8c9c1d9ce5504ffbc549325956153b8d5698da440c15a&" alt="Site Logo" class="site-logo" referrerpolicy="no-referrer" onerror="this.src='https://via.placeholder.com/45/242b35/00ffaa?text=X'">
+            <div class="logo">XDRG TRADING SERVICE.ROBLOX</div>
         </div>
         <div class="nav-buttons" id="authButtons">
             <span id="userGreeting" style="margin-right: 15px; color: var(--accent-color); font-weight: bold;"></span>
@@ -282,7 +293,7 @@
                 <button class="active" id="viewTab" onclick="window.switchTab('view')">View Listings</button>
                 <button id="uploadTab" onclick="window.switchTab('upload')">+ Upload Item</button>
                 <button id="inboxTab" onclick="window.switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
-                <button id="messagesTab" onclick="window.switchTab('messages')">💬 Messages <span id="messagesBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
+                <button id="chatTab" onclick="window.switchTab('chat')">💬 Messages <span id="chatBadge" style="color:var(--warning-color); font-weight:bold;"></span></button>
                 <button id="settingsTab" onclick="window.switchTab('settings')">⚙️ Account Settings</button>
             </div>
 
@@ -304,22 +315,26 @@
         </div>
 
         <div id="inboxSection" class="hidden">
-            <h2 style="color: var(--accent-color); margin-top: 0;">Your Trade Offers & Notifications</h2>
+            <h2 style="color: var(--accent-color); margin-top: 0;">Trade Offers & Notifications Inbox</h2>
             <div id="inboxGrid"></div>
         </div>
 
-        <div id="messagesSection" class="hidden">
-            <h2 style="color: var(--accent-color); margin-top: 0;">Direct Messaging Portal</h2>
+        <div id="chatSection" class="hidden">
             <div class="chat-layout">
-                <div class="chat-sidebar" id="chatSidebar">
-                    <div style="padding:20px; color:var(--text-muted); font-size:14px; text-align:center;">Loading chats...</div>
+                <div class="chat-sidebar">
+                    <div class="chat-sidebar-header">Recent Messages</div>
+                    <div class="chat-list" id="chatSidebarList">
+                        <div style="padding:20px; text-align:center; color:var(--text-muted); font-size:13px;">No recent chats. Click a user's profile to message them.</div>
+                    </div>
                 </div>
-                <div class="chat-window hidden" id="chatWindow">
-                    <div class="chat-header" id="chatHeader">Select a chat to start messaging</div>
-                    <div class="chat-messages" id="chatMessages"></div>
-                    <form onsubmit="window.sendChatMessage(event)" class="chat-input-area">
-                        <input type="text" id="chatInput" placeholder="Type your message here..." required>
-                        <button type="submit">Send</button>
+                <div class="chat-window">
+                    <div class="chat-window-header" id="chatActiveHeader">
+                        Select a user from the sidebar to start chatting.
+                    </div>
+                    <div class="chat-messages" id="chatMessageContainer"></div>
+                    <form class="chat-input-area" id="chatForm" onsubmit="window.sendChatMessage(event)">
+                        <input type="text" id="chatInputField" placeholder="Type a message..." disabled required>
+                        <button type="submit" id="chatSendBtn" disabled>Send</button>
                     </form>
                 </div>
             </div>
@@ -338,53 +353,43 @@
                         <option value="Blox Fruits">Blox Fruits (BF)</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label>Select Item Name:</label>
                     <select id="formItemName" onchange="window.checkCustomItem()" required></select>
                 </div>
-
                 <div class="form-group hidden" id="fieldCustomItem">
                     <label style="color: var(--accent-color); font-weight: bold;">Type Custom Item Name:</label>
                     <input type="text" id="formCustomItemName" placeholder="Enter the exact missing item name...">
                 </div>
-
                 <div class="form-group">
                     <label>Initial Product Inventory Stock Count:</label>
                     <input type="number" id="formStock" value="1" min="1" placeholder="e.g. 10" required>
                 </div>
-
                 <div class="form-group">
                     <label>Upload Image Directly From Files (+):</label>
                     <input type="file" id="formImage" accept="image/*" onchange="window.previewImage(event)">
                     <input type="hidden" id="imageDataUrl">
                 </div>
-
                 <div class="form-group" id="fieldWorth">
                     <label id="labelWorth">Value / Worth:</label>
                     <input type="text" id="formWorth" placeholder="Enter target trade value/price expectations...">
                 </div>
-
                 <div class="form-group" id="fieldKg">
                     <label>Weight (KG):</label>
                     <input type="text" id="formKg" placeholder="e.g., 45 kg">
                 </div>
-
                 <div class="form-group" id="fieldMutation">
                     <label>Mutation Variant / Trait Aura:</label>
                     <input type="text" id="formMutation" placeholder="e.g., Glitched, Shiny, Shadow, Overlord">
                 </div>
-
                 <div class="form-group">
                     <label>Your Verified Profile Identity:</label>
                     <input type="text" id="formUserIdentity" style="background-color: #1a1f26; color: var(--accent-color); font-weight: bold;" required readonly>
                 </div>
-
                 <div class="form-group">
                     <label>Private Server Link (Optional):</label>
                     <input type="url" id="formPsLink" placeholder="https://www.roblox.com/games/share?code=...">
                 </div>
-
                 <button type="submit" id="formSubmitBtn" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Post Item Details</button>
             </form>
         </div>
@@ -395,12 +400,9 @@
                     <button class="settings-sidebar-btn active" id="paneBtn-profile" onclick="window.switchSettingsPane('profile')">👤 Profile Info</button>
                     <button class="settings-sidebar-btn" id="paneBtn-privacy" onclick="window.switchSettingsPane('privacy')">🕵️ Privacy</button>
                     <button class="settings-sidebar-btn" id="paneBtn-security" onclick="window.switchSettingsPane('security')">🔒 Security Settings</button>
-                    <button class="settings-sidebar-btn" id="paneBtn-notifications" onclick="window.switchSettingsPane('notifications')">🔔 Notifications</button>
                     <button class="settings-sidebar-btn" id="paneBtn-linked" onclick="window.switchSettingsPane('linked')">🔗 Linked Accounts</button>
-                    <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
-                    
-                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verify Account (Admin)</button>
-                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 App Update (Admin)</button>
+                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verification (Admin)</button>
+                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 Update App (Admin)</button>
                 </div>
                 
                 <div class="settings-content">
@@ -410,7 +412,7 @@
                             <div class="form-group">
                                 <label>Profile Picture:</label>
                                 <div>
-                                    <img id="settingsProfilePicPreview" src="https://via.placeholder.com/60" class="profile-pic-preview">
+                                    <img id="settingsProfilePicPreview" src="https://via.placeholder.com/60" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); display: inline-block; vertical-align: middle; margin-right: 15px;">
                                     <input type="file" id="settingsProfilePicInput" accept="image/*" onchange="window.previewProfilePic(event)" style="width: auto; display: inline-block;">
                                     <input type="hidden" id="settingsProfilePicDataUrl">
                                 </div>
@@ -419,15 +421,7 @@
                                 <label>Creator / Display Name:</label>
                                 <input type="text" id="settingsDisplayName" placeholder="Enter custom display nickname...">
                             </div>
-                            <div class="form-group">
-                                <label>Backup Gmail Contact (Optional):</label>
-                                <input type="email" id="settingsBackupEmail" placeholder="backup@example.com">
-                            </div>
-                            <div class="form-group">
-                                <label>Mobile Phone Line Number (Optional):</label>
-                                <input type="tel" id="settingsPhoneNumber" placeholder="+63 912 345 6789">
-                            </div>
-                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Update Profile Metadata</button>
+                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Update Profile</button>
                         </form>
                     </div>
 
@@ -435,112 +429,48 @@
                         <h3>Profile Privacy Settings</h3>
                         <form onsubmit="window.savePrivacySettings(event)">
                             <div class="form-group">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="privacyHideEmail">
-                                    <span>Hide my Email Address from public profile</span>
-                                </label>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="privacyHidePhone">
-                                    <span>Hide my Phone Number from public profile</span>
-                                </label>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="privacyHideSocials">
-                                    <span>Hide my Linked Accounts from public profile</span>
-                                </label>
+                                <label class="toggle-switch"><input type="checkbox" id="privacyHideEmail"><span>Hide Email from profile</span></label>
+                                <label class="toggle-switch"><input type="checkbox" id="privacyHideSocials"><span>Hide Linked Accounts</span></label>
                             </div>
-                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Save Privacy Preferences</button>
+                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Save Privacy</button>
                         </form>
                     </div>
 
                     <div class="settings-pane" id="pane-security">
-                        <h3>Security & Password Management</h3>
+                        <h3>Security & Password</h3>
                         <form onsubmit="window.updateUserPassword(event)">
-                            <div class="form-group">
-                                <label>Current Active Password Verification Line:</label>
-                                <input type="password" id="securityCurrentPassword" required placeholder="••••••••">
-                            </div>
-                            <div class="form-group">
-                                <label>New Password Assignment:</label>
-                                <input type="password" id="securityNewPassword" required placeholder="••••••••">
-                            </div>
-                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Renew Password Matrix</button>
+                            <div class="form-group"><label>Current Password:</label><input type="password" id="securityCurrentPassword" required></div>
+                            <div class="form-group"><label>New Password:</label><input type="password" id="securityNewPassword" required></div>
+                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Update Password</button>
                         </form>
                     </div>
 
-                    <div class="settings-pane" id="pane-notifications">
-                        <h3>Notification Metric Sync Preferences</h3>
-                        <div class="form-group">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="notifyNewUploads" onchange="window.saveNotificationToggles()">
-                                <span>Alert me regarding newly uploaded items</span>
-                            </label>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="notifyLikesComments" onchange="window.saveNotificationToggles()">
-                                <span>Notify me whenever players evaluate likes or comment</span>
-                            </label>
-                        </div>
-                    </div>
-
                     <div class="settings-pane" id="pane-linked">
-                        <h3>Connected Cross-Platform Networks</h3>
+                        <h3>Linked Accounts</h3>
                         <form onsubmit="window.saveLinkedAccounts(event)">
-                            <div class="form-group">
-                                <label>Roblox Account Username Link:</label>
-                                <input type="text" id="linkRoblox" placeholder="e.g., RobloxDev_X">
-                            </div>
-                            <div class="form-group">
-                                <label>YouTube Video Channel Handle:</label>
-                                <input type="text" id="linkYoutube" placeholder="@YourChannelName">
-                            </div>
-                            <div class="form-group">
-                                <label>Facebook Identity URL:</label>
-                                <input type="url" id="linkFacebook" placeholder="https://facebook.com/profile.id...">
-                            </div>
+                            <div class="form-group"><label>Roblox Username:</label><input type="text" id="linkRoblox"></div>
+                            <div class="form-group"><label>YouTube Handle:</label><input type="text" id="linkYoutube"></div>
                             <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Link Accounts</button>
                         </form>
                     </div>
 
-                    <div class="settings-pane" id="pane-bugs">
-                        <h3>System Integrity Error & Bug Transmission Logs</h3>
-                        <form onsubmit="window.submitPlatformBug(event)">
-                            <div class="form-group">
-                                <label>Describe the Bug / Technical Exception:</label>
-                                <textarea id="bugDescription" required placeholder="Provide clear steps to reproduce the layout error..."></textarea>
-                            </div>
-                            <button type="submit" style="background: var(--decline-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">File Bug Report Ticket</button>
-                        </form>
-                    </div>
-
                     <div class="settings-pane" id="pane-admin-verify">
-                        <h3>Admin: Add Verification Accounts</h3>
+                        <h3>Admin: Verify Accounts</h3>
                         <form onsubmit="window.adminAddVerified(event)">
-                            <div class="form-group">
-                                <label>User Gmail Address to Verify:</label>
-                                <input type="email" id="adminVerifyEmailInput" required placeholder="user@gmail.com">
-                            </div>
-                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Grant Verified Status</button>
+                            <div class="form-group"><label>Email Address:</label><input type="email" id="adminVerifyEmailInput" required></div>
+                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Grant Verified</button>
                         </form>
                     </div>
 
                     <div class="settings-pane" id="pane-admin-update">
-                        <h3>Admin: Schedule App Update Link</h3>
+                        <h3>Admin: App Update</h3>
                         <form onsubmit="window.adminSetAppUpdate(event)">
-                            <div class="form-group">
-                                <label>Target Update Date & Time:</label>
-                                <input type="datetime-local" id="adminUpdateDateTime" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Update Text / Title:</label>
-                                <input type="text" id="adminUpdateText" required value="Update: 1.0.3">
-                            </div>
-                            <div class="form-group">
-                                <label>APK Download Link:</label>
-                                <input type="url" id="adminUpdateLink" required value="https://www.mediafire.com/file/.../file">
-                            </div>
-                            <button type="submit" style="background: var(--accept-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Set App Update Broadcast</button>
+                            <div class="form-group"><label>Update Time:</label><input type="datetime-local" id="adminUpdateDateTime" required></div>
+                            <div class="form-group"><label>Update Text:</label><input type="text" id="adminUpdateText" required></div>
+                            <div class="form-group"><label>Download Link:</label><input type="url" id="adminUpdateLink" required></div>
+                            <button type="submit" style="background: var(--accept-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Broadcast Update</button>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -549,54 +479,35 @@
     <div id="userProfileModal" class="modal">
         <div class="modal-content">
             <h3 style="margin-top:0; color:var(--accent-color); text-align: center; font-size: 20px;">Trader Profile</h3>
-            
             <img id="modalProfilePic" src="https://via.placeholder.com/80" class="modal-profile-pic">
             <h4 id="modalProfileName" style="text-align: center; margin: 5px 0 20px 0; color: #fff;">Unknown User</h4>
-            
-            <button id="modalMessageBtn" class="hidden" style="background:var(--accent-color); color:#000; padding:10px; width:100%; border:none; border-radius:4px; cursor:pointer; font-weight:bold; margin-bottom:15px;">💬 Send Direct Message</button>
 
             <div class="profile-data-row">
-                <span class="profile-data-label">Email Address</span>
+                <span class="profile-data-label">Email</span>
                 <span class="profile-data-value" id="modalProfileEmail">Hidden</span>
             </div>
             <div class="profile-data-row">
-                <span class="profile-data-label">Phone Number</span>
-                <span class="profile-data-value" id="modalProfilePhone">Hidden</span>
-            </div>
-            <div class="profile-data-row">
-                <span class="profile-data-label">Roblox Account</span>
+                <span class="profile-data-label">Roblox</span>
                 <span class="profile-data-value" id="modalProfileRoblox">Hidden</span>
             </div>
-            <div class="profile-data-row">
+            <div class="profile-data-row" style="border-bottom: none;">
                 <span class="profile-data-label">YouTube</span>
                 <span class="profile-data-value" id="modalProfileYoutube">Hidden</span>
             </div>
-            <div class="profile-data-row" style="border-bottom: none;">
-                <span class="profile-data-label">Facebook</span>
-                <span class="profile-data-value" id="modalProfileFacebook">Hidden</span>
-            </div>
 
-            <button onclick="window.closeModal('userProfileModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 15px;">Close Profile</button>
+            <button id="modalMessageBtn" class="hidden" style="background: var(--accent-color); color: #000; font-weight: bold; padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 15px; border-radius: 4px;">💬 Send Direct Message</button>
+            <button onclick="window.closeModal('userProfileModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: 1px solid var(--border-color); cursor: pointer; margin-top: 10px; border-radius: 4px;">Close Profile</button>
         </div>
     </div>
 
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Secure Access Portal</h3>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Please authenticate utilizing your secure account email to track correspondence logs and trade requests.</p>
-            
-            <div id="loginLockoutContainer" class="hidden"></div>
-
+            <h3 style="margin-top:0; color:var(--accent-color); font-size: 20px;">Secure Access Portal</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Log in to access messages, inbox, and trading capabilities.</p>
             <form id="modalLoginForm" onsubmit="window.login(event)">
-                <div class="form-group">
-                    <label>Account Registration Email:</label>
-                    <input type="email" id="authEmail" placeholder="creator@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Secure Authentication Password:</label>
-                    <input type="password" id="authPassword" placeholder="••••••••" required>
-                </div>
-                <button type="submit" id="authSubmitButton" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Verify & Sync Profile Identity</button>
+                <div class="form-group"><label>Email:</label><input type="email" id="authEmail" required></div>
+                <div class="form-group"><label>Password:</label><input type="password" id="authPassword" required></div>
+                <button type="submit" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Login / Sign Up</button>
             </form>
             <button onclick="window.closeModal('loginModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 5px;">Cancel</button>
         </div>
@@ -604,7 +515,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, update, remove, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD8cWqDhvzq2qGMeiFICTcFLAXSlg1rne0",
@@ -620,91 +531,51 @@
         const db = getDatabase(app);
 
         const ADMIN_EMAIL = "devxdragon3@gmail.com";
+        const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519654119353221210/1000030631.png?ex=6a3e57af&is=6a3d062f&hm=f5e27828d282be493d90fa81a93cca58b760a643b459d5b8f54fbf17a0536254&";
 
         const gameItemsDatabase = {
-            "Grow A Garden": { items: ["Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"], fields: { worth: "Coin Value", kg: true, mutation: true } },
-            "Grow A Garden 2": { items: ["Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Venus Fly Trap Seed", "Venom Spitter Seed", "Poison Apple Seed", "Magic Mushroom Seed", "Golden Leaf Seed", "Bamboo Seed", "Poison Ivy Seed", "Pomegranate Seed", "Sunflower Seed", "Glow Mushroom Seed", "Horned Melon Seed", "Dragon Fruit Seed", "Carrot Seed", "Strawberry Seed", "Blueberry Seed", "Tomato Seed", "Green Bean Seed", "Corn Seed", "Banana Seed", "Grape Seed", "Mango Seed", "Tulip Seed", "Baby Cactus Seed", "Cactus Seed"], fields: { worth: "Night Essence Crystals", kg: true, mutation: true } },
-            "Steal A Brainrot": { items: ["Garama", "Madundung", "La Taco Combinasion", "Hydra Dragon Cannelloni", "Burguro", "Fryuro", "Lavadorito Spinito", "Ketupat Kepat", "Strawberry Elephant", "Cooki and Milki", "Esok Sekolah", "Spinny Hammy GALAXY", "Ketchuru", "Musturu", "Los Candies", "Cerberus", "La Secret Combinasion", "Mieteteira Bicicleteira", "List List List Sahur", "Chicleteria Noelteira", "Los Nooo My Hotspitsitos", "Skibidi Toilet Box", "Grimace Shake Formula", "Sigma Core Alpha", "GigaChad Slab"], fields: { worth: "Passive M/s Valuation", kg: false, mutation: true } },
-            "Kick A Lucky Block": { items: ["Mythic Base Unit", "Celestial Base Unit", "Legendary Base Unit", "Rare Base Unit", "Common Base Unit", "Uncommon Base Unit", "Epic Base Unit", "Noobini Pizzalini", "Austroman Statue", "Gangster Footera", "Sigma Diamond Crown", "Alpha Wolf Trophy", "Skibidi Subwoofer", "Rizzler Pillar", "Void Matrix Block", "Chaos Matrix Cube", "Galaxy Singularity Block", "Quantum Core Block"], fields: { worth: "Multiplier Value Rate", kg: true, mutation: false } },
-            "Blox Fruits": { items: ["Kitsune Fruit (Physical)", "Dragon Fruit (Physical)", "Leopard Fruit (Physical)", "Dough Fruit (Physical)", "T-Rex Fruit (Physical)", "Mammoth Fruit (Physical)", "Spirit Fruit (Physical)", "Control Fruit (Physical)", "Venom Fruit (Physical)", "Shadow Fruit (Physical)", "Gravity Fruit (Physical)", "Buddha Fruit (Physical)", "Portal Fruit (Physical)", "Rumble Fruit (Physical)", "Blizzard Fruit (Physical)", "Sound Fruit (Physical)", "Pain Fruit (Physical)", "Quake Fruit (Physical)", "Love Fruit (Physical)", "Spider Fruit (Physical)", "Phoenix Fruit (Physical)", "Ghost Fruit (Physical)", "Magma Fruit (Physical)", "Light Fruit (Physical)", "Rubber Fruit (Physical)", "Barrier Fruit (Physical)", "Diamond Fruit (Physical)", "Ice Fruit (Physical)", "Sand Fruit (Physical)", "Dark Fruit (Physical)", "Falcon Fruit (Physical)", "Flame Fruit (Physical)", "Rocket Fruit (Physical)", "Spin Fruit (Physical)", "Chop Fruit (Physical)", "Spring Fruit (Physical)", "Bomb Fruit (Physical)", "Smoke Fruit (Physical)", "Spike Fruit (Physical)", "Dark Blade Gamepass Box", "Fruit Notifier Pass Box", "+1 Storage Capacity Pass", "2x Money Pass", "2x Mastery Pass", "Fast Boats Pass", "Permanent Kitsune Fruit", "Permanent Dragon Fruit", "Permanent Leopard Fruit", "Permanent Dough Fruit", "Permanent Buddha Fruit", "Permanent Portal Fruit"], fields: { worth: "Counter Offer Expectation", kg: false, mutation: false } }
+            "Grow A Garden": { items: ["Radiant Sun Sprout", "Shadow Tendril Spore"], fields: { worth: "Coin Value", kg: true, mutation: true } },
+            "Grow A Garden 2": { items: ["Moon Bloom Seed", "Dragon's Breath Seed"], fields: { worth: "Night Essence Crystals", kg: true, mutation: true } },
+            "Steal A Brainrot": { items: ["Garama", "Madundung"], fields: { worth: "Passive M/s Valuation", kg: false, mutation: true } },
+            "Kick A Lucky Block": { items: ["Mythic Base Unit", "Celestial Base Unit"], fields: { worth: "Multiplier Value Rate", kg: true, mutation: false } },
+            "Blox Fruits": { items: ["Kitsune Fruit (Physical)", "Dragon Fruit (Physical)"], fields: { worth: "Counter Offer Expectation", kg: false, mutation: false } }
         };
-
-        const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
-        
-        // RELIABLE INLINE SVG DATA URI FOR VERIFIED BADGE (Never expires)
-        const verifiedLogoUrl = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'><path fill='%2300cc7a' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>";
 
         let trades = [];
         let inbox = [];
-        let userChats = {};
-        let activeChatId = null;
-        let activeChatTargetEmail = "";
-        let chatMessagesListener = null;
-
-        let dynamicVerifiedEmails = [];
+        let chatMessages = {};
+        let dynamicVerifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
         let currentUser = localStorage.getItem('roblox_user_email') || "";
         let currentProfileMetadata = null;
-        let editingListingId = null;
-        let activeLockoutIntervalId = null;
-        let appUpdateIntervalId = null;
+        let activeChatUser = null;
+        let activeChatRoomId = null;
 
-        function escapeEmailPath(email) {
-            return email.toLowerCase().replace(/\./g, '_').replace(/@/g, '_at_');
-        }
+        function escapeEmailPath(email) { return email.toLowerCase().replace(/\./g, '_').replace(/@/g, '_at_'); }
+        function getChatRoomId(email1, email2) { return [escapeEmailPath(email1), escapeEmailPath(email2)].sort().join("_chats_"); }
 
-        function getChatId(emailA, emailB) {
-            const arr = [escapeEmailPath(emailA), escapeEmailPath(emailB)].sort();
-            return `${arr[0]}__${arr[1]}`;
-        }
-
-        window.openModal = function(id) { 
-            document.getElementById(id).style.display = 'flex'; 
-            if(id === 'loginModal') {
-                clearInterval(activeLockoutIntervalId);
-                document.getElementById('loginLockoutContainer').className = 'hidden';
-            }
-        };
+        window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; };
         window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
         window.switchTab = function(tab) {
-            ['uploadSection', 'feedSection', 'inboxSection', 'settingsSection', 'messagesSection'].forEach(s => document.getElementById(s).classList.add('hidden'));
-            ['uploadTab', 'viewTab', 'inboxTab', 'settingsTab', 'messagesTab'].forEach(t => document.getElementById(t).classList.remove('active'));
+            ['upload', 'feed', 'inbox', 'settings', 'chat'].forEach(sec => document.getElementById(`${sec}Section`).classList.add('hidden'));
+            ['uploadTab', 'viewTab', 'inboxTab', 'settingsTab', 'chatTab'].forEach(btn => document.getElementById(btn).classList.remove('active'));
+
+            if((tab === 'upload' || tab === 'inbox' || tab === 'chat') && !currentUser) {
+                alert("Login required!"); window.openModal('loginModal'); return;
+            }
 
             if(tab === 'upload') {
-                if(!currentUser) return forceLogin();
-                editingListingId = null;
-                document.getElementById('uploadFormHeader').textContent = "Post Trade Item";
-                document.getElementById('formSubmitBtn').textContent = "Post Item Details";
-                document.getElementById('uploadForm').reset();
-                document.getElementById('imageDataUrl').value = "";
-                window.updateFormFields();
-                document.getElementById('uploadSection').classList.remove('hidden');
-                document.getElementById('uploadTab').classList.add('active');
+                document.getElementById('uploadSection').classList.remove('hidden'); document.getElementById('uploadTab').classList.add('active');
             } else if (tab === 'inbox') {
-                if(!currentUser) return forceLogin();
-                document.getElementById('inboxSection').classList.remove('hidden');
-                document.getElementById('inboxTab').classList.add('active');
-                window.renderInbox();
-            } else if (tab === 'messages') {
-                if(!currentUser) return forceLogin();
-                document.getElementById('messagesSection').classList.remove('hidden');
-                document.getElementById('messagesTab').classList.add('active');
-                window.loadChatSidebar();
+                document.getElementById('inboxSection').classList.remove('hidden'); document.getElementById('inboxTab').classList.add('active'); window.renderInbox();
+            } else if (tab === 'chat') {
+                document.getElementById('chatSection').classList.remove('hidden'); document.getElementById('chatTab').classList.add('active'); window.renderChatSidebar();
             } else if (tab === 'settings') {
-                document.getElementById('settingsSection').classList.remove('hidden');
-                document.getElementById('settingsTab').classList.add('active');
-                if(currentUser) window.loadProfilePaneFields();
+                document.getElementById('settingsSection').classList.remove('hidden'); document.getElementById('settingsTab').classList.add('active');
             } else {
-                document.getElementById('feedSection').classList.remove('hidden');
-                document.getElementById('viewTab').classList.add('active');
-                window.renderItems();
+                document.getElementById('feedSection').classList.remove('hidden'); document.getElementById('viewTab').classList.add('active'); window.renderItems();
             }
         };
-
-        function forceLogin() {
-            alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
-            window.openModal('loginModal');
-        }
 
         window.switchSettingsPane = function(paneId) {
             document.querySelectorAll('.settings-pane').forEach(p => p.classList.remove('active'));
@@ -713,501 +584,280 @@
             document.getElementById(`paneBtn-${paneId}`).classList.add('active');
         };
 
-        window.login = function(event) {
-            event.preventDefault();
-            const emailInput = document.getElementById('authEmail').value.trim();
-            const passwordInput = document.getElementById('authPassword').value;
-
-            if(!emailInput || !emailInput.includes('@')) return alert("Invalid comprehensive email layout.");
-
-            const cleanKey = escapeEmailPath(emailInput);
-            const now = Date.now();
-            const localLockoutTime = parseInt(localStorage.getItem(`lockout_until_${cleanKey}`)) || 0;
-            if(now < localLockoutTime) return enforceUIVisualLockout(localLockoutTime);
-
-            const userRef = ref(db, `users/${cleanKey}`);
-            get(userRef).then((snapshot) => {
-                if(!snapshot.exists()) {
-                    const registrationPayload = { email: emailInput, password: passwordInput, displayName: emailInput.split('@')[0], notifyNewUploads: true, notifyLikesComments: true };
-                    update(userRef, registrationPayload).then(() => finalizeLogin(emailInput, cleanKey));
-                } else {
-                    const accountData = snapshot.val();
-                    if(accountData.password === passwordInput) {
-                        finalizeLogin(emailInput, cleanKey);
-                    } else {
-                        let currentFailures = (parseInt(localStorage.getItem(`failed_attempts_${cleanKey}`)) || 0) + 1;
-                        localStorage.setItem(`failed_attempts_${cleanKey}`, currentFailures);
-                        let waitDurationMs = currentFailures >= 10 ? 24 * 60 * 60 * 1000 : 30 * 1000;
-                        const targetLockoutExpiration = Date.now() + waitDurationMs;
-                        localStorage.setItem(`lockout_until_${cleanKey}`, targetLockoutExpiration);
-                        enforceUIVisualLockout(targetLockoutExpiration);
-                        alert(currentFailures >= 10 ? "Terminal locked for 24 hours." : "Incorrect login password token.");
-                    }
-                }
-            }).catch(err => alert("Network Failure: " + err.message));
-        };
-
-        function finalizeLogin(email, cleanKey) {
-            localStorage.removeItem(`failed_attempts_${cleanKey}`);
-            localStorage.removeItem(`lockout_until_${cleanKey}`);
-            localStorage.setItem('roblox_user_email', email);
-            currentUser = email;
-            updateAuthUI();
-            window.closeModal('loginModal');
-            window.updateInboxBadge();
-            window.loadProfilePaneFields();
-            window.switchTab('view');
-            alert("Identification confirmed. Welcome back.");
-        }
-
-        function enforceUIVisualLockout(lockoutEpoch) {
-            const container = document.getElementById('loginLockoutContainer');
-            container.className = 'lockout-msg';
-            clearInterval(activeLockoutIntervalId);
-            activeLockoutIntervalId = setInterval(() => {
-                const secs = Math.ceil((lockoutEpoch - Date.now()) / 1000);
-                if(secs <= 0) { container.className = 'hidden'; clearInterval(activeLockoutIntervalId); } 
-                else { container.textContent = secs > 3600 ? `LOCKED. Retry in ${Math.floor(secs/3600)}h` : `RETRY DELAY ACTIVE: Please wait ${secs}s`; }
-            }, 1000);
-        }
-
-        window.logout = function() {
-            localStorage.removeItem('roblox_user_email');
-            currentUser = ""; currentProfileMetadata = null;
-            updateAuthUI(); window.switchTab('view'); window.updateInboxBadge(); window.renderItems();
-        };
-
-        function checkIsVerified(email) {
-            return verifiedEmails.includes(email.toLowerCase().trim()) || dynamicVerifiedEmails.includes(email.toLowerCase().trim());
-        }
-
-        function getCreatorLabelHtml(email) {
-            if(!email) return "Unknown Trader";
-            const clean = email.toLowerCase().trim();
-            let n = clean === (currentUser||"").toLowerCase().trim() && currentProfileMetadata && currentProfileMetadata.displayName ? currentProfileMetadata.displayName : email.split('@')[0];
-            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${n}</strong></a>${checkIsVerified(clean) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : ""}`;
-        }
-
-        function updateAuthUI() {
-            const greeting = document.getElementById('userGreeting');
-            if(currentUser) {
-                greeting.innerHTML = `Session: <span style="color:var(--text-color);">${currentUser.split('@')[0]}</span>${checkIsVerified(currentUser) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : ""}`;
-                document.getElementById('loginBtn').classList.add('hidden');
-                document.getElementById('logoutBtn').classList.remove('hidden');
-                document.getElementById('formUserIdentity').value = currentUser; 
-                if(currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
-                    document.getElementById('paneBtn-admin-verify').classList.remove('hidden');
-                    document.getElementById('paneBtn-admin-update').classList.remove('hidden');
-                    greeting.innerHTML += `<span class="admin-badge-ui">ADMIN</span>`;
-                }
-            } else {
-                greeting.textContent = "";
-                document.getElementById('loginBtn').classList.remove('hidden');
-                document.getElementById('logoutBtn').classList.add('hidden');
-                document.getElementById('formUserIdentity').value = "";
-                document.getElementById('paneBtn-admin-verify').classList.add('hidden');
-                document.getElementById('paneBtn-admin-update').classList.add('hidden');
-            }
-        }
-
-        // --- NEW CHAT/MESSAGING LOGIC ---
-        window.loadChatSidebar = function() {
-            if(!currentUser) return;
-            const myClean = escapeEmailPath(currentUser);
-            onValue(ref(db, `users/${myClean}/chats`), (snapshot) => {
-                const data = snapshot.val();
-                const sidebar = document.getElementById('chatSidebar');
-                sidebar.innerHTML = "";
-                if(!data) { sidebar.innerHTML = '<div style="padding:20px; color:var(--text-muted); font-size:14px; text-align:center;">No recent chats. View a user profile to start a conversation.</div>'; return; }
-                
-                Object.keys(data).forEach(targetCleanEmail => {
-                    const uRef = ref(db, `users/${targetCleanEmail}`);
-                    get(uRef).then(uSnap => {
-                        const uData = uSnap.val() || {};
-                        const dName = uData.displayName || targetCleanEmail.replace('_at_', '@').split('@')[0];
-                        const realEmail = uData.email || targetCleanEmail.replace('_at_', '@').replace(/_/g, '.');
-                        
-                        const div = document.createElement('div');
-                        div.className = 'chat-sidebar-user';
-                        div.innerHTML = `<span>👤</span> ${dName}`;
-                        div.onclick = () => window.openChatWindow(realEmail, dName);
-                        sidebar.appendChild(div);
-                    });
-                });
-            });
-        };
-
-        window.openChatWindow = function(targetEmail, targetDisplayName) {
-            if(!currentUser) return;
-            activeChatTargetEmail = targetEmail;
-            activeChatId = getChatId(currentUser, targetEmail);
-            
-            document.getElementById('chatWindow').classList.remove('hidden');
-            document.getElementById('chatHeader').textContent = `Chatting with: ${targetDisplayName || targetEmail.split('@')[0]}`;
-            
-            const msgsContainer = document.getElementById('chatMessages');
-            msgsContainer.innerHTML = "Loading...";
-
-            onValue(ref(db, `chats/${activeChatId}`), (snapshot) => {
-                msgsContainer.innerHTML = "";
-                const data = snapshot.val();
-                if(data) {
-                    Object.values(data).forEach(msg => {
-                        const mDiv = document.createElement('div');
-                        const isMe = msg.sender.toLowerCase().trim() === currentUser.toLowerCase().trim();
-                        mDiv.className = `chat-msg ${isMe ? 'sent' : 'received'}`;
-                        mDiv.textContent = msg.text;
-                        msgsContainer.appendChild(mDiv);
-                    });
-                    msgsContainer.scrollTop = msgsContainer.scrollHeight;
-                } else {
-                    msgsContainer.innerHTML = `<div style="color:var(--text-muted); text-align:center; font-size:13px; margin-top:20px;">No messages yet. Send a message to start!</div>`;
-                }
-            });
-        };
-
-        window.sendChatMessage = function(e) {
+        window.login = function(e) {
             e.preventDefault();
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if(!text || !activeChatId || !activeChatTargetEmail) return;
+            const email = document.getElementById('authEmail').value.trim();
+            const pass = document.getElementById('authPassword').value;
+            if(!email) return;
+            const cleanKey = escapeEmailPath(email);
 
-            const myClean = escapeEmailPath(currentUser);
-            const theirClean = escapeEmailPath(activeChatTargetEmail);
-
-            // Save to messages node
-            push(ref(db, `chats/${activeChatId}`), {
-                sender: currentUser, text: text, timestamp: Date.now()
-            }).then(() => {
-                // Update pointers in both users' profiles so it appears in their sidebar
-                update(ref(db, `users/${myClean}/chats`), { [theirClean]: Date.now() });
-                update(ref(db, `users/${theirClean}/chats`), { [myClean]: Date.now() });
-                
-                // Push an inbox notification so they know they got a chat if they aren't on the chat tab
-                push(ref(db, 'inbox'), {
-                    to: activeChatTargetEmail, from: currentUser, type: 'notification',
-                    itemName: 'New Chat Message', timestamp: Date.now(), text: `You have a new private message. Check your Messages tab!`
-                });
-
-                input.value = "";
+            get(ref(db, `users/${cleanKey}`)).then((snap) => {
+                if(!snap.exists()) {
+                    update(ref(db, `users/${cleanKey}`), { email: email, password: pass, displayName: email.split('@')[0] }).then(() => loginSuccess(email));
+                } else if(snap.val().password === pass) {
+                    loginSuccess(email);
+                } else {
+                    alert("Incorrect Password!");
+                }
             });
         };
 
-        // --- Profile View & Start DM ---
-        window.viewUserProfile = function(targetEmail) {
-            if(!targetEmail) return;
-            const cleanKey = escapeEmailPath(targetEmail);
-            get(ref(db, `users/${cleanKey}`)).then((snapshot) => {
-                let data = snapshot.exists() ? snapshot.val() : {};
+        function loginSuccess(email) {
+            localStorage.setItem('roblox_user_email', email);
+            currentUser = email; updateAuthUI(); window.closeModal('loginModal'); window.switchTab('view');
+            window.loadProfilePaneFields();
+        }
+
+        window.logout = function() { localStorage.removeItem('roblox_user_email'); currentUser = ""; updateAuthUI(); window.switchTab('view'); };
+
+        function checkIsVerified(email) { return dynamicVerifiedEmails.includes(email.toLowerCase().trim()); }
+
+        function getCreatorLabelHtml(email, fallbackName) {
+            if(!email) return "Trader";
+            const name = fallbackName || email.split('@')[0];
+            const badge = checkIsVerified(email) ? ` <img src="${verifiedLogoUrl}" class="verified-badge" referrerpolicy="no-referrer" onerror="this.src='https://via.placeholder.com/16?text=V'">` : "";
+            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${name}</strong></a>${badge}`;
+        }
+
+        window.viewUserProfile = function(email) {
+            if(!email) return;
+            get(ref(db, `users/${escapeEmailPath(email)}`)).then((snap) => {
+                let data = snap.exists() ? snap.val() : {};
                 document.getElementById('modalProfilePic').src = data.profilePic || "https://via.placeholder.com/80";
                 
-                let displayName = data.displayName || targetEmail.split('@')[0];
-                document.getElementById('modalProfileName').innerHTML = checkIsVerified(targetEmail) ? `${displayName} <img src="${verifiedLogoUrl}" class="verified-badge">` : displayName;
+                let displayName = data.displayName || email.split('@')[0];
+                let isVer = checkIsVerified(email);
+                document.getElementById('modalProfileName').innerHTML = isVer ? `${displayName} <img src="${verifiedLogoUrl}" class="verified-badge" referrerpolicy="no-referrer">` : displayName;
                 
-                const isAdmin = currentUser && currentUser.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-                const isSelf = currentUser && targetEmail.toLowerCase() === currentUser.toLowerCase();
+                document.getElementById('modalProfileEmail').textContent = data.privacyHideEmail ? "Hidden" : email;
+                document.getElementById('modalProfileRoblox').textContent = data.privacyHideSocials ? "Hidden" : (data.linkRoblox || "None");
+                document.getElementById('modalProfileYoutube').textContent = data.privacyHideSocials ? "Hidden" : (data.linkYoutube || "None");
 
                 const msgBtn = document.getElementById('modalMessageBtn');
-                if(!isSelf && currentUser) {
+                if(currentUser && email.toLowerCase() !== currentUser.toLowerCase()) {
                     msgBtn.classList.remove('hidden');
-                    msgBtn.onclick = () => {
-                        window.closeModal('userProfileModal');
-                        window.switchTab('messages');
-                        window.openChatWindow(targetEmail, displayName);
-                    };
+                    msgBtn.onclick = () => { window.closeModal('userProfileModal'); window.openDirectChat(email); };
                 } else {
                     msgBtn.classList.add('hidden');
-                }
-
-                document.getElementById('modalProfileEmail').textContent = (!data.privacyHideEmail || isAdmin) ? targetEmail : "Hidden via Privacy";
-                document.getElementById('modalProfilePhone').textContent = (!data.privacyHidePhone || isAdmin) && data.phoneNumber ? data.phoneNumber : (data.phoneNumber ? "Hidden via Privacy" : "Not Provided");
-                
-                if(!data.privacyHideSocials || isAdmin) {
-                    document.getElementById('modalProfileRoblox').innerHTML = data.linkRoblox ? data.linkRoblox : "None";
-                    document.getElementById('modalProfileYoutube').innerHTML = data.linkYoutube ? `<a href="${data.linkYoutube}" target="_blank" style="color:var(--accent-color);">View Channel</a>` : "None";
-                    document.getElementById('modalProfileFacebook').innerHTML = data.linkFacebook ? `<a href="${data.linkFacebook}" target="_blank" style="color:var(--accent-color);">View Profile</a>` : "None";
-                } else {
-                    document.getElementById('modalProfileRoblox').textContent = "Hidden";
-                    document.getElementById('modalProfileYoutube').textContent = "Hidden";
-                    document.getElementById('modalProfileFacebook').textContent = "Hidden";
                 }
                 window.openModal('userProfileModal');
             });
         };
 
-        // Profile Updates
-        window.previewProfilePic = function(event) {
-            const f = event.target.files[0]; if(!f) return;
-            const r = new FileReader(); r.onload = (e) => { document.getElementById('settingsProfilePicDataUrl').value = e.target.result; document.getElementById('settingsProfilePicPreview').src = e.target.result; }; r.readAsDataURL(f);
+        // --- Messenger / Chat Core Functions ---
+        window.openDirectChat = function(targetEmail) {
+            window.switchTab('chat');
+            activeChatUser = targetEmail;
+            activeChatRoomId = getChatRoomId(currentUser, targetEmail);
+            
+            document.getElementById('chatInputField').disabled = false;
+            document.getElementById('chatSendBtn').disabled = false;
+            
+            get(ref(db, `users/${escapeEmailPath(targetEmail)}`)).then(snap => {
+                const name = snap.exists() && snap.val().displayName ? snap.val().displayName : targetEmail.split('@')[0];
+                document.getElementById('chatActiveHeader').innerHTML = `Chatting with: <strong style="color:var(--accent-color); margin-left:5px;">${name}</strong>`;
+                window.renderChatWindow();
+            });
         };
 
-        window.loadProfilePaneFields = function() {
+        window.sendChatMessage = function(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInputField');
+            const text = input.value.trim();
+            if(!text || !activeChatRoomId || !activeChatUser) return;
+
+            push(ref(db, `chats/${activeChatRoomId}`), {
+                sender: currentUser,
+                receiver: activeChatUser,
+                text: text,
+                timestamp: Date.now()
+            }).then(() => { input.value = ""; window.renderChatWindow(); });
+        };
+
+        window.renderChatSidebar = function() {
             if(!currentUser) return;
-            get(ref(db, `users/${escapeEmailPath(currentUser)}`)).then((snapshot) => {
-                if(snapshot.exists()) {
-                    const data = snapshot.val(); currentProfileMetadata = data;
-                    document.getElementById('settingsProfilePicPreview').src = data.profilePic || "https://via.placeholder.com/60";
-                    document.getElementById('settingsProfilePicDataUrl').value = data.profilePic || "";
-                    document.getElementById('settingsDisplayName').value = data.displayName || "";
-                    document.getElementById('settingsBackupEmail').value = data.backupEmail || "";
-                    document.getElementById('settingsPhoneNumber').value = data.phoneNumber || "";
-                    document.getElementById('notifyNewUploads').checked = data.notifyNewUploads !== false;
-                    document.getElementById('notifyLikesComments').checked = data.notifyLikesComments !== false;
-                    document.getElementById('linkRoblox').value = data.linkRoblox || "";
-                    document.getElementById('linkYoutube').value = data.linkYoutube || "";
-                    document.getElementById('linkFacebook').value = data.linkFacebook || "";
-                    document.getElementById('privacyHideEmail').checked = data.privacyHideEmail === true;
-                    document.getElementById('privacyHidePhone').checked = data.privacyHidePhone === true;
-                    document.getElementById('privacyHideSocials').checked = data.privacyHideSocials === true;
-                    updateAuthUI();
+            const container = document.getElementById('chatSidebarList');
+            container.innerHTML = "";
+            let interactedUsers = new Set();
+
+            Object.values(chatMessages).forEach(roomMsgs => {
+                if(!roomMsgs) return;
+                Object.values(roomMsgs).forEach(msg => {
+                    if(msg.sender === currentUser) interactedUsers.add(msg.receiver);
+                    if(msg.receiver === currentUser) interactedUsers.add(msg.sender);
+                });
+            });
+
+            if(interactedUsers.size === 0) {
+                container.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:13px;">No recent chats.</div>`;
+                return;
+            }
+
+            interactedUsers.forEach(userEmail => {
+                const div = document.createElement('div');
+                div.className = `chat-user-item ${activeChatUser === userEmail ? 'active' : ''}`;
+                div.innerHTML = `
+                    <img src="https://via.placeholder.com/40" class="chat-user-avatar">
+                    <div class="chat-user-info"><span class="chat-user-name">${userEmail.split('@')[0]}</span></div>
+                `;
+                div.onclick = () => window.openDirectChat(userEmail);
+                container.appendChild(div);
+            });
+        };
+
+        window.renderChatWindow = function() {
+            if(!activeChatRoomId) return;
+            const container = document.getElementById('chatMessageContainer');
+            container.innerHTML = "";
+            
+            const roomData = chatMessages[activeChatRoomId];
+            if(!roomData) {
+                container.innerHTML = `<div style="text-align:center; color:var(--text-muted); margin-top:20px;">Start the conversation...</div>`;
+                return;
+            }
+
+            const msgs = Object.values(roomData).sort((a,b) => a.timestamp - b.timestamp);
+            msgs.forEach(msg => {
+                const div = document.createElement('div');
+                const isMe = msg.sender === currentUser;
+                div.className = `chat-bubble ${isMe ? 'sent' : 'received'}`;
+                div.textContent = msg.text;
+                container.appendChild(div);
+            });
+            container.scrollTop = container.scrollHeight;
+        };
+
+        // Update Inbox for Likes and Messages
+        window.dismissInboxItem = function(id) { remove(ref(db, `inbox/${id}`)); };
+
+        window.renderInbox = function() {
+            const container = document.getElementById('inboxGrid');
+            container.innerHTML = "";
+            const userOffers = inbox.filter(i => i.to && i.to.toLowerCase() === currentUser.toLowerCase());
+
+            if(userOffers.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">Inbox is empty.</div>`;
+                return;
+            }
+
+            userOffers.forEach(offer => {
+                const card = document.createElement('div');
+                card.className = 'inbox-card';
+                if(offer.type === 'like') {
+                    card.innerHTML = `<div style="font-size: 15px;">👍 <strong style="color:var(--accent-color);">${offer.from}</strong> liked your post: <strong>${offer.itemName}</strong></div>
+                    <div class="inbox-actions"><button class="btn-accept" style="background:#242b35;" onclick="window.dismissInboxItem('${offer.id}')">Dismiss</button></div>`;
+                } else if(offer.status === 'pending') {
+                    card.innerHTML = `<div style="font-size: 15px;"><strong>Trade Request:</strong> <span style="color: var(--accent-color);">${offer.itemName}</span> from ${offer.from}</div>
+                    <div class="inbox-actions">
+                        <button class="btn-accept" onclick="window.processTradeOffer('${offer.id}', 'accept')">Accept</button>
+                        <button class="btn-decline" onclick="window.processTradeOffer('${offer.id}', 'decline')">Decline</button>
+                    </div>`;
+                } else {
+                    card.innerHTML = `<div style="font-size: 14px; color: var(--text-muted);">Trade for <strong>${offer.itemName}</strong> marked as ${offer.status.toUpperCase()}.</div>`;
                 }
+                container.appendChild(card);
             });
         };
 
-        window.saveProfileSettings = function(e) {
-            e.preventDefault(); if(!currentUser) return;
-            update(ref(db, `users/${escapeEmailPath(currentUser)}`), {
-                profilePic: document.getElementById('settingsProfilePicDataUrl').value,
-                displayName: document.getElementById('settingsDisplayName').value.trim(),
-                backupEmail: document.getElementById('settingsBackupEmail').value.trim(),
-                phoneNumber: document.getElementById('settingsPhoneNumber').value.trim()
-            }).then(() => { alert("Profile saved."); window.loadProfilePaneFields(); });
-        };
-
-        window.savePrivacySettings = function(e) {
-            e.preventDefault(); if(!currentUser) return;
-            update(ref(db, `users/${escapeEmailPath(currentUser)}`), {
-                privacyHideEmail: document.getElementById('privacyHideEmail').checked,
-                privacyHidePhone: document.getElementById('privacyHidePhone').checked,
-                privacyHideSocials: document.getElementById('privacyHideSocials').checked
-            }).then(() => alert("Privacy saved."));
-        };
-
-        window.updateUserPassword = function(e) {
-            e.preventDefault(); if(!currentUser) return;
-            const targetRef = ref(db, `users/${escapeEmailPath(currentUser)}`);
-            get(targetRef).then((s) => {
-                if(s.exists() && s.val().password === document.getElementById('securityCurrentPassword').value) {
-                    update(targetRef, { password: document.getElementById('securityNewPassword').value }).then(() => {
-                        alert("Password updated."); document.getElementById('securityCurrentPassword').value = ""; document.getElementById('securityNewPassword').value = "";
-                    });
-                } else alert("Current password incorrect.");
-            });
-        };
-
-        window.saveNotificationToggles = function() {
+        // Added functionality for Like Notifications and Comment Replies
+        window.toggleLike = function(itemId) {
             if(!currentUser) return;
-            update(ref(db, `users/${escapeEmailPath(currentUser)}`), { notifyNewUploads: document.getElementById('notifyNewUploads').checked, notifyLikesComments: document.getElementById('notifyLikesComments').checked });
-        };
+            const item = trades.find(t => t.id === itemId);
+            if(item) {
+                let likedByArray = item.likedBy ? Object.values(item.likedBy) : [];
+                let likesCount = item.likes || 0;
+                const index = likedByArray.indexOf(currentUser);
 
-        window.saveLinkedAccounts = function(e) {
-            e.preventDefault(); if(!currentUser) return;
-            update(ref(db, `users/${escapeEmailPath(currentUser)}`), {
-                linkRoblox: document.getElementById('linkRoblox').value.trim(), linkYoutube: document.getElementById('linkYoutube').value.trim(), linkFacebook: document.getElementById('linkFacebook').value.trim()
-            }).then(() => alert("Linked accounts saved."));
-        };
-
-        // Inbox Notification Helper
-        function sendInboxNotification(toEmail, text, itemName) {
-            if(toEmail.toLowerCase() !== currentUser.toLowerCase()) {
-                push(ref(db, 'inbox'), { to: toEmail, from: currentUser, type: 'notification', itemName: itemName, text: text, status: 'pending', timestamp: Date.now() });
+                if(index === -1) {
+                    likedByArray.push(currentUser); likesCount += 1;
+                    if(item.creator !== currentUser) push(ref(db, 'inbox'), { type: 'like', to: item.creator, from: currentUser, itemName: item.name, timestamp: Date.now() });
+                } else {
+                    likedByArray.splice(index, 1); likesCount = Math.max(0, likesCount - 1);
+                }
+                update(ref(db, `trades/${itemId}`), { likes: likesCount, likedBy: likedByArray.length > 0 ? likedByArray : null });
             }
-        }
-
-        // Database Listeners
-        onValue(ref(db, 'trades'), (s) => { trades = s.val() ? Object.keys(s.val()).map(k => ({ id: k, ...s.val()[k] })).reverse() : []; window.renderItems(); });
-        onValue(ref(db, 'inbox'), (s) => { inbox = s.val() ? Object.keys(s.val()).map(k => ({ id: k, ...s.val()[k] })).reverse() : []; window.updateInboxBadge(); if(!document.getElementById('inboxSection').classList.contains('hidden')) window.renderInbox(); });
-        onValue(ref(db, 'verified_emails'), (s) => { dynamicVerifiedEmails = s.val() ? Object.values(s.val()).map(v => v.toLowerCase().trim()) : []; updateAuthUI(); window.renderItems(); });
-        onValue(ref(db, 'app_update'), (s) => {
-            const data = s.val(); const b = document.getElementById('updateBannerContainer'); clearInterval(appUpdateIntervalId);
-            if(data && data.targetTime) {
-                b.style.display = 'block';
-                appUpdateIntervalId = setInterval(() => {
-                    const t = Math.floor((data.targetTime - Date.now())/1000);
-                    if(t > 0) b.innerHTML = `⚠️ Update Launching in: ${Math.floor(t/(3600*24))}d ${Math.floor((t%(3600*24))/3600)}h ${Math.floor((t%3600)/60)}m ${t%60}s`;
-                    else { b.innerHTML = `🎉 UPDATE LAUNCHED! <a href="${data.link}" target="_blank">${data.text}</a>`; clearInterval(appUpdateIntervalId); }
-                }, 1000);
-            } else b.style.display = 'none';
-        });
-
-        window.updateFormFields = function() {
-            const config = gameItemsDatabase[document.getElementById('formGameType').value];
-            document.getElementById('labelWorth').textContent = config.fields.worth + ":";
-            document.getElementById('fieldWorth').style.display = config.fields.worth ? 'block' : 'none';
-            document.getElementById('fieldKg').style.display = config.fields.kg ? 'block' : 'none';
-            document.getElementById('fieldMutation').style.display = config.fields.mutation ? 'block' : 'none';
-            const drop = document.getElementById('formItemName'); drop.innerHTML = "";
-            config.items.forEach(i => { let o = document.createElement('option'); o.value = i; o.textContent = i; drop.appendChild(o); });
-            let c = document.createElement('option'); c.value = "CUSTOM_ITEM_VAL"; c.textContent = "➕ Custom Item"; drop.appendChild(c);
-            window.checkCustomItem();
         };
 
-        window.checkCustomItem = function() {
-            const d = document.getElementById('formItemName').value === "CUSTOM_ITEM_VAL";
-            document.getElementById('fieldCustomItem').classList[d?'remove':'add']('hidden');
-            document.getElementById('formCustomItemName').required = d;
-        };
-
-        window.previewImage = function(e) {
-            const f = e.target.files[0]; if(!f) return;
-            const r = new FileReader(); r.onload = (ev) => document.getElementById('imageDataUrl').value = ev.target.result; r.readAsDataURL(f);
-        };
-
-        window.handleUpload = function(e) {
-            e.preventDefault(); if(!currentUser) return alert("Verify Identity first.");
-            let name = document.getElementById('formItemName').value;
-            if(name === "CUSTOM_ITEM_VAL") name = document.getElementById('formCustomItemName').value.trim();
-            if(!name) return alert("Specify name");
-
-            let imgStr = document.getElementById('imageDataUrl').value || (editingListingId ? (trades.find(t=>t.id===editingListingId)||{}).image : "📦");
-            const pl = { creator: currentUser, game: document.getElementById('formGameType').value, name: name, stock: parseInt(document.getElementById('formStock').value)||1, image: imgStr, worth: document.getElementById('formWorth').value.trim()||"None", kg: document.getElementById('formKg').value.trim()||"N/A->Seed", mutation: document.getElementById('formMutation').value.trim()||"N/A->Seed", psLink: document.getElementById('formPsLink').value, timestamp: Date.now() };
-
-            if(editingListingId) {
-                const ex = trades.find(t=>t.id===editingListingId); pl.likes = ex?ex.likes:0; pl.likedBy = ex?ex.likedBy:null; pl.comments = ex?ex.comments:null;
-                update(ref(db, `trades/${editingListingId}`), pl).then(() => { finishUp(); alert("Updated!"); });
-            } else {
-                pl.likes = 0; push(ref(db, 'trades'), pl).then(() => { finishUp(); alert("Uploaded!"); });
-            }
-            function finishUp() { editingListingId = null; document.getElementById('uploadForm').reset(); document.getElementById('imageDataUrl').value = ""; window.switchTab('view'); }
-        };
-
-        window.startEditListing = function(id) {
-            const t = trades.find(i=>i.id===id); if(!t) return; editingListingId = id; window.switchTab('upload');
-            document.getElementById('uploadFormHeader').textContent = "Edit Item"; document.getElementById('formSubmitBtn').textContent = "Save Changes";
-            document.getElementById('formGameType').value = t.game; window.updateFormFields();
-            const cfg = gameItemsDatabase[t.game];
-            if(cfg&&cfg.items.includes(t.name)) document.getElementById('formItemName').value = t.name;
-            else { document.getElementById('formItemName').value = "CUSTOM_ITEM_VAL"; window.checkCustomItem(); document.getElementById('formCustomItemName').value = t.name; }
-            document.getElementById('formStock').value = t.stock; document.getElementById('imageDataUrl').value = (t.image&&t.image.startsWith('data:'))?t.image:""; document.getElementById('formWorth').value = t.worth==="None"?"":t.worth; document.getElementById('formKg').value = t.kg==="N/A->Seed"?"":t.kg; document.getElementById('formMutation').value = t.mutation==="N/A->Seed"?"":t.mutation; document.getElementById('formPsLink').value = t.psLink||"";
-        };
-
-        window.deleteListing = function(id) { if(confirm("Permanently delete?")) remove(ref(db, `trades/${id}`)); };
-
-        window.toggleLike = function(id) {
-            if(!currentUser) return alert("Login required.");
-            const t = trades.find(i=>i.id===id); if(!t) return;
-            let arr = t.likedBy ? Object.values(t.likedBy) : []; let c = t.likes||0;
-            const idx = arr.indexOf(currentUser);
-            if(idx===-1) { arr.push(currentUser); c++; sendInboxNotification(t.creator, "👍 Liked your item!", t.name); } 
-            else { arr.splice(idx,1); c = Math.max(0, c-1); }
-            update(ref(db, `trades/${id}`), { likes: c, likedBy: arr.length>0?arr:null });
-        };
-
-        window.replyToComment = function(itemId, displayName) {
+        window.replyTo = function(name, itemId) {
             const input = document.getElementById(`commentInput-${itemId}`);
-            input.value = `@${displayName} `;
+            input.value = `@${name} ` + input.value;
             input.focus();
         };
 
-        window.submitComment = function(e, id) {
-            e.preventDefault(); if(!currentUser) return alert("Login required.");
-            const input = document.getElementById(`commentInput-${id}`); const text = input.value.trim(); if(!text) return;
-            const t = trades.find(i=>i.id===id); if(!t) return;
-            let arr = t.comments ? Object.values(t.comments) : [];
-            arr.push({ user: currentUser, userDisplayName: (currentProfileMetadata&&currentProfileMetadata.displayName)?currentProfileMetadata.displayName:currentUser.split('@')[0], text: text, timestamp: new Date().toLocaleTimeString() });
-            update(ref(db, `trades/${id}`), { comments: arr }).then(() => { 
-                input.value = ""; 
-                sendInboxNotification(t.creator, `💬 Left a comment: "${text}"`, t.name);
-            });
-        };
-
-        window.sendTradeRequest = function(id) {
-            if(!currentUser) return forceLogin();
-            const t = trades.find(i=>i.id===id); if(!t) return;
-            if(t.creator.toLowerCase()===currentUser.toLowerCase()) return alert("Cannot trade yourself.");
-            push(ref(db, 'inbox'), { itemId: t.id, itemName: t.name, to: t.creator, from: currentUser, status: 'pending', timestamp: Date.now() }).then(() => alert("Offer sent!"));
-        };
-
-        window.processTradeOffer = function(id, act) {
-            const o = inbox.find(i=>i.id===id); if(!o) return;
-            
-            // Allow dismissing notifications instantly
-            if(o.type === 'notification' && act === 'decline') {
-                return update(ref(db, `inbox/${id}`), { status: 'dismissed' });
+        window.submitComment = function(e, itemId) {
+            e.preventDefault();
+            if(!currentUser) return;
+            const input = document.getElementById(`commentInput-${itemId}`);
+            const text = input.value.trim();
+            if(!text) return;
+            const item = trades.find(t => t.id === itemId);
+            if(item) {
+                let commentsArray = item.comments ? Object.values(item.comments) : [];
+                commentsArray.push({ user: currentUser, userDisplayName: currentUser.split('@')[0], text: text });
+                update(ref(db, `trades/${itemId}`), { comments: commentsArray }).then(() => input.value = "");
             }
-
-            if(act === 'accept') {
-                const t = trades.find(i=>i.id===o.itemId);
-                if(!t) { alert("Item missing."); update(ref(db, `inbox/${id}`), { status: 'expired' }); }
-                else if((t.stock||0)<=0) { alert("Out of stock!"); update(ref(db, `inbox/${id}`), { status: 'out-of-stock' }); }
-                else {
-                    update(ref(db, `trades/${o.itemId}`), { stock: t.stock-1 }).then(() => {
-                        update(ref(db, `inbox/${id}`), { status: 'accepted' }); alert("Trade Accepted!");
-                    });
-                }
-            } else update(ref(db, `inbox/${id}`), { status: 'declined' });
         };
 
-        window.updateInboxBadge = function() {
-            if(!currentUser) return document.getElementById('inboxBadge').textContent = "";
-            const pending = inbox.filter(i=>i.to&&i.to.toLowerCase()===currentUser.toLowerCase()&&i.status==='pending').length;
-            document.getElementById('inboxBadge').textContent = pending>0?`(${pending})`:"";
-        };
-
-        window.renderInbox = function() {
-            const c = document.getElementById('inboxGrid'); c.innerHTML = "";
-            const offers = inbox.filter(i=>i.to&&i.to.toLowerCase()===currentUser.toLowerCase());
-            if(offers.length===0) return c.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);">Inbox is empty.</div>';
-            
-            offers.forEach(o => {
-                const d = document.createElement('div'); d.className = 'inbox-card';
-                if(o.type === 'notification' && o.status === 'pending') {
-                     d.innerHTML = `<div style="font-size:16px;"><strong>Notification for <span style="color:var(--accent-color);">${o.itemName}</span></strong><br><span style="color:#ddd;">${getCreatorLabelHtml(o.from)} ${o.text}</span></div><div class="inbox-actions"><button class="btn-decline" onclick="window.processTradeOffer('${o.id}', 'decline')">Dismiss</button></div>`;
-                } else if(o.status === 'pending') {
-                    d.innerHTML = `<div style="font-size:16px;"><strong>Trade Request: <span style="color:var(--accent-color);">${o.itemName}</span></strong><br><span style="color:#ddd;">From: ${getCreatorLabelHtml(o.from)}</span></div><div class="inbox-actions"><button class="btn-accept" onclick="window.processTradeOffer('${o.id}', 'accept')">Accept</button><button class="btn-decline" onclick="window.processTradeOffer('${o.id}', 'decline')">Decline</button></div>`;
-                } else {
-                    let col = (o.status==='accepted')?'var(--accept-color)':'var(--decline-color)';
-                    let prefix = o.type === 'notification' ? 'Notification' : 'Trade metric';
-                    d.innerHTML = `<div style="font-size:14px; color:var(--text-muted);">${prefix} for <strong>${o.itemName}</strong> marked as: <span style="color:${col}; font-weight:bold; text-transform:uppercase;">${o.status}</span>.</div>`;
-                }
-                c.appendChild(d);
-            });
-        };
+        // Firebase Listeners
+        onValue(ref(db, 'trades'), (snap) => { trades = snap.val() ? Object.keys(snap.val()).map(k => ({ id: k, ...snap.val()[k] })).reverse() : []; window.renderItems(); });
+        onValue(ref(db, 'inbox'), (snap) => { inbox = snap.val() ? Object.keys(snap.val()).map(k => ({ id: k, ...snap.val()[k] })).reverse() : []; if(!document.getElementById('inboxSection').classList.contains('hidden')) window.renderInbox(); });
+        onValue(ref(db, 'chats'), (snap) => { 
+            chatMessages = snap.val() || {}; 
+            if(!document.getElementById('chatSection').classList.contains('hidden')) { window.renderChatSidebar(); window.renderChatWindow(); }
+        });
 
         window.renderItems = function() {
-            const c = document.getElementById('itemGrid'); const filt = document.getElementById('gameFilter').value; const q = document.getElementById('userSearchBar').value.toLowerCase().trim(); c.innerHTML = "";
-            const filtered = trades.filter(p => (filt==='All'||p.game===filt) && (p.creator&&p.creator.toLowerCase().includes(q)));
-            if(filtered.length===0) return c.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);">No active transactions found.</div>';
-            
-            filtered.forEach(i => {
+            const container = document.getElementById('itemGrid');
+            container.innerHTML = "";
+            trades.forEach(item => {
                 const card = document.createElement('div'); card.className = 'item-card';
-                let isO = currentUser&&i.creator&&i.creator.toLowerCase()===currentUser.toLowerCase();
-                let stk = i.stock!==undefined?i.stock:1;
-                
-                let commentsHtml = (i.comments?Object.values(i.comments):[]).map(cm => `
-                    <div class="comment-item">
-                        <div>${getCreatorLabelHtml(cm.user)}: ${cm.text}</div>
-                        <button class="reply-btn" onclick="window.replyToComment('${i.id}', '${cm.userDisplayName || cm.user.split('@')[0]}')">Reply</button>
-                    </div>
-                `).join('');
+                let commentHtml = (item.comments ? Object.values(item.comments) : []).map(c => 
+                    `<div class="comment-item">${getCreatorLabelHtml(c.user, c.userDisplayName)}: ${c.text} <span class="reply-btn" onclick="window.replyTo('${c.userDisplayName || c.user.split('@')[0]}', '${item.id}')">Reply</span></div>`
+                ).join('');
 
                 card.innerHTML = `
                     <div class="item-main-content">
-                        <div class="item-image-container">${(i.image&&(i.image.startsWith('data:')||i.image.startsWith('http')))?`<img src="${i.image}">`:`<span>${i.image||'📦'}</span>`}</div>
+                        <div class="item-image-container">${item.image && item.image.includes('data:') ? `<img src="${item.image}">` : '📦'}</div>
                         <div class="item-details">
-                            <span class="item-game-badge">${i.game}</span><div class="item-title">${i.name}</div>
-                            <div class="item-stat">Trader: ${getCreatorLabelHtml(i.creator)}</div>
-                            <div class="item-stat">Stock: <strong style="color:var(--accent-color);">${stk}</strong></div>
-                            <div class="item-stat">Value: <strong>${i.worth||'None'}</strong> | Weight: <strong>${i.kg||'N/A'}</strong> | Aura: <strong>${i.mutation||'N/A'}</strong></div>
-                            ${i.psLink?`<div style="margin-top:5px;"><a href="${i.psLink}" target="_blank" class="ps-link">Join Server</a></div>`:''}
+                            <span class="item-game-badge">${item.game}</span>
+                            <div class="item-title">${item.name}</div>
+                            <div class="item-stat">By: ${getCreatorLabelHtml(item.creator)}</div>
                         </div>
                     </div>
                     <div class="interaction-bar">
-                        <button class="interact-btn" onclick="window.toggleLike('${i.id}')">👍 Like (${i.likes||0})</button>
-                        ${currentUser&&!isO&&stk>0?`<button class="interact-btn trade-action-btn" onclick="window.sendTradeRequest('${i.id}')">🤝 Send Trade Offer</button>`:''}
-                        ${isO?`<button class="interact-btn" style="border-color:#ffaa00; color:#ffaa00; margin-left:auto;" onclick="window.startEditListing('${i.id}')">✏️ Edit</button><button class="interact-btn" style="border-color:var(--decline-color); color:var(--decline-color);" onclick="window.deleteListing('${i.id}')">🗑️ Delete</button>`:''}
-                        ${stk<=0?`<span style="color:var(--decline-color); font-weight:bold; ${isO?'margin-left:10px;':'margin-left:auto;'}">SOLD OUT</span>`:''}
+                        <button class="interact-btn" onclick="window.toggleLike('${item.id}')">👍 Like (${item.likes || 0})</button>
                     </div>
                     <div class="comments-section">
-                        <form onsubmit="window.submitComment(event, '${i.id}')" class="comment-box"><input type="text" id="commentInput-${i.id}" placeholder="Type a comment or @username to reply..." required><button type="submit" class="interact-btn">Post</button></form>
-                        <div class="comment-list">${commentsHtml||'<span style="color:var(--text-muted); font-size:12px;">No comments.</span>'}</div>
+                        <form onsubmit="window.submitComment(event, '${item.id}')" class="comment-box">
+                            <input type="text" id="commentInput-${item.id}" placeholder="Write a comment..." required>
+                            <button type="submit" class="interact-btn">Post</button>
+                        </form>
+                        <div class="comment-list">${commentHtml || '<span style="color:var(--text-muted); font-size:12px;">No comments.</span>'}</div>
                     </div>
                 `;
-                c.appendChild(card);
+                container.appendChild(card);
             });
         };
 
-        updateAuthUI(); window.updateFormFields(); if(currentUser) window.loadProfilePaneFields();
+        function updateAuthUI() {
+            if(currentUser) {
+                document.getElementById('userGreeting').innerHTML = `Hi, ${currentUser.split('@')[0]}`;
+                document.getElementById('loginBtn').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('userGreeting').innerHTML = "";
+                document.getElementById('loginBtn').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.add('hidden');
+            }
+        }
+
+        window.updateFormFields = function() {
+            const dropdown = document.getElementById('formItemName');
+            dropdown.innerHTML = "";
+            gameItemsDatabase[document.getElementById('formGameType').value].items.forEach(i => dropdown.appendChild(new Option(i, i)));
+        };
+
+        updateAuthUI(); window.updateFormFields();
     </script>
 </body>
 </html>
