@@ -72,6 +72,26 @@
             border-color: var(--accent-color);
         }
 
+        .update-banner {
+            background-color: #1a1f26;
+            color: var(--accent-color);
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--accent-color);
+            display: none;
+        }
+
+        .update-banner a {
+            color: #fff;
+            background: var(--accent-color);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
         .container {
             max-width: 1200px;
             margin: 30px auto;
@@ -144,6 +164,8 @@
             width: 100%;
             max-width: 450px;
             border: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .form-group { margin-bottom: 15px; }
@@ -230,9 +252,19 @@
         .hidden { display: none !important; }
         .toggle-switch { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 12px; }
         .toggle-switch input { width: auto; margin: 0; }
+
+        .profile-pic-preview { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); background-color: #0f1115; display: inline-block; vertical-align: middle; margin-right: 15px; }
+        .modal-profile-pic { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color); background-color: #0f1115; margin: 0 auto 15px auto; display: block; }
+        .profile-data-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .profile-data-label { color: var(--text-muted); font-size: 14px; font-weight: bold; }
+        .profile-data-value { color: #fff; font-size: 14px; text-align: right; word-break: break-all; }
+        
+        .admin-badge-ui { background: var(--warning-color); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; vertical-align: middle; }
     </style>
 </head>
 <body>
+
+    <div id="updateBannerContainer" class="update-banner"></div>
 
     <header>
         <div class="logo-container">
@@ -346,17 +378,29 @@
             <div class="settings-layout">
                 <div class="settings-sidebar">
                     <button class="settings-sidebar-btn active" id="paneBtn-profile" onclick="window.switchSettingsPane('profile')">👤 Profile Info</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-privacy" onclick="window.switchSettingsPane('privacy')">🕵️ Privacy</button>
                     <button class="settings-sidebar-btn" id="paneBtn-security" onclick="window.switchSettingsPane('security')">🔒 Security Settings</button>
                     <button class="settings-sidebar-btn" id="paneBtn-notifications" onclick="window.switchSettingsPane('notifications')">🔔 Notifications</button>
                     <button class="settings-sidebar-btn" id="paneBtn-linked" onclick="window.switchSettingsPane('linked')">🔗 Linked Accounts</button>
                     <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
                     <button class="settings-sidebar-btn" id="paneBtn-tutorial" onclick="window.switchSettingsPane('tutorial')">📖 Service Tutorial</button>
+                    
+                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verification Account (Admin)</button>
+                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 Update App (Admin)</button>
                 </div>
                 
                 <div class="settings-content">
                     <div class="settings-pane active" id="pane-profile">
                         <h3>Account Profile Information</h3>
                         <form onsubmit="window.saveProfileSettings(event)">
+                            <div class="form-group">
+                                <label>Profile Picture:</label>
+                                <div>
+                                    <img id="settingsProfilePicPreview" src="https://via.placeholder.com/60" class="profile-pic-preview">
+                                    <input type="file" id="settingsProfilePicInput" accept="image/*" onchange="window.previewProfilePic(event)" style="width: auto; display: inline-block;">
+                                    <input type="hidden" id="settingsProfilePicDataUrl">
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label>Creator / Display Name:</label>
                                 <input type="text" id="settingsDisplayName" placeholder="Enter custom display nickname...">
@@ -370,6 +414,28 @@
                                 <input type="tel" id="settingsPhoneNumber" placeholder="+63 912 345 6789">
                             </div>
                             <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Update Profile Metadata</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-privacy">
+                        <h3>Profile Privacy Settings</h3>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Control what information other users can see when they click on your profile.</p>
+                        <form onsubmit="window.savePrivacySettings(event)">
+                            <div class="form-group">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="privacyHideEmail">
+                                    <span>Hide my Email Address from public profile</span>
+                                </label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="privacyHidePhone">
+                                    <span>Hide my Phone Number from public profile</span>
+                                </label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="privacyHideSocials">
+                                    <span>Hide my Linked Accounts (Social Media) from public profile</span>
+                                </label>
+                            </div>
+                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Save Privacy Preferences</button>
                         </form>
                     </div>
 
@@ -457,8 +523,73 @@
                             <p>Utilize embedded item feedback comment blocks directly inside structural item listings to finalize configurations, trade variables, meeting coordinates, or cross-platform item updates securely.</p>
                         </div>
                     </div>
+
+                    <div class="settings-pane" id="pane-admin-verify">
+                        <h3>Admin: Add Verification Accounts</h3>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Add Gmail addresses to grant them a verified badge globally across the platform.</p>
+                        <form onsubmit="window.adminAddVerified(event)">
+                            <div class="form-group">
+                                <label>User Gmail Address to Verify:</label>
+                                <input type="email" id="adminVerifyEmailInput" required placeholder="user@gmail.com">
+                            </div>
+                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Grant Verified Status</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-admin-update">
+                        <h3>Admin: Schedule App Update Link</h3>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Set a countdown timer. Once the time is reached, the update text and link will be revealed to all users at the top of the screen.</p>
+                        <form onsubmit="window.adminSetAppUpdate(event)">
+                            <div class="form-group">
+                                <label>Target Update Date & Time:</label>
+                                <input type="datetime-local" id="adminUpdateDateTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Update Text / Title:</label>
+                                <input type="text" id="adminUpdateText" required value="Update: 1.0.3">
+                            </div>
+                            <div class="form-group">
+                                <label>APK Download Link:</label>
+                                <input type="url" id="adminUpdateLink" required value="https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file">
+                            </div>
+                            <button type="submit" style="background: var(--accept-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Set App Update Broadcast</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="userProfileModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:var(--accent-color); text-align: center; font-size: 20px;">Trader Profile</h3>
+            
+            <img id="modalProfilePic" src="https://via.placeholder.com/80" class="modal-profile-pic">
+            <h4 id="modalProfileName" style="text-align: center; margin: 5px 0 20px 0; color: #fff;">Unknown User</h4>
+
+            <div class="profile-data-row">
+                <span class="profile-data-label">Email Address</span>
+                <span class="profile-data-value" id="modalProfileEmail">Hidden</span>
+            </div>
+            <div class="profile-data-row">
+                <span class="profile-data-label">Phone Number</span>
+                <span class="profile-data-value" id="modalProfilePhone">Hidden</span>
+            </div>
+            <div class="profile-data-row">
+                <span class="profile-data-label">Roblox Account</span>
+                <span class="profile-data-value" id="modalProfileRoblox">Hidden</span>
+            </div>
+            <div class="profile-data-row">
+                <span class="profile-data-label">YouTube</span>
+                <span class="profile-data-value" id="modalProfileYoutube">Hidden</span>
+            </div>
+            <div class="profile-data-row" style="border-bottom: none;">
+                <span class="profile-data-label">Facebook</span>
+                <span class="profile-data-value" id="modalProfileFacebook">Hidden</span>
+            </div>
+
+            <button onclick="window.closeModal('userProfileModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 15px;">Close Profile</button>
         </div>
     </div>
 
@@ -501,6 +632,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        const ADMIN_EMAIL = "devxdragon3@gmail.com";
+
         const gameItemsDatabase = {
             "Grow A Garden": { items: ["Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"], fields: { worth: "Coin Value", kg: true, mutation: true } },
             "Grow A Garden 2": { items: ["Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Venus Fly Trap Seed", "Venom Spitter Seed", "Poison Apple Seed", "Magic Mushroom Seed", "Golden Leaf Seed", "Bamboo Seed", "Poison Ivy Seed", "Pomegranate Seed", "Sunflower Seed", "Glow Mushroom Seed", "Horned Melon Seed", "Dragon Fruit Seed", "Carrot Seed", "Strawberry Seed", "Blueberry Seed", "Tomato Seed", "Green Bean Seed", "Corn Seed", "Banana Seed", "Grape Seed", "Mango Seed", "Tulip Seed", "Baby Cactus Seed", "Cactus Seed"], fields: { worth: "Night Essence Crystals", kg: true, mutation: true } },
@@ -514,10 +647,12 @@
 
         let trades = [];
         let inbox = [];
+        let dynamicVerifiedEmails = [];
         let currentUser = localStorage.getItem('roblox_user_email') || "";
         let currentProfileMetadata = null;
         let editingListingId = null;
         let activeLockoutIntervalId = null;
+        let appUpdateIntervalId = null;
 
         // Sanitization helper ensuring structural node integrity inside Firebase paths
         function escapeEmailPath(email) {
@@ -617,13 +752,17 @@
                         email: emailInput,
                         password: passwordInput,
                         displayName: emailInput.split('@')[0],
+                        profilePic: "",
                         backupEmail: "",
                         phoneNumber: "",
                         notifyNewUploads: true,
                         notifyLikesComments: true,
                         linkRoblox: "",
                         linkYoutube: "",
-                        linkFacebook: ""
+                        linkFacebook: "",
+                        privacyHideEmail: false,
+                        privacyHidePhone: false,
+                        privacyHideSocials: false
                     };
                     update(userRef, registrationPayload).then(() => {
                         localStorage.removeItem(`failed_attempts_${cleanKey}`);
@@ -705,6 +844,11 @@
             window.renderItems();
         };
 
+        function checkIsVerified(email) {
+            const clean = email.toLowerCase().trim();
+            return verifiedEmails.includes(clean) || dynamicVerifiedEmails.includes(clean);
+        }
+
         function getCreatorLabelHtml(email) {
             if(!email) return "Unknown Trader";
             const cleanEmail = email.toLowerCase().trim();
@@ -712,12 +856,13 @@
             let nameString = email;
             if (currentProfileMetadata && currentUser && cleanEmail === currentUser.toLowerCase().trim() && currentProfileMetadata.displayName) {
                 nameString = currentProfileMetadata.displayName;
+            } else {
+                nameString = email.split('@')[0];
             }
 
-            if(verifiedEmails.includes(cleanEmail)) {
-                return `<strong>${nameString}</strong> <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">`;
-            }
-            return `<strong>${nameString}</strong>`;
+            let badgeHtml = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">` : "";
+            
+            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${nameString}</strong></a>${badgeHtml}`;
         }
 
         function getCommentCreatorLabelHtml(email, fallbackName) {
@@ -725,10 +870,9 @@
             const cleanEmail = email.toLowerCase().trim();
             const cleanLabel = fallbackName || email.split('@')[0];
             
-            if(verifiedEmails.includes(cleanEmail)) {
-                return `<span style="color: var(--accent-color); font-weight:bold;">${cleanLabel}</span> <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">`;
-            }
-            return `<span style="color: var(--accent-color); font-weight:bold;">${cleanLabel}</span>`;
+            let badgeHtml = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">` : "";
+            
+            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${cleanLabel}</strong></a>${badgeHtml}`;
         }
 
         function updateAuthUI() {
@@ -736,21 +880,91 @@
             const loginBtn = document.getElementById('loginBtn');
             const logoutBtn = document.getElementById('logoutBtn');
             const uploadIdentityInput = document.getElementById('formUserIdentity');
+            
+            const btnAdminVerify = document.getElementById('paneBtn-admin-verify');
+            const btnAdminUpdate = document.getElementById('paneBtn-admin-update');
 
             if(currentUser) {
-                greeting.innerHTML = `Session: ${getCreatorLabelHtml(currentUser)}`;
+                let badgeHtml = checkIsVerified(currentUser) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
+                greeting.innerHTML = `Session: <span style="color:var(--text-color);">${currentUser.split('@')[0]}</span>${badgeHtml}`;
+                
                 loginBtn.classList.add('hidden');
                 logoutBtn.classList.remove('hidden');
                 uploadIdentityInput.value = currentUser; 
+                
+                if(currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
+                    btnAdminVerify.classList.remove('hidden');
+                    btnAdminUpdate.classList.remove('hidden');
+                    greeting.innerHTML += `<span class="admin-badge-ui">ADMIN</span>`;
+                } else {
+                    btnAdminVerify.classList.add('hidden');
+                    btnAdminUpdate.classList.add('hidden');
+                }
             } else {
                 greeting.textContent = "";
                 loginBtn.classList.remove('hidden');
                 logoutBtn.classList.add('hidden');
                 uploadIdentityInput.value = "";
+                btnAdminVerify.classList.add('hidden');
+                btnAdminUpdate.classList.add('hidden');
             }
         }
 
-        // Account Profile & Database Form Integration Logic
+        // --- User Profile Viewing Logic ---
+        window.viewUserProfile = function(targetEmail) {
+            if(!targetEmail) return;
+            const cleanKey = escapeEmailPath(targetEmail);
+            
+            get(ref(db, `users/${cleanKey}`)).then((snapshot) => {
+                let data = snapshot.exists() ? snapshot.val() : {};
+                
+                document.getElementById('modalProfilePic').src = data.profilePic || "https://via.placeholder.com/80";
+                
+                let displayName = data.displayName || targetEmail.split('@')[0];
+                let isVer = checkIsVerified(targetEmail);
+                document.getElementById('modalProfileName').innerHTML = isVer ? `${displayName} <img src="${verifiedLogoUrl}" class="verified-badge">` : displayName;
+                
+                // Admin overrides privacy to view all details
+                const isAdmin = currentUser && currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase();
+
+                if(!data.privacyHideEmail || isAdmin) {
+                    document.getElementById('modalProfileEmail').textContent = targetEmail;
+                } else {
+                    document.getElementById('modalProfileEmail').textContent = "Hidden via Privacy";
+                }
+
+                if((!data.privacyHidePhone || isAdmin) && data.phoneNumber) {
+                    document.getElementById('modalProfilePhone').textContent = data.phoneNumber;
+                } else {
+                    document.getElementById('modalProfilePhone').textContent = data.phoneNumber ? "Hidden via Privacy" : "Not Provided";
+                }
+
+                if(!data.privacyHideSocials || isAdmin) {
+                    document.getElementById('modalProfileRoblox').innerHTML = data.linkRoblox ? data.linkRoblox : "None";
+                    document.getElementById('modalProfileYoutube').innerHTML = data.linkYoutube ? `<a href="${data.linkYoutube}" target="_blank" style="color:var(--accent-color);">View Channel</a>` : "None";
+                    document.getElementById('modalProfileFacebook').innerHTML = data.linkFacebook ? `<a href="${data.linkFacebook}" target="_blank" style="color:var(--accent-color);">View Profile</a>` : "None";
+                } else {
+                    document.getElementById('modalProfileRoblox').textContent = "Hidden via Privacy";
+                    document.getElementById('modalProfileYoutube').textContent = "Hidden via Privacy";
+                    document.getElementById('modalProfileFacebook').textContent = "Hidden via Privacy";
+                }
+
+                window.openModal('userProfileModal');
+            });
+        };
+
+        // --- Account Profile & Database Form Integration Logic ---
+        window.previewProfilePic = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e){
+                document.getElementById('settingsProfilePicDataUrl').value = e.target.result;
+                document.getElementById('settingsProfilePicPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        };
+
         window.loadProfilePaneFields = function() {
             if(!currentUser) return;
             const cleanKey = escapeEmailPath(currentUser);
@@ -758,6 +972,9 @@
                 if(snapshot.exists()) {
                     const data = snapshot.val();
                     currentProfileMetadata = data;
+                    
+                    document.getElementById('settingsProfilePicPreview').src = data.profilePic || "https://via.placeholder.com/60";
+                    document.getElementById('settingsProfilePicDataUrl').value = data.profilePic || "";
                     
                     document.getElementById('settingsDisplayName').value = data.displayName || "";
                     document.getElementById('settingsBackupEmail').value = data.backupEmail || "";
@@ -770,6 +987,10 @@
                     document.getElementById('linkYoutube').value = data.linkYoutube || "";
                     document.getElementById('linkFacebook').value = data.linkFacebook || "";
                     
+                    document.getElementById('privacyHideEmail').checked = data.privacyHideEmail === true;
+                    document.getElementById('privacyHidePhone').checked = data.privacyHidePhone === true;
+                    document.getElementById('privacyHideSocials').checked = data.privacyHideSocials === true;
+                    
                     updateAuthUI();
                 }
             });
@@ -780,16 +1001,33 @@
             if(!currentUser) return;
             const cleanKey = escapeEmailPath(currentUser);
             
+            const pPic = document.getElementById('settingsProfilePicDataUrl').value;
             const pName = document.getElementById('settingsDisplayName').value.trim();
             const pBackup = document.getElementById('settingsBackupEmail').value.trim();
             const pPhone = document.getElementById('settingsPhoneNumber').value.trim();
             
             update(ref(db, `users/${cleanKey}`), {
+                profilePic: pPic,
                 displayName: pName,
                 backupEmail: pBackup,
                 phoneNumber: pPhone
             }).then(() => {
-                alert("Account metadata fields synchronized safely.");
+                alert("Account metadata and Profile Picture synchronized safely.");
+                window.loadProfilePaneFields();
+            });
+        };
+
+        window.savePrivacySettings = function(e) {
+            e.preventDefault();
+            if(!currentUser) return;
+            const cleanKey = escapeEmailPath(currentUser);
+            
+            update(ref(db, `users/${cleanKey}`), {
+                privacyHideEmail: document.getElementById('privacyHideEmail').checked,
+                privacyHidePhone: document.getElementById('privacyHidePhone').checked,
+                privacyHideSocials: document.getElementById('privacyHideSocials').checked
+            }).then(() => {
+                alert("Profile Privacy preferences secured.");
                 window.loadProfilePaneFields();
             });
         };
@@ -837,6 +1075,44 @@
             }).then(() => alert("Cross-platform networking profiles synchronized."));
         };
 
+        // --- Admin Functions ---
+        window.adminAddVerified = function(e) {
+            e.preventDefault();
+            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            
+            const newEmail = document.getElementById('adminVerifyEmailInput').value.trim().toLowerCase();
+            if(!newEmail) return;
+            
+            push(ref(db, 'verified_emails'), newEmail).then(() => {
+                alert(`${newEmail} has been granted a Verified Platform Account badge.`);
+                document.getElementById('adminVerifyEmailInput').value = "";
+            }).catch(err => alert("Error adding verified account: " + err.message));
+        };
+
+        window.adminSetAppUpdate = function(e) {
+            e.preventDefault();
+            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            
+            const targetTimeVal = document.getElementById('adminUpdateDateTime').value;
+            const textVal = document.getElementById('adminUpdateText').value;
+            const linkVal = document.getElementById('adminUpdateLink').value;
+            
+            if(!targetTimeVal) {
+                alert("Please select a date and time for the update.");
+                return;
+            }
+            
+            const targetEpoch = new Date(targetTimeVal).getTime();
+            
+            update(ref(db, 'app_update'), {
+                targetTime: targetEpoch,
+                text: textVal,
+                link: linkVal
+            }).then(() => {
+                alert("App update countdown successfully scheduled on the server.");
+            }).catch(err => alert("Error scheduling update: " + err.message));
+        };
+
         window.submitPlatformBug = function(e) {
             e.preventDefault();
             const textDesc = document.getElementById('bugDescription').value.trim();
@@ -848,7 +1124,7 @@
             const bugPayload = {
                 itemId: "BUG_TICKET",
                 itemName: "🚨 EMERGENCY PLATFORM BUG REPORT",
-                to: "devxdragon3@gmail.com",
+                to: ADMIN_EMAIL,
                 from: activeReporter,
                 status: "pending",
                 timestamp: Date.now()
@@ -861,7 +1137,7 @@
                     description: textDesc,
                     timestamp: Date.now()
                 }).then(() => {
-                    alert("Technical exception ticket dispatched to devxdragon3@gmail.com's inbox records.");
+                    alert(`Technical exception ticket dispatched to ${ADMIN_EMAIL}'s inbox records.`);
                     document.getElementById('bugDescription').value = "";
                 });
             });
@@ -919,6 +1195,7 @@
             reader.readAsDataURL(file);
         };
 
+        // --- Database Listeners ---
         onValue(ref(db, 'trades'), (snapshot) => {
             const data = snapshot.val();
             trades = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
@@ -931,6 +1208,42 @@
             window.updateInboxBadge();
             if (!document.getElementById('inboxSection').classList.contains('hidden')) {
                 window.renderInbox();
+            }
+        });
+
+        onValue(ref(db, 'verified_emails'), (snapshot) => {
+            const data = snapshot.val();
+            dynamicVerifiedEmails = data ? Object.values(data).map(v => v.toLowerCase().trim()) : [];
+            updateAuthUI();
+            window.renderItems();
+        });
+
+        onValue(ref(db, 'app_update'), (snapshot) => {
+            const data = snapshot.val();
+            const banner = document.getElementById('updateBannerContainer');
+            
+            clearInterval(appUpdateIntervalId);
+            
+            if(data && data.targetTime) {
+                banner.style.display = 'block';
+                
+                appUpdateIntervalId = setInterval(() => {
+                    const now = Date.now();
+                    const timeLeft = Math.floor((data.targetTime - now) / 1000);
+                    
+                    if(timeLeft > 0) {
+                        const days = Math.floor(timeLeft / (3600*24));
+                        const hours = Math.floor((timeLeft % (3600*24)) / 3600);
+                        const mins = Math.floor((timeLeft % 3600) / 60);
+                        const secs = timeLeft % 60;
+                        banner.innerHTML = `⚠️ System Update Launching in: ${days}d ${hours}h ${mins}m ${secs}s`;
+                    } else {
+                        banner.innerHTML = `🎉 UPDATE LAUNCHED! <a href="${data.link}" target="_blank">${data.text}</a>`;
+                        clearInterval(appUpdateIntervalId);
+                    }
+                }, 1000);
+            } else {
+                banner.style.display = 'none';
             }
         });
 
@@ -1086,7 +1399,6 @@
             if(item) {
                 let commentsArray = item.comments ? Object.values(item.comments) : [];
                 
-                // Track display nickname variant if config keys align cleanly
                 let currentDisplayNameSeed = currentUser.split('@')[0];
                 if(currentProfileMetadata && currentProfileMetadata.displayName) {
                     currentDisplayNameSeed = currentProfileMetadata.displayName;
