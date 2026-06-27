@@ -3,380 +3,490 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XDRG TRADING SERVICE | ROBLOX</title>
+    <title>XDRG TRADING SERVICE.ROBLOX</title>
     <style>
-        /* Modern Facebook + TikTok Inspired Theme */
         :root {
-            --bg-base: #121212;
-            --bg-panel: #1e1e24;
-            --bg-hover: #2a2a32;
-            --accent-primary: #25F4EE; /* TikTok Cyan */
-            --accent-secondary: #FE2C55; /* TikTok Pink */
-            --text-main: #f1f1f1;
-            --text-muted: #a1a1aa;
-            --border-subtle: #33333e;
-            --accept-color: #00cc7a;
+            --bg-color: #0f1115;
+            --panel-bg: #161920;
+            --accent-color: #00ffaa;
+            --text-color: #ffffff;
+            --text-muted: #7f8c9d;
+            --border-color: #242b35;
             --decline-color: #ff4a4a;
-            --card-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --accept-color: #00cc7a;
+            --warning-color: #ffaa00;
         }
 
-        * { box-sizing: border-box; }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            margin: 0; padding: 0;
-            overflow-x: hidden;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
         }
 
-        /* Fixed Top Header (FB Style) */
         header {
-            position: fixed; top: 0; left: 0; width: 100%;
-            background-color: var(--bg-panel);
-            padding: 10px 30px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-subtle);
-            z-index: 100;
-            height: 65px;
+            background-color: var(--panel-bg);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
         }
 
-        .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
-        .site-logo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-        .logo { font-size: 20px; font-weight: 800; color: var(--accent-primary); letter-spacing: 0.5px; }
-
-        .auth-controls { display: flex; align-items: center; gap: 15px; }
-        .auth-btn {
-            background: linear-gradient(45deg, var(--accent-primary), #00b8ff);
-            color: #000; border: none; padding: 8px 20px;
-            border-radius: 20px; font-weight: bold; cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(37, 244, 238, 0.4); }
-        .logout-btn { background: var(--bg-hover); color: var(--text-main); }
-
-        /* 3-Column Layout */
-        .app-container {
-            display: grid;
-            grid-template-columns: 260px 1fr 320px;
-            gap: 20px; max-width: 1600px;
-            margin: 85px auto 20px; padding: 0 20px;
-            min-height: calc(100vh - 85px);
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        @media(max-width: 1100px) { .app-container { grid-template-columns: 220px 1fr; } .right-sidebar { display: none; } }
-        @media(max-width: 768px) { .app-container { grid-template-columns: 1fr; } .left-sidebar { display: none; } }
+        .site-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
 
-        /* Left Sidebar Navigation */
-        .left-sidebar { position: sticky; top: 85px; height: fit-content; display: flex; flex-direction: column; gap: 10px; }
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 16px; border-radius: 12px;
-            color: var(--text-main); font-weight: 600; cursor: pointer;
-            transition: background 0.2s; border: none; background: transparent; width: 100%; text-align: left;
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+        }
+
+        .nav-buttons button {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .nav-buttons button:hover {
+            background-color: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .controls-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tabs button, .game-filter-select, .search-bar-input {
+            background-color: var(--panel-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 5px;
             font-size: 15px;
+            transition: all 0.2s ease;
         }
-        .nav-item:hover { background-color: var(--bg-hover); }
-        .nav-item.active { background-color: rgba(37, 244, 238, 0.1); color: var(--accent-primary); }
-        .nav-icon { font-size: 20px; }
-        
-        /* Right Sidebar (Global Updates Widget) */
-        .right-sidebar { position: sticky; top: 85px; height: fit-content; }
-        .update-widget {
-            background: linear-gradient(135deg, var(--bg-panel) 0%, #1a1a24 100%);
-            border: 1px solid var(--accent-primary);
-            border-radius: 16px; padding: 20px; text-align: center;
-            box-shadow: 0 0 20px rgba(37, 244, 238, 0.15);
-        }
-        .update-widget h3 { margin: 0 0 15px 0; color: var(--accent-primary); }
-        .countdown { font-size: 24px; font-weight: bold; font-family: monospace; color: #fff; margin-bottom: 15px; letter-spacing: 1px;}
-        .update-link-btn {
-            display: inline-block; background: var(--accent-primary); color: #000;
-            padding: 10px 20px; border-radius: 20px; font-weight: bold;
-            text-decoration: none; width: 100%; transition: 0.2s;
-        }
-        .update-link-btn:hover { background: #fff; box-shadow: 0 0 15px var(--accent-primary); }
 
-        /* Main Feed */
-        .main-feed { display: flex; flex-direction: column; gap: 20px; }
-        .feed-header { background: var(--bg-panel); padding: 15px; border-radius: 12px; display: flex; gap: 10px; align-items: center; margin-bottom: 10px;}
-        .search-input {
-            flex-grow: 1; background: var(--bg-base); border: 1px solid var(--border-subtle);
-            color: #fff; padding: 12px 20px; border-radius: 25px; outline: none; transition: border 0.3s;
-        }
-        .search-input:focus { border-color: var(--accent-primary); }
-        .filter-select { background: var(--bg-base); border: 1px solid var(--border-subtle); color: #fff; padding: 12px; border-radius: 12px; outline: none; }
+        .nav-tabs button { cursor: pointer; }
 
-        /* TikTok/FB Style Item Cards */
-        .item-card {
-            background: var(--bg-panel); border-radius: 16px; overflow: hidden;
-            box-shadow: var(--card-shadow); border: 1px solid var(--border-subtle);
-            display: flex; flex-direction: column;
+        .nav-tabs button.active {
+            background-color: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+            font-weight: bold;
         }
-        .card-header { padding: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-subtle); }
-        .creator-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--bg-hover); cursor: pointer; }
-        .creator-info { display: flex; flex-direction: column; }
-        .creator-name { font-weight: bold; cursor: pointer; transition: color 0.2s; }
-        .creator-name:hover { color: var(--accent-primary); text-decoration: underline; }
-        .post-time { font-size: 12px; color: var(--text-muted); }
-        
-        .card-body { display: flex; flex-direction: row; align-items: stretch; }
-        @media(max-width: 600px) { .card-body { flex-direction: column; } }
-        
-        .card-image-box {
-            width: 250px; background: #000; flex-shrink: 0;
-            display: flex; justify-content: center; align-items: center; font-size: 60px;
-            border-right: 1px solid var(--border-subtle);
-        }
-        .card-image-box img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1/1; }
-        
-        .card-details { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-        .item-badge { background: rgba(37, 244, 238, 0.1); color: var(--accent-primary); padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; width: fit-content; margin-bottom: 8px; }
-        .item-title { font-size: 24px; font-weight: 800; margin: 0 0 10px 0; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; margin-bottom: 15px;}
-        .stat-item { background: var(--bg-base); padding: 8px 12px; border-radius: 8px; }
-        .stat-item span { color: var(--text-muted); display: block; font-size: 11px; text-transform: uppercase; }
-        
-        .card-actions {
-            padding: 12px 20px; background: var(--bg-hover); display: flex; gap: 10px; align-items: center;
-            border-top: 1px solid var(--border-subtle);
-        }
-        .action-btn {
-            background: transparent; border: none; color: var(--text-main); font-weight: 600;
-            padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: background 0.2s;
-            display: flex; align-items: center; gap: 6px;
-        }
-        .action-btn:hover { background: rgba(255,255,255,0.1); }
-        .trade-btn { background: var(--accent-primary); color: #000; margin-left: auto; }
-        .trade-btn:hover { background: #00e0d8; transform: scale(1.02); }
-        
-        /* Comments Section */
-        .comments-section { padding: 15px 20px; background: var(--bg-panel); }
-        .comment-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .comment-input { flex-grow: 1; background: var(--bg-base); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 10px 15px; color: #fff; outline: none; }
-        .comment-input:focus { border-color: var(--accent-primary); }
-        .comment-list { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .comment { display: flex; gap: 10px; }
-        .comment-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--bg-hover); object-fit: cover;}
-        .comment-bubble { background: var(--bg-hover); padding: 10px 14px; border-radius: 16px; border-top-left-radius: 4px; font-size: 14px; flex-grow: 1; }
-        .comment-author { font-weight: bold; font-size: 13px; color: var(--accent-primary); margin-bottom: 3px; cursor: pointer;}
 
-        /* Modals & Forms */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--bg-panel); width: 90%; max-width: 500px; border-radius: 16px; padding: 30px; border: 1px solid var(--border-subtle); position: relative; max-height: 90vh; overflow-y: auto;}
-        .close-modal { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
-        
+        .search-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar-input {
+            width: 250px;
+        }
+
+        .search-bar-input:focus, .game-filter-select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--panel-bg);
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid var(--border-color);
+        }
+
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 13px; font-weight: 600; text-transform: uppercase;}
-        .form-control { width: 100%; padding: 12px; background: var(--bg-base); border: 1px solid var(--border-subtle); color: #fff; border-radius: 8px; font-family: inherit; }
-        .form-control:focus { outline: none; border-color: var(--accent-primary); }
-        .submit-btn { width: 100%; background: var(--accent-primary); color: #000; font-size: 16px; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+        .form-group label { display: block; margin-bottom: 6px; color: #bbb; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px; background-color: #0f1115;
+            border: 1px solid var(--border-color); color: var(--text-color);
+            border-radius: 4px; box-sizing: border-box;
+            font-family: inherit;
+        }
+        .form-group textarea { resize: vertical; height: 100px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--accent-color);
+        }
 
-        /* Profile Modal Specifics */
-        .profile-header-ui { display: flex; flex-direction: column; align-items: center; text-align: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 20px; margin-bottom: 20px; }
-        .profile-avatar-large { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-primary); margin-bottom: 10px; }
-        .profile-detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed var(--border-subtle); }
-        .profile-detail-label { color: var(--text-muted); font-size: 14px; }
-        .profile-detail-val { font-weight: bold; }
+        .lockout-msg {
+            background-color: rgba(255, 74, 74, 0.15);
+            border: 1px solid var(--decline-color);
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
 
-        /* Admin Tag */
-        .admin-tag { background: #ff4a4a; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 5px; vertical-align: super; }
+        .item-grid { display: flex; flex-direction: column; gap: 20px; }
+        .item-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+        .item-main-content { display: flex; flex-direction: row; align-items: stretch; }
+        
+        @media(max-width: 768px) {
+            .item-main-content { flex-direction: column; }
+            .item-image-container { width: 100% !important; border-right: none !important; border-bottom: 1px solid var(--border-color); }
+        }
+
+        .item-image-container {
+            width: 160px; background-color: #0f1115; display: flex; justify-content: center;
+            align-items: center; font-size: 50px; border-right: 1px solid var(--border-color); flex-shrink: 0;
+            height: 160px; overflow: hidden;
+        }
+        .item-image-container img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .item-details { padding: 20px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; justify-content: center; }
+        .item-game-badge { background-color: #242b35; color: var(--accent-color); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; width: fit-content; }
+        .item-title { font-size: 20px; font-weight: bold; margin: 4px 0; color: #fff; }
+        .item-stat { font-size: 14px; color: var(--text-muted); }
+        .item-stat strong { color: #fff; }
+        
+        .verified-badge { width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; display: inline-block; }
+        
+        .interaction-bar { background-color: #1a1f29; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; gap: 15px; align-items: center; }
+        .interact-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .interact-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        .trade-action-btn { background-color: var(--accent-color) !important; color: #000 !important; margin-left: auto; }
+        
+        .comments-section { background-color: #12151c; padding: 15px 20px; border-top: 1px solid var(--border-color); }
+        .comment-box { display: flex; gap: 10px; margin-bottom: 10px; }
+        .comment-box input { flex-grow: 1; padding: 8px; background-color: #0f1115; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; }
+        .comment-list { max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+        .comment-item { font-size: 13px; background: #161920; padding: 6px 10px; border-radius: 4px; border-left: 3px solid var(--accent-color); line-height: 1.4; }
+        
+        .inbox-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 15px; }
+        .inbox-actions { margin-top: 15px; display: flex; gap: 10px; }
+        .btn-accept { background-color: var(--accept-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-decline { background-color: var(--decline-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .ps-link { display: inline-block; background-color: #0077ff; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: bold; width: fit-content; }
+        
+        /* Settings Sublayout Panel Styles */
+        .settings-layout { display: grid; grid-template-columns: 250px 1fr; gap: 30px; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; min-height: 550px; }
+        @media(max-width: 768px) { .settings-layout { grid-template-columns: 1fr; } }
+        .settings-sidebar { background: #11141a; border-right: 1px solid var(--border-color); padding: 20px 10px; display: flex; flex-direction: column; gap: 8px; }
+        .settings-sidebar-btn { background: transparent; border: none; color: var(--text-muted); text-align: left; padding: 12px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s ease; }
+        .settings-sidebar-btn:hover, .settings-sidebar-btn.active { color: var(--accent-color); background: rgba(0, 255, 170, 0.05); }
+        .settings-pane { padding: 30px; display: none; }
+        .settings-pane.active { display: block; }
+        .settings-pane h3 { margin-top: 0; margin-bottom: 20px; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        
+        /* Tutorial Grid Elements */
+        .tutorial-step { margin-bottom: 25px; padding-left: 15px; border-left: 3px solid var(--accent-color); }
+        .tutorial-step h4 { margin: 0 0 8px 0; color: #fff; font-size: 16px; }
+        .tutorial-step p { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+
         .hidden { display: none !important; }
-        .verified-badge { width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; }
+        .toggle-switch { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 12px; }
+        .toggle-switch input { width: auto; margin: 0; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo-container" onclick="window.switchTab('view')">
-            <img src="https://cdn.discordapp.com/attachments/1501911631708422215/1519291570048860322/orca-image-1542816814.jpeg.jpg" alt="Site Logo" class="site-logo">
-            <div class="logo">XDRG MARKET</div>
+        <div class="logo-container">
+            <img src="https://cdn.discordapp.com/attachments/1501911631708422215/1519291570048860322/orca-image-1542816814.jpeg.jpg?ex=6a3d0609&is=6a3bb489&hm=2e089cbe47c460fa52c8c9c1d9ce5504ffbc549325956153b8d5698da440c15a&" alt="Site Logo" class="site-logo">
+            <div class="logo">XDRG TRADING SERVICE.ROBLOX</div>
         </div>
-        <div class="auth-controls">
-            <span id="userGreeting" style="font-weight: 600; color: var(--text-muted);"></span>
-            <button onclick="window.openModal('loginModal')" id="loginBtn" class="auth-btn">Log In / Sign Up</button>
-            <button onclick="window.logout()" id="logoutBtn" class="auth-btn logout-btn hidden">Log Out</button>
+        <div class="nav-buttons" id="authButtons">
+            <span id="userGreeting" style="margin-right: 15px; color: var(--accent-color); font-weight: bold;"></span>
+            <button onclick="window.openModal('loginModal')" id="loginBtn">Sign Up / Log In</button>
+            <button onclick="window.logout()" id="logoutBtn" class="hidden">Log Out</button>
         </div>
     </header>
 
-    <div class="app-container">
-        
-        <div class="left-sidebar">
-            <button class="nav-item active" id="nav-view" onclick="window.switchTab('view')">
-                <span class="nav-icon">🏠</span> Home Feed
-            </button>
-            <button class="nav-item" id="nav-upload" onclick="window.switchTab('upload')">
-                <span class="nav-icon">➕</span> Publish Listing
-            </button>
-            <button class="nav-item" id="nav-inbox" onclick="window.switchTab('inbox')">
-                <span class="nav-icon">📥</span> Trade Inbox <span id="inboxBadge" style="color:var(--accent-primary); font-weight:bold; margin-left:auto;"></span>
-            </button>
-            <button class="nav-item" id="nav-settings" onclick="window.switchTab('settings')">
-                <span class="nav-icon">⚙️</span> Settings & Profile
-            </button>
-            <div id="adminNavGroup" class="hidden" style="margin-top: 20px; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
-                <div style="font-size:11px; color:#ff4a4a; text-transform:uppercase; margin: 0 0 10px 10px; font-weight:bold;">Admin Controls</div>
-                <button class="nav-item" id="nav-admin-verify" onclick="window.switchTab('admin-verify')">
-                    <span class="nav-icon">🛡️</span> Verify Accounts
-                </button>
-                <button class="nav-item" id="nav-admin-update" onclick="window.switchTab('admin-update')">
-                    <span class="nav-icon">📢</span> App Update Panel
-                </button>
+    <div class="container">
+        <div class="controls-section">
+            <div class="nav-tabs">
+                <button class="active" id="viewTab" onclick="window.switchTab('view')">View Listings</button>
+                <button id="uploadTab" onclick="window.switchTab('upload')">+ Upload Item</button>
+                <button id="inboxTab" onclick="window.switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
+                <button id="settingsTab" onclick="window.switchTab('settings')">⚙️ Account Settings & Help</button>
+            </div>
+
+            <div class="search-container">
+                <input type="text" id="userSearchBar" class="search-bar-input" placeholder="🔍 Search friend's email..." oninput="window.renderItems()">
+                <select id="gameFilter" class="game-filter-select" onchange="window.renderItems()">
+                    <option value="All">All Games</option>
+                    <option value="Grow A Garden">Grow A Garden (GaG)</option>
+                    <option value="Grow A Garden 2">Grow A Garden 2 (GaG 2)</option>
+                    <option value="Steal A Brainrot">Steal A Brainrot (SAB)</option>
+                    <option value="Kick A Lucky Block">Kick A Lucky Block (KALB)</option>
+                    <option value="Blox Fruits">Blox Fruits (BF)</option>
+                </select>
             </div>
         </div>
 
-        <div class="main-content">
-            
-            <div id="tab-view" class="main-feed">
-                <div class="feed-header">
-                    <input type="text" id="userSearchBar" class="search-input" placeholder="Search creators, items..." oninput="window.renderItems()">
-                    <select id="gameFilter" class="filter-select" onchange="window.renderItems()">
-                        <option value="All">All Games</option>
-                        <option value="Grow A Garden">Grow A Garden</option>
-                        <option value="Grow A Garden 2">Grow A Garden 2</option>
-                        <option value="Steal A Brainrot">Steal A Brainrot</option>
-                        <option value="Kick A Lucky Block">Kick A Lucky Block</option>
-                        <option value="Blox Fruits">Blox Fruits</option>
+        <div id="feedSection">
+            <div class="item-grid" id="itemGrid"></div>
+        </div>
+
+        <div id="inboxSection" class="hidden">
+            <h2 style="color: var(--accent-color); margin-top: 0;">Your Trade Offers & Messaging Inbox</h2>
+            <div id="inboxGrid"></div>
+        </div>
+
+        <div id="uploadSection" class="hidden" style="max-width: 600px; margin: 0 auto; background: var(--panel-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <h2 id="uploadFormHeader" style="margin-top:0; color: var(--accent-color);">Post Trade Item</h2>
+            <form id="uploadForm" onsubmit="window.handleUpload(event)">
+                
+                <div class="form-group">
+                    <label>Game Type:</label>
+                    <select id="formGameType" onchange="window.updateFormFields()" required>
+                        <option value="Grow A Garden">Grow A Garden (GaG)</option>
+                        <option value="Grow A Garden 2">Grow A Garden 2 (GaG 2)</option>
+                        <option value="Steal A Brainrot">Steal A Brainrot (SAB)</option>
+                        <option value="Kick A Lucky Block">Kick A Lucky Block (KALB)</option>
+                        <option value="Blox Fruits">Blox Fruits (BF)</option>
                     </select>
                 </div>
-                <div id="itemGrid" style="display:flex; flex-direction:column; gap:20px;"></div>
-            </div>
 
-            <div id="tab-upload" class="hidden" style="background: var(--bg-panel); padding: 30px; border-radius: 16px; border: 1px solid var(--border-subtle);">
-                <h2 id="uploadFormHeader" style="margin-top:0; color: var(--accent-primary);">Create New Listing</h2>
-                <form id="uploadForm" onsubmit="window.handleUpload(event)">
-                    <div class="form-group">
-                        <label>Target Game Server</label>
-                        <select id="formGameType" class="form-control" onchange="window.updateFormFields()" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Item Designation</label>
-                        <select id="formItemName" class="form-control" onchange="window.checkCustomItem()" required></select>
-                    </div>
-                    <div class="form-group hidden" id="fieldCustomItem">
-                        <label style="color: var(--accent-primary);">Custom Item Name</label>
-                        <input type="text" id="formCustomItemName" class="form-control" placeholder="Enter exact item name...">
-                    </div>
-                    <div class="form-group">
-                        <label>Inventory Stock Count</label>
-                        <input type="number" id="formStock" class="form-control" value="1" min="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Product Image (Optional)</label>
-                        <input type="file" id="formImage" class="form-control" accept="image/*" onchange="window.previewImage(event, 'imageDataUrl')">
-                        <input type="hidden" id="imageDataUrl">
-                    </div>
-                    <div class="form-group" id="fieldWorth"><label id="labelWorth">Value / Worth</label><input type="text" id="formWorth" class="form-control" placeholder="Expected trade value..."></div>
-                    <div class="form-group" id="fieldKg"><label>Weight (KG)</label><input type="text" id="formKg" class="form-control" placeholder="e.g., 45 kg"></div>
-                    <div class="form-group" id="fieldMutation"><label>Mutation / Trait</label><input type="text" id="formMutation" class="form-control" placeholder="e.g., Glitched, Shiny..."></div>
-                    <div class="form-group">
-                        <label>Private Server Link (Optional)</label>
-                        <input type="url" id="formPsLink" class="form-control" placeholder="https://www.roblox.com/games/share?code=...">
-                    </div>
-                    <button type="submit" id="formSubmitBtn" class="submit-btn">Publish to Network</button>
-                </form>
-            </div>
+                <div class="form-group">
+                    <label>Select Item Name:</label>
+                    <select id="formItemName" onchange="window.checkCustomItem()" required></select>
+                </div>
 
-            <div id="tab-inbox" class="hidden">
-                <h2 style="color: var(--accent-primary); margin-top:0;">Trade Negotiations Inbox</h2>
-                <div id="inboxGrid" style="display:flex; flex-direction:column; gap:15px;"></div>
-            </div>
+                <div class="form-group hidden" id="fieldCustomItem">
+                    <label style="color: var(--accent-color); font-weight: bold;">Type Custom Item Name:</label>
+                    <input type="text" id="formCustomItemName" placeholder="Enter the exact missing item name...">
+                </div>
 
-            <div id="tab-settings" class="hidden" style="background: var(--bg-panel); padding: 30px; border-radius: 16px; border: 1px solid var(--border-subtle);">
-                <h2 style="color: var(--accent-primary); margin-top:0;">Profile & Privacy Configuration</h2>
-                <form onsubmit="window.saveProfileSettings(event)">
-                    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
-                        <img id="settingsProfilePicPreview" src="https://ui-avatars.com/api/?name=User&background=random" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid var(--border-subtle);">
-                        <div>
-                            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:13px; font-weight:bold;">Update Avatar Image</label>
-                            <input type="file" accept="image/*" style="color:#fff;" onchange="window.previewImage(event, 'settingsProfilePicData')">
-                            <input type="hidden" id="settingsProfilePicData">
+                <div class="form-group">
+                    <label>Initial Product Inventory Stock Count:</label>
+                    <input type="number" id="formStock" value="1" min="1" placeholder="e.g. 10" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Image Directly From Files (+):</label>
+                    <input type="file" id="formImage" accept="image/*" onchange="window.previewImage(event)">
+                    <input type="hidden" id="imageDataUrl">
+                </div>
+
+                <div class="form-group" id="fieldWorth">
+                    <label id="labelWorth">Value / Worth:</label>
+                    <input type="text" id="formWorth" placeholder="Enter target trade value/price expectations...">
+                </div>
+
+                <div class="form-group" id="fieldKg">
+                    <label>Weight (KG):</label>
+                    <input type="text" id="formKg" placeholder="e.g., 45 kg">
+                </div>
+
+                <div class="form-group" id="fieldMutation">
+                    <label>Mutation Variant / Trait Aura:</label>
+                    <input type="text" id="formMutation" placeholder="e.g., Glitched, Shiny, Shadow, Overlord">
+                </div>
+
+                <div class="form-group">
+                    <label>Your Verified Profile Identity (Session Protected Email):</label>
+                    <input type="text" id="formUserIdentity" style="background-color: #1a1f26; color: var(--accent-color); font-weight: bold;" required readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Private Server Link (Optional):</label>
+                    <input type="url" id="formPsLink" placeholder="https://www.roblox.com/games/share?code=...">
+                </div>
+
+                <button type="submit" id="formSubmitBtn" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Post Item Details</button>
+            </form>
+        </div>
+
+        <div id="settingsSection" class="hidden">
+            <div class="settings-layout">
+                <div class="settings-sidebar">
+                    <button class="settings-sidebar-btn active" id="paneBtn-profile" onclick="window.switchSettingsPane('profile')">👤 Profile Info</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-security" onclick="window.switchSettingsPane('security')">🔒 Security Settings</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-notifications" onclick="window.switchSettingsPane('notifications')">🔔 Notifications</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-linked" onclick="window.switchSettingsPane('linked')">🔗 Linked Accounts</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-tutorial" onclick="window.switchSettingsPane('tutorial')">📖 Service Tutorial</button>
+                </div>
+                
+                <div class="settings-content">
+                    <div class="settings-pane active" id="pane-profile">
+                        <h3>Account Profile Information</h3>
+                        <form onsubmit="window.saveProfileSettings(event)">
+                            <div class="form-group">
+                                <label>Creator / Display Name:</label>
+                                <input type="text" id="settingsDisplayName" placeholder="Enter custom display nickname...">
+                            </div>
+                            <div class="form-group">
+                                <label>Backup Gmail Contact (Optional):</label>
+                                <input type="email" id="settingsBackupEmail" placeholder="backup@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Phone Line Number (Optional):</label>
+                                <input type="tel" id="settingsPhoneNumber" placeholder="+63 912 345 6789">
+                            </div>
+                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Update Profile Metadata</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-security">
+                        <h3>Security & Password Management</h3>
+                        <form onsubmit="window.updateUserPassword(event)">
+                            <div class="form-group">
+                                <label>Current Active Password Verification Line:</label>
+                                <input type="password" id="securityCurrentPassword" required placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password Assignment:</label>
+                                <input type="password" id="securityNewPassword" required placeholder="••••••••">
+                            </div>
+                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Renew Password Matrix</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-notifications">
+                        <h3>Notification Metric Sync Preferences</h3>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifyNewUploads" onchange="window.saveNotificationToggles()">
+                                <span>Alert me regarding newly uploaded structural store catalog entries</span>
+                            </label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifyLikesComments" onchange="window.saveNotificationToggles()">
+                                <span>Notify me whenever players evaluate likes or append community comments to my posts</span>
+                            </label>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-muted);">Settings save automatically upon parameter interaction toggles.</p>
+                    </div>
+
+                    <div class="settings-pane" id="pane-linked">
+                        <h3>Connected Cross-Platform Networks</h3>
+                        <form onsubmit="window.saveLinkedAccounts(event)">
+                            <div class="form-group">
+                                <label>Roblox Account Username Link:</label>
+                                <input type="text" id="linkRoblox" placeholder="e.g., RobloxDev_X">
+                            </div>
+                            <div class="form-group">
+                                <label>YouTube Video Channel Handle:</label>
+                                <input type="text" id="linkYoutube" placeholder="@YourChannelName">
+                            </div>
+                            <div class="form-group">
+                                <label>Facebook Identity URL:</label>
+                                <input type="url" id="linkFacebook" placeholder="https://facebook.com/profile.id...">
+                            </div>
+                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Link Accounts</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-bugs">
+                        <h3>System Integrity Error & Bug Transmission Logs</h3>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Encountered technical exceptions? Transmit metrics here. Bug data pipelines route cleanly into the database inbox allocated to devxdragon3@gmail.com.</p>
+                        <form onsubmit="window.submitPlatformBug(event)">
+                            <div class="form-group">
+                                <label>Describe the Bug / Technical Exception:</label>
+                                <textarea id="bugDescription" required placeholder="Provide clear steps to reproduce the layout error or transaction processing fault..."></textarea>
+                            </div>
+                            <button type="submit" style="background: var(--decline-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">File Bug Report Ticket</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-tutorial">
+                        <h3>Trading Service Interactive Guide</h3>
+                        
+                        <div class="tutorial-step">
+                            <h4>Step 1: Authenticate or Claim Profile Identity</h4>
+                            <p>Access the 'Sign Up / Log In' access portal in the navigation header. Input an email line along with a secure management pass phrase. If the tracking email does not yet exist on the network, the database automatically logs registration keys securely.</p>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <h4>Step 2: Post Catalog Inventory Listings</h4>
+                            <p>Select the '+ Upload Item' action link. Choose your game module (e.g., Grow A Garden, Kick A Lucky Block, Steal A Brainrot), fill out explicit weight criteria, mutation aura attributes, values data, and append private matching target server interaction URLs.</p>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <h4>Step 3: Negotiating Safe Virtual Transactions</h4>
+                            <p>Browse through listings to target items. Click 'Send Trade Offer' to dispatch transaction logs. The listing author instantly tracks incoming offers within their inbox dashboard, retaining options to Accept or Decline instantly.</p>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <h4>Step 4: Real-time Communication Integration</h4>
+                            <p>Utilize embedded item feedback comment blocks directly inside structural item listings to finalize configurations, trade variables, meeting coordinates, or cross-platform item updates securely.</p>
                         </div>
                     </div>
-                    
-                    <div class="form-group"><label>Display Name</label><input type="text" id="settingsDisplayName" class="form-control" placeholder="Enter nickname..."></div>
-                    <div class="form-group"><label>Contact Number (Optional)</label><input type="tel" id="settingsPhoneNumber" class="form-control" placeholder="+63 912 345 6789"></div>
-                    <div class="form-group"><label>Linked Social Media (Facebook/YouTube/Discord)</label><input type="text" id="settingsSocials" class="form-control" placeholder="e.g. facebook.com/myprofile"></div>
-                    
-                    <div class="form-group" style="background: var(--bg-base); padding: 15px; border-radius: 8px; border: 1px solid var(--border-subtle);">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin:0;">
-                            <input type="checkbox" id="settingsPrivacyToggle" style="width:18px; height:18px;">
-                            <span style="color:#fff; font-size:15px;">🔒 Enable Privacy Mode (Hides Email, Phone, and Socials from public profile views)</span>
-                        </label>
-                    </div>
-
-                    <button type="submit" class="submit-btn">Save Profile Updates</button>
-                </form>
-            </div>
-
-            <div id="tab-admin-verify" class="hidden" style="background: var(--bg-panel); padding: 30px; border-radius: 16px; border: 1px solid var(--decline-color);">
-                <h2 style="color: var(--decline-color); margin-top:0;">Admin: Account Verification</h2>
-                <p style="color: var(--text-muted); font-size: 14px;">Grant official verified badges to specific Gmail accounts across the database.</p>
-                <div class="form-group">
-                    <label>Target User Email Address</label>
-                    <input type="email" id="adminVerifyInput" class="form-control" placeholder="user@gmail.com">
                 </div>
-                <button onclick="window.adminVerifyUser()" class="submit-btn" style="background:var(--accept-color);">Grant Verification Status</button>
-            </div>
-
-            <div id="tab-admin-update" class="hidden" style="background: var(--bg-panel); padding: 30px; border-radius: 16px; border: 1px solid var(--accent-primary);">
-                <h2 style="color: var(--accent-primary); margin-top:0;">Admin: Global App Update Broadcast</h2>
-                <div class="form-group">
-                    <label>Update Release Date & Time</label>
-                    <input type="datetime-local" id="adminUpdateTime" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Version Display Text</label>
-                    <input type="text" id="adminUpdateVersion" class="form-control" placeholder="Update: 1.0.3">
-                </div>
-                <div class="form-group">
-                    <label>Mediafire/Download Link</label>
-                    <input type="url" id="adminUpdateLink" class="form-control" placeholder="https://www.mediafire.com/...">
-                </div>
-                <button onclick="window.adminSetUpdate()" class="submit-btn">Deploy Countdown Protocol</button>
-            </div>
-
-        </div>
-
-        <div class="right-sidebar">
-            <div id="globalUpdateWidget" class="update-widget hidden">
-                <h3>🚀 Incoming Update</h3>
-                <div id="updateTimerText" style="font-size:13px; color:var(--text-muted); margin-bottom:5px;">Deploying in:</div>
-                <div id="updateCountdown" class="countdown">00:00:00</div>
-                <a href="#" id="updateLinkBtn" target="_blank" class="update-link-btn hidden">Download Update</a>
             </div>
         </div>
-
     </div>
 
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <button class="close-modal" onclick="window.closeModal('loginModal')">&times;</button>
-            <h2 style="margin-top:0; color:var(--accent-primary); text-align:center;">Network Login</h2>
-            <form onsubmit="window.login(event)">
-                <div class="form-group"><label>Gmail Account</label><input type="email" id="authEmail" class="form-control" required></div>
-                <div class="form-group"><label>Security PIN / Password</label><input type="password" id="authPassword" class="form-control" required></div>
-                <button type="submit" class="submit-btn">Authenticate Session</button>
-            </form>
-        </div>
-    </div>
+            <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Secure Access Portal</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Please authenticate utilizing your secure account email format verification line to track correspondence logs and trade requests.</p>
+            
+            <div id="loginLockoutContainer" class="hidden"></div>
 
-    <div id="profileModal" class="modal">
-        <div class="modal-content" style="max-width: 400px;">
-            <button class="close-modal" onclick="window.closeModal('profileModal')">&times;</button>
-            <div class="profile-header-ui">
-                <img id="viewProfPic" src="" class="profile-avatar-large">
-                <h2 style="margin: 0;" id="viewProfName">Loading...</h2>
-                <div id="viewProfBadges" style="margin-top: 5px;"></div>
-            </div>
-            <div id="viewProfDetailsContainer">
+            <form id="modalLoginForm" onsubmit="window.login(event)">
+                <div class="form-group">
+                    <label>Account Registration Email:</label>
+                    <input type="email" id="authEmail" placeholder="creator@example.com" required>
                 </div>
+                <div class="form-group">
+                    <label>Secure Authentication Password:</label>
+                    <input type="password" id="authPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" id="authSubmitButton" style="background: var(--accent-color); color: #000; padding: 12px; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">Verify & Sync Profile Identity</button>
+            </form>
+            <button onclick="window.closeModal('loginModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 5px;">Cancel</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, update, remove, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue, update, remove, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD8cWqDhvzq2qGMeiFICTcFLAXSlg1rne0",
@@ -391,483 +501,813 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // System Constants
-        const ADMIN_EMAIL = "devxdragon3@gmail.com";
-        const VERIFIED_BADGE_URL = "https://cdn.discordapp.com/attachments/1501911631708422215/1519654119353221210/1000030631.png";
-
-        // Global State
-        let trades = [];
-        let inbox = [];
-        let usersMap = {}; // Cache user profiles for quick rendering
-        let verifiedEmailsDb = {}; 
-        let currentUser = localStorage.getItem('roblox_user_email') || "";
-        let globalUpdateConfig = null;
-        let updateInterval = null;
-
-        // Game Configuration
         const gameItemsDatabase = {
-            "Grow A Garden": { items: ["Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Sparkcap Spore", "Cosmic Singularity Seed", "Aurora Blossom Seed"], fields: { worth: "Coin Value", kg: true, mutation: true } },
-            "Grow A Garden 2": { items: ["Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Magic Mushroom Seed", "Golden Leaf Seed"], fields: { worth: "Night Essence", kg: true, mutation: true } },
-            "Steal A Brainrot": { items: ["Garama", "Madundung", "La Taco Combinasion", "Burguro", "Skibidi Toilet Box", "Sigma Core Alpha", "GigaChad Slab"], fields: { worth: "Passive M/s", kg: false, mutation: true } },
-            "Kick A Lucky Block": { items: ["Mythic Base Unit", "Noobini Pizzalini", "Austroman Statue", "Gangster Footera", "Void Matrix Block", "Quantum Core Block"], fields: { worth: "Multiplier Rate", kg: true, mutation: false } },
-            "Blox Fruits": { items: ["Kitsune Fruit", "Dragon Fruit", "Leopard Fruit", "Dough Fruit", "Dark Blade Gamepass Box", "Permanent Kitsune"], fields: { worth: "Trade Expectation", kg: false, mutation: false } }
+            "Grow A Garden": { items: ["Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"], fields: { worth: "Coin Value", kg: true, mutation: true } },
+            "Grow A Garden 2": { items: ["Moon Bloom Seed", "Dragon's Breath Seed", "Ghost Pepper Seed", "Venus Fly Trap Seed", "Venom Spitter Seed", "Poison Apple Seed", "Magic Mushroom Seed", "Golden Leaf Seed", "Bamboo Seed", "Poison Ivy Seed", "Pomegranate Seed", "Sunflower Seed", "Glow Mushroom Seed", "Horned Melon Seed", "Dragon Fruit Seed", "Carrot Seed", "Strawberry Seed", "Blueberry Seed", "Tomato Seed", "Green Bean Seed", "Corn Seed", "Banana Seed", "Grape Seed", "Mango Seed", "Tulip Seed", "Baby Cactus Seed", "Cactus Seed"], fields: { worth: "Night Essence Crystals", kg: true, mutation: true } },
+            "Steal A Brainrot": { items: ["Garama", "Madundung", "La Taco Combinasion", "Hydra Dragon Cannelloni", "Burguro", "Fryuro", "Lavadorito Spinito", "Ketupat Kepat", "Strawberry Elephant", "Cooki and Milki", "Esok Sekolah", "Spinny Hammy GALAXY", "Ketchuru", "Musturu", "Los Candies", "Cerberus", "La Secret Combinasion", "Mieteteira Bicicleteira", "List List List Sahur", "Chicleteria Noelteira", "Los Nooo My Hotspitsitos", "Skibidi Toilet Box", "Grimace Shake Formula", "Sigma Core Alpha", "GigaChad Slab"], fields: { worth: "Passive M/s Valuation", kg: false, mutation: true } },
+            "Kick A Lucky Block": { items: ["Mythic Base Unit", "Celestial Base Unit", "Legendary Base Unit", "Rare Base Unit", "Common Base Unit", "Uncommon Base Unit", "Epic Base Unit", "Noobini Pizzalini", "Austroman Statue", "Gangster Footera", "Sigma Diamond Crown", "Alpha Wolf Trophy", "Skibidi Subwoofer", "Rizzler Pillar", "Void Matrix Block", "Chaos Matrix Cube", "Galaxy Singularity Block", "Quantum Core Block"], fields: { worth: "Multiplier Value Rate", kg: true, mutation: false } },
+            "Blox Fruits": { items: ["Kitsune Fruit (Physical)", "Dragon Fruit (Physical)", "Leopard Fruit (Physical)", "Dough Fruit (Physical)", "T-Rex Fruit (Physical)", "Mammoth Fruit (Physical)", "Spirit Fruit (Physical)", "Control Fruit (Physical)", "Venom Fruit (Physical)", "Shadow Fruit (Physical)", "Gravity Fruit (Physical)", "Buddha Fruit (Physical)", "Portal Fruit (Physical)", "Rumble Fruit (Physical)", "Blizzard Fruit (Physical)", "Sound Fruit (Physical)", "Pain Fruit (Physical)", "Quake Fruit (Physical)", "Love Fruit (Physical)", "Spider Fruit (Physical)", "Phoenix Fruit (Physical)", "Ghost Fruit (Physical)", "Magma Fruit (Physical)", "Light Fruit (Physical)", "Rubber Fruit (Physical)", "Barrier Fruit (Physical)", "Diamond Fruit (Physical)", "Ice Fruit (Physical)", "Sand Fruit (Physical)", "Dark Fruit (Physical)", "Falcon Fruit (Physical)", "Flame Fruit (Physical)", "Rocket Fruit (Physical)", "Spin Fruit (Physical)", "Chop Fruit (Physical)", "Spring Fruit (Physical)", "Bomb Fruit (Physical)", "Smoke Fruit (Physical)", "Spike Fruit (Physical)", "Dark Blade Gamepass Box", "Fruit Notifier Pass Box", "+1 Storage Capacity Pass", "2x Money Pass", "2x Mastery Pass", "Fast Boats Pass", "Permanent Kitsune Fruit", "Permanent Dragon Fruit", "Permanent Leopard Fruit", "Permanent Dough Fruit", "Permanent Buddha Fruit", "Permanent Portal Fruit"], fields: { worth: "Counter Offer Expectation", kg: false, mutation: false } }
         };
 
-        function escapeEmailPath(email) { return email.toLowerCase().replace(/\./g, '_').replace(/@/g, '_at_'); }
+        const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
+        const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519654119353221210/1000030631.png?ex=6a3e57af&is=6a3d062f&hm=f5e27828d282be493d90fa81a93cca58b760a643b459d5b8f54fbf17a0536254&";
 
-        // --- Core UI & Navigation ---
-        window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; };
+        let trades = [];
+        let inbox = [];
+        let currentUser = localStorage.getItem('roblox_user_email') || "";
+        let currentProfileMetadata = null;
+        let editingListingId = null;
+        let activeLockoutIntervalId = null;
+
+        // Sanitization helper ensuring structural node integrity inside Firebase paths
+        function escapeEmailPath(email) {
+            return email.toLowerCase().replace(/\./g, '_').replace(/@/g, '_at_');
+        }
+
+        window.openModal = function(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+            if(id === 'loginModal') {
+                clearInterval(activeLockoutIntervalId);
+                document.getElementById('loginLockoutContainer').className = 'hidden';
+            }
+        };
         window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
-        window.switchTab = function(tabId) {
-            document.querySelectorAll('.main-content > div').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        window.switchTab = function(tab) {
+            document.getElementById('uploadSection').classList.add('hidden');
+            document.getElementById('feedSection').classList.add('hidden');
+            document.getElementById('inboxSection').classList.add('hidden');
+            document.getElementById('settingsSection').classList.add('hidden');
             
-            if(tabId === 'upload' || tabId === 'inbox' || tabId === 'settings') {
+            document.getElementById('uploadTab').classList.remove('active');
+            document.getElementById('viewTab').classList.remove('active');
+            document.getElementById('inboxTab').classList.remove('active');
+            document.getElementById('settingsTab').classList.remove('active');
+
+            if(tab === 'upload') {
                 if(!currentUser) {
-                    alert("Authentication required for this secure terminal.");
+                    alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
                     window.openModal('loginModal');
                     return;
                 }
-            }
-
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            const navBtn = document.getElementById(`nav-${tabId}`);
-            if(navBtn) navBtn.classList.add('active');
-
-            if(tabId === 'inbox') window.renderInbox();
-            if(tabId === 'view') window.renderItems();
-            if(tabId === 'upload') {
-                const sel = document.getElementById('formGameType');
-                sel.innerHTML = Object.keys(gameItemsDatabase).map(g => `<option value="${g}">${g}</option>`).join('');
+                editingListingId = null;
+                document.getElementById('uploadFormHeader').textContent = "Post Trade Item";
+                document.getElementById('formSubmitBtn').textContent = "Post Item Details";
+                document.getElementById('uploadForm').reset();
+                document.getElementById('imageDataUrl').value = "";
                 window.updateFormFields();
+                document.getElementById('uploadSection').classList.remove('hidden');
+                document.getElementById('uploadTab').classList.add('active');
+            } else if (tab === 'inbox') {
+                if(!currentUser) {
+                    alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
+                    window.openModal('loginModal');
+                    return;
+                }
+                document.getElementById('inboxSection').classList.remove('hidden');
+                document.getElementById('inboxTab').classList.add('active');
+                window.renderInbox();
+            } else if (tab === 'settings') {
+                document.getElementById('settingsSection').classList.remove('hidden');
+                document.getElementById('settingsTab').classList.add('active');
+                if(currentUser) {
+                    window.loadProfilePaneFields();
+                }
+            } else {
+                document.getElementById('feedSection').classList.remove('hidden');
+                document.getElementById('viewTab').classList.add('active');
+                window.renderItems();
             }
         };
 
-        // --- Authentication & Users ---
-        window.login = function(e) {
-            e.preventDefault();
-            const email = document.getElementById('authEmail').value.trim();
-            const pass = document.getElementById('authPassword').value;
-            const cleanKey = escapeEmailPath(email);
+        window.switchSettingsPane = function(paneId) {
+            document.querySelectorAll('.settings-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.settings-sidebar-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`pane-${paneId}`).classList.add('active');
+            document.getElementById(`paneBtn-${paneId}`).classList.add('active');
+        };
 
-            get(ref(db, `users/${cleanKey}`)).then(snap => {
-                if(!snap.exists()) {
-                    // Register
-                    update(ref(db, `users/${cleanKey}`), { email: email, password: pass, displayName: email.split('@')[0], privacyEnabled: false })
-                        .then(() => finalizeLogin(email));
+        // Persistent Security Logic: Failed Attempts and Lockout Trackers
+        window.login = function(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('authEmail').value.trim();
+            const passwordInput = document.getElementById('authPassword').value;
+
+            if(!emailInput || !emailInput.includes('@')) {
+                alert("Please provide a valid comprehensive email layout address.");
+                return;
+            }
+
+            const cleanKey = escapeEmailPath(emailInput);
+            const now = Date.now();
+
+            // Evaluate persistent browser storage restrictions first
+            const localLockoutTime = parseInt(localStorage.getItem(`lockout_until_${cleanKey}`)) || 0;
+            if(now < localLockoutTime) {
+                enforceUIVisualLockout(localLockoutTime);
+                return;
+            }
+
+            const userRef = ref(db, `users/${cleanKey}`);
+            get(userRef).then((snapshot) => {
+                if(!snapshot.exists()) {
+                    // Registration Flow
+                    const registrationPayload = {
+                        email: emailInput,
+                        password: passwordInput,
+                        displayName: emailInput.split('@')[0],
+                        backupEmail: "",
+                        phoneNumber: "",
+                        notifyNewUploads: true,
+                        notifyLikesComments: true,
+                        linkRoblox: "",
+                        linkYoutube: "",
+                        linkFacebook: ""
+                    };
+                    update(userRef, registrationPayload).then(() => {
+                        localStorage.removeItem(`failed_attempts_${cleanKey}`);
+                        localStorage.removeItem(`lockout_until_${cleanKey}`);
+                        processSuccessfulAuthentication(emailInput);
+                    });
                 } else {
-                    if(snap.val().password === pass) finalizeLogin(email);
-                    else alert("Security Exception: Invalid Password.");
+                    // Existing Profile Verification Check
+                    const accountData = snapshot.val();
+                    if(accountData.password === passwordInput) {
+                        localStorage.removeItem(`failed_attempts_${cleanKey}`);
+                        localStorage.removeItem(`lockout_until_${cleanKey}`);
+                        processSuccessfulAuthentication(emailInput);
+                    } else {
+                        // Increment Brute Force Attack Count metrics
+                        let currentFailures = (parseInt(localStorage.getItem(`failed_attempts_${cleanKey}`)) || 0) + 1;
+                        localStorage.setItem(`failed_attempts_${cleanKey}`, currentFailures);
+
+                        let waitDurationMs = 0;
+                        if(currentFailures >= 10) {
+                            waitDurationMs = 24 * 60 * 60 * 1000; // 24-Hour Cooldown Limit Rule
+                            alert("Security Violation Block triggered: 10 failed identification signatures. This terminal is locked for 24 hours.");
+                        } else {
+                            waitDurationMs = 30 * 1000; // Standard 30-Second Retrial Lockout Check
+                            alert("Incorrect login password token verification match. Please check credentials and try again.");
+                        }
+
+                        const targetLockoutExpiration = Date.now() + waitDurationMs;
+                        localStorage.setItem(`lockout_until_${cleanKey}`, targetLockoutExpiration);
+                        enforceUIVisualLockout(targetLockoutExpiration);
+                    }
+                }
+            }).catch(err => alert("Identification Portal Network Failure: " + err.message));
+        };
+
+        function enforceUIVisualLockout(lockoutEpoch) {
+            const container = document.getElementById('loginLockoutContainer');
+            container.className = 'lockout-msg';
+            
+            clearInterval(activeLockoutIntervalId);
+            
+            function updateMessage() {
+                const totalSecondsLeft = Math.ceil((lockoutEpoch - Date.now()) / 1000);
+                if(totalSecondsLeft <= 0) {
+                    container.className = 'hidden';
+                    clearInterval(activeLockoutIntervalId);
+                } else {
+                    if (totalSecondsLeft > 3600) {
+                        const hours = Math.floor(totalSecondsLeft / 3600);
+                        const mins = Math.floor((totalSecondsLeft % 3600) / 60);
+                        container.textContent = `AUTHENTICATION LOCKED: Security system alert. Please retry in ${hours}h ${mins}m.`;
+                    } else {
+                        container.textContent = `AUTHENTICATION RETRY DELAY ACTIVE: Please wait ${totalSecondsLeft} seconds before verifying.`;
+                    }
+                }
+            }
+            updateMessage();
+            activeLockoutIntervalId = setInterval(updateMessage, 1000);
+        }
+
+        function processSuccessfulAuthentication(verifiedEmail) {
+            localStorage.setItem('roblox_user_email', verifiedEmail);
+            currentUser = verifiedEmail;
+            updateAuthUI();
+            window.closeModal('loginModal');
+            window.updateInboxBadge();
+            window.loadProfilePaneFields();
+            window.switchTab('view');
+            alert("Identification confirmed. Welcome back.");
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('roblox_user_email');
+            currentUser = "";
+            currentProfileMetadata = null;
+            updateAuthUI();
+            window.switchTab('view');
+            window.updateInboxBadge();
+            window.renderItems();
+        };
+
+        function getCreatorLabelHtml(email) {
+            if(!email) return "Unknown Trader";
+            const cleanEmail = email.toLowerCase().trim();
+            
+            let nameString = email;
+            if (currentProfileMetadata && currentUser && cleanEmail === currentUser.toLowerCase().trim() && currentProfileMetadata.displayName) {
+                nameString = currentProfileMetadata.displayName;
+            }
+
+            if(verifiedEmails.includes(cleanEmail)) {
+                return `<strong>${nameString}</strong> <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">`;
+            }
+            return `<strong>${nameString}</strong>`;
+        }
+
+        function getCommentCreatorLabelHtml(email, fallbackName) {
+            if(!email) return "Trader";
+            const cleanEmail = email.toLowerCase().trim();
+            const cleanLabel = fallbackName || email.split('@')[0];
+            
+            if(verifiedEmails.includes(cleanEmail)) {
+                return `<span style="color: var(--accent-color); font-weight:bold;">${cleanLabel}</span> <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">`;
+            }
+            return `<span style="color: var(--accent-color); font-weight:bold;">${cleanLabel}</span>`;
+        }
+
+        function updateAuthUI() {
+            const greeting = document.getElementById('userGreeting');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const uploadIdentityInput = document.getElementById('formUserIdentity');
+
+            if(currentUser) {
+                greeting.innerHTML = `Session: ${getCreatorLabelHtml(currentUser)}`;
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                uploadIdentityInput.value = currentUser; 
+            } else {
+                greeting.textContent = "";
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                uploadIdentityInput.value = "";
+            }
+        }
+
+        // Account Profile & Database Form Integration Logic
+        window.loadProfilePaneFields = function() {
+            if(!currentUser) return;
+            const cleanKey = escapeEmailPath(currentUser);
+            get(ref(db, `users/${cleanKey}`)).then((snapshot) => {
+                if(snapshot.exists()) {
+                    const data = snapshot.val();
+                    currentProfileMetadata = data;
+                    
+                    document.getElementById('settingsDisplayName').value = data.displayName || "";
+                    document.getElementById('settingsBackupEmail').value = data.backupEmail || "";
+                    document.getElementById('settingsPhoneNumber').value = data.phoneNumber || "";
+                    
+                    document.getElementById('notifyNewUploads').checked = data.notifyNewUploads !== false;
+                    document.getElementById('notifyLikesComments').checked = data.notifyLikesComments !== false;
+                    
+                    document.getElementById('linkRoblox').value = data.linkRoblox || "";
+                    document.getElementById('linkYoutube').value = data.linkYoutube || "";
+                    document.getElementById('linkFacebook').value = data.linkFacebook || "";
+                    
+                    updateAuthUI();
                 }
             });
         };
 
-        function finalizeLogin(email) {
-            currentUser = email;
-            localStorage.setItem('roblox_user_email', email);
-            window.closeModal('loginModal');
-            updateUIState();
-            window.switchTab('view');
-        }
-
-        window.logout = function() {
-            currentUser = "";
-            localStorage.removeItem('roblox_user_email');
-            updateUIState();
-            window.switchTab('view');
-        };
-
-        function updateUIState() {
-            const greet = document.getElementById('userGreeting');
-            if(currentUser) {
-                const profile = usersMap[escapeEmailPath(currentUser)] || {};
-                greet.innerHTML = `Welcome, <span style="color:var(--accent-primary); cursor:pointer;" onclick="window.viewUserProfile('${currentUser}')">${profile.displayName || currentUser.split('@')[0]}</span>`;
-                document.getElementById('loginBtn').classList.add('hidden');
-                document.getElementById('logoutBtn').classList.remove('hidden');
-                
-                // Admin Checks
-                if(currentUser === ADMIN_EMAIL) document.getElementById('adminNavGroup').classList.remove('hidden');
-                else document.getElementById('adminNavGroup').classList.add('hidden');
-
-                // Pre-fill settings
-                if(profile.displayName) {
-                    document.getElementById('settingsDisplayName').value = profile.displayName || "";
-                    document.getElementById('settingsPhoneNumber').value = profile.phoneNumber || "";
-                    document.getElementById('settingsSocials').value = profile.socials || "";
-                    document.getElementById('settingsPrivacyToggle').checked = profile.privacyEnabled || false;
-                    document.getElementById('settingsProfilePicData').value = profile.profilePic || "";
-                    document.getElementById('settingsProfilePicPreview').src = profile.profilePic || `https://ui-avatars.com/api/?name=${profile.displayName || 'U'}&background=random`;
-                }
-
-            } else {
-                greet.innerHTML = "";
-                document.getElementById('loginBtn').classList.remove('hidden');
-                document.getElementById('logoutBtn').classList.add('hidden');
-                document.getElementById('adminNavGroup').classList.add('hidden');
-            }
-        }
-
-        // --- Profile Ecosystem ---
         window.saveProfileSettings = function(e) {
             e.preventDefault();
             if(!currentUser) return;
             const cleanKey = escapeEmailPath(currentUser);
             
+            const pName = document.getElementById('settingsDisplayName').value.trim();
+            const pBackup = document.getElementById('settingsBackupEmail').value.trim();
+            const pPhone = document.getElementById('settingsPhoneNumber').value.trim();
+            
             update(ref(db, `users/${cleanKey}`), {
-                displayName: document.getElementById('settingsDisplayName').value,
-                phoneNumber: document.getElementById('settingsPhoneNumber').value,
-                socials: document.getElementById('settingsSocials').value,
-                privacyEnabled: document.getElementById('settingsPrivacyToggle').checked,
-                profilePic: document.getElementById('settingsProfilePicData').value
-            }).then(() => alert("Profile Architecture Synced."));
-        };
-
-        window.viewUserProfile = function(email) {
-            const cleanKey = escapeEmailPath(email);
-            const user = usersMap[cleanKey] || { email: email, displayName: email.split('@')[0] };
-            const isVerified = verifiedEmailsDb[cleanKey] || email === ADMIN_EMAIL;
-            
-            document.getElementById('viewProfName').textContent = user.displayName;
-            document.getElementById('viewProfPic').src = user.profilePic || `https://ui-avatars.com/api/?name=${user.displayName}&background=random`;
-            
-            let badges = "";
-            if(isVerified) badges += `<img src="${VERIFIED_BADGE_URL}" class="verified-badge" title="Verified Creator"> <span style="color:var(--accent-primary); font-size:12px; font-weight:bold;">Verified Status</span>`;
-            if(email === ADMIN_EMAIL) badges += `<span class="admin-tag">ADMINISTRATOR</span>`;
-            document.getElementById('viewProfBadges').innerHTML = badges;
-
-            let detailsHtml = "";
-            if(user.privacyEnabled && currentUser !== email && currentUser !== ADMIN_EMAIL) {
-                detailsHtml = `
-                    <div style="text-align:center; padding: 30px 0; color:var(--text-muted);">
-                        <div style="font-size:30px; margin-bottom:10px;">🔒</div>
-                        This user has strictly locked their communication vectors via Privacy Mode.
-                    </div>
-                `;
-            } else {
-                detailsHtml = `
-                    <div class="profile-detail-row">
-                        <span class="profile-detail-label">Network Email</span>
-                        <span class="profile-detail-val">${email}</span>
-                    </div>
-                    <div class="profile-detail-row">
-                        <span class="profile-detail-label">Encrypted Phone</span>
-                        <span class="profile-detail-val">${user.phoneNumber || "Not Configured"}</span>
-                    </div>
-                    <div class="profile-detail-row">
-                        <span class="profile-detail-label">Cross-Platform Link</span>
-                        <span class="profile-detail-val">${user.socials ? `<a href="${user.socials.startsWith('http') ? user.socials : 'https://'+user.socials}" target="_blank" style="color:var(--accent-primary);">View Profile</a>` : "Not Configured"}</span>
-                    </div>
-                `;
-            }
-            document.getElementById('viewProfDetailsContainer').innerHTML = detailsHtml;
-            window.openModal('profileModal');
-        };
-
-        // --- Admin Controls ---
-        window.adminVerifyUser = function() {
-            if(currentUser !== ADMIN_EMAIL) return;
-            const targetEmail = document.getElementById('adminVerifyInput').value.trim();
-            if(!targetEmail) return;
-            set(ref(db, `verified_users/${escapeEmailPath(targetEmail)}`), true).then(() => {
-                alert(`Official Verification Badge granted to ${targetEmail}`);
-                document.getElementById('adminVerifyInput').value = "";
+                displayName: pName,
+                backupEmail: pBackup,
+                phoneNumber: pPhone
+            }).then(() => {
+                alert("Account metadata fields synchronized safely.");
+                window.loadProfilePaneFields();
             });
         };
 
-        window.adminSetUpdate = function() {
-            if(currentUser !== ADMIN_EMAIL) return;
-            const timeStr = document.getElementById('adminUpdateTime').value;
-            const versionStr = document.getElementById('adminUpdateVersion').value;
-            const linkStr = document.getElementById('adminUpdateLink').value;
+        window.updateUserPassword = function(e) {
+            e.preventDefault();
+            if(!currentUser) return;
             
-            if(!timeStr || !versionStr || !linkStr) return alert("Fill all update criteria metrics.");
+            const currentPassInput = document.getElementById('securityCurrentPassword').value;
+            const newPassInput = document.getElementById('securityNewPassword').value;
+            const cleanKey = escapeEmailPath(currentUser);
             
-            set(ref(db, `global_settings/update`), {
-                timestamp: new Date(timeStr).getTime(),
-                versionText: versionStr,
-                downloadLink: linkStr
-            }).then(() => alert("Global Update Sequence Initialized."));
+            const targetRef = ref(db, `users/${cleanKey}`);
+            get(targetRef).then((snapshot) => {
+                if(snapshot.exists() && snapshot.val().password === currentPassInput) {
+                    update(targetRef, { password: newPassInput }).then(() => {
+                        alert("Security credentials modified successfully.");
+                        document.getElementById('securityCurrentPassword').value = "";
+                        document.getElementById('securityNewPassword').value = "";
+                    });
+                } else {
+                    alert("Verification mismatch exception: Active structural validation password line is incorrect.");
+                }
+            });
         };
 
-        // Global Listeners for User Data, Verifications, and Updates
-        onValue(ref(db, 'users'), snap => { if(snap.exists()) { usersMap = snap.val(); updateUIState(); window.renderItems(); }});
-        onValue(ref(db, 'verified_users'), snap => { if(snap.exists()) { verifiedEmailsDb = snap.val(); window.renderItems(); }});
-        
-        onValue(ref(db, 'global_settings/update'), snap => {
-            if(snap.exists()) {
-                globalUpdateConfig = snap.val();
-                document.getElementById('globalUpdateWidget').classList.remove('hidden');
-                startCountdownLoop();
-            } else {
-                document.getElementById('globalUpdateWidget').classList.add('hidden');
-            }
-        });
+        window.saveNotificationToggles = function() {
+            if(!currentUser) return;
+            const cleanKey = escapeEmailPath(currentUser);
+            update(ref(db, `users/${cleanKey}`), {
+                notifyNewUploads: document.getElementById('notifyNewUploads').checked,
+                notifyLikesComments: document.getElementById('notifyLikesComments').checked
+            });
+        };
 
-        function startCountdownLoop() {
-            if(updateInterval) clearInterval(updateInterval);
-            updateInterval = setInterval(() => {
-                if(!globalUpdateConfig) return;
-                const now = Date.now();
-                const diff = globalUpdateConfig.timestamp - now;
-                const display = document.getElementById('updateCountdown');
-                const btn = document.getElementById('updateLinkBtn');
-                const txt = document.getElementById('updateTimerText');
+        window.saveLinkedAccounts = function(e) {
+            e.preventDefault();
+            if(!currentUser) return;
+            const cleanKey = escapeEmailPath(currentUser);
+            
+            update(ref(db, `users/${cleanKey}`), {
+                linkRoblox: document.getElementById('linkRoblox').value.trim(),
+                linkYoutube: document.getElementById('linkYoutube').value.trim(),
+                linkFacebook: document.getElementById('linkFacebook').value.trim()
+            }).then(() => alert("Cross-platform networking profiles synchronized."));
+        };
 
-                if(diff <= 0) {
-                    txt.textContent = "UPDATE DEPLOYED LIVE:";
-                    display.textContent = globalUpdateConfig.versionText;
-                    display.style.color = "var(--accent-primary)";
-                    btn.href = globalUpdateConfig.downloadLink;
-                    btn.classList.remove('hidden');
-                    clearInterval(updateInterval);
-                } else {
-                    txt.textContent = "Deploying in:";
-                    display.style.color = "#fff";
-                    btn.classList.add('hidden');
-                    
-                    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                    const m = Math.floor((diff / 1000 / 60) % 60);
-                    const s = Math.floor((diff / 1000) % 60);
-                    display.textContent = `${d>0?d+'d ':''}${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                }
-            }, 1000);
-        }
+        window.submitPlatformBug = function(e) {
+            e.preventDefault();
+            const textDesc = document.getElementById('bugDescription').value.trim();
+            if(!textDesc) return;
+            
+            const activeReporter = currentUser || "Anonymous_Visitor";
+            
+            // Build a specialized alert notification block directly inside the target developer's inbox structure
+            const bugPayload = {
+                itemId: "BUG_TICKET",
+                itemName: "🚨 EMERGENCY PLATFORM BUG REPORT",
+                to: "devxdragon3@gmail.com",
+                from: activeReporter,
+                status: "pending",
+                timestamp: Date.now()
+            };
+            
+            push(ref(db, 'inbox'), bugPayload).then(() => {
+                // Duplicate into an isolated system error bucket for logs redundancy
+                push(ref(db, 'bug_reports'), {
+                    reportedBy: activeReporter,
+                    description: textDesc,
+                    timestamp: Date.now()
+                }).then(() => {
+                    alert("Technical exception ticket dispatched to devxdragon3@gmail.com's inbox records.");
+                    document.getElementById('bugDescription').value = "";
+                });
+            });
+        };
 
-        // --- Listing Logistics ---
         window.updateFormFields = function() {
-            const game = document.getElementById('formGameType').value;
-            const config = gameItemsDatabase[game];
-            if(!config) return;
-
-            document.getElementById('labelWorth').textContent = config.fields.worth;
+            const selectedGame = document.getElementById('formGameType').value;
+            const config = gameItemsDatabase[selectedGame];
+            
+            document.getElementById('labelWorth').textContent = config.fields.worth + ":";
             document.getElementById('fieldWorth').style.display = config.fields.worth ? 'block' : 'none';
             document.getElementById('fieldKg').style.display = config.fields.kg ? 'block' : 'none';
             document.getElementById('fieldMutation').style.display = config.fields.mutation ? 'block' : 'none';
 
-            const sel = document.getElementById('formItemName');
-            sel.innerHTML = config.items.map(i => `<option value="${i}">${i}</option>`).join('');
-            sel.innerHTML += `<option value="CUSTOM">➕ Custom Structural Item</option>`;
+            const itemDropdown = document.getElementById('formItemName');
+            itemDropdown.innerHTML = "";
+            
+            config.items.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                itemDropdown.appendChild(opt);
+            });
+
+            let customOpt = document.createElement('option');
+            customOpt.value = "CUSTOM_ITEM_VAL";
+            customOpt.textContent = "➕ Other / Custom Item (Type custom name below)";
+            itemDropdown.appendChild(customOpt);
+
             window.checkCustomItem();
         };
 
         window.checkCustomItem = function() {
-            const isCustom = document.getElementById('formItemName').value === "CUSTOM";
-            document.getElementById('fieldCustomItem').classList.toggle('hidden', !isCustom);
-            document.getElementById('formCustomItemName').required = isCustom;
+            const dropdown = document.getElementById('formItemName');
+            const customItemField = document.getElementById('fieldCustomItem');
+            const customInput = document.getElementById('formCustomItemName');
+
+            if(dropdown.value === "CUSTOM_ITEM_VAL") {
+                customItemField.classList.remove('hidden');
+                customInput.required = true;
+            } else {
+                customItemField.classList.add('hidden');
+                customInput.required = false;
+                customInput.value = "";
+            }
         };
 
-        window.previewImage = function(event, targetInputId) {
+        window.previewImage = function(event) {
             const file = event.target.files[0];
-            if(!file) return;
+            if (!file) return;
             const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById(targetInputId).value = e.target.result;
-                if(targetInputId === 'settingsProfilePicData') {
-                    document.getElementById('settingsProfilePicPreview').src = e.target.result;
-                }
-            };
+            reader.onload = function(e){
+                document.getElementById('imageDataUrl').value = e.target.result;
+            }
             reader.readAsDataURL(file);
         };
 
-        onValue(ref(db, 'trades'), snap => {
-            const d = snap.val();
-            trades = d ? Object.keys(d).map(k => ({id: k, ...d[k]})).reverse() : [];
-            if(!document.getElementById('tab-view').classList.contains('hidden')) window.renderItems();
+        onValue(ref(db, 'trades'), (snapshot) => {
+            const data = snapshot.val();
+            trades = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
+            window.renderItems();
+        });
+
+        onValue(ref(db, 'inbox'), (snapshot) => {
+            const data = snapshot.val();
+            inbox = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
+            window.updateInboxBadge();
+            if (!document.getElementById('inboxSection').classList.contains('hidden')) {
+                window.renderInbox();
+            }
         });
 
         window.handleUpload = function(e) {
             e.preventDefault();
-            const payload = {
-                creator: currentUser,
-                game: document.getElementById('formGameType').value,
-                name: document.getElementById('formItemName').value === "CUSTOM" ? document.getElementById('formCustomItemName').value : document.getElementById('formItemName').value,
-                stock: parseInt(document.getElementById('formStock').value),
-                image: document.getElementById('imageDataUrl').value || "📦",
-                worth: document.getElementById('formWorth').value || "None",
-                kg: document.getElementById('formKg').value || "N/A",
-                mutation: document.getElementById('formMutation').value || "N/A",
-                psLink: document.getElementById('formPsLink').value || "",
-                timestamp: Date.now(),
-                likes: 0
-            };
-            push(ref(db, 'trades'), payload).then(() => {
-                document.getElementById('uploadForm').reset();
-                document.getElementById('imageDataUrl').value = "";
-                alert("Listing Data Pushed to Database Successfully.");
-                window.switchTab('view');
-            });
-        };
-
-        // UI Generator Utilities
-        function renderUserIdentity(email) {
-            const cleanKey = escapeEmailPath(email);
-            const user = usersMap[cleanKey] || { displayName: email.split('@')[0] };
-            const isVerif = verifiedEmailsDb[cleanKey] || email === ADMIN_EMAIL;
-            const profPic = user.profilePic || `https://ui-avatars.com/api/?name=${user.displayName}&background=random`;
-            
-            return {
-                html: `<div class="creator-info">
-                        <span class="creator-name" onclick="window.viewUserProfile('${email}')">${user.displayName} ${isVerif ? `<img src="${VERIFIED_BADGE_URL}" class="verified-badge">` : ''}</span>
-                       </div>`,
-                avatarUrl: profPic
-            };
-        }
-
-        window.renderItems = function() {
-            const container = document.getElementById('itemGrid');
-            const filter = document.getElementById('gameFilter').value;
-            const search = document.getElementById('userSearchBar').value.toLowerCase();
-            container.innerHTML = "";
-
-            let filtered = trades.filter(t => (filter === 'All' || t.game === filter) && (!search || (t.name.toLowerCase().includes(search) || t.creator.toLowerCase().includes(search))));
-
-            if(filtered.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">Database structural query returned no matches.</div>`;
+            if(!currentUser) {
+                alert("Verification identity layout mismatch error.");
                 return;
             }
 
-            filtered.forEach(item => {
-                const owner = item.creator;
-                const identity = renderUserIdentity(owner);
-                const isMine = owner === currentUser;
-                const stock = item.stock || 0;
-                
-                let imgHtml = item.image.startsWith('data:') || item.image.startsWith('http') 
-                    ? `<img src="${item.image}">` : `<span>${item.image}</span>`;
-
-                const comments = item.comments ? Object.values(item.comments) : [];
-                let commentsHtml = comments.map(c => {
-                    const cIdent = renderUserIdentity(c.user);
-                    return `<div class="comment">
-                        <img src="${cIdent.avatarUrl}" class="comment-avatar" onclick="window.viewUserProfile('${c.user}')">
-                        <div class="comment-bubble">
-                            <div class="comment-author" onclick="window.viewUserProfile('${c.user}')">${usersMap[escapeEmailPath(c.user)]?.displayName || c.user.split('@')[0]} ${verifiedEmailsDb[escapeEmailPath(c.user)]? '✓' : ''}</div>
-                            ${c.text}
-                        </div>
-                    </div>`;
-                }).join('');
-
-                container.innerHTML += `
-                    <div class="item-card">
-                        <div class="card-header">
-                            <img src="${identity.avatarUrl}" class="creator-avatar" onclick="window.viewUserProfile('${owner}')">
-                            ${identity.html}
-                            <span class="post-time" style="margin-left:auto;">${new Date(item.timestamp).toLocaleDateString()}</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-image-box">${imgHtml}</div>
-                            <div class="card-details">
-                                <div class="item-badge">${item.game}</div>
-                                <h3 class="item-title">${item.name}</h3>
-                                <div class="stat-grid">
-                                    <div class="stat-item"><span>Stock Engine</span><strong style="color:var(--accent-primary);">${stock}</strong></div>
-                                    <div class="stat-item"><span>Value Matrix</span><strong>${item.worth}</strong></div>
-                                    <div class="stat-item"><span>Physical Weight</span><strong>${item.kg}</strong></div>
-                                    <div class="stat-item"><span>Genetic Trait</span><strong>${item.mutation}</strong></div>
-                                </div>
-                                ${item.psLink ? `<a href="${item.psLink}" target="_blank" class="action-btn" style="background:#1877F2; color:#fff; text-decoration:none; justify-content:center; margin-bottom:10px;">🎮 Join Configured Server</a>` : ''}
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="action-btn" onclick="window.toggleLike('${item.id}')">
-                                🤍 Like (${item.likes || 0})
-                            </button>
-                            <button class="action-btn" onclick="document.getElementById('c-inp-${item.id}').focus()">💬 Discuss</button>
-                            
-                            ${currentUser && !isMine && stock > 0 ? `<button class="action-btn trade-btn" onclick="window.sendTradeReq('${item.id}')">🤝 Transact Offer</button>` : ''}
-                            ${isMine ? `<button class="action-btn" style="margin-left:auto; color:var(--decline-color);" onclick="window.delListing('${item.id}')">🗑️ Remove</button>` : ''}
-                            ${stock <= 0 ? `<span style="margin-left:auto; color:var(--decline-color); font-weight:bold;">OUT OF STOCK</span>` : ''}
-                        </div>
-                        <div class="comments-section">
-                            <form class="comment-input-row" onsubmit="window.postComment(event, '${item.id}')">
-                                <img src="${currentUser ? (usersMap[escapeEmailPath(currentUser)]?.profilePic || `https://ui-avatars.com/api/?name=U`) : 'https://ui-avatars.com/api/?name=?'}" class="comment-avatar">
-                                <input type="text" id="c-inp-${item.id}" class="comment-input" placeholder="Initiate communication vector..." ${!currentUser?'disabled':''}>
-                                <button type="submit" class="action-btn" style="background:var(--accent-primary); color:#000;">Post</button>
-                            </form>
-                            <div class="comment-list">${commentsHtml}</div>
-                        </div>
-                    </div>
-                `;
-            });
-        };
-
-        window.toggleLike = function(id) {
-            if(!currentUser) return alert("Session not verified.");
-            const item = trades.find(t => t.id === id);
-            if(item) update(ref(db, `trades/${id}`), { likes: (item.likes || 0) + 1 });
-        };
-
-        window.postComment = function(e, id) {
-            e.preventDefault();
-            if(!currentUser) return alert("Session not verified.");
-            const inp = document.getElementById(`c-inp-${id}`);
-            if(!inp.value.trim()) return;
-            const item = trades.find(t => t.id === id);
-            let comms = item.comments ? Object.values(item.comments) : [];
-            comms.push({ user: currentUser, text: inp.value.trim(), ts: Date.now() });
-            update(ref(db, `trades/${id}`), { comments: comms }).then(() => inp.value = "");
-        };
-
-        window.delListing = function(id) {
-            if(confirm("Confirm destructive wipe of this listing from structural memory?")) remove(ref(db, `trades/${id}`));
-        };
-
-        // --- Inbox & Trade Routing ---
-        onValue(ref(db, 'inbox'), snap => {
-            const d = snap.val();
-            inbox = d ? Object.keys(d).map(k => ({id: k, ...d[k]})).reverse() : [];
-            if(currentUser) {
-                const p = inbox.filter(i => i.to === currentUser && i.status === 'pending').length;
-                document.getElementById('inboxBadge').textContent = p > 0 ? `(${p})` : "";
+            const game = document.getElementById('formGameType').value;
+            let name = document.getElementById('formItemName').value;
+            
+            if(name === "CUSTOM_ITEM_VAL") {
+                name = document.getElementById('formCustomItemName').value.trim();
+                if(!name) {
+                    alert("Please specify custom item name text metrics.");
+                    return;
+                }
             }
-            if(!document.getElementById('tab-inbox').classList.contains('hidden')) window.renderInbox();
-        });
 
-        window.sendTradeReq = function(id) {
-            const item = trades.find(t => t.id === id);
+            const stockCount = parseInt(document.getElementById('formStock').value) || 1;
+            let imageStr = document.getElementById('imageDataUrl').value;
+            
+            if (!imageStr) {
+                if (editingListingId) {
+                    const originalItem = trades.find(t => t.id === editingListingId);
+                    imageStr = originalItem ? originalItem.image : "📦";
+                } else {
+                    imageStr = "📦";
+                }
+            }
+
+            const worth = document.getElementById('formWorth').value.trim();
+            const kg = document.getElementById('formKg').value.trim();
+            const mutation = document.getElementById('formMutation').value.trim();
+            const psLink = document.getElementById('formPsLink').value;
+
+            const targetPayload = {
+                creator: currentUser,
+                game: game,
+                name: name,
+                stock: stockCount,
+                image: imageStr,
+                worth: worth || "None",
+                kg: kg || "N/A->Seed",
+                mutation: mutation || "N/A->Seed",
+                psLink: psLink || "",
+                timestamp: Date.now()
+            };
+
+            if (editingListingId) {
+                const existingItem = trades.find(t => t.id === editingListingId);
+                targetPayload.likes = existingItem ? (existingItem.likes || 0) : 0;
+                if (existingItem && existingItem.likedBy) targetPayload.likedBy = existingItem.likedBy;
+                if (existingItem && existingItem.comments) targetPayload.comments = existingItem.comments;
+
+                update(ref(db, `trades/${editingListingId}`), targetPayload)
+                    .then(() => {
+                        finalizeReset();
+                        alert("Item Successfully Updated!");
+                    }).catch(err => alert("Sync Failed: " + err.message));
+            } else {
+                targetPayload.likes = 0;
+                push(ref(db, 'trades'), targetPayload)
+                    .then(() => {
+                        finalizeReset();
+                        alert("Item Successfully Uploaded to Firebase!");
+                    }).catch(err => alert("Upload Failed: " + err.message));
+            }
+
+            function finalizeReset() {
+                editingListingId = null;
+                document.getElementById('uploadForm').reset();
+                document.getElementById('imageDataUrl').value = "";
+                window.switchTab('view');
+            }
+        };
+
+        window.startEditListing = function(itemId) {
+            const item = trades.find(t => t.id === itemId);
+            if (!item) return;
+
+            editingListingId = itemId;
+            window.switchTab('upload');
+            
+            document.getElementById('uploadFormHeader').textContent = "Modify Trade Item Metrics";
+            document.getElementById('formSubmitBtn').textContent = "Save Changes & Apply Updates";
+
+            document.getElementById('formGameType').value = item.game;
+            window.updateFormFields();
+
+            const itemDropdown = document.getElementById('formItemName');
+            const config = gameItemsDatabase[item.game];
+            if (config && config.items.includes(item.name)) {
+                itemDropdown.value = item.name;
+            } else {
+                itemDropdown.value = "CUSTOM_ITEM_VAL";
+                window.checkCustomItem();
+                document.getElementById('formCustomItemName').value = item.name;
+            }
+
+            document.getElementById('formStock').value = item.stock;
+            document.getElementById('imageDataUrl').value = (item.image && item.image.startsWith('data:')) ? item.image : "";
+            document.getElementById('formWorth').value = item.worth === "None" ? "" : (item.worth || "");
+            document.getElementById('formKg').value = item.kg === "N/A->Seed" ? "" : (item.kg || "");
+            document.getElementById('formMutation').value = item.mutation === "N/A->Seed" ? "" : (item.mutation || "");
+            document.getElementById('formPsLink').value = item.psLink || "";
+        };
+
+        window.deleteListing = function(itemId) {
+            if (!confirm("Are you completely sure you want to remove this transaction block from Firebase logs permanently?")) return;
+            remove(ref(db, `trades/${itemId}`)).catch(err => alert("Error deleting: " + err.message));
+        };
+
+        window.toggleLike = function(itemId) {
+            if(!currentUser) {
+                alert("Login required to interact with listings.");
+                return;
+            }
+            const item = trades.find(t => t.id === itemId);
+            if(item) {
+                let likedByArray = item.likedBy ? Object.values(item.likedBy) : [];
+                let likesCount = item.likes || 0;
+                const index = likedByArray.indexOf(currentUser);
+
+                if(index === -1) {
+                    likedByArray.push(currentUser);
+                    likesCount += 1;
+                } else {
+                    likedByArray.splice(index, 1);
+                    likesCount = Math.max(0, likesCount - 1);
+                }
+
+                update(ref(db, `trades/${itemId}`), {
+                    likes: likesCount,
+                    likedBy: likedByArray.length > 0 ? likedByArray : null
+                });
+            }
+        };
+
+        window.submitComment = function(e, itemId) {
+            e.preventDefault();
+            if(!currentUser) {
+                alert("Login required to submit messages.");
+                return;
+            }
+            const input = document.getElementById(`commentInput-${itemId}`);
+            const text = input.value.trim();
+            if(!text) return;
+
+            const item = trades.find(t => t.id === itemId);
+            if(item) {
+                let commentsArray = item.comments ? Object.values(item.comments) : [];
+                
+                // Track display nickname variant if config keys align cleanly
+                let currentDisplayNameSeed = currentUser.split('@')[0];
+                if(currentProfileMetadata && currentProfileMetadata.displayName) {
+                    currentDisplayNameSeed = currentProfileMetadata.displayName;
+                }
+
+                commentsArray.push({
+                    user: currentUser,
+                    userDisplayName: currentDisplayNameSeed,
+                    text: text,
+                    timestamp: new Date().toLocaleTimeString()
+                });
+
+                update(ref(db, `trades/${itemId}`), { comments: commentsArray }).then(() => { input.value = ""; });
+            }
+        };
+
+        window.sendTradeRequest = function(itemId) {
+            if(!currentUser) {
+                alert("Log in to send trade offers.");
+                window.openModal('loginModal');
+                return;
+            }
+            const item = trades.find(t => t.id === itemId);
             if(!item) return;
-            push(ref(db, 'inbox'), { itemId: id, itemName: item.name, to: item.creator, from: currentUser, status: 'pending', timestamp: Date.now() })
-                .then(() => alert(`Transaction blueprint forwarded to ${item.creator}`));
+
+            if(item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim()) {
+                alert("You cannot trade with yourself.");
+                return;
+            }
+
+            const newOffer = {
+                itemId: item.id,
+                itemName: item.name,
+                to: item.creator,
+                from: currentUser,
+                status: 'pending',
+                timestamp: Date.now()
+            };
+
+            push(ref(db, 'inbox'), newOffer).then(() => alert(`Trade offer sent directly to ${item.creator}'s inbox!`));
+        };
+
+        window.processTradeOffer = function(offerId, action) {
+            const offer = inbox.find(i => i.id === offerId);
+            if(!offer) return;
+
+            if(action === 'accept') {
+                if(offer.itemId === "BUG_TICKET") {
+                    update(ref(db, `inbox/${offerId}`), { status: 'reviewed' });
+                    alert("Bug Ticket marked as reviewed inside technical data logs.");
+                    return;
+                }
+
+                const item = trades.find(t => t.id === offer.itemId);
+                if(!item) {
+                    alert("Item no longer exists on the database network.");
+                    update(ref(db, `inbox/${offerId}`), { status: 'expired' });
+                } else if((item.stock || 0) <= 0) {
+                    alert("Transaction failed: This item has no stock available!");
+                    update(ref(db, `inbox/${offerId}`), { status: 'out-of-stock' });
+                } else {
+                    const finalStock = item.stock - 1;
+                    update(ref(db, `trades/${offer.itemId}`), { stock: finalStock }).then(() => {
+                        update(ref(db, `inbox/${offerId}`), { status: 'accepted' });
+                        alert(`Trade Accepted! Stock updated successfully.`);
+                    });
+                }
+            } else {
+                const targetStatus = offer.itemId === "BUG_TICKET" ? "dismissed" : "declined";
+                update(ref(db, `inbox/${offerId}`), { status: targetStatus }).then(() => alert("Request processed."));
+            }
+        };
+
+        window.updateInboxBadge = function() {
+            if(!currentUser) {
+                document.getElementById('inboxBadge').textContent = "";
+                return;
+            }
+            const pendingCount = inbox.filter(i => i.to && i.to.toLowerCase().trim() === currentUser.toLowerCase().trim() && i.status === 'pending').length;
+            document.getElementById('inboxBadge').textContent = pendingCount > 0 ? `(${pendingCount})` : "";
         };
 
         window.renderInbox = function() {
             const container = document.getElementById('inboxGrid');
-            const myInbox = inbox.filter(i => i.to === currentUser);
+            container.innerHTML = "";
             
-            if(myInbox.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">Secure inbox empty.</div>`; return;
+            const userOffers = inbox.filter(i => i.to && i.to.toLowerCase().trim() === currentUser.toLowerCase().trim());
+
+            if(userOffers.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">Your messaging inbox is currently empty.</div>`;
+                return;
             }
 
-            container.innerHTML = myInbox.map(offer => `
-                <div style="background:var(--bg-panel); padding:20px; border-radius:12px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <div style="color:var(--text-muted); font-size:12px; margin-bottom:5px;">From: <span style="color:var(--accent-primary); font-weight:bold; cursor:pointer;" onclick="window.viewUserProfile('${offer.from}')">${offer.from}</span></div>
-                        <div style="font-size:16px;">Target Interaction Request: <strong>${offer.itemName}</strong></div>
-                        <div style="font-size:12px; color:${offer.status==='pending'?'#ffaa00':(offer.status==='accepted'?'var(--accept-color)':'var(--decline-color)')}; margin-top:5px; font-weight:bold; text-transform:uppercase;">Status: ${offer.status}</div>
-                    </div>
-                    ${offer.status === 'pending' ? `
-                        <div style="display:flex; gap:10px;">
-                            <button onclick="window.resolveTrade('${offer.id}', 'accepted')" style="background:var(--accept-color); color:#fff; border:none; padding:8px 16px; border-radius:20px; font-weight:bold; cursor:pointer;">✅ Accept</button>
-                            <button onclick="window.resolveTrade('${offer.id}', 'declined')" style="background:var(--bg-hover); color:#fff; border:none; padding:8px 16px; border-radius:20px; font-weight:bold; cursor:pointer;">❌ Deny</button>
+            userOffers.forEach(offer => {
+                const card = document.createElement('div');
+                card.className = 'inbox-card';
+                
+                if(offer.status === 'pending') {
+                    if(offer.itemId === "BUG_TICKET") {
+                        card.innerHTML = `
+                            <div style="font-size: 16px; line-height: 1.5; border-left: 4px solid var(--decline-color); padding-left: 10px;">
+                                <strong style="color:var(--decline-color);">${offer.itemName}</strong><br>
+                                <span style="color: #ddd;">Dispatched by System Reporter: <strong>${offer.from}</strong></span>
+                            </div>
+                            <div class="inbox-actions">
+                                <button class="btn-accept" onclick="window.processTradeOffer('${offer.id}', 'accept')">Mark as Reviewed</button>
+                                <button class="btn-decline" onclick="window.processTradeOffer('${offer.id}', 'decline')">Dismiss Log</button>
+                            </div>
+                        `;
+                    } else {
+                        card.innerHTML = `
+                            <div style="font-size: 16px; line-height: 1.5;">
+                                <strong>Incoming Trade Request for item:</strong> <span style="color: var(--accent-color); font-weight: bold;">${offer.itemName}</span><br>
+                                <span style="color: #ddd;">Do you want to accept the Trade with ${offer.from}? Chat this user so you can easily Trade Each other!</span>
+                            </div>
+                            <div class="inbox-actions">
+                                <button class="btn-accept" onclick="window.processTradeOffer('${offer.id}', 'accept')">Accept</button>
+                                <button class="btn-decline" onclick="window.processTradeOffer('${offer.id}', 'decline')">Decline</button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    let statusColor = (offer.status === 'accepted' || offer.status === 'reviewed') ? 'var(--accept-color)' : 'var(--decline-color)';
+                    card.innerHTML = `
+                        <div style="font-size: 14px; color: var(--text-muted);">
+                            Transaction metric for <strong>${offer.itemName}</strong> from <strong>${offer.from}</strong> marked as: 
+                            <span style="color: ${statusColor}; font-weight: bold; text-transform: uppercase;">${offer.status}</span>.
                         </div>
-                    ` : ''}
-                </div>
-            `).join('');
+                    `;
+                }
+                container.appendChild(card);
+            });
         };
 
-        window.resolveTrade = function(offerId, status) {
-            const offer = inbox.find(i => i.id === offerId);
-            if(status === 'accepted') {
-                const item = trades.find(t => t.id === offer.itemId);
-                if(item && item.stock > 0) {
-                    update(ref(db, `trades/${item.id}`), { stock: item.stock - 1 });
-                } else return alert("Stock depletion error: Transaction failed.");
+        window.renderItems = function() {
+            const container = document.getElementById('itemGrid');
+            const filterValue = document.getElementById('gameFilter').value;
+            const searchQuery = document.getElementById('userSearchBar').value.toLowerCase().trim();
+            container.innerHTML = "";
+
+            const filtered = trades.filter(post => {
+                const matchesGame = (filterValue === 'All' || post.game === filterValue);
+                const matchesSearch = post.creator && post.creator.toLowerCase().includes(searchQuery);
+                return matchesGame && matchesSearch;
+            });
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No active transactions found matching filters.</div>`;
+                return;
             }
-            update(ref(db, `inbox/${offerId}`), { status: status });
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+
+                let imgRender = (item.image && (item.image.startsWith('data:') || item.image.startsWith('http'))) 
+                    ? `<img src="${item.image}" alt="Item Image">` 
+                    : `<span>${item.image || '📦'}</span>`;
+
+                const itemLikes = item.likes || 0;
+                const commentsArray = item.comments ? Object.values(item.comments) : [];
+                const currentStock = item.stock !== undefined ? item.stock : 1;
+
+                let commentItemsHtml = commentsArray.map(c => `
+                    <div class="comment-item">
+                        ${getCommentCreatorLabelHtml(c.user, c.userDisplayName)}: ${c.text}
+                    </div>
+                `).join('');
+
+                const isOwner = currentUser && item.creator && item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim();
+
+                card.innerHTML = `
+                    <div class="item-main-content">
+                        <div class="item-image-container">${imgRender}</div>
+                        <div class="item-details">
+                            <span class="item-game-badge">${item.game}</span>
+                            <div class="item-title">${item.name}</div>
+                            <div class="item-stat">Posted By Trader: ${getCreatorLabelHtml(item.creator)}</div>
+                            <div class="item-stat">Stock Remaining: <strong style="color: var(--accent-color);">${currentStock}</strong></div>
+                            <div class="item-stat">Value Data: <strong>${item.worth || 'None'}</strong></div>
+                            <div class="item-stat">Weight Metrics: <strong>${item.kg || 'N/A->Seed'}</strong></div>
+                            <div class="item-stat">Trait Mutation: <strong>${item.mutation || 'N/A->Seed'}</strong></div>
+                            ${item.psLink ? `<div style="margin-top: 5px;"><a href="${item.psLink}" target="_blank" class="ps-link">Join Private Server</a></div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-bar">
+                        <button class="interact-btn" onclick="window.toggleLike('${item.id}')">👍 Like (${itemLikes})</button>
+                        
+                        ${currentUser && !isOwner && currentStock > 0 ? `
+                            <button class="interact-btn trade-action-btn" onclick="window.sendTradeRequest('${item.id}')">🤝 Send Trade Offer</button>
+                        ` : ''}
+
+                        ${isOwner ? `
+                            <button class="interact-btn" style="border-color: #ffaa00; color: #ffaa00; margin-left: auto;" onclick="window.startEditListing('${item.id}')">✏️ Edit</button>
+                            <button class="interact-btn" style="border-color: var(--decline-color); color: var(--decline-color);" onclick="window.deleteListing('${item.id}')">🗑️ Delete</button>
+                        ` : ''}
+                        
+                        ${currentStock <= 0 ? `
+                            <span style="color: var(--decline-color); font-weight: bold; ${isOwner ? 'margin-left: 10px;' : 'margin-left: auto;'}">SOLD OUT</span>
+                        ` : ''}
+                    </div>
+
+                    <div class="comments-section">
+                        <form onsubmit="window.submitComment(event, '${item.id}')" class="comment-box">
+                            <input type="text" id="commentInput-${item.id}" placeholder="Type community comment text..." required>
+                            <button type="submit" class="interact-btn">Post</button>
+                        </form>
+                        <div class="comment-list">${commentItemsHtml || '<span style="color: var(--text-muted); font-size: 12px;">No comments posted yet.</span>'}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         };
 
+        // Initialize Workspace Framework Components
+        updateAuthUI();
+        window.updateFormFields();
+        if(currentUser) {
+            window.loadProfilePaneFields();
+        }
     </script>
 </body>
 </html>
