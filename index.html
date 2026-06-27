@@ -1626,13 +1626,20 @@
         window.startEditListing = function(itemId) {
             const item = trades.find(t => t.id === itemId);
             if (!item) return;
-            editingListingId = itemId; window.switchTab('upload');
+            
+            // Fix: Switch tab first so it resets the form but doesn't wipe our editingListingId AFTER we set it
+            window.switchTab('upload'); 
+            editingListingId = itemId;
+            
             document.getElementById('uploadFormHeader').textContent = "Modify Trade Item";
             document.getElementById('formSubmitBtn').textContent = "Save Changes";
-            document.getElementById('formGameType').value = item.game; window.updateFormFields();
+            document.getElementById('formGameType').value = item.game; 
+            window.updateFormFields();
+            
             const config = gameItemsDatabase[item.game];
             if (config && config.items.includes(item.name)) document.getElementById('formItemName').value = item.name;
             else { document.getElementById('formItemName').value = "CUSTOM_ITEM_VAL"; window.checkCustomItem(); document.getElementById('formCustomItemName').value = item.name; }
+            
             document.getElementById('formStock').value = item.stock;
             document.getElementById('imageDataUrl').value = (item.image && item.image.startsWith('data:')) ? item.image : "";
             document.getElementById('formWorth').value = item.worth === "None" ? "" : (item.worth || "");
