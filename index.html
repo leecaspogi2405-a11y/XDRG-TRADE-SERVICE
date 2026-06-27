@@ -47,7 +47,7 @@
             height: 45px;
             border-radius: 50%;
             object-fit: cover;
-            background-color: #242b35; /* Fallback color incase discord link expires */
+            background-color: #242b35;
         }
 
         .logo {
@@ -247,7 +247,6 @@
         .btn-decline { background-color: var(--decline-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .ps-link { display: inline-block; background-color: #0077ff; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: bold; width: fit-content; }
         
-        /* Fixed Settings Sublayout Panel Styles */
         .settings-layout { display: flex; flex-direction: row; gap: 30px; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; min-height: 550px; }
         .settings-sidebar { background: #11141a; border-right: 1px solid var(--border-color); padding: 20px 10px; display: flex; flex-direction: column; gap: 8px; min-width: 250px; }
         .settings-content { flex-grow: 1; padding: 30px; box-sizing: border-box; overflow-x: hidden; }
@@ -265,7 +264,6 @@
         .settings-pane.active { display: block; }
         .settings-pane h3 { margin-top: 0; margin-bottom: 20px; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         
-        /* Messenger Chat Layout */
         .chat-layout { display: flex; height: 600px; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
         .chat-sidebar { width: 300px; background: #11141a; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
         .chat-sidebar-header { padding: 15px; background: #0f1115; border-bottom: 1px solid var(--border-color); color: var(--accent-color); font-weight: bold; }
@@ -292,7 +290,6 @@
             .chat-window { height: 400px; }
         }
 
-        /* Tutorial Grid Elements */
         .tutorial-step { margin-bottom: 25px; padding-left: 15px; border-left: 3px solid var(--accent-color); }
         .tutorial-step h4 { margin: 0 0 8px 0; color: #fff; font-size: 16px; }
         .tutorial-step p { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.5; }
@@ -456,8 +453,10 @@
                     <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
                     <button class="settings-sidebar-btn" id="paneBtn-tutorial" onclick="window.switchSettingsPane('tutorial')">📖 Service Tutorial</button>
                     
-                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verification Account (Admin)</button>
-                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 Update App (Admin)</button>
+                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verification Accts</button>
+                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 Update App Link</button>
+                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-mod" onclick="window.switchSettingsPane('admin-mod')">🛑 Moderation Desk</button>
+                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-sanction" onclick="window.switchSettingsPane('admin-sanction')">⚖️ Ban/Kick Manager</button>
                 </div>
                 
                 <div class="settings-content">
@@ -592,7 +591,6 @@
 
                     <div class="settings-pane" id="pane-admin-verify">
                         <h3>Admin: Add Verification Accounts</h3>
-                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Add Gmail addresses to grant them a verified badge globally across the platform.</p>
                         <form onsubmit="window.adminAddVerified(event)">
                             <div class="form-group">
                                 <label>User Gmail Address to Verify:</label>
@@ -604,7 +602,6 @@
 
                     <div class="settings-pane" id="pane-admin-update">
                         <h3>Admin: Schedule App Update Link</h3>
-                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Set a countdown timer. Once the time is reached, the update text and link will be revealed to all users.</p>
                         <form onsubmit="window.adminSetAppUpdate(event)">
                             <div class="form-group">
                                 <label>Target Update Date & Time:</label>
@@ -619,6 +616,48 @@
                                 <input type="url" id="adminUpdateLink" required value="https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file">
                             </div>
                             <button type="submit" style="background: var(--accept-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Set App Update Broadcast</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-admin-mod">
+                        <h3 style="color:var(--decline-color);">🛑 Admin: Moderation Desk</h3>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Send automated disciplinary warnings via inbox and messenger using <strong>xdrgmoderation@gmail.com</strong>.</p>
+                        <form onsubmit="window.adminSendModMessage(event)">
+                            <div class="form-group">
+                                <label>Target User Email:</label>
+                                <input type="email" id="modTargetEmail" required placeholder="violator@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Select Violation / Notice Type:</label>
+                                <select id="modNoticeType" required>
+                                    <option value="copyright">Copyright Infringement</option>
+                                    <option value="scammer">Scammer / Fraud Alert</option>
+                                    <option value="duplicate">Duplicate Uploads (Spam)</option>
+                                    <option value="deleted">Listing Deleted by Admin</option>
+                                    <option value="review">Account Under Review</option>
+                                </select>
+                            </div>
+                            <button type="submit" style="background: var(--decline-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Dispatch Moderation Alert</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-admin-sanction">
+                        <h3 style="color:var(--decline-color);">⚖️ Admin: Ban/Kick Manager</h3>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Forcefully kick (logout) a user or permanently ban them from logging into the platform.</p>
+                        <form onsubmit="window.adminApplySanction(event)">
+                            <div class="form-group">
+                                <label>Target User Email:</label>
+                                <input type="email" id="sanctionTargetEmail" required placeholder="target@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Select Sanction Action:</label>
+                                <select id="sanctionActionType" required>
+                                    <option value="kick">Force Kick (Immediate Logout)</option>
+                                    <option value="ban">Permanent Ban (Locks Account)</option>
+                                    <option value="unban">Revoke Ban (Restore Account)</option>
+                                </select>
+                            </div>
+                            <button type="submit" style="background: #a30000; color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Execute Sanction</button>
                         </form>
                     </div>
 
@@ -703,6 +742,7 @@
         const db = getDatabase(app);
 
         const ADMIN_EMAIL = "devxdragon3@gmail.com";
+        const MOD_EMAIL = "xdrgmoderation@gmail.com";
 
         const gameItemsDatabase = {
             "Grow A Garden": { items: ["Radiant Sun Sprout", "Shadow Tendril Spore", "Void Lily Seed", "Crystalline Cactus Seed", "Sparkcap Spore", "Inferno Vine Seed", "Glacial Rose Seed", "Chrono Clover Seed", "Plasma Pod", "Nebula Orchid Seed", "Elderwood Sapling", "Toxic Bramble Seed", "Matrix Root Shard", "Cosmic Singularity Seed", "Amethyst Sprout", "Cyber Shroom Spore", "Aurora Blossom Seed"], fields: { worth: "Coin Value", kg: true, mutation: true } },
@@ -712,9 +752,15 @@
             "Blox Fruits": { items: ["Kitsune Fruit (Physical)", "Dragon Fruit (Physical)", "Leopard Fruit (Physical)", "Dough Fruit (Physical)", "T-Rex Fruit (Physical)", "Mammoth Fruit (Physical)", "Spirit Fruit (Physical)", "Control Fruit (Physical)", "Venom Fruit (Physical)", "Shadow Fruit (Physical)", "Gravity Fruit (Physical)", "Buddha Fruit (Physical)", "Portal Fruit (Physical)", "Rumble Fruit (Physical)", "Blizzard Fruit (Physical)", "Sound Fruit (Physical)", "Pain Fruit (Physical)", "Quake Fruit (Physical)", "Love Fruit (Physical)", "Spider Fruit (Physical)", "Phoenix Fruit (Physical)", "Ghost Fruit (Physical)", "Magma Fruit (Physical)", "Light Fruit (Physical)", "Rubber Fruit (Physical)", "Barrier Fruit (Physical)", "Diamond Fruit (Physical)", "Ice Fruit (Physical)", "Sand Fruit (Physical)", "Dark Fruit (Physical)", "Falcon Fruit (Physical)", "Flame Fruit (Physical)", "Rocket Fruit (Physical)", "Spin Fruit (Physical)", "Chop Fruit (Physical)", "Spring Fruit (Physical)", "Bomb Fruit (Physical)", "Smoke Fruit (Physical)", "Spike Fruit (Physical)", "Dark Blade Gamepass Box", "Fruit Notifier Pass Box", "+1 Storage Capacity Pass", "2x Money Pass", "2x Mastery Pass", "Fast Boats Pass", "Permanent Kitsune Fruit", "Permanent Dragon Fruit", "Permanent Leopard Fruit", "Permanent Dough Fruit", "Permanent Buddha Fruit", "Permanent Portal Fruit"], fields: { worth: "Counter Offer Expectation", kg: false, mutation: false } }
         };
 
+        const modMessages = {
+            "copyright": "⚠️ System Notice: Your recent listing has been removed due to a copyright infringement report or unauthorized asset usage. Repeated offenses will result in an account ban.",
+            "scammer": "🚨 Fraud Alert: Multiple users have flagged your account for scamming or deceptive trading practices. Your account is now strictly monitored.",
+            "duplicate": "⚠️ Spam Notice: Please stop uploading the exact same item multiple times. This clutters the feed. Duplicates have been deleted.",
+            "deleted": "🗑️ Moderation Action: A moderator has forcefully removed one of your uploads for violating community guidelines.",
+            "review": "🔍 Account Status: Your profile and active listings are currently under manual review by the administration team for suspicious activity."
+        };
+
         const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
-        
-        // ITO RIN YUNG ORIGINAL DISCORD LINK NG VERIFIED BADGE MO
         const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519654119353221210/1000030631.png?ex=6a3e57af&is=6a3d062f&hm=f5e27828d282be493d90fa81a93cca58b760a643b459d5b8f54fbf17a0536254&";
 
         let trades = [];
@@ -726,13 +772,13 @@
         let editingListingId = null;
         let activeLockoutIntervalId = null;
         let appUpdateIntervalId = null;
-        let activeChatTarget = null; // Email of the person currently being chatted
+        let activeChatTarget = null;
+        let accountMonitorUnsubscribe = null;
 
         function escapeEmailPath(email) {
             return email.toLowerCase().replace(/\./g, '_').replace(/@/g, '_at_');
         }
 
-        // Generate unique chat room ID based on two emails
         function getChatRoomId(email1, email2) {
             return [escapeEmailPath(email1), escapeEmailPath(email2)].sort().join('___');
         }
@@ -798,6 +844,25 @@
             document.getElementById(`paneBtn-${paneId}`).classList.add('active');
         };
 
+        // Real-time listener to kick/ban users dynamically
+        function monitorAccountStatus(email) {
+            if(accountMonitorUnsubscribe) { accountMonitorUnsubscribe(); }
+            const cleanKey = escapeEmailPath(email);
+            accountMonitorUnsubscribe = onValue(ref(db, `users/${cleanKey}/accountStatus`), (snapshot) => {
+                if(snapshot.exists()) {
+                    const status = snapshot.val();
+                    if(status === 'banned') {
+                        alert("🚨 Your account has been permanently BANNED by an administrator. Logging out.");
+                        window.logout(true);
+                    } else if (status === 'kicked') {
+                        alert("⚠️ You have been KICKED by a moderator. You may log back in, but please follow the rules.");
+                        update(ref(db, `users/${cleanKey}`), { accountStatus: 'active' }); // reset status so they can login again
+                        window.logout(true);
+                    }
+                }
+            });
+        }
+
         window.login = function(event) {
             event.preventDefault();
             const emailInput = document.getElementById('authEmail').value.trim();
@@ -818,7 +883,8 @@
                         email: emailInput, password: passwordInput, displayName: emailInput.split('@')[0],
                         profilePic: "", backupEmail: "", phoneNumber: "", notifyNewUploads: true,
                         notifyLikesComments: true, linkRoblox: "", linkYoutube: "", linkFacebook: "",
-                        privacyHideEmail: false, privacyHidePhone: false, privacyHideSocials: false
+                        privacyHideEmail: false, privacyHidePhone: false, privacyHideSocials: false,
+                        accountStatus: 'active'
                     };
                     update(userRef, registrationPayload).then(() => {
                         localStorage.removeItem(`failed_attempts_${cleanKey}`); localStorage.removeItem(`lockout_until_${cleanKey}`);
@@ -826,6 +892,12 @@
                     });
                 } else {
                     const accountData = snapshot.val();
+                    
+                    if(accountData.accountStatus === 'banned') {
+                        alert("🚨 ACCESS DENIED: Your account is permanently banned.");
+                        return;
+                    }
+
                     if(accountData.password === passwordInput) {
                         localStorage.removeItem(`failed_attempts_${cleanKey}`); localStorage.removeItem(`lockout_until_${cleanKey}`);
                         processSuccessfulAuthentication(emailInput);
@@ -872,16 +944,21 @@
             window.closeModal('loginModal');
             window.updateInboxBadge();
             window.loadProfilePaneFields();
+            monitorAccountStatus(verifiedEmail);
             window.switchTab('view');
             alert("Identification confirmed. Welcome back.");
         }
 
-        window.logout = function() {
+        window.logout = function(force = false) {
             localStorage.removeItem('roblox_user_email');
             currentUser = ""; currentProfileMetadata = null;
+            if(accountMonitorUnsubscribe) { accountMonitorUnsubscribe(); accountMonitorUnsubscribe = null; }
             updateAuthUI(); window.switchTab('view');
             window.updateInboxBadge(); window.renderItems();
         };
+
+        // On App Load, resume monitor if user logged in
+        if(currentUser) monitorAccountStatus(currentUser);
 
         function checkIsVerified(email) {
             const clean = email.toLowerCase().trim();
@@ -914,23 +991,24 @@
             const loginBtn = document.getElementById('loginBtn');
             const logoutBtn = document.getElementById('logoutBtn');
             const uploadIdentityInput = document.getElementById('formUserIdentity');
-            const btnAdminVerify = document.getElementById('paneBtn-admin-verify');
-            const btnAdminUpdate = document.getElementById('paneBtn-admin-update');
+            
+            const adminUiElements = document.querySelectorAll('.admin-ui');
 
             if(currentUser) {
                 let badgeHtml = checkIsVerified(currentUser) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
                 greeting.innerHTML = `Session: <span style="color:var(--text-color);">${currentUser.split('@')[0]}</span>${badgeHtml}`;
                 loginBtn.classList.add('hidden'); logoutBtn.classList.remove('hidden');
                 uploadIdentityInput.value = currentUser; 
+                
                 if(currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
-                    btnAdminVerify.classList.remove('hidden'); btnAdminUpdate.classList.remove('hidden');
+                    adminUiElements.forEach(el => el.classList.remove('hidden'));
                     greeting.innerHTML += `<span class="admin-badge-ui">ADMIN</span>`;
                 } else {
-                    btnAdminVerify.classList.add('hidden'); btnAdminUpdate.classList.add('hidden');
+                    adminUiElements.forEach(el => el.classList.add('hidden'));
                 }
             } else {
                 greeting.textContent = ""; loginBtn.classList.remove('hidden'); logoutBtn.classList.add('hidden');
-                uploadIdentityInput.value = ""; btnAdminVerify.classList.add('hidden'); btnAdminUpdate.classList.add('hidden');
+                uploadIdentityInput.value = ""; adminUiElements.forEach(el => el.classList.add('hidden'));
             }
         }
 
@@ -959,7 +1037,6 @@
                     document.getElementById('modalProfileFacebook').textContent = "Hidden via Privacy";
                 }
 
-                // Setup the message button in the modal
                 const msgBtn = document.getElementById('modalMessageBtn');
                 if (currentUser && targetEmail.toLowerCase() !== currentUser.toLowerCase()) {
                     msgBtn.style.display = 'inline-block';
@@ -975,7 +1052,6 @@
             });
         };
 
-        // --- Start of Messenger Chat Logic ---
         window.startDirectMessage = function(targetEmail, targetName) {
             window.switchTab('chat');
             window.openChatRoom(targetEmail, targetName);
@@ -987,7 +1063,6 @@
             document.getElementById('currentChatAvatar').style.display = 'block';
             document.getElementById('chatInputArea').style.display = 'flex';
             
-            // fetch profile pic for header
             get(ref(db, `users/${escapeEmailPath(targetEmail)}`)).then(snap => {
                 if(snap.exists() && snap.val().profilePic) {
                     document.getElementById('currentChatAvatar').src = snap.val().profilePic;
@@ -996,7 +1071,7 @@
                 }
             });
 
-            window.renderChatSidebar(); // Highlight active
+            window.renderChatSidebar();
             window.loadChatMessages();
         };
 
@@ -1016,7 +1091,6 @@
                         div.textContent = msg.text;
                         container.appendChild(div);
                     });
-                    // Mark as read if received
                     update(ref(db, `chats/${roomId}`), { [`unread_${escapeEmailPath(currentUser)}`]: 0 });
                 } else {
                     container.innerHTML = `<div style="text-align:center; color:var(--text-muted); margin-top:20px;">Say hello!</div>`;
@@ -1034,7 +1108,6 @@
             const msgPayload = { sender: currentUser, text: text, timestamp: Date.now() };
 
             push(ref(db, `chats/${roomId}/messages`), msgPayload).then(() => {
-                // Update room metadata for sidebar
                 update(ref(db, `chats/${roomId}`), {
                     lastMessage: text,
                     lastTime: Date.now(),
@@ -1043,7 +1116,6 @@
                         [escapeEmailPath(activeChatTarget)]: true
                     }
                 });
-                // Increment unread for the receiver
                 const receiverKey = escapeEmailPath(activeChatTarget);
                 get(ref(db, `chats/${roomId}/unread_${receiverKey}`)).then(snap => {
                     const currentUnread = snap.exists() ? snap.val() : 0;
@@ -1070,18 +1142,15 @@
                         container.innerHTML = `<div style="padding:15px; color:var(--text-muted); text-align:center;">No conversations yet.</div>`;
                     }
 
-                    // Sort by newest
                     myRooms.sort((a,b) => (allChats[b].lastTime || 0) - (allChats[a].lastTime || 0)).forEach(roomId => {
                         const roomData = allChats[roomId];
-                        // Find the other user
                         const otherUserKey = Object.keys(roomData.participants).find(k => k !== myKey);
                         if(!otherUserKey) return;
                         
                         const unreadCount = roomData[`unread_${myKey}`] || 0;
                         unreadTotal += unreadCount;
 
-                        // Retrieve other user email (hacky but works since we escape by replacing . and @)
-                        const otherEmail = otherUserKey.replace('_at_', '@').replace(/_/g, '.'); // Approximate reverse, better to fetch from DB if needed
+                        const otherEmail = otherUserKey.replace('_at_', '@').replace(/_/g, '.');
                         
                         get(ref(db, `users/${otherUserKey}`)).then(userSnap => {
                             const uData = userSnap.exists() ? userSnap.val() : {};
@@ -1111,9 +1180,7 @@
                 document.getElementById('chatBadge').textContent = unreadTotal > 0 ? `(${unreadTotal})` : "";
             });
         };
-        // --- End of Messenger Chat Logic ---
 
-        // Notifications to Inbox: Liked
         window.toggleLike = function(itemId) {
             if(!currentUser) { alert("Login required to interact with listings."); return; }
             const item = trades.find(t => t.id === itemId);
@@ -1126,7 +1193,6 @@
                     likedByArray.push(currentUser);
                     likesCount += 1;
                     
-                    // Notification Logic to Inbox
                     if(item.creator !== currentUser) {
                         push(ref(db, 'inbox'), {
                             type: 'like',
@@ -1142,21 +1208,15 @@
                     likedByArray.splice(index, 1);
                     likesCount = Math.max(0, likesCount - 1);
                 }
-
                 update(ref(db, `trades/${itemId}`), { likes: likesCount, likedBy: likedByArray.length > 0 ? likedByArray : null });
             }
         };
 
-        // Reply to Comment Logic
         window.replyToComment = function(itemId, username) {
             const input = document.getElementById(`commentInput-${itemId}`);
-            if(input) {
-                input.value = `@${username} ` + input.value;
-                input.focus();
-            }
+            if(input) { input.value = `@${username} ` + input.value; input.focus(); }
         };
 
-        // Notifications to Inbox: Commented
         window.submitComment = function(e, itemId) {
             e.preventDefault();
             if(!currentUser) { alert("Login required to submit messages."); return; }
@@ -1171,26 +1231,17 @@
                 if(currentProfileMetadata && currentProfileMetadata.displayName) currentDisplayNameSeed = currentProfileMetadata.displayName;
 
                 commentsArray.push({
-                    user: currentUser,
-                    userDisplayName: currentDisplayNameSeed,
-                    text: text,
-                    timestamp: new Date().toLocaleTimeString()
+                    user: currentUser, userDisplayName: currentDisplayNameSeed,
+                    text: text, timestamp: new Date().toLocaleTimeString()
                 });
 
                 update(ref(db, `trades/${itemId}`), { comments: commentsArray }).then(() => { 
                     input.value = ""; 
-                    
-                    // Notification Logic to Inbox
                     if(item.creator !== currentUser) {
                         push(ref(db, 'inbox'), {
-                            type: 'comment',
-                            itemId: item.id,
-                            itemName: item.name,
-                            to: item.creator,
-                            from: currentUser,
-                            textSnippet: text.substring(0, 30) + '...',
-                            status: 'info',
-                            timestamp: Date.now()
+                            type: 'comment', itemId: item.id, itemName: item.name,
+                            to: item.creator, from: currentUser, textSnippet: text.substring(0, 30) + '...',
+                            status: 'info', timestamp: Date.now()
                         });
                     }
                 });
@@ -1313,6 +1364,72 @@
             }).then(() => alert("Update scheduled."));
         };
 
+        // ADMIN: MODERATION MESSAGE DISPATCH
+        window.adminSendModMessage = function(e) {
+            e.preventDefault();
+            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            
+            const targetEmail = document.getElementById('modTargetEmail').value.trim();
+            const messageType = document.getElementById('modNoticeType').value;
+            const messageContent = modMessages[messageType];
+            
+            // Push to Inbox
+            push(ref(db, 'inbox'), {
+                type: 'moderation', itemId: "MOD_ALERT", itemName: "🚨 MODERATOR NOTICE",
+                to: targetEmail, from: MOD_EMAIL, status: 'info', timestamp: Date.now()
+            });
+
+            // Push to Chats
+            const roomId = getChatRoomId(MOD_EMAIL, targetEmail);
+            const msgPayload = { sender: MOD_EMAIL, text: messageContent, timestamp: Date.now() };
+            
+            push(ref(db, `chats/${roomId}/messages`), msgPayload).then(() => {
+                update(ref(db, `chats/${roomId}`), {
+                    lastMessage: messageContent, lastTime: Date.now(),
+                    participants: {
+                        [escapeEmailPath(MOD_EMAIL)]: true,
+                        [escapeEmailPath(targetEmail)]: true
+                    }
+                });
+                
+                const receiverKey = escapeEmailPath(targetEmail);
+                get(ref(db, `chats/${roomId}/unread_${receiverKey}`)).then(snap => {
+                    const currentUnread = snap.exists() ? snap.val() : 0;
+                    update(ref(db, `chats/${roomId}`), { [`unread_${receiverKey}`]: currentUnread + 1 });
+                });
+
+                alert(`Moderation warning dispatched to ${targetEmail}.`);
+                document.getElementById('modTargetEmail').value = "";
+            });
+        };
+
+        // ADMIN: BAN / KICK MANAGER
+        window.adminApplySanction = function(e) {
+            e.preventDefault();
+            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+
+            const targetEmail = document.getElementById('sanctionTargetEmail').value.trim();
+            const actionType = document.getElementById('sanctionActionType').value;
+            const cleanTargetKey = escapeEmailPath(targetEmail);
+
+            if(targetEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                alert("Cannot apply sanctions to the admin account."); return;
+            }
+
+            if(actionType === 'kick') {
+                update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'kicked' })
+                .then(() => alert(`${targetEmail} has been kicked/logged out.`));
+            } else if (actionType === 'ban') {
+                update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'banned' })
+                .then(() => alert(`${targetEmail} is now permanently banned.`));
+            } else if (actionType === 'unban') {
+                update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'active' })
+                .then(() => alert(`Ban revoked for ${targetEmail}.`));
+            }
+            
+            document.getElementById('sanctionTargetEmail').value = "";
+        };
+
         window.submitPlatformBug = function(e) {
             e.preventDefault();
             const textDesc = document.getElementById('bugDescription').value.trim();
@@ -1360,7 +1477,6 @@
             reader.readAsDataURL(file);
         };
 
-        // Listeners
         onValue(ref(db, 'trades'), (snapshot) => {
             const data = snapshot.val();
             trades = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
@@ -1398,7 +1514,6 @@
             } else { banner.style.display = 'none'; }
         });
 
-        // Inbox Rendering (Added Notifications)
         window.renderInbox = function() {
             const container = document.getElementById('inboxGrid');
             container.innerHTML = "";
@@ -1413,7 +1528,12 @@
                 const card = document.createElement('div');
                 card.className = 'inbox-card';
                 
-                if (offer.type === 'like') {
+                if(offer.type === 'moderation') {
+                    card.innerHTML = `<div style="font-size: 14px; border-left: 4px solid var(--decline-color); padding-left: 10px;">
+                                      <strong style="color:var(--decline-color);">${offer.itemName}</strong><br>
+                                      <span style="color:var(--text-color);">Please check your Messages tab for communication from <strong>${offer.from}</strong> regarding a moderation action on your account.</span></div>
+                                      <button style="margin-top:10px; background:transparent; border:1px solid #ff4a4a; color:#ff4a4a; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="remove(ref(db, 'inbox/${offer.id}'))">Clear Notice</button>`;
+                } else if (offer.type === 'like') {
                     card.innerHTML = `<div style="font-size: 14px; color: var(--text-color);">👍 <strong>${offer.from}</strong> liked your item <strong style="color:var(--accent-color);">${offer.itemName}</strong>.</div>
                                       <button style="margin-top:10px; background:transparent; border:1px solid #ff4a4a; color:#ff4a4a; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="remove(ref(db, 'inbox/${offer.id}'))">Clear</button>`;
                 } else if (offer.type === 'comment') {
@@ -1478,8 +1598,14 @@
             let imageStr = document.getElementById('imageDataUrl').value;
             if (!imageStr) imageStr = editingListingId ? (trades.find(t => t.id === editingListingId)?.image || "📦") : "📦";
 
+            let targetCreator = currentUser;
+            if (editingListingId) {
+                const ex = trades.find(t => t.id === editingListingId);
+                if(ex) targetCreator = ex.creator;
+            }
+
             const targetPayload = {
-                creator: currentUser, game: game, name: name, stock: parseInt(document.getElementById('formStock').value) || 1,
+                creator: targetCreator, game: game, name: name, stock: parseInt(document.getElementById('formStock').value) || 1,
                 image: imageStr, worth: document.getElementById('formWorth').value.trim() || "None",
                 kg: document.getElementById('formKg').value.trim() || "N/A->Seed", mutation: document.getElementById('formMutation').value.trim() || "N/A->Seed",
                 psLink: document.getElementById('formPsLink').value || "", timestamp: Date.now()
@@ -1535,10 +1661,13 @@
             const filtered = trades.filter(post => (filterValue === 'All' || post.game === filterValue) && (post.creator && post.creator.toLowerCase().includes(searchQuery)));
             if(filtered.length === 0) { container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No listings found.</div>`; return; }
 
+            const isAdmin = currentUser && currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase();
+
             filtered.forEach(item => {
                 const card = document.createElement('div'); card.className = 'item-card';
                 let imgRender = (item.image && (item.image.startsWith('data:') || item.image.startsWith('http'))) ? `<img src="${item.image}">` : `<span>${item.image || '📦'}</span>`;
-                const isOwner = currentUser && item.creator && item.creator.toLowerCase() === currentUser.toLowerCase();
+                
+                const isOwner = currentUser && (item.creator.toLowerCase() === currentUser.toLowerCase() || isAdmin);
 
                 let commentItemsHtml = (item.comments ? Object.values(item.comments) : []).map(c => `
                     <div class="comment-item">
@@ -1582,10 +1711,9 @@
 
         updateAuthUI(); window.updateFormFields(); if(currentUser) window.loadProfilePaneFields();
 
-        // Listen for chats overall for badges
         onValue(ref(db, 'chats'), (snapshot) => {
             if(currentUser && document.getElementById('chatSection').classList.contains('hidden')) {
-                window.renderChatSidebar(); // Updates badge quietly
+                window.renderChatSidebar();
             }
         });
 
