@@ -45,6 +45,7 @@
             height: 45px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid var(--accent-color);
         }
 
         .logo {
@@ -138,14 +139,8 @@
             flex-wrap: wrap;
         }
 
-        .search-bar-input {
-            width: 250px;
-        }
-
-        .search-bar-input:focus, .game-filter-select:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
+        .search-bar-input { width: 250px; }
+        .search-bar-input:focus, .game-filter-select:focus { outline: none; border-color: var(--accent-color); }
 
         .modal {
             display: none;
@@ -173,24 +168,14 @@
         .form-group input, .form-group select, .form-group textarea {
             width: 100%; padding: 10px; background-color: #0f1115;
             border: 1px solid var(--border-color); color: var(--text-color);
-            border-radius: 4px; box-sizing: border-box;
-            font-family: inherit;
+            border-radius: 4px; box-sizing: border-box; font-family: inherit;
         }
         .form-group textarea { resize: vertical; height: 100px; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none; border-color: var(--accent-color);
-        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-color); }
 
         .lockout-msg {
-            background-color: rgba(255, 74, 74, 0.15);
-            border: 1px solid var(--decline-color);
-            color: #ff6b6b;
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 13px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: bold;
+            background-color: rgba(255, 74, 74, 0.15); border: 1px solid var(--decline-color);
+            color: #ff6b6b; padding: 10px; border-radius: 4px; font-size: 13px; margin-bottom: 15px; text-align: center; font-weight: bold;
         }
 
         .item-grid { display: flex; flex-direction: column; gap: 20px; }
@@ -200,15 +185,13 @@
         @media(max-width: 768px) {
             .item-main-content { flex-direction: column; }
             .item-image-container { width: 100% !important; border-right: none !important; border-bottom: 1px solid var(--border-color); }
+            .chat-layout { flex-direction: column; }
+            .chat-sidebar { width: 100% !important; max-height: 200px; }
+            .chat-window { width: 100% !important; }
         }
 
-        .item-image-container {
-            width: 160px; background-color: #0f1115; display: flex; justify-content: center;
-            align-items: center; font-size: 50px; border-right: 1px solid var(--border-color); flex-shrink: 0;
-            height: 160px; overflow: hidden;
-        }
+        .item-image-container { width: 160px; background-color: #0f1115; display: flex; justify-content: center; align-items: center; font-size: 50px; border-right: 1px solid var(--border-color); flex-shrink: 0; height: 160px; overflow: hidden; }
         .item-image-container img { width: 100%; height: 100%; object-fit: cover; }
-        
         .item-details { padding: 20px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; justify-content: center; }
         .item-game-badge { background-color: #242b35; color: var(--accent-color); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; width: fit-content; }
         .item-title { font-size: 20px; font-weight: bold; margin: 4px 0; color: #fff; }
@@ -217,7 +200,7 @@
         
         .verified-badge { width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; display: inline-block; }
         
-        .interaction-bar { background-color: #1a1f29; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; gap: 15px; align-items: center; }
+        .interaction-bar { background-color: #1a1f29; padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; gap: 15px; align-items: center; flex-wrap: wrap;}
         .interact-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
         .interact-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
         .trade-action-btn { background-color: var(--accent-color) !important; color: #000 !important; margin-left: auto; }
@@ -226,7 +209,8 @@
         .comment-box { display: flex; gap: 10px; margin-bottom: 10px; }
         .comment-box input { flex-grow: 1; padding: 8px; background-color: #0f1115; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; }
         .comment-list { max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-        .comment-item { font-size: 13px; background: #161920; padding: 6px 10px; border-radius: 4px; border-left: 3px solid var(--accent-color); line-height: 1.4; }
+        .comment-item { font-size: 13px; background: #161920; padding: 6px 10px; border-radius: 4px; border-left: 3px solid var(--accent-color); line-height: 1.4; display: flex; justify-content: space-between; align-items: center; }
+        .reply-btn { background: none; border: none; color: var(--accent-color); font-size: 11px; cursor: pointer; text-decoration: underline; padding: 0; }
         
         .inbox-card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 15px; }
         .inbox-actions { margin-top: 15px; display: flex; gap: 10px; }
@@ -234,9 +218,24 @@
         .btn-decline { background-color: var(--decline-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .ps-link { display: inline-block; background-color: #0077ff; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: bold; width: fit-content; }
         
+        /* Chat Layout Styles */
+        .chat-layout { display: flex; gap: 20px; height: 550px; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; }
+        .chat-sidebar { width: 30%; background: #12151c; border-right: 1px solid var(--border-color); border-radius: 8px; overflow-y: auto; display: flex; flex-direction: column; }
+        .chat-sidebar-user { padding: 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 10px; color: #fff; font-size: 14px; font-weight: bold; transition: background 0.2s; }
+        .chat-sidebar-user:hover { background: #1a1f29; color: var(--accent-color); }
+        .chat-window { width: 70%; display: flex; flex-direction: column; background: #0f1115; border-radius: 8px; border: 1px solid var(--border-color); }
+        .chat-header { padding: 15px; background: #1a1f26; border-bottom: 1px solid var(--border-color); font-weight: bold; color: var(--accent-color); border-radius: 8px 8px 0 0; }
+        .chat-messages { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .chat-msg { max-width: 75%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+        .chat-msg.sent { align-self: flex-end; background: var(--accent-color); color: #000; border-bottom-right-radius: 4px; font-weight: bold; }
+        .chat-msg.received { align-self: flex-start; background: #242b35; color: #fff; border-bottom-left-radius: 4px; }
+        .chat-input-area { display: flex; padding: 15px; background: #1a1f26; border-top: 1px solid var(--border-color); border-radius: 0 0 8px 8px; gap: 10px; }
+        .chat-input-area input { flex-grow: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--border-color); background: #0f1115; color: #fff; outline: none; }
+        .chat-input-area input:focus { border-color: var(--accent-color); }
+        .chat-input-area button { background: var(--accent-color); color: #000; border: none; padding: 0 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+
         /* Settings Sublayout Panel Styles */
         .settings-layout { display: grid; grid-template-columns: 250px 1fr; gap: 30px; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; min-height: 550px; }
-        @media(max-width: 768px) { .settings-layout { grid-template-columns: 1fr; } }
         .settings-sidebar { background: #11141a; border-right: 1px solid var(--border-color); padding: 20px 10px; display: flex; flex-direction: column; gap: 8px; }
         .settings-sidebar-btn { background: transparent; border: none; color: var(--text-muted); text-align: left; padding: 12px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s ease; }
         .settings-sidebar-btn:hover, .settings-sidebar-btn.active { color: var(--accent-color); background: rgba(0, 255, 170, 0.05); }
@@ -244,7 +243,6 @@
         .settings-pane.active { display: block; }
         .settings-pane h3 { margin-top: 0; margin-bottom: 20px; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         
-        /* Tutorial Grid Elements */
         .tutorial-step { margin-bottom: 25px; padding-left: 15px; border-left: 3px solid var(--accent-color); }
         .tutorial-step h4 { margin: 0 0 8px 0; color: #fff; font-size: 16px; }
         .tutorial-step p { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.5; }
@@ -268,8 +266,8 @@
 
     <header>
         <div class="logo-container">
-            <img src="https://cdn.discordapp.com/attachments/1501911631708422215/1519291570048860322/orca-image-1542816814.jpeg.jpg?ex=6a3d0609&is=6a3bb489&hm=2e089cbe47c460fa52c8c9c1d9ce5504ffbc549325956153b8d5698da440c15a&" alt="Site Logo" class="site-logo">
-            <div class="logo">XDRG TRADING SERVICE.ROBLOX</div>
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23161920'/><circle cx='50' cy='50' r='40' fill='none' stroke='%2300ffaa' stroke-width='8'/><path d='M35 35l30 30m0-30L35 65' stroke='%2300ffaa' stroke-width='8' stroke-linecap='round'/></svg>" alt="Site Logo" class="site-logo">
+            <div class="logo">XDRG TRADING SERVICE</div>
         </div>
         <div class="nav-buttons" id="authButtons">
             <span id="userGreeting" style="margin-right: 15px; color: var(--accent-color); font-weight: bold;"></span>
@@ -284,7 +282,8 @@
                 <button class="active" id="viewTab" onclick="window.switchTab('view')">View Listings</button>
                 <button id="uploadTab" onclick="window.switchTab('upload')">+ Upload Item</button>
                 <button id="inboxTab" onclick="window.switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
-                <button id="settingsTab" onclick="window.switchTab('settings')">⚙️ Account Settings & Help</button>
+                <button id="messagesTab" onclick="window.switchTab('messages')">💬 Messages <span id="messagesBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
+                <button id="settingsTab" onclick="window.switchTab('settings')">⚙️ Account Settings</button>
             </div>
 
             <div class="search-container">
@@ -305,14 +304,30 @@
         </div>
 
         <div id="inboxSection" class="hidden">
-            <h2 style="color: var(--accent-color); margin-top: 0;">Your Trade Offers & Messaging Inbox</h2>
+            <h2 style="color: var(--accent-color); margin-top: 0;">Your Trade Offers & Notifications</h2>
             <div id="inboxGrid"></div>
+        </div>
+
+        <div id="messagesSection" class="hidden">
+            <h2 style="color: var(--accent-color); margin-top: 0;">Direct Messaging Portal</h2>
+            <div class="chat-layout">
+                <div class="chat-sidebar" id="chatSidebar">
+                    <div style="padding:20px; color:var(--text-muted); font-size:14px; text-align:center;">Loading chats...</div>
+                </div>
+                <div class="chat-window hidden" id="chatWindow">
+                    <div class="chat-header" id="chatHeader">Select a chat to start messaging</div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <form onsubmit="window.sendChatMessage(event)" class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Type your message here..." required>
+                        <button type="submit">Send</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div id="uploadSection" class="hidden" style="max-width: 600px; margin: 0 auto; background: var(--panel-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color);">
             <h2 id="uploadFormHeader" style="margin-top:0; color: var(--accent-color);">Post Trade Item</h2>
             <form id="uploadForm" onsubmit="window.handleUpload(event)">
-                
                 <div class="form-group">
                     <label>Game Type:</label>
                     <select id="formGameType" onchange="window.updateFormFields()" required>
@@ -361,7 +376,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Your Verified Profile Identity (Session Protected Email):</label>
+                    <label>Your Verified Profile Identity:</label>
                     <input type="text" id="formUserIdentity" style="background-color: #1a1f26; color: var(--accent-color); font-weight: bold;" required readonly>
                 </div>
 
@@ -383,10 +398,9 @@
                     <button class="settings-sidebar-btn" id="paneBtn-notifications" onclick="window.switchSettingsPane('notifications')">🔔 Notifications</button>
                     <button class="settings-sidebar-btn" id="paneBtn-linked" onclick="window.switchSettingsPane('linked')">🔗 Linked Accounts</button>
                     <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
-                    <button class="settings-sidebar-btn" id="paneBtn-tutorial" onclick="window.switchSettingsPane('tutorial')">📖 Service Tutorial</button>
                     
-                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verification Account (Admin)</button>
-                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 Update App (Admin)</button>
+                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verify Account (Admin)</button>
+                    <button class="settings-sidebar-btn hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 App Update (Admin)</button>
                 </div>
                 
                 <div class="settings-content">
@@ -419,7 +433,6 @@
 
                     <div class="settings-pane" id="pane-privacy">
                         <h3>Profile Privacy Settings</h3>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Control what information other users can see when they click on your profile.</p>
                         <form onsubmit="window.savePrivacySettings(event)">
                             <div class="form-group">
                                 <label class="toggle-switch">
@@ -432,7 +445,7 @@
                                 </label>
                                 <label class="toggle-switch">
                                     <input type="checkbox" id="privacyHideSocials">
-                                    <span>Hide my Linked Accounts (Social Media) from public profile</span>
+                                    <span>Hide my Linked Accounts from public profile</span>
                                 </label>
                             </div>
                             <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Save Privacy Preferences</button>
@@ -459,14 +472,13 @@
                         <div class="form-group">
                             <label class="toggle-switch">
                                 <input type="checkbox" id="notifyNewUploads" onchange="window.saveNotificationToggles()">
-                                <span>Alert me regarding newly uploaded structural store catalog entries</span>
+                                <span>Alert me regarding newly uploaded items</span>
                             </label>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="notifyLikesComments" onchange="window.saveNotificationToggles()">
-                                <span>Notify me whenever players evaluate likes or append community comments to my posts</span>
+                                <span>Notify me whenever players evaluate likes or comment</span>
                             </label>
                         </div>
-                        <p style="font-size: 13px; color: var(--text-muted);">Settings save automatically upon parameter interaction toggles.</p>
                     </div>
 
                     <div class="settings-pane" id="pane-linked">
@@ -490,43 +502,17 @@
 
                     <div class="settings-pane" id="pane-bugs">
                         <h3>System Integrity Error & Bug Transmission Logs</h3>
-                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Encountered technical exceptions? Transmit metrics here. Bug data pipelines route cleanly into the database inbox allocated to devxdragon3@gmail.com.</p>
                         <form onsubmit="window.submitPlatformBug(event)">
                             <div class="form-group">
                                 <label>Describe the Bug / Technical Exception:</label>
-                                <textarea id="bugDescription" required placeholder="Provide clear steps to reproduce the layout error or transaction processing fault..."></textarea>
+                                <textarea id="bugDescription" required placeholder="Provide clear steps to reproduce the layout error..."></textarea>
                             </div>
                             <button type="submit" style="background: var(--decline-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">File Bug Report Ticket</button>
                         </form>
                     </div>
 
-                    <div class="settings-pane" id="pane-tutorial">
-                        <h3>Trading Service Interactive Guide</h3>
-                        
-                        <div class="tutorial-step">
-                            <h4>Step 1: Authenticate or Claim Profile Identity</h4>
-                            <p>Access the 'Sign Up / Log In' access portal in the navigation header. Input an email line along with a secure management pass phrase. If the tracking email does not yet exist on the network, the database automatically logs registration keys securely.</p>
-                        </div>
-
-                        <div class="tutorial-step">
-                            <h4>Step 2: Post Catalog Inventory Listings</h4>
-                            <p>Select the '+ Upload Item' action link. Choose your game module (e.g., Grow A Garden, Kick A Lucky Block, Steal A Brainrot), fill out explicit weight criteria, mutation aura attributes, values data, and append private matching target server interaction URLs.</p>
-                        </div>
-
-                        <div class="tutorial-step">
-                            <h4>Step 3: Negotiating Safe Virtual Transactions</h4>
-                            <p>Browse through listings to target items. Click 'Send Trade Offer' to dispatch transaction logs. The listing author instantly tracks incoming offers within their inbox dashboard, retaining options to Accept or Decline instantly.</p>
-                        </div>
-
-                        <div class="tutorial-step">
-                            <h4>Step 4: Real-time Communication Integration</h4>
-                            <p>Utilize embedded item feedback comment blocks directly inside structural item listings to finalize configurations, trade variables, meeting coordinates, or cross-platform item updates securely.</p>
-                        </div>
-                    </div>
-
                     <div class="settings-pane" id="pane-admin-verify">
                         <h3>Admin: Add Verification Accounts</h3>
-                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Add Gmail addresses to grant them a verified badge globally across the platform.</p>
                         <form onsubmit="window.adminAddVerified(event)">
                             <div class="form-group">
                                 <label>User Gmail Address to Verify:</label>
@@ -538,7 +524,6 @@
 
                     <div class="settings-pane" id="pane-admin-update">
                         <h3>Admin: Schedule App Update Link</h3>
-                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Set a countdown timer. Once the time is reached, the update text and link will be revealed to all users at the top of the screen.</p>
                         <form onsubmit="window.adminSetAppUpdate(event)">
                             <div class="form-group">
                                 <label>Target Update Date & Time:</label>
@@ -550,7 +535,7 @@
                             </div>
                             <div class="form-group">
                                 <label>APK Download Link:</label>
-                                <input type="url" id="adminUpdateLink" required value="https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file">
+                                <input type="url" id="adminUpdateLink" required value="https://www.mediafire.com/file/.../file">
                             </div>
                             <button type="submit" style="background: var(--accept-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Set App Update Broadcast</button>
                         </form>
@@ -567,6 +552,8 @@
             
             <img id="modalProfilePic" src="https://via.placeholder.com/80" class="modal-profile-pic">
             <h4 id="modalProfileName" style="text-align: center; margin: 5px 0 20px 0; color: #fff;">Unknown User</h4>
+            
+            <button id="modalMessageBtn" class="hidden" style="background:var(--accent-color); color:#000; padding:10px; width:100%; border:none; border-radius:4px; cursor:pointer; font-weight:bold; margin-bottom:15px;">💬 Send Direct Message</button>
 
             <div class="profile-data-row">
                 <span class="profile-data-label">Email Address</span>
@@ -596,7 +583,7 @@
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Secure Access Portal</h3>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Please authenticate utilizing your secure account email format verification line to track correspondence logs and trade requests.</p>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Please authenticate utilizing your secure account email to track correspondence logs and trade requests.</p>
             
             <div id="loginLockoutContainer" class="hidden"></div>
 
@@ -643,10 +630,17 @@
         };
 
         const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
-        const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519654119353221210/1000030631.png?ex=6a3e57af&is=6a3d062f&hm=f5e27828d282be493d90fa81a93cca58b760a643b459d5b8f54fbf17a0536254&";
+        
+        // RELIABLE INLINE SVG DATA URI FOR VERIFIED BADGE (Never expires)
+        const verifiedLogoUrl = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'><path fill='%2300cc7a' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>";
 
         let trades = [];
         let inbox = [];
+        let userChats = {};
+        let activeChatId = null;
+        let activeChatTargetEmail = "";
+        let chatMessagesListener = null;
+
         let dynamicVerifiedEmails = [];
         let currentUser = localStorage.getItem('roblox_user_email') || "";
         let currentProfileMetadata = null;
@@ -654,9 +648,13 @@
         let activeLockoutIntervalId = null;
         let appUpdateIntervalId = null;
 
-        // Sanitization helper ensuring structural node integrity inside Firebase paths
         function escapeEmailPath(email) {
             return email.toLowerCase().replace(/\./g, '_').replace(/@/g, '_at_');
+        }
+
+        function getChatId(emailA, emailB) {
+            const arr = [escapeEmailPath(emailA), escapeEmailPath(emailB)].sort();
+            return `${arr[0]}__${arr[1]}`;
         }
 
         window.openModal = function(id) { 
@@ -669,22 +667,11 @@
         window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
         window.switchTab = function(tab) {
-            document.getElementById('uploadSection').classList.add('hidden');
-            document.getElementById('feedSection').classList.add('hidden');
-            document.getElementById('inboxSection').classList.add('hidden');
-            document.getElementById('settingsSection').classList.add('hidden');
-            
-            document.getElementById('uploadTab').classList.remove('active');
-            document.getElementById('viewTab').classList.remove('active');
-            document.getElementById('inboxTab').classList.remove('active');
-            document.getElementById('settingsTab').classList.remove('active');
+            ['uploadSection', 'feedSection', 'inboxSection', 'settingsSection', 'messagesSection'].forEach(s => document.getElementById(s).classList.add('hidden'));
+            ['uploadTab', 'viewTab', 'inboxTab', 'settingsTab', 'messagesTab'].forEach(t => document.getElementById(t).classList.remove('active'));
 
             if(tab === 'upload') {
-                if(!currentUser) {
-                    alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
-                    window.openModal('loginModal');
-                    return;
-                }
+                if(!currentUser) return forceLogin();
                 editingListingId = null;
                 document.getElementById('uploadFormHeader').textContent = "Post Trade Item";
                 document.getElementById('formSubmitBtn').textContent = "Post Item Details";
@@ -694,20 +681,19 @@
                 document.getElementById('uploadSection').classList.remove('hidden');
                 document.getElementById('uploadTab').classList.add('active');
             } else if (tab === 'inbox') {
-                if(!currentUser) {
-                    alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
-                    window.openModal('loginModal');
-                    return;
-                }
+                if(!currentUser) return forceLogin();
                 document.getElementById('inboxSection').classList.remove('hidden');
                 document.getElementById('inboxTab').classList.add('active');
                 window.renderInbox();
+            } else if (tab === 'messages') {
+                if(!currentUser) return forceLogin();
+                document.getElementById('messagesSection').classList.remove('hidden');
+                document.getElementById('messagesTab').classList.add('active');
+                window.loadChatSidebar();
             } else if (tab === 'settings') {
                 document.getElementById('settingsSection').classList.remove('hidden');
                 document.getElementById('settingsTab').classList.add('active');
-                if(currentUser) {
-                    window.loadProfilePaneFields();
-                }
+                if(currentUser) window.loadProfilePaneFields();
             } else {
                 document.getElementById('feedSection').classList.remove('hidden');
                 document.getElementById('viewTab').classList.add('active');
@@ -715,117 +701,57 @@
             }
         };
 
+        function forceLogin() {
+            alert("Unauthorized Access: Complete verification portal setup via your Email structure first!");
+            window.openModal('loginModal');
+        }
+
         window.switchSettingsPane = function(paneId) {
             document.querySelectorAll('.settings-pane').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.settings-sidebar-btn').forEach(b => b.classList.remove('active'));
-            
             document.getElementById(`pane-${paneId}`).classList.add('active');
             document.getElementById(`paneBtn-${paneId}`).classList.add('active');
         };
 
-        // Persistent Security Logic: Failed Attempts and Lockout Trackers
         window.login = function(event) {
             event.preventDefault();
             const emailInput = document.getElementById('authEmail').value.trim();
             const passwordInput = document.getElementById('authPassword').value;
 
-            if(!emailInput || !emailInput.includes('@')) {
-                alert("Please provide a valid comprehensive email layout address.");
-                return;
-            }
+            if(!emailInput || !emailInput.includes('@')) return alert("Invalid comprehensive email layout.");
 
             const cleanKey = escapeEmailPath(emailInput);
             const now = Date.now();
-
-            // Evaluate persistent browser storage restrictions first
             const localLockoutTime = parseInt(localStorage.getItem(`lockout_until_${cleanKey}`)) || 0;
-            if(now < localLockoutTime) {
-                enforceUIVisualLockout(localLockoutTime);
-                return;
-            }
+            if(now < localLockoutTime) return enforceUIVisualLockout(localLockoutTime);
 
             const userRef = ref(db, `users/${cleanKey}`);
             get(userRef).then((snapshot) => {
                 if(!snapshot.exists()) {
-                    // Registration Flow
-                    const registrationPayload = {
-                        email: emailInput,
-                        password: passwordInput,
-                        displayName: emailInput.split('@')[0],
-                        profilePic: "",
-                        backupEmail: "",
-                        phoneNumber: "",
-                        notifyNewUploads: true,
-                        notifyLikesComments: true,
-                        linkRoblox: "",
-                        linkYoutube: "",
-                        linkFacebook: "",
-                        privacyHideEmail: false,
-                        privacyHidePhone: false,
-                        privacyHideSocials: false
-                    };
-                    update(userRef, registrationPayload).then(() => {
-                        localStorage.removeItem(`failed_attempts_${cleanKey}`);
-                        localStorage.removeItem(`lockout_until_${cleanKey}`);
-                        processSuccessfulAuthentication(emailInput);
-                    });
+                    const registrationPayload = { email: emailInput, password: passwordInput, displayName: emailInput.split('@')[0], notifyNewUploads: true, notifyLikesComments: true };
+                    update(userRef, registrationPayload).then(() => finalizeLogin(emailInput, cleanKey));
                 } else {
-                    // Existing Profile Verification Check
                     const accountData = snapshot.val();
                     if(accountData.password === passwordInput) {
-                        localStorage.removeItem(`failed_attempts_${cleanKey}`);
-                        localStorage.removeItem(`lockout_until_${cleanKey}`);
-                        processSuccessfulAuthentication(emailInput);
+                        finalizeLogin(emailInput, cleanKey);
                     } else {
-                        // Increment Brute Force Attack Count metrics
                         let currentFailures = (parseInt(localStorage.getItem(`failed_attempts_${cleanKey}`)) || 0) + 1;
                         localStorage.setItem(`failed_attempts_${cleanKey}`, currentFailures);
-
-                        let waitDurationMs = 0;
-                        if(currentFailures >= 10) {
-                            waitDurationMs = 24 * 60 * 60 * 1000; // 24-Hour Cooldown Limit Rule
-                            alert("Security Violation Block triggered: 10 failed identification signatures. This terminal is locked for 24 hours.");
-                        } else {
-                            waitDurationMs = 30 * 1000; // Standard 30-Second Retrial Lockout Check
-                            alert("Incorrect login password token verification match. Please check credentials and try again.");
-                        }
-
+                        let waitDurationMs = currentFailures >= 10 ? 24 * 60 * 60 * 1000 : 30 * 1000;
                         const targetLockoutExpiration = Date.now() + waitDurationMs;
                         localStorage.setItem(`lockout_until_${cleanKey}`, targetLockoutExpiration);
                         enforceUIVisualLockout(targetLockoutExpiration);
+                        alert(currentFailures >= 10 ? "Terminal locked for 24 hours." : "Incorrect login password token.");
                     }
                 }
-            }).catch(err => alert("Identification Portal Network Failure: " + err.message));
+            }).catch(err => alert("Network Failure: " + err.message));
         };
 
-        function enforceUIVisualLockout(lockoutEpoch) {
-            const container = document.getElementById('loginLockoutContainer');
-            container.className = 'lockout-msg';
-            
-            clearInterval(activeLockoutIntervalId);
-            
-            function updateMessage() {
-                const totalSecondsLeft = Math.ceil((lockoutEpoch - Date.now()) / 1000);
-                if(totalSecondsLeft <= 0) {
-                    container.className = 'hidden';
-                    clearInterval(activeLockoutIntervalId);
-                } else {
-                    if (totalSecondsLeft > 3600) {
-                        const hours = Math.floor(totalSecondsLeft / 3600);
-                        const mins = Math.floor((totalSecondsLeft % 3600) / 60);
-                        container.textContent = `AUTHENTICATION LOCKED: Security system alert. Please retry in ${hours}h ${mins}m.`;
-                    } else {
-                        container.textContent = `AUTHENTICATION RETRY DELAY ACTIVE: Please wait ${totalSecondsLeft} seconds before verifying.`;
-                    }
-                }
-            }
-            updateMessage();
-            activeLockoutIntervalId = setInterval(updateMessage, 1000);
-        }
-
-        function processSuccessfulAuthentication(verifiedEmail) {
-            localStorage.setItem('roblox_user_email', verifiedEmail);
-            currentUser = verifiedEmail;
+        function finalizeLogin(email, cleanKey) {
+            localStorage.removeItem(`failed_attempts_${cleanKey}`);
+            localStorage.removeItem(`lockout_until_${cleanKey}`);
+            localStorage.setItem('roblox_user_email', email);
+            currentUser = email;
             updateAuthUI();
             window.closeModal('loginModal');
             window.updateInboxBadge();
@@ -834,792 +760,454 @@
             alert("Identification confirmed. Welcome back.");
         }
 
+        function enforceUIVisualLockout(lockoutEpoch) {
+            const container = document.getElementById('loginLockoutContainer');
+            container.className = 'lockout-msg';
+            clearInterval(activeLockoutIntervalId);
+            activeLockoutIntervalId = setInterval(() => {
+                const secs = Math.ceil((lockoutEpoch - Date.now()) / 1000);
+                if(secs <= 0) { container.className = 'hidden'; clearInterval(activeLockoutIntervalId); } 
+                else { container.textContent = secs > 3600 ? `LOCKED. Retry in ${Math.floor(secs/3600)}h` : `RETRY DELAY ACTIVE: Please wait ${secs}s`; }
+            }, 1000);
+        }
+
         window.logout = function() {
             localStorage.removeItem('roblox_user_email');
-            currentUser = "";
-            currentProfileMetadata = null;
-            updateAuthUI();
-            window.switchTab('view');
-            window.updateInboxBadge();
-            window.renderItems();
+            currentUser = ""; currentProfileMetadata = null;
+            updateAuthUI(); window.switchTab('view'); window.updateInboxBadge(); window.renderItems();
         };
 
         function checkIsVerified(email) {
-            const clean = email.toLowerCase().trim();
-            return verifiedEmails.includes(clean) || dynamicVerifiedEmails.includes(clean);
+            return verifiedEmails.includes(email.toLowerCase().trim()) || dynamicVerifiedEmails.includes(email.toLowerCase().trim());
         }
 
         function getCreatorLabelHtml(email) {
             if(!email) return "Unknown Trader";
-            const cleanEmail = email.toLowerCase().trim();
-            
-            let nameString = email;
-            if (currentProfileMetadata && currentUser && cleanEmail === currentUser.toLowerCase().trim() && currentProfileMetadata.displayName) {
-                nameString = currentProfileMetadata.displayName;
-            } else {
-                nameString = email.split('@')[0];
-            }
-
-            let badgeHtml = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">` : "";
-            
-            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${nameString}</strong></a>${badgeHtml}`;
-        }
-
-        function getCommentCreatorLabelHtml(email, fallbackName) {
-            if(!email) return "Trader";
-            const cleanEmail = email.toLowerCase().trim();
-            const cleanLabel = fallbackName || email.split('@')[0];
-            
-            let badgeHtml = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge" title="Verified Creator Account Platform Member">` : "";
-            
-            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${cleanLabel}</strong></a>${badgeHtml}`;
+            const clean = email.toLowerCase().trim();
+            let n = clean === (currentUser||"").toLowerCase().trim() && currentProfileMetadata && currentProfileMetadata.displayName ? currentProfileMetadata.displayName : email.split('@')[0];
+            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${n}</strong></a>${checkIsVerified(clean) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : ""}`;
         }
 
         function updateAuthUI() {
             const greeting = document.getElementById('userGreeting');
-            const loginBtn = document.getElementById('loginBtn');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const uploadIdentityInput = document.getElementById('formUserIdentity');
-            
-            const btnAdminVerify = document.getElementById('paneBtn-admin-verify');
-            const btnAdminUpdate = document.getElementById('paneBtn-admin-update');
-
             if(currentUser) {
-                let badgeHtml = checkIsVerified(currentUser) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
-                greeting.innerHTML = `Session: <span style="color:var(--text-color);">${currentUser.split('@')[0]}</span>${badgeHtml}`;
-                
-                loginBtn.classList.add('hidden');
-                logoutBtn.classList.remove('hidden');
-                uploadIdentityInput.value = currentUser; 
-                
+                greeting.innerHTML = `Session: <span style="color:var(--text-color);">${currentUser.split('@')[0]}</span>${checkIsVerified(currentUser) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : ""}`;
+                document.getElementById('loginBtn').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                document.getElementById('formUserIdentity').value = currentUser; 
                 if(currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
-                    btnAdminVerify.classList.remove('hidden');
-                    btnAdminUpdate.classList.remove('hidden');
+                    document.getElementById('paneBtn-admin-verify').classList.remove('hidden');
+                    document.getElementById('paneBtn-admin-update').classList.remove('hidden');
                     greeting.innerHTML += `<span class="admin-badge-ui">ADMIN</span>`;
-                } else {
-                    btnAdminVerify.classList.add('hidden');
-                    btnAdminUpdate.classList.add('hidden');
                 }
             } else {
                 greeting.textContent = "";
-                loginBtn.classList.remove('hidden');
-                logoutBtn.classList.add('hidden');
-                uploadIdentityInput.value = "";
-                btnAdminVerify.classList.add('hidden');
-                btnAdminUpdate.classList.add('hidden');
+                document.getElementById('loginBtn').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.add('hidden');
+                document.getElementById('formUserIdentity').value = "";
+                document.getElementById('paneBtn-admin-verify').classList.add('hidden');
+                document.getElementById('paneBtn-admin-update').classList.add('hidden');
             }
         }
 
-        // --- User Profile Viewing Logic ---
+        // --- NEW CHAT/MESSAGING LOGIC ---
+        window.loadChatSidebar = function() {
+            if(!currentUser) return;
+            const myClean = escapeEmailPath(currentUser);
+            onValue(ref(db, `users/${myClean}/chats`), (snapshot) => {
+                const data = snapshot.val();
+                const sidebar = document.getElementById('chatSidebar');
+                sidebar.innerHTML = "";
+                if(!data) { sidebar.innerHTML = '<div style="padding:20px; color:var(--text-muted); font-size:14px; text-align:center;">No recent chats. View a user profile to start a conversation.</div>'; return; }
+                
+                Object.keys(data).forEach(targetCleanEmail => {
+                    const uRef = ref(db, `users/${targetCleanEmail}`);
+                    get(uRef).then(uSnap => {
+                        const uData = uSnap.val() || {};
+                        const dName = uData.displayName || targetCleanEmail.replace('_at_', '@').split('@')[0];
+                        const realEmail = uData.email || targetCleanEmail.replace('_at_', '@').replace(/_/g, '.');
+                        
+                        const div = document.createElement('div');
+                        div.className = 'chat-sidebar-user';
+                        div.innerHTML = `<span>👤</span> ${dName}`;
+                        div.onclick = () => window.openChatWindow(realEmail, dName);
+                        sidebar.appendChild(div);
+                    });
+                });
+            });
+        };
+
+        window.openChatWindow = function(targetEmail, targetDisplayName) {
+            if(!currentUser) return;
+            activeChatTargetEmail = targetEmail;
+            activeChatId = getChatId(currentUser, targetEmail);
+            
+            document.getElementById('chatWindow').classList.remove('hidden');
+            document.getElementById('chatHeader').textContent = `Chatting with: ${targetDisplayName || targetEmail.split('@')[0]}`;
+            
+            const msgsContainer = document.getElementById('chatMessages');
+            msgsContainer.innerHTML = "Loading...";
+
+            onValue(ref(db, `chats/${activeChatId}`), (snapshot) => {
+                msgsContainer.innerHTML = "";
+                const data = snapshot.val();
+                if(data) {
+                    Object.values(data).forEach(msg => {
+                        const mDiv = document.createElement('div');
+                        const isMe = msg.sender.toLowerCase().trim() === currentUser.toLowerCase().trim();
+                        mDiv.className = `chat-msg ${isMe ? 'sent' : 'received'}`;
+                        mDiv.textContent = msg.text;
+                        msgsContainer.appendChild(mDiv);
+                    });
+                    msgsContainer.scrollTop = msgsContainer.scrollHeight;
+                } else {
+                    msgsContainer.innerHTML = `<div style="color:var(--text-muted); text-align:center; font-size:13px; margin-top:20px;">No messages yet. Send a message to start!</div>`;
+                }
+            });
+        };
+
+        window.sendChatMessage = function(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if(!text || !activeChatId || !activeChatTargetEmail) return;
+
+            const myClean = escapeEmailPath(currentUser);
+            const theirClean = escapeEmailPath(activeChatTargetEmail);
+
+            // Save to messages node
+            push(ref(db, `chats/${activeChatId}`), {
+                sender: currentUser, text: text, timestamp: Date.now()
+            }).then(() => {
+                // Update pointers in both users' profiles so it appears in their sidebar
+                update(ref(db, `users/${myClean}/chats`), { [theirClean]: Date.now() });
+                update(ref(db, `users/${theirClean}/chats`), { [myClean]: Date.now() });
+                
+                // Push an inbox notification so they know they got a chat if they aren't on the chat tab
+                push(ref(db, 'inbox'), {
+                    to: activeChatTargetEmail, from: currentUser, type: 'notification',
+                    itemName: 'New Chat Message', timestamp: Date.now(), text: `You have a new private message. Check your Messages tab!`
+                });
+
+                input.value = "";
+            });
+        };
+
+        // --- Profile View & Start DM ---
         window.viewUserProfile = function(targetEmail) {
             if(!targetEmail) return;
             const cleanKey = escapeEmailPath(targetEmail);
-            
             get(ref(db, `users/${cleanKey}`)).then((snapshot) => {
                 let data = snapshot.exists() ? snapshot.val() : {};
-                
                 document.getElementById('modalProfilePic').src = data.profilePic || "https://via.placeholder.com/80";
                 
                 let displayName = data.displayName || targetEmail.split('@')[0];
-                let isVer = checkIsVerified(targetEmail);
-                document.getElementById('modalProfileName').innerHTML = isVer ? `${displayName} <img src="${verifiedLogoUrl}" class="verified-badge">` : displayName;
+                document.getElementById('modalProfileName').innerHTML = checkIsVerified(targetEmail) ? `${displayName} <img src="${verifiedLogoUrl}" class="verified-badge">` : displayName;
                 
-                // Admin overrides privacy to view all details
-                const isAdmin = currentUser && currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase();
+                const isAdmin = currentUser && currentUser.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+                const isSelf = currentUser && targetEmail.toLowerCase() === currentUser.toLowerCase();
 
-                if(!data.privacyHideEmail || isAdmin) {
-                    document.getElementById('modalProfileEmail').textContent = targetEmail;
+                const msgBtn = document.getElementById('modalMessageBtn');
+                if(!isSelf && currentUser) {
+                    msgBtn.classList.remove('hidden');
+                    msgBtn.onclick = () => {
+                        window.closeModal('userProfileModal');
+                        window.switchTab('messages');
+                        window.openChatWindow(targetEmail, displayName);
+                    };
                 } else {
-                    document.getElementById('modalProfileEmail').textContent = "Hidden via Privacy";
+                    msgBtn.classList.add('hidden');
                 }
 
-                if((!data.privacyHidePhone || isAdmin) && data.phoneNumber) {
-                    document.getElementById('modalProfilePhone').textContent = data.phoneNumber;
-                } else {
-                    document.getElementById('modalProfilePhone').textContent = data.phoneNumber ? "Hidden via Privacy" : "Not Provided";
-                }
-
+                document.getElementById('modalProfileEmail').textContent = (!data.privacyHideEmail || isAdmin) ? targetEmail : "Hidden via Privacy";
+                document.getElementById('modalProfilePhone').textContent = (!data.privacyHidePhone || isAdmin) && data.phoneNumber ? data.phoneNumber : (data.phoneNumber ? "Hidden via Privacy" : "Not Provided");
+                
                 if(!data.privacyHideSocials || isAdmin) {
                     document.getElementById('modalProfileRoblox').innerHTML = data.linkRoblox ? data.linkRoblox : "None";
                     document.getElementById('modalProfileYoutube').innerHTML = data.linkYoutube ? `<a href="${data.linkYoutube}" target="_blank" style="color:var(--accent-color);">View Channel</a>` : "None";
                     document.getElementById('modalProfileFacebook').innerHTML = data.linkFacebook ? `<a href="${data.linkFacebook}" target="_blank" style="color:var(--accent-color);">View Profile</a>` : "None";
                 } else {
-                    document.getElementById('modalProfileRoblox').textContent = "Hidden via Privacy";
-                    document.getElementById('modalProfileYoutube').textContent = "Hidden via Privacy";
-                    document.getElementById('modalProfileFacebook').textContent = "Hidden via Privacy";
+                    document.getElementById('modalProfileRoblox').textContent = "Hidden";
+                    document.getElementById('modalProfileYoutube').textContent = "Hidden";
+                    document.getElementById('modalProfileFacebook').textContent = "Hidden";
                 }
-
                 window.openModal('userProfileModal');
             });
         };
 
-        // --- Account Profile & Database Form Integration Logic ---
+        // Profile Updates
         window.previewProfilePic = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e){
-                document.getElementById('settingsProfilePicDataUrl').value = e.target.result;
-                document.getElementById('settingsProfilePicPreview').src = e.target.result;
-            }
-            reader.readAsDataURL(file);
+            const f = event.target.files[0]; if(!f) return;
+            const r = new FileReader(); r.onload = (e) => { document.getElementById('settingsProfilePicDataUrl').value = e.target.result; document.getElementById('settingsProfilePicPreview').src = e.target.result; }; r.readAsDataURL(f);
         };
 
         window.loadProfilePaneFields = function() {
             if(!currentUser) return;
-            const cleanKey = escapeEmailPath(currentUser);
-            get(ref(db, `users/${cleanKey}`)).then((snapshot) => {
+            get(ref(db, `users/${escapeEmailPath(currentUser)}`)).then((snapshot) => {
                 if(snapshot.exists()) {
-                    const data = snapshot.val();
-                    currentProfileMetadata = data;
-                    
+                    const data = snapshot.val(); currentProfileMetadata = data;
                     document.getElementById('settingsProfilePicPreview').src = data.profilePic || "https://via.placeholder.com/60";
                     document.getElementById('settingsProfilePicDataUrl').value = data.profilePic || "";
-                    
                     document.getElementById('settingsDisplayName').value = data.displayName || "";
                     document.getElementById('settingsBackupEmail').value = data.backupEmail || "";
                     document.getElementById('settingsPhoneNumber').value = data.phoneNumber || "";
-                    
                     document.getElementById('notifyNewUploads').checked = data.notifyNewUploads !== false;
                     document.getElementById('notifyLikesComments').checked = data.notifyLikesComments !== false;
-                    
                     document.getElementById('linkRoblox').value = data.linkRoblox || "";
                     document.getElementById('linkYoutube').value = data.linkYoutube || "";
                     document.getElementById('linkFacebook').value = data.linkFacebook || "";
-                    
                     document.getElementById('privacyHideEmail').checked = data.privacyHideEmail === true;
                     document.getElementById('privacyHidePhone').checked = data.privacyHidePhone === true;
                     document.getElementById('privacyHideSocials').checked = data.privacyHideSocials === true;
-                    
                     updateAuthUI();
                 }
             });
         };
 
         window.saveProfileSettings = function(e) {
-            e.preventDefault();
-            if(!currentUser) return;
-            const cleanKey = escapeEmailPath(currentUser);
-            
-            const pPic = document.getElementById('settingsProfilePicDataUrl').value;
-            const pName = document.getElementById('settingsDisplayName').value.trim();
-            const pBackup = document.getElementById('settingsBackupEmail').value.trim();
-            const pPhone = document.getElementById('settingsPhoneNumber').value.trim();
-            
-            update(ref(db, `users/${cleanKey}`), {
-                profilePic: pPic,
-                displayName: pName,
-                backupEmail: pBackup,
-                phoneNumber: pPhone
-            }).then(() => {
-                alert("Account metadata and Profile Picture synchronized safely.");
-                window.loadProfilePaneFields();
-            });
+            e.preventDefault(); if(!currentUser) return;
+            update(ref(db, `users/${escapeEmailPath(currentUser)}`), {
+                profilePic: document.getElementById('settingsProfilePicDataUrl').value,
+                displayName: document.getElementById('settingsDisplayName').value.trim(),
+                backupEmail: document.getElementById('settingsBackupEmail').value.trim(),
+                phoneNumber: document.getElementById('settingsPhoneNumber').value.trim()
+            }).then(() => { alert("Profile saved."); window.loadProfilePaneFields(); });
         };
 
         window.savePrivacySettings = function(e) {
-            e.preventDefault();
-            if(!currentUser) return;
-            const cleanKey = escapeEmailPath(currentUser);
-            
-            update(ref(db, `users/${cleanKey}`), {
+            e.preventDefault(); if(!currentUser) return;
+            update(ref(db, `users/${escapeEmailPath(currentUser)}`), {
                 privacyHideEmail: document.getElementById('privacyHideEmail').checked,
                 privacyHidePhone: document.getElementById('privacyHidePhone').checked,
                 privacyHideSocials: document.getElementById('privacyHideSocials').checked
-            }).then(() => {
-                alert("Profile Privacy preferences secured.");
-                window.loadProfilePaneFields();
-            });
+            }).then(() => alert("Privacy saved."));
         };
 
         window.updateUserPassword = function(e) {
-            e.preventDefault();
-            if(!currentUser) return;
-            
-            const currentPassInput = document.getElementById('securityCurrentPassword').value;
-            const newPassInput = document.getElementById('securityNewPassword').value;
-            const cleanKey = escapeEmailPath(currentUser);
-            
-            const targetRef = ref(db, `users/${cleanKey}`);
-            get(targetRef).then((snapshot) => {
-                if(snapshot.exists() && snapshot.val().password === currentPassInput) {
-                    update(targetRef, { password: newPassInput }).then(() => {
-                        alert("Security credentials modified successfully.");
-                        document.getElementById('securityCurrentPassword').value = "";
-                        document.getElementById('securityNewPassword').value = "";
+            e.preventDefault(); if(!currentUser) return;
+            const targetRef = ref(db, `users/${escapeEmailPath(currentUser)}`);
+            get(targetRef).then((s) => {
+                if(s.exists() && s.val().password === document.getElementById('securityCurrentPassword').value) {
+                    update(targetRef, { password: document.getElementById('securityNewPassword').value }).then(() => {
+                        alert("Password updated."); document.getElementById('securityCurrentPassword').value = ""; document.getElementById('securityNewPassword').value = "";
                     });
-                } else {
-                    alert("Verification mismatch exception: Active structural validation password line is incorrect.");
-                }
+                } else alert("Current password incorrect.");
             });
         };
 
         window.saveNotificationToggles = function() {
             if(!currentUser) return;
-            const cleanKey = escapeEmailPath(currentUser);
-            update(ref(db, `users/${cleanKey}`), {
-                notifyNewUploads: document.getElementById('notifyNewUploads').checked,
-                notifyLikesComments: document.getElementById('notifyLikesComments').checked
-            });
+            update(ref(db, `users/${escapeEmailPath(currentUser)}`), { notifyNewUploads: document.getElementById('notifyNewUploads').checked, notifyLikesComments: document.getElementById('notifyLikesComments').checked });
         };
 
         window.saveLinkedAccounts = function(e) {
-            e.preventDefault();
-            if(!currentUser) return;
-            const cleanKey = escapeEmailPath(currentUser);
-            
-            update(ref(db, `users/${cleanKey}`), {
-                linkRoblox: document.getElementById('linkRoblox').value.trim(),
-                linkYoutube: document.getElementById('linkYoutube').value.trim(),
-                linkFacebook: document.getElementById('linkFacebook').value.trim()
-            }).then(() => alert("Cross-platform networking profiles synchronized."));
+            e.preventDefault(); if(!currentUser) return;
+            update(ref(db, `users/${escapeEmailPath(currentUser)}`), {
+                linkRoblox: document.getElementById('linkRoblox').value.trim(), linkYoutube: document.getElementById('linkYoutube').value.trim(), linkFacebook: document.getElementById('linkFacebook').value.trim()
+            }).then(() => alert("Linked accounts saved."));
         };
 
-        // --- Admin Functions ---
-        window.adminAddVerified = function(e) {
-            e.preventDefault();
-            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
-            
-            const newEmail = document.getElementById('adminVerifyEmailInput').value.trim().toLowerCase();
-            if(!newEmail) return;
-            
-            push(ref(db, 'verified_emails'), newEmail).then(() => {
-                alert(`${newEmail} has been granted a Verified Platform Account badge.`);
-                document.getElementById('adminVerifyEmailInput').value = "";
-            }).catch(err => alert("Error adding verified account: " + err.message));
-        };
-
-        window.adminSetAppUpdate = function(e) {
-            e.preventDefault();
-            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
-            
-            const targetTimeVal = document.getElementById('adminUpdateDateTime').value;
-            const textVal = document.getElementById('adminUpdateText').value;
-            const linkVal = document.getElementById('adminUpdateLink').value;
-            
-            if(!targetTimeVal) {
-                alert("Please select a date and time for the update.");
-                return;
+        // Inbox Notification Helper
+        function sendInboxNotification(toEmail, text, itemName) {
+            if(toEmail.toLowerCase() !== currentUser.toLowerCase()) {
+                push(ref(db, 'inbox'), { to: toEmail, from: currentUser, type: 'notification', itemName: itemName, text: text, status: 'pending', timestamp: Date.now() });
             }
-            
-            const targetEpoch = new Date(targetTimeVal).getTime();
-            
-            update(ref(db, 'app_update'), {
-                targetTime: targetEpoch,
-                text: textVal,
-                link: linkVal
-            }).then(() => {
-                alert("App update countdown successfully scheduled on the server.");
-            }).catch(err => alert("Error scheduling update: " + err.message));
-        };
+        }
 
-        window.submitPlatformBug = function(e) {
-            e.preventDefault();
-            const textDesc = document.getElementById('bugDescription').value.trim();
-            if(!textDesc) return;
-            
-            const activeReporter = currentUser || "Anonymous_Visitor";
-            
-            // Build a specialized alert notification block directly inside the target developer's inbox structure
-            const bugPayload = {
-                itemId: "BUG_TICKET",
-                itemName: "🚨 EMERGENCY PLATFORM BUG REPORT",
-                to: ADMIN_EMAIL,
-                from: activeReporter,
-                status: "pending",
-                timestamp: Date.now()
-            };
-            
-            push(ref(db, 'inbox'), bugPayload).then(() => {
-                // Duplicate into an isolated system error bucket for logs redundancy
-                push(ref(db, 'bug_reports'), {
-                    reportedBy: activeReporter,
-                    description: textDesc,
-                    timestamp: Date.now()
-                }).then(() => {
-                    alert(`Technical exception ticket dispatched to ${ADMIN_EMAIL}'s inbox records.`);
-                    document.getElementById('bugDescription').value = "";
-                });
-            });
-        };
+        // Database Listeners
+        onValue(ref(db, 'trades'), (s) => { trades = s.val() ? Object.keys(s.val()).map(k => ({ id: k, ...s.val()[k] })).reverse() : []; window.renderItems(); });
+        onValue(ref(db, 'inbox'), (s) => { inbox = s.val() ? Object.keys(s.val()).map(k => ({ id: k, ...s.val()[k] })).reverse() : []; window.updateInboxBadge(); if(!document.getElementById('inboxSection').classList.contains('hidden')) window.renderInbox(); });
+        onValue(ref(db, 'verified_emails'), (s) => { dynamicVerifiedEmails = s.val() ? Object.values(s.val()).map(v => v.toLowerCase().trim()) : []; updateAuthUI(); window.renderItems(); });
+        onValue(ref(db, 'app_update'), (s) => {
+            const data = s.val(); const b = document.getElementById('updateBannerContainer'); clearInterval(appUpdateIntervalId);
+            if(data && data.targetTime) {
+                b.style.display = 'block';
+                appUpdateIntervalId = setInterval(() => {
+                    const t = Math.floor((data.targetTime - Date.now())/1000);
+                    if(t > 0) b.innerHTML = `⚠️ Update Launching in: ${Math.floor(t/(3600*24))}d ${Math.floor((t%(3600*24))/3600)}h ${Math.floor((t%3600)/60)}m ${t%60}s`;
+                    else { b.innerHTML = `🎉 UPDATE LAUNCHED! <a href="${data.link}" target="_blank">${data.text}</a>`; clearInterval(appUpdateIntervalId); }
+                }, 1000);
+            } else b.style.display = 'none';
+        });
 
         window.updateFormFields = function() {
-            const selectedGame = document.getElementById('formGameType').value;
-            const config = gameItemsDatabase[selectedGame];
-            
+            const config = gameItemsDatabase[document.getElementById('formGameType').value];
             document.getElementById('labelWorth').textContent = config.fields.worth + ":";
             document.getElementById('fieldWorth').style.display = config.fields.worth ? 'block' : 'none';
             document.getElementById('fieldKg').style.display = config.fields.kg ? 'block' : 'none';
             document.getElementById('fieldMutation').style.display = config.fields.mutation ? 'block' : 'none';
-
-            const itemDropdown = document.getElementById('formItemName');
-            itemDropdown.innerHTML = "";
-            
-            config.items.forEach(item => {
-                let opt = document.createElement('option');
-                opt.value = item;
-                opt.textContent = item;
-                itemDropdown.appendChild(opt);
-            });
-
-            let customOpt = document.createElement('option');
-            customOpt.value = "CUSTOM_ITEM_VAL";
-            customOpt.textContent = "➕ Other / Custom Item (Type custom name below)";
-            itemDropdown.appendChild(customOpt);
-
+            const drop = document.getElementById('formItemName'); drop.innerHTML = "";
+            config.items.forEach(i => { let o = document.createElement('option'); o.value = i; o.textContent = i; drop.appendChild(o); });
+            let c = document.createElement('option'); c.value = "CUSTOM_ITEM_VAL"; c.textContent = "➕ Custom Item"; drop.appendChild(c);
             window.checkCustomItem();
         };
 
         window.checkCustomItem = function() {
-            const dropdown = document.getElementById('formItemName');
-            const customItemField = document.getElementById('fieldCustomItem');
-            const customInput = document.getElementById('formCustomItemName');
-
-            if(dropdown.value === "CUSTOM_ITEM_VAL") {
-                customItemField.classList.remove('hidden');
-                customInput.required = true;
-            } else {
-                customItemField.classList.add('hidden');
-                customInput.required = false;
-                customInput.value = "";
-            }
+            const d = document.getElementById('formItemName').value === "CUSTOM_ITEM_VAL";
+            document.getElementById('fieldCustomItem').classList[d?'remove':'add']('hidden');
+            document.getElementById('formCustomItemName').required = d;
         };
 
-        window.previewImage = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e){
-                document.getElementById('imageDataUrl').value = e.target.result;
-            }
-            reader.readAsDataURL(file);
+        window.previewImage = function(e) {
+            const f = e.target.files[0]; if(!f) return;
+            const r = new FileReader(); r.onload = (ev) => document.getElementById('imageDataUrl').value = ev.target.result; r.readAsDataURL(f);
         };
-
-        // --- Database Listeners ---
-        onValue(ref(db, 'trades'), (snapshot) => {
-            const data = snapshot.val();
-            trades = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
-            window.renderItems();
-        });
-
-        onValue(ref(db, 'inbox'), (snapshot) => {
-            const data = snapshot.val();
-            inbox = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
-            window.updateInboxBadge();
-            if (!document.getElementById('inboxSection').classList.contains('hidden')) {
-                window.renderInbox();
-            }
-        });
-
-        onValue(ref(db, 'verified_emails'), (snapshot) => {
-            const data = snapshot.val();
-            dynamicVerifiedEmails = data ? Object.values(data).map(v => v.toLowerCase().trim()) : [];
-            updateAuthUI();
-            window.renderItems();
-        });
-
-        onValue(ref(db, 'app_update'), (snapshot) => {
-            const data = snapshot.val();
-            const banner = document.getElementById('updateBannerContainer');
-            
-            clearInterval(appUpdateIntervalId);
-            
-            if(data && data.targetTime) {
-                banner.style.display = 'block';
-                
-                appUpdateIntervalId = setInterval(() => {
-                    const now = Date.now();
-                    const timeLeft = Math.floor((data.targetTime - now) / 1000);
-                    
-                    if(timeLeft > 0) {
-                        const days = Math.floor(timeLeft / (3600*24));
-                        const hours = Math.floor((timeLeft % (3600*24)) / 3600);
-                        const mins = Math.floor((timeLeft % 3600) / 60);
-                        const secs = timeLeft % 60;
-                        banner.innerHTML = `⚠️ System Update Launching in: ${days}d ${hours}h ${mins}m ${secs}s`;
-                    } else {
-                        banner.innerHTML = `🎉 UPDATE LAUNCHED! <a href="${data.link}" target="_blank">${data.text}</a>`;
-                        clearInterval(appUpdateIntervalId);
-                    }
-                }, 1000);
-            } else {
-                banner.style.display = 'none';
-            }
-        });
 
         window.handleUpload = function(e) {
-            e.preventDefault();
-            if(!currentUser) {
-                alert("Verification identity layout mismatch error.");
-                return;
-            }
-
-            const game = document.getElementById('formGameType').value;
+            e.preventDefault(); if(!currentUser) return alert("Verify Identity first.");
             let name = document.getElementById('formItemName').value;
-            
-            if(name === "CUSTOM_ITEM_VAL") {
-                name = document.getElementById('formCustomItemName').value.trim();
-                if(!name) {
-                    alert("Please specify custom item name text metrics.");
-                    return;
-                }
-            }
+            if(name === "CUSTOM_ITEM_VAL") name = document.getElementById('formCustomItemName').value.trim();
+            if(!name) return alert("Specify name");
 
-            const stockCount = parseInt(document.getElementById('formStock').value) || 1;
-            let imageStr = document.getElementById('imageDataUrl').value;
-            
-            if (!imageStr) {
-                if (editingListingId) {
-                    const originalItem = trades.find(t => t.id === editingListingId);
-                    imageStr = originalItem ? originalItem.image : "📦";
-                } else {
-                    imageStr = "📦";
-                }
-            }
+            let imgStr = document.getElementById('imageDataUrl').value || (editingListingId ? (trades.find(t=>t.id===editingListingId)||{}).image : "📦");
+            const pl = { creator: currentUser, game: document.getElementById('formGameType').value, name: name, stock: parseInt(document.getElementById('formStock').value)||1, image: imgStr, worth: document.getElementById('formWorth').value.trim()||"None", kg: document.getElementById('formKg').value.trim()||"N/A->Seed", mutation: document.getElementById('formMutation').value.trim()||"N/A->Seed", psLink: document.getElementById('formPsLink').value, timestamp: Date.now() };
 
-            const worth = document.getElementById('formWorth').value.trim();
-            const kg = document.getElementById('formKg').value.trim();
-            const mutation = document.getElementById('formMutation').value.trim();
-            const psLink = document.getElementById('formPsLink').value;
-
-            const targetPayload = {
-                creator: currentUser,
-                game: game,
-                name: name,
-                stock: stockCount,
-                image: imageStr,
-                worth: worth || "None",
-                kg: kg || "N/A->Seed",
-                mutation: mutation || "N/A->Seed",
-                psLink: psLink || "",
-                timestamp: Date.now()
-            };
-
-            if (editingListingId) {
-                const existingItem = trades.find(t => t.id === editingListingId);
-                targetPayload.likes = existingItem ? (existingItem.likes || 0) : 0;
-                if (existingItem && existingItem.likedBy) targetPayload.likedBy = existingItem.likedBy;
-                if (existingItem && existingItem.comments) targetPayload.comments = existingItem.comments;
-
-                update(ref(db, `trades/${editingListingId}`), targetPayload)
-                    .then(() => {
-                        finalizeReset();
-                        alert("Item Successfully Updated!");
-                    }).catch(err => alert("Sync Failed: " + err.message));
+            if(editingListingId) {
+                const ex = trades.find(t=>t.id===editingListingId); pl.likes = ex?ex.likes:0; pl.likedBy = ex?ex.likedBy:null; pl.comments = ex?ex.comments:null;
+                update(ref(db, `trades/${editingListingId}`), pl).then(() => { finishUp(); alert("Updated!"); });
             } else {
-                targetPayload.likes = 0;
-                push(ref(db, 'trades'), targetPayload)
-                    .then(() => {
-                        finalizeReset();
-                        alert("Item Successfully Uploaded to Firebase!");
-                    }).catch(err => alert("Upload Failed: " + err.message));
+                pl.likes = 0; push(ref(db, 'trades'), pl).then(() => { finishUp(); alert("Uploaded!"); });
             }
-
-            function finalizeReset() {
-                editingListingId = null;
-                document.getElementById('uploadForm').reset();
-                document.getElementById('imageDataUrl').value = "";
-                window.switchTab('view');
-            }
+            function finishUp() { editingListingId = null; document.getElementById('uploadForm').reset(); document.getElementById('imageDataUrl').value = ""; window.switchTab('view'); }
         };
 
-        window.startEditListing = function(itemId) {
-            const item = trades.find(t => t.id === itemId);
-            if (!item) return;
-
-            editingListingId = itemId;
-            window.switchTab('upload');
-            
-            document.getElementById('uploadFormHeader').textContent = "Modify Trade Item Metrics";
-            document.getElementById('formSubmitBtn').textContent = "Save Changes & Apply Updates";
-
-            document.getElementById('formGameType').value = item.game;
-            window.updateFormFields();
-
-            const itemDropdown = document.getElementById('formItemName');
-            const config = gameItemsDatabase[item.game];
-            if (config && config.items.includes(item.name)) {
-                itemDropdown.value = item.name;
-            } else {
-                itemDropdown.value = "CUSTOM_ITEM_VAL";
-                window.checkCustomItem();
-                document.getElementById('formCustomItemName').value = item.name;
-            }
-
-            document.getElementById('formStock').value = item.stock;
-            document.getElementById('imageDataUrl').value = (item.image && item.image.startsWith('data:')) ? item.image : "";
-            document.getElementById('formWorth').value = item.worth === "None" ? "" : (item.worth || "");
-            document.getElementById('formKg').value = item.kg === "N/A->Seed" ? "" : (item.kg || "");
-            document.getElementById('formMutation').value = item.mutation === "N/A->Seed" ? "" : (item.mutation || "");
-            document.getElementById('formPsLink').value = item.psLink || "";
+        window.startEditListing = function(id) {
+            const t = trades.find(i=>i.id===id); if(!t) return; editingListingId = id; window.switchTab('upload');
+            document.getElementById('uploadFormHeader').textContent = "Edit Item"; document.getElementById('formSubmitBtn').textContent = "Save Changes";
+            document.getElementById('formGameType').value = t.game; window.updateFormFields();
+            const cfg = gameItemsDatabase[t.game];
+            if(cfg&&cfg.items.includes(t.name)) document.getElementById('formItemName').value = t.name;
+            else { document.getElementById('formItemName').value = "CUSTOM_ITEM_VAL"; window.checkCustomItem(); document.getElementById('formCustomItemName').value = t.name; }
+            document.getElementById('formStock').value = t.stock; document.getElementById('imageDataUrl').value = (t.image&&t.image.startsWith('data:'))?t.image:""; document.getElementById('formWorth').value = t.worth==="None"?"":t.worth; document.getElementById('formKg').value = t.kg==="N/A->Seed"?"":t.kg; document.getElementById('formMutation').value = t.mutation==="N/A->Seed"?"":t.mutation; document.getElementById('formPsLink').value = t.psLink||"";
         };
 
-        window.deleteListing = function(itemId) {
-            if (!confirm("Are you completely sure you want to remove this transaction block from Firebase logs permanently?")) return;
-            remove(ref(db, `trades/${itemId}`)).catch(err => alert("Error deleting: " + err.message));
+        window.deleteListing = function(id) { if(confirm("Permanently delete?")) remove(ref(db, `trades/${id}`)); };
+
+        window.toggleLike = function(id) {
+            if(!currentUser) return alert("Login required.");
+            const t = trades.find(i=>i.id===id); if(!t) return;
+            let arr = t.likedBy ? Object.values(t.likedBy) : []; let c = t.likes||0;
+            const idx = arr.indexOf(currentUser);
+            if(idx===-1) { arr.push(currentUser); c++; sendInboxNotification(t.creator, "👍 Liked your item!", t.name); } 
+            else { arr.splice(idx,1); c = Math.max(0, c-1); }
+            update(ref(db, `trades/${id}`), { likes: c, likedBy: arr.length>0?arr:null });
         };
 
-        window.toggleLike = function(itemId) {
-            if(!currentUser) {
-                alert("Login required to interact with listings.");
-                return;
-            }
-            const item = trades.find(t => t.id === itemId);
-            if(item) {
-                let likedByArray = item.likedBy ? Object.values(item.likedBy) : [];
-                let likesCount = item.likes || 0;
-                const index = likedByArray.indexOf(currentUser);
-
-                if(index === -1) {
-                    likedByArray.push(currentUser);
-                    likesCount += 1;
-                } else {
-                    likedByArray.splice(index, 1);
-                    likesCount = Math.max(0, likesCount - 1);
-                }
-
-                update(ref(db, `trades/${itemId}`), {
-                    likes: likesCount,
-                    likedBy: likedByArray.length > 0 ? likedByArray : null
-                });
-            }
-        };
-
-        window.submitComment = function(e, itemId) {
-            e.preventDefault();
-            if(!currentUser) {
-                alert("Login required to submit messages.");
-                return;
-            }
+        window.replyToComment = function(itemId, displayName) {
             const input = document.getElementById(`commentInput-${itemId}`);
-            const text = input.value.trim();
-            if(!text) return;
-
-            const item = trades.find(t => t.id === itemId);
-            if(item) {
-                let commentsArray = item.comments ? Object.values(item.comments) : [];
-                
-                let currentDisplayNameSeed = currentUser.split('@')[0];
-                if(currentProfileMetadata && currentProfileMetadata.displayName) {
-                    currentDisplayNameSeed = currentProfileMetadata.displayName;
-                }
-
-                commentsArray.push({
-                    user: currentUser,
-                    userDisplayName: currentDisplayNameSeed,
-                    text: text,
-                    timestamp: new Date().toLocaleTimeString()
-                });
-
-                update(ref(db, `trades/${itemId}`), { comments: commentsArray }).then(() => { input.value = ""; });
-            }
+            input.value = `@${displayName} `;
+            input.focus();
         };
 
-        window.sendTradeRequest = function(itemId) {
-            if(!currentUser) {
-                alert("Log in to send trade offers.");
-                window.openModal('loginModal');
-                return;
-            }
-            const item = trades.find(t => t.id === itemId);
-            if(!item) return;
-
-            if(item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim()) {
-                alert("You cannot trade with yourself.");
-                return;
-            }
-
-            const newOffer = {
-                itemId: item.id,
-                itemName: item.name,
-                to: item.creator,
-                from: currentUser,
-                status: 'pending',
-                timestamp: Date.now()
-            };
-
-            push(ref(db, 'inbox'), newOffer).then(() => alert(`Trade offer sent directly to ${item.creator}'s inbox!`));
+        window.submitComment = function(e, id) {
+            e.preventDefault(); if(!currentUser) return alert("Login required.");
+            const input = document.getElementById(`commentInput-${id}`); const text = input.value.trim(); if(!text) return;
+            const t = trades.find(i=>i.id===id); if(!t) return;
+            let arr = t.comments ? Object.values(t.comments) : [];
+            arr.push({ user: currentUser, userDisplayName: (currentProfileMetadata&&currentProfileMetadata.displayName)?currentProfileMetadata.displayName:currentUser.split('@')[0], text: text, timestamp: new Date().toLocaleTimeString() });
+            update(ref(db, `trades/${id}`), { comments: arr }).then(() => { 
+                input.value = ""; 
+                sendInboxNotification(t.creator, `💬 Left a comment: "${text}"`, t.name);
+            });
         };
 
-        window.processTradeOffer = function(offerId, action) {
-            const offer = inbox.find(i => i.id === offerId);
-            if(!offer) return;
+        window.sendTradeRequest = function(id) {
+            if(!currentUser) return forceLogin();
+            const t = trades.find(i=>i.id===id); if(!t) return;
+            if(t.creator.toLowerCase()===currentUser.toLowerCase()) return alert("Cannot trade yourself.");
+            push(ref(db, 'inbox'), { itemId: t.id, itemName: t.name, to: t.creator, from: currentUser, status: 'pending', timestamp: Date.now() }).then(() => alert("Offer sent!"));
+        };
 
-            if(action === 'accept') {
-                if(offer.itemId === "BUG_TICKET") {
-                    update(ref(db, `inbox/${offerId}`), { status: 'reviewed' });
-                    alert("Bug Ticket marked as reviewed inside technical data logs.");
-                    return;
-                }
+        window.processTradeOffer = function(id, act) {
+            const o = inbox.find(i=>i.id===id); if(!o) return;
+            
+            // Allow dismissing notifications instantly
+            if(o.type === 'notification' && act === 'decline') {
+                return update(ref(db, `inbox/${id}`), { status: 'dismissed' });
+            }
 
-                const item = trades.find(t => t.id === offer.itemId);
-                if(!item) {
-                    alert("Item no longer exists on the database network.");
-                    update(ref(db, `inbox/${offerId}`), { status: 'expired' });
-                } else if((item.stock || 0) <= 0) {
-                    alert("Transaction failed: This item has no stock available!");
-                    update(ref(db, `inbox/${offerId}`), { status: 'out-of-stock' });
-                } else {
-                    const finalStock = item.stock - 1;
-                    update(ref(db, `trades/${offer.itemId}`), { stock: finalStock }).then(() => {
-                        update(ref(db, `inbox/${offerId}`), { status: 'accepted' });
-                        alert(`Trade Accepted! Stock updated successfully.`);
+            if(act === 'accept') {
+                const t = trades.find(i=>i.id===o.itemId);
+                if(!t) { alert("Item missing."); update(ref(db, `inbox/${id}`), { status: 'expired' }); }
+                else if((t.stock||0)<=0) { alert("Out of stock!"); update(ref(db, `inbox/${id}`), { status: 'out-of-stock' }); }
+                else {
+                    update(ref(db, `trades/${o.itemId}`), { stock: t.stock-1 }).then(() => {
+                        update(ref(db, `inbox/${id}`), { status: 'accepted' }); alert("Trade Accepted!");
                     });
                 }
-            } else {
-                const targetStatus = offer.itemId === "BUG_TICKET" ? "dismissed" : "declined";
-                update(ref(db, `inbox/${offerId}`), { status: targetStatus }).then(() => alert("Request processed."));
-            }
+            } else update(ref(db, `inbox/${id}`), { status: 'declined' });
         };
 
         window.updateInboxBadge = function() {
-            if(!currentUser) {
-                document.getElementById('inboxBadge').textContent = "";
-                return;
-            }
-            const pendingCount = inbox.filter(i => i.to && i.to.toLowerCase().trim() === currentUser.toLowerCase().trim() && i.status === 'pending').length;
-            document.getElementById('inboxBadge').textContent = pendingCount > 0 ? `(${pendingCount})` : "";
+            if(!currentUser) return document.getElementById('inboxBadge').textContent = "";
+            const pending = inbox.filter(i=>i.to&&i.to.toLowerCase()===currentUser.toLowerCase()&&i.status==='pending').length;
+            document.getElementById('inboxBadge').textContent = pending>0?`(${pending})`:"";
         };
 
         window.renderInbox = function() {
-            const container = document.getElementById('inboxGrid');
-            container.innerHTML = "";
+            const c = document.getElementById('inboxGrid'); c.innerHTML = "";
+            const offers = inbox.filter(i=>i.to&&i.to.toLowerCase()===currentUser.toLowerCase());
+            if(offers.length===0) return c.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);">Inbox is empty.</div>';
             
-            const userOffers = inbox.filter(i => i.to && i.to.toLowerCase().trim() === currentUser.toLowerCase().trim());
-
-            if(userOffers.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">Your messaging inbox is currently empty.</div>`;
-                return;
-            }
-
-            userOffers.forEach(offer => {
-                const card = document.createElement('div');
-                card.className = 'inbox-card';
-                
-                if(offer.status === 'pending') {
-                    if(offer.itemId === "BUG_TICKET") {
-                        card.innerHTML = `
-                            <div style="font-size: 16px; line-height: 1.5; border-left: 4px solid var(--decline-color); padding-left: 10px;">
-                                <strong style="color:var(--decline-color);">${offer.itemName}</strong><br>
-                                <span style="color: #ddd;">Dispatched by System Reporter: <strong>${offer.from}</strong></span>
-                            </div>
-                            <div class="inbox-actions">
-                                <button class="btn-accept" onclick="window.processTradeOffer('${offer.id}', 'accept')">Mark as Reviewed</button>
-                                <button class="btn-decline" onclick="window.processTradeOffer('${offer.id}', 'decline')">Dismiss Log</button>
-                            </div>
-                        `;
-                    } else {
-                        card.innerHTML = `
-                            <div style="font-size: 16px; line-height: 1.5;">
-                                <strong>Incoming Trade Request for item:</strong> <span style="color: var(--accent-color); font-weight: bold;">${offer.itemName}</span><br>
-                                <span style="color: #ddd;">Do you want to accept the Trade with ${offer.from}? Chat this user so you can easily Trade Each other!</span>
-                            </div>
-                            <div class="inbox-actions">
-                                <button class="btn-accept" onclick="window.processTradeOffer('${offer.id}', 'accept')">Accept</button>
-                                <button class="btn-decline" onclick="window.processTradeOffer('${offer.id}', 'decline')">Decline</button>
-                            </div>
-                        `;
-                    }
+            offers.forEach(o => {
+                const d = document.createElement('div'); d.className = 'inbox-card';
+                if(o.type === 'notification' && o.status === 'pending') {
+                     d.innerHTML = `<div style="font-size:16px;"><strong>Notification for <span style="color:var(--accent-color);">${o.itemName}</span></strong><br><span style="color:#ddd;">${getCreatorLabelHtml(o.from)} ${o.text}</span></div><div class="inbox-actions"><button class="btn-decline" onclick="window.processTradeOffer('${o.id}', 'decline')">Dismiss</button></div>`;
+                } else if(o.status === 'pending') {
+                    d.innerHTML = `<div style="font-size:16px;"><strong>Trade Request: <span style="color:var(--accent-color);">${o.itemName}</span></strong><br><span style="color:#ddd;">From: ${getCreatorLabelHtml(o.from)}</span></div><div class="inbox-actions"><button class="btn-accept" onclick="window.processTradeOffer('${o.id}', 'accept')">Accept</button><button class="btn-decline" onclick="window.processTradeOffer('${o.id}', 'decline')">Decline</button></div>`;
                 } else {
-                    let statusColor = (offer.status === 'accepted' || offer.status === 'reviewed') ? 'var(--accept-color)' : 'var(--decline-color)';
-                    card.innerHTML = `
-                        <div style="font-size: 14px; color: var(--text-muted);">
-                            Transaction metric for <strong>${offer.itemName}</strong> from <strong>${offer.from}</strong> marked as: 
-                            <span style="color: ${statusColor}; font-weight: bold; text-transform: uppercase;">${offer.status}</span>.
-                        </div>
-                    `;
+                    let col = (o.status==='accepted')?'var(--accept-color)':'var(--decline-color)';
+                    let prefix = o.type === 'notification' ? 'Notification' : 'Trade metric';
+                    d.innerHTML = `<div style="font-size:14px; color:var(--text-muted);">${prefix} for <strong>${o.itemName}</strong> marked as: <span style="color:${col}; font-weight:bold; text-transform:uppercase;">${o.status}</span>.</div>`;
                 }
-                container.appendChild(card);
+                c.appendChild(d);
             });
         };
 
         window.renderItems = function() {
-            const container = document.getElementById('itemGrid');
-            const filterValue = document.getElementById('gameFilter').value;
-            const searchQuery = document.getElementById('userSearchBar').value.toLowerCase().trim();
-            container.innerHTML = "";
-
-            const filtered = trades.filter(post => {
-                const matchesGame = (filterValue === 'All' || post.game === filterValue);
-                const matchesSearch = post.creator && post.creator.toLowerCase().includes(searchQuery);
-                return matchesGame && matchesSearch;
-            });
-
-            if(filtered.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No active transactions found matching filters.</div>`;
-                return;
-            }
-
-            filtered.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'item-card';
-
-                let imgRender = (item.image && (item.image.startsWith('data:') || item.image.startsWith('http'))) 
-                    ? `<img src="${item.image}" alt="Item Image">` 
-                    : `<span>${item.image || '📦'}</span>`;
-
-                const itemLikes = item.likes || 0;
-                const commentsArray = item.comments ? Object.values(item.comments) : [];
-                const currentStock = item.stock !== undefined ? item.stock : 1;
-
-                let commentItemsHtml = commentsArray.map(c => `
+            const c = document.getElementById('itemGrid'); const filt = document.getElementById('gameFilter').value; const q = document.getElementById('userSearchBar').value.toLowerCase().trim(); c.innerHTML = "";
+            const filtered = trades.filter(p => (filt==='All'||p.game===filt) && (p.creator&&p.creator.toLowerCase().includes(q)));
+            if(filtered.length===0) return c.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);">No active transactions found.</div>';
+            
+            filtered.forEach(i => {
+                const card = document.createElement('div'); card.className = 'item-card';
+                let isO = currentUser&&i.creator&&i.creator.toLowerCase()===currentUser.toLowerCase();
+                let stk = i.stock!==undefined?i.stock:1;
+                
+                let commentsHtml = (i.comments?Object.values(i.comments):[]).map(cm => `
                     <div class="comment-item">
-                        ${getCommentCreatorLabelHtml(c.user, c.userDisplayName)}: ${c.text}
+                        <div>${getCreatorLabelHtml(cm.user)}: ${cm.text}</div>
+                        <button class="reply-btn" onclick="window.replyToComment('${i.id}', '${cm.userDisplayName || cm.user.split('@')[0]}')">Reply</button>
                     </div>
                 `).join('');
 
-                const isOwner = currentUser && item.creator && item.creator.toLowerCase().trim() === currentUser.toLowerCase().trim();
-
                 card.innerHTML = `
                     <div class="item-main-content">
-                        <div class="item-image-container">${imgRender}</div>
+                        <div class="item-image-container">${(i.image&&(i.image.startsWith('data:')||i.image.startsWith('http')))?`<img src="${i.image}">`:`<span>${i.image||'📦'}</span>`}</div>
                         <div class="item-details">
-                            <span class="item-game-badge">${item.game}</span>
-                            <div class="item-title">${item.name}</div>
-                            <div class="item-stat">Posted By Trader: ${getCreatorLabelHtml(item.creator)}</div>
-                            <div class="item-stat">Stock Remaining: <strong style="color: var(--accent-color);">${currentStock}</strong></div>
-                            <div class="item-stat">Value Data: <strong>${item.worth || 'None'}</strong></div>
-                            <div class="item-stat">Weight Metrics: <strong>${item.kg || 'N/A->Seed'}</strong></div>
-                            <div class="item-stat">Trait Mutation: <strong>${item.mutation || 'N/A->Seed'}</strong></div>
-                            ${item.psLink ? `<div style="margin-top: 5px;"><a href="${item.psLink}" target="_blank" class="ps-link">Join Private Server</a></div>` : ''}
+                            <span class="item-game-badge">${i.game}</span><div class="item-title">${i.name}</div>
+                            <div class="item-stat">Trader: ${getCreatorLabelHtml(i.creator)}</div>
+                            <div class="item-stat">Stock: <strong style="color:var(--accent-color);">${stk}</strong></div>
+                            <div class="item-stat">Value: <strong>${i.worth||'None'}</strong> | Weight: <strong>${i.kg||'N/A'}</strong> | Aura: <strong>${i.mutation||'N/A'}</strong></div>
+                            ${i.psLink?`<div style="margin-top:5px;"><a href="${i.psLink}" target="_blank" class="ps-link">Join Server</a></div>`:''}
                         </div>
                     </div>
-                    
                     <div class="interaction-bar">
-                        <button class="interact-btn" onclick="window.toggleLike('${item.id}')">👍 Like (${itemLikes})</button>
-                        
-                        ${currentUser && !isOwner && currentStock > 0 ? `
-                            <button class="interact-btn trade-action-btn" onclick="window.sendTradeRequest('${item.id}')">🤝 Send Trade Offer</button>
-                        ` : ''}
-
-                        ${isOwner ? `
-                            <button class="interact-btn" style="border-color: #ffaa00; color: #ffaa00; margin-left: auto;" onclick="window.startEditListing('${item.id}')">✏️ Edit</button>
-                            <button class="interact-btn" style="border-color: var(--decline-color); color: var(--decline-color);" onclick="window.deleteListing('${item.id}')">🗑️ Delete</button>
-                        ` : ''}
-                        
-                        ${currentStock <= 0 ? `
-                            <span style="color: var(--decline-color); font-weight: bold; ${isOwner ? 'margin-left: 10px;' : 'margin-left: auto;'}">SOLD OUT</span>
-                        ` : ''}
+                        <button class="interact-btn" onclick="window.toggleLike('${i.id}')">👍 Like (${i.likes||0})</button>
+                        ${currentUser&&!isO&&stk>0?`<button class="interact-btn trade-action-btn" onclick="window.sendTradeRequest('${i.id}')">🤝 Send Trade Offer</button>`:''}
+                        ${isO?`<button class="interact-btn" style="border-color:#ffaa00; color:#ffaa00; margin-left:auto;" onclick="window.startEditListing('${i.id}')">✏️ Edit</button><button class="interact-btn" style="border-color:var(--decline-color); color:var(--decline-color);" onclick="window.deleteListing('${i.id}')">🗑️ Delete</button>`:''}
+                        ${stk<=0?`<span style="color:var(--decline-color); font-weight:bold; ${isO?'margin-left:10px;':'margin-left:auto;'}">SOLD OUT</span>`:''}
                     </div>
-
                     <div class="comments-section">
-                        <form onsubmit="window.submitComment(event, '${item.id}')" class="comment-box">
-                            <input type="text" id="commentInput-${item.id}" placeholder="Type community comment text..." required>
-                            <button type="submit" class="interact-btn">Post</button>
-                        </form>
-                        <div class="comment-list">${commentItemsHtml || '<span style="color: var(--text-muted); font-size: 12px;">No comments posted yet.</span>'}</div>
+                        <form onsubmit="window.submitComment(event, '${i.id}')" class="comment-box"><input type="text" id="commentInput-${i.id}" placeholder="Type a comment or @username to reply..." required><button type="submit" class="interact-btn">Post</button></form>
+                        <div class="comment-list">${commentsHtml||'<span style="color:var(--text-muted); font-size:12px;">No comments.</span>'}</div>
                     </div>
                 `;
-                container.appendChild(card);
+                c.appendChild(card);
             });
         };
 
-        // Initialize Workspace Framework Components
-        updateAuthUI();
-        window.updateFormFields();
-        if(currentUser) {
-            window.loadProfilePaneFields();
-        }
+        updateAuthUI(); window.updateFormFields(); if(currentUser) window.loadProfilePaneFields();
     </script>
 </body>
 </html>
