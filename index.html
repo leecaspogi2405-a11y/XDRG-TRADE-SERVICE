@@ -452,6 +452,7 @@
                     <button class="settings-sidebar-btn" id="paneBtn-linked" onclick="window.switchSettingsPane('linked')">🔗 Linked Accounts</button>
                     <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
                     <button class="settings-sidebar-btn" id="paneBtn-tutorial" onclick="window.switchSettingsPane('tutorial')">📖 Service Tutorial</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-guidelines" onclick="window.switchSettingsPane('guidelines')">📜 Guidelines & Logs</button>
                     
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verification Accts</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 Update App Link</button>
@@ -586,6 +587,29 @@
                         <div class="tutorial-step">
                             <h4>Step 3: Negotiating & Chatting</h4>
                             <p>Click on a user's profile name to send them a direct message, or hit 'Send Trade Offer' to dispatch transaction logs straight to their inbox.</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-pane" id="pane-guidelines">
+                        <h3>Platform Guidelines & Sanction Logs</h3>
+                        
+                        <div style="margin-bottom: 25px; padding: 15px; background: #1a1f26; border-left: 3px solid var(--warning-color); border-radius: 4px;">
+                            <h4 style="margin: 0 0 10px 0; color: #fff;">📜 Community Rules (What NOT to do):</h4>
+                            <ul style="margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.6;">
+                                <li><strong>Scamming/Fraud:</strong> Do not use deceptive trading practices or trick users out of their items.</li>
+                                <li><strong>Spam/Duplicate Listings:</strong> Do not upload the exact same item multiple times. This clutters the feed.</li>
+                                <li><strong>Copyright Infringement:</strong> Do not use unauthorized assets, steal others' images, or pretend to be another creator.</li>
+                                <li><strong>Harassment:</strong> Treat all traders with respect in comments and chats. Toxic behavior is not tolerated.</li>
+                                <li><strong>Off-Platform Trading:</strong> Keep all negotiations visible and safe within the platform to avoid being scammed.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 style="color: var(--decline-color); margin-bottom: 10px;">🔨 Public Moderation & Sanction Logs</h4>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-top: 0;">Below is a live record of accounts that have received warnings, kicks, bans, or unbans.</p>
+                            
+                            <div id="guidelinesSanctionLogs" style="background: #11141a; border: 1px solid var(--border-color); padding: 15px; border-radius: 4px; max-height: 300px; overflow-y: auto; font-size: 14px; display: flex; flex-direction: column; gap: 8px;">
+                                </div>
                         </div>
                     </div>
 
@@ -758,6 +782,14 @@
             "duplicate": "⚠️ Spam Notice: Please stop uploading the exact same item multiple times. This clutters the feed. Duplicates have been deleted.",
             "deleted": "🗑️ Moderation Action: A moderator has forcefully removed one of your uploads for violating community guidelines.",
             "review": "🔍 Account Status: Your profile and active listings are currently under manual review by the administration team for suspicious activity."
+        };
+
+        const readableModReasons = {
+            "copyright": "Copyright Infringement",
+            "scammer": "Scamming / Fraud",
+            "duplicate": "Duplicate Uploads (Spam)",
+            "deleted": "Listing Deleted by Admin",
+            "review": "Account Under Review"
         };
 
         const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
@@ -1398,6 +1430,14 @@
                     update(ref(db, `chats/${roomId}`), { [`unread_${receiverKey}`]: currentUnread + 1 });
                 });
 
+                // --- NEW: Add to Public Sanction Logs ---
+                push(ref(db, 'sanction_logs'), {
+                    target: targetEmail,
+                    action: 'Warning',
+                    reason: readableModReasons[messageType] || messageType,
+                    timestamp: Date.now()
+                });
+
                 alert(`Moderation warning dispatched to ${targetEmail}.`);
                 document.getElementById('modTargetEmail').value = "";
             });
@@ -1416,19 +1456,39 @@
                 alert("Cannot apply sanctions to the admin account."); return;
             }
 
+            let logActionName = actionType === 'kick' ? 'Kicked' : (actionType === 'ban' ? 'Banned' : 'Unbanned');
+
             if(actionType === 'kick') {
                 update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'kicked' })
-                .then(() => alert(`${targetEmail} has been kicked/logged out.`));
+                .then(() => {
+                    logSanctionAction(targetEmail, logActionName, 'Admin Intervention');
+                    alert(`${targetEmail} has been kicked/logged out.`);
+                });
             } else if (actionType === 'ban') {
                 update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'banned' })
-                .then(() => alert(`${targetEmail} is now permanently banned.`));
+                .then(() => {
+                    logSanctionAction(targetEmail, logActionName, 'Admin Intervention');
+                    alert(`${targetEmail} is now permanently banned.`);
+                });
             } else if (actionType === 'unban') {
                 update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'active' })
-                .then(() => alert(`Ban revoked for ${targetEmail}.`));
+                .then(() => {
+                    logSanctionAction(targetEmail, logActionName, 'Admin Revoked Ban');
+                    alert(`Ban revoked for ${targetEmail}.`);
+                });
             }
             
             document.getElementById('sanctionTargetEmail').value = "";
         };
+
+        function logSanctionAction(target, actionString, reasonString) {
+            push(ref(db, 'sanction_logs'), {
+                target: target,
+                action: actionString,
+                reason: reasonString,
+                timestamp: Date.now()
+            });
+        }
 
         window.submitPlatformBug = function(e) {
             e.preventDefault();
@@ -1512,6 +1572,34 @@
                     }
                 }, 1000);
             } else { banner.style.display = 'none'; }
+        });
+
+        // --- NEW: Render Sanction/Moderation Logs Live ---
+        onValue(ref(db, 'sanction_logs'), (snapshot) => {
+            const container = document.getElementById('guidelinesSanctionLogs');
+            container.innerHTML = "";
+            if (snapshot.exists()) {
+                const logs = Object.values(snapshot.val()).sort((a, b) => b.timestamp - a.timestamp);
+                logs.forEach(log => {
+                    const div = document.createElement('div');
+                    div.style.padding = "10px";
+                    div.style.borderBottom = "1px solid var(--border-color)";
+                    
+                    let actionColor = 'var(--text-color)';
+                    if (log.action === 'Warning') actionColor = 'var(--warning-color)';
+                    else if (log.action === 'Unbanned') actionColor = 'var(--accept-color)';
+                    else if (log.action === 'Kicked' || log.action === 'Banned') actionColor = 'var(--decline-color)';
+                    
+                    div.innerHTML = `
+                        <span style="color: ${actionColor}; font-weight: bold; text-transform: uppercase;">[${log.action}]</span> 
+                        <strong style="color: #fff;">${log.target}</strong> - <span style="color: #ddd;">${log.reason}</span>
+                        <div style="color: var(--text-muted); font-size: 11px; margin-top: 4px;">${new Date(log.timestamp).toLocaleString()}</div>
+                    `;
+                    container.appendChild(div);
+                });
+            } else {
+                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">No moderation actions recorded yet.</div>`;
+            }
         });
 
         window.renderInbox = function() {
