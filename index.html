@@ -15,6 +15,7 @@
             --decline-color: #ff4a4a;
             --accept-color: #00cc7a;
             --warning-color: #ffaa00;
+            --vip-color: #e024c3;
         }
 
         body {
@@ -305,6 +306,12 @@
         .profile-data-value { color: #fff; font-size: 14px; text-align: right; word-break: break-all; }
         
         .admin-badge-ui { background: var(--warning-color); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; vertical-align: middle; }
+        .mod-badge-ui { background: #5c8aff; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; vertical-align: middle; }
+        .vip-badge-ui { background: var(--vip-color); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; vertical-align: middle; }
+
+        .announcement-card { background: #1a1f26; border-left: 4px solid var(--accent-color); padding: 15px; border-radius: 4px; margin-bottom: 15px; }
+        .announcement-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: var(--text-muted); }
+        .announcement-body { font-size: 15px; line-height: 1.5; color: #fff; }
     </style>
 </head>
 <body>
@@ -327,6 +334,7 @@
         <div class="controls-section">
             <div class="nav-tabs">
                 <button class="active" id="viewTab" onclick="window.switchTab('view')">View Listings</button>
+                <button id="announcementsTab" onclick="window.switchTab('announcements')">📢 Announcements</button>
                 <button id="uploadTab" onclick="window.switchTab('upload')">+ Upload Item</button>
                 <button id="inboxTab" onclick="window.switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
                 <button id="chatTab" onclick="window.switchTab('chat')">💬 Messages <span id="chatBadge" style="color:var(--warning-color); font-weight:bold;"></span></button>
@@ -351,11 +359,24 @@
             <div class="item-grid" id="itemGrid"></div>
         </div>
 
+        <div id="announcementsSection" class="hidden" style="max-width: 800px; margin: 0 auto;">
+            <div id="announcementPostForm" class="hidden" style="background: var(--panel-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                <h3 style="margin-top:0; color:var(--accent-color);">Post Global Announcement</h3>
+                <form onsubmit="window.submitAnnouncement(event)">
+                    <div class="form-group">
+                        <textarea id="announcementText" required placeholder="Type your announcement here... visible to all users."></textarea>
+                    </div>
+                    <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Publish Announcement</button>
+                </form>
+            </div>
+            <div id="announcementsList"></div>
+        </div>
+
         <div id="stocksSection" class="hidden" style="max-width: 800px; margin: 0 auto;">
             <h2 style="color: var(--accent-color); margin-top: 0;">📈 Restock Notifications (Messenger Groups)</h2>
             <p style="color: var(--text-muted); font-size: 14px;">Join these official group chats to get notified instantly when stocks for these games are replenished.</p>
             <div id="stocksListContainer" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-                </div>
+            </div>
         </div>
 
         <div id="inboxSection" class="hidden">
@@ -454,12 +475,15 @@
                     <button class="settings-sidebar-btn active" id="paneBtn-profile" onclick="window.switchSettingsPane('profile')">👤 Profile Info</button>
                     <button class="settings-sidebar-btn" id="paneBtn-privacy" onclick="window.switchSettingsPane('privacy')">🕵️ Privacy</button>
                     <button class="settings-sidebar-btn" id="paneBtn-security" onclick="window.switchSettingsPane('security')">🔒 Security Settings</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-vip" onclick="window.switchSettingsPane('vip')">💎 Get VIP Status</button>
                     <button class="settings-sidebar-btn" id="paneBtn-notifications" onclick="window.switchSettingsPane('notifications')">🔔 Notifications</button>
                     <button class="settings-sidebar-btn" id="paneBtn-linked" onclick="window.switchSettingsPane('linked')">🔗 Linked Accounts</button>
                     <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
                     <button class="settings-sidebar-btn" id="paneBtn-tutorial" onclick="window.switchSettingsPane('tutorial')">📖 Service Tutorial</button>
                     <button class="settings-sidebar-btn" id="paneBtn-guidelines" onclick="window.switchSettingsPane('guidelines')">📜 Guidelines & Logs</button>
                     
+                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-roles" onclick="window.switchSettingsPane('admin-roles')" style="color:var(--warning-color);">👑 Admin: Roles</button>
+                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-vip-requests" onclick="window.switchSettingsPane('admin-vip-requests')" style="color:var(--vip-color);">💎 Admin: VIP Requests</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verification Accts</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 Update App Link</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-mod" onclick="window.switchSettingsPane('admin-mod')">🛑 Moderation Desk</button>
@@ -529,6 +553,34 @@
                                 <input type="password" id="securityNewPassword" required placeholder="••••••••">
                             </div>
                             <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Renew Password Matrix</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-vip">
+                        <h3 style="color:var(--vip-color);">💎 VIP Subscription / MAYA Integration</h3>
+                        <p style="font-size: 13px; color: var(--text-muted);">Upgrade to VIP to post Global Announcements and get the exclusive VIP badge.</p>
+                        
+                        <div style="background: #1a1f26; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+                            <h4 style="margin-top:0; color:#fff;">MAYA Payment Details</h4>
+                            <p style="margin: 5px 0;">Send payment to either of these MAYA numbers:</p>
+                            <ul style="color: var(--accent-color); font-weight: bold; margin: 10px 0;">
+                                <li>639519500345</li>
+                                <li>099519500345</li>
+                            </ul>
+                        </div>
+
+                        <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom: 25px;">
+                            <button onclick="window.requestVipTrial()" id="btnVipTrial" style="background:transparent; border:2px solid var(--vip-color); color:var(--vip-color); font-weight:bold; padding: 10px 20px; border-radius:4px; cursor:pointer; flex-grow: 1;">Claim 1-Month Free Trial</button>
+                            <button onclick="window.cancelVipTrial()" id="btnVipCancel" class="hidden" style="background:transparent; border:2px solid var(--decline-color); color:var(--decline-color); font-weight:bold; padding: 10px 20px; border-radius:4px; cursor:pointer; flex-grow: 1;">Cancel Free Trial</button>
+                        </div>
+
+                        <form onsubmit="window.submitVipPaidRequest(event)">
+                            <h4 style="margin-top:0; color:#fff; border-top: 1px solid var(--border-color); padding-top: 20px;">Submit Paid Subscription Proof (Per Month)</h4>
+                            <div class="form-group">
+                                <label>MAYA Reference Number:</label>
+                                <input type="text" id="vipMayaRef" required placeholder="Enter Maya Reference Number...">
+                            </div>
+                            <button type="submit" style="background: var(--vip-color); color:#fff; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer; width: 100%;">Send Request to Admin</button>
                         </form>
                     </div>
 
@@ -611,6 +663,33 @@
                             <p style="font-size: 13px; color: var(--text-muted); margin-top: 0;">Below is a live record of accounts that have received warnings, kicks, bans, or unbans.</p>
                             <div id="guidelinesSanctionLogs" style="background: #11141a; border: 1px solid var(--border-color); padding: 15px; border-radius: 4px; max-height: 300px; overflow-y: auto; font-size: 14px; display: flex; flex-direction: column; gap: 8px;"></div>
                         </div>
+                    </div>
+
+                    <div class="settings-pane" id="pane-admin-roles">
+                        <h3 style="color:var(--warning-color);">👑 Admin: Role Manager</h3>
+                        <p style="font-size: 13px; color: var(--text-muted);">Manually assign roles (Admin, Moderator, VIP) to user accounts.</p>
+                        <form onsubmit="window.adminSetUserRole(event)">
+                            <div class="form-group">
+                                <label>Target User Email:</label>
+                                <input type="email" id="adminRoleEmail" required placeholder="user@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Select Role to Assign:</label>
+                                <select id="adminRoleSelect" required>
+                                    <option value="user">Normal User (Remove Special Roles)</option>
+                                    <option value="vip">VIP Member</option>
+                                    <option value="moderator">Moderator</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Update User Role</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-pane" id="pane-admin-vip-requests">
+                        <h3 style="color:var(--vip-color);">💎 Admin: VIP Subscription Requests</h3>
+                        <p style="font-size: 13px; color: var(--text-muted);">Users paying for the monthly VIP via MAYA will appear here for verification.</p>
+                        <div id="adminVipRequestsList" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;"></div>
                     </div>
 
                     <div class="settings-pane" id="pane-admin-verify">
@@ -819,19 +898,19 @@
 
         let trades = [];
         let inbox = [];
-        let chats = {};
+        let announcements = [];
+        let vipRequests = [];
         let dynamicVerifiedEmails = [];
-        // Default restock links
+        
         let globalRestockLinks = {
             gag2: "https://m.me/j/AbbG9tlzYmMRg09Q/?send_source=gc%3Acopy_invite_link_c",
-            gag: "",
-            gh: "",
-            bf: "",
-            dcbt: ""
+            gag: "", gh: "", bf: "", dcbt: ""
         };
 
         let currentUser = localStorage.getItem('roblox_user_email') || "";
         let currentProfileMetadata = null;
+        let currentUserRole = "user"; 
+        
         let editingListingId = null;
         let activeLockoutIntervalId = null;
         let appUpdateIntervalId = null;
@@ -846,6 +925,32 @@
             return [escapeEmailPath(email1), escapeEmailPath(email2)].sort().join('___');
         }
 
+        function sendModBotMessage(targetEmail, messageText, title) {
+            push(ref(db, 'inbox'), {
+                type: 'moderation', itemId: "MOD_NOTICE", itemName: title,
+                to: targetEmail, from: MOD_EMAIL, status: 'info', timestamp: Date.now()
+            });
+
+            const roomId = getChatRoomId(MOD_EMAIL, targetEmail);
+            const msgPayload = { sender: MOD_EMAIL, text: messageText, timestamp: Date.now() };
+            
+            push(ref(db, `chats/${roomId}/messages`), msgPayload).then(() => {
+                update(ref(db, `chats/${roomId}`), {
+                    lastMessage: messageText, lastTime: Date.now(),
+                    participants: {
+                        [escapeEmailPath(MOD_EMAIL)]: true,
+                        [escapeEmailPath(targetEmail)]: true
+                    }
+                });
+                
+                const receiverKey = escapeEmailPath(targetEmail);
+                get(ref(db, `chats/${roomId}/unread_${receiverKey}`)).then(snap => {
+                    const currentUnread = snap.exists() ? snap.val() : 0;
+                    update(ref(db, `chats/${roomId}`), { [`unread_${receiverKey}`]: currentUnread + 1 });
+                });
+            });
+        }
+
         window.openModal = function(id) { 
             document.getElementById(id).style.display = 'flex'; 
             if(id === 'loginModal') {
@@ -858,6 +963,7 @@
         window.switchTab = function(tab) {
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('feedSection').classList.add('hidden');
+            document.getElementById('announcementsSection').classList.add('hidden');
             document.getElementById('inboxSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
             document.getElementById('chatSection').classList.add('hidden');
@@ -865,6 +971,7 @@
             
             document.getElementById('uploadTab').classList.remove('active');
             document.getElementById('viewTab').classList.remove('active');
+            document.getElementById('announcementsTab').classList.remove('active');
             document.getElementById('inboxTab').classList.remove('active');
             document.getElementById('settingsTab').classList.remove('active');
             document.getElementById('chatTab').classList.remove('active');
@@ -880,6 +987,16 @@
                 window.updateFormFields();
                 document.getElementById('uploadSection').classList.remove('hidden');
                 document.getElementById('uploadTab').classList.add('active');
+            } else if (tab === 'announcements') {
+                document.getElementById('announcementsSection').classList.remove('hidden');
+                document.getElementById('announcementsTab').classList.add('active');
+                
+                if (currentUserRole === 'admin' || currentUserRole === 'moderator' || currentUserRole === 'vip') {
+                    document.getElementById('announcementPostForm').classList.remove('hidden');
+                } else {
+                    document.getElementById('announcementPostForm').classList.add('hidden');
+                }
+                window.renderAnnouncements();
             } else if (tab === 'inbox') {
                 if(!currentUser) { alert("Unauthorized Access: Log in first!"); window.openModal('loginModal'); return; }
                 document.getElementById('inboxSection').classList.remove('hidden');
@@ -913,21 +1030,34 @@
             document.getElementById(`paneBtn-${paneId}`).classList.add('active');
         };
 
-        // Real-time listener to kick/ban users dynamically
         function monitorAccountStatus(email) {
             if(accountMonitorUnsubscribe) { accountMonitorUnsubscribe(); }
             const cleanKey = escapeEmailPath(email);
-            accountMonitorUnsubscribe = onValue(ref(db, `users/${cleanKey}/accountStatus`), (snapshot) => {
+            
+            accountMonitorUnsubscribe = onValue(ref(db, `users/${cleanKey}`), (snapshot) => {
                 if(snapshot.exists()) {
-                    const status = snapshot.val();
-                    if(status === 'banned') {
+                    const data = snapshot.val();
+                    currentProfileMetadata = data;
+                    
+                    if(data.accountStatus === 'banned') {
                         alert("🚨 Your account has been permanently BANNED by an administrator. Logging out.");
                         window.logout(true);
-                    } else if (status === 'kicked') {
+                        return;
+                    } else if (data.accountStatus === 'kicked') {
                         alert("⚠️ You have been KICKED by a moderator. You may log back in, but please follow the rules.");
                         update(ref(db, `users/${cleanKey}`), { accountStatus: 'active' }); 
                         window.logout(true);
+                        return;
                     }
+                    
+                    if(email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
+                        currentUserRole = 'admin';
+                    } else {
+                        currentUserRole = data.role || 'user';
+                    }
+                    
+                    updateAuthUI();
+                    window.updateVipUI();
                 }
             });
         }
@@ -952,8 +1082,7 @@
                         email: emailInput, password: passwordInput, displayName: emailInput.split('@')[0],
                         profilePic: "", backupEmail: "", phoneNumber: "", notifyNewUploads: true,
                         notifyLikesComments: true, linkRoblox: "", linkYoutube: "", linkFacebook: "",
-                        privacyHideEmail: false, privacyHidePhone: false, privacyHideSocials: false,
-                        accountStatus: 'active'
+                        accountStatus: 'active', role: 'user'
                     };
                     update(userRef, registrationPayload).then(() => {
                         localStorage.removeItem(`failed_attempts_${cleanKey}`); localStorage.removeItem(`lockout_until_${cleanKey}`);
@@ -1009,18 +1138,19 @@
         function processSuccessfulAuthentication(verifiedEmail) {
             localStorage.setItem('roblox_user_email', verifiedEmail);
             currentUser = verifiedEmail;
-            updateAuthUI();
+            
+            if(verifiedEmail.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) currentUserRole = 'admin';
+
             window.closeModal('loginModal');
             window.updateInboxBadge();
-            window.loadProfilePaneFields();
             monitorAccountStatus(verifiedEmail);
-            window.switchTab('view');
+            setTimeout(() => { window.loadProfilePaneFields(); window.switchTab('view'); }, 500);
             alert("Identification confirmed. Welcome back.");
         }
 
         window.logout = function(force = false) {
             localStorage.removeItem('roblox_user_email');
-            currentUser = ""; currentProfileMetadata = null;
+            currentUser = ""; currentProfileMetadata = null; currentUserRole = 'user';
             if(accountMonitorUnsubscribe) { accountMonitorUnsubscribe(); accountMonitorUnsubscribe = null; }
             updateAuthUI(); window.switchTab('view');
             window.updateInboxBadge(); window.renderItems();
@@ -1033,7 +1163,14 @@
             return verifiedEmails.includes(clean) || dynamicVerifiedEmails.includes(clean);
         }
 
-        function getCreatorLabelHtml(email) {
+        function getRoleBadgeHtml(roleData) {
+            if(roleData === 'admin') return `<span class="admin-badge-ui">ADMIN</span>`;
+            if(roleData === 'moderator') return `<span class="mod-badge-ui">MOD</span>`;
+            if(roleData === 'vip') return `<span class="vip-badge-ui">VIP</span>`;
+            return "";
+        }
+
+        function getCreatorLabelHtml(email, specificRole = null) {
             if(!email) return "Unknown Trader";
             const cleanEmail = email.toLowerCase().trim();
             let nameString = email;
@@ -1042,16 +1179,20 @@
             } else {
                 nameString = email.split('@')[0];
             }
-            let badgeHtml = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
-            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${nameString}</strong></a>${badgeHtml}`;
+            let vBadge = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
+            let rBadge = specificRole ? getRoleBadgeHtml(specificRole) : (cleanEmail === ADMIN_EMAIL.toLowerCase() ? getRoleBadgeHtml('admin') : "");
+            
+            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${nameString}</strong></a>${vBadge} ${rBadge}`;
         }
 
         function getCommentCreatorLabelHtml(email, fallbackName) {
             if(!email) return "Trader";
             const cleanEmail = email.toLowerCase().trim();
             const cleanLabel = fallbackName || email.split('@')[0];
-            let badgeHtml = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
-            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${cleanLabel}</strong></a>${badgeHtml}`;
+            let vBadge = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
+            let rBadge = cleanEmail === ADMIN_EMAIL.toLowerCase() ? getRoleBadgeHtml('admin') : "";
+            
+            return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${cleanLabel}</strong></a>${vBadge} ${rBadge}`;
         }
 
         function updateAuthUI() {
@@ -1064,13 +1205,14 @@
 
             if(currentUser) {
                 let badgeHtml = checkIsVerified(currentUser) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
-                greeting.innerHTML = `Session: <span style="color:var(--text-color);">${currentUser.split('@')[0]}</span>${badgeHtml}`;
+                let roleHtml = getRoleBadgeHtml(currentUserRole);
+                
+                greeting.innerHTML = `Session: <span style="color:var(--text-color);">${currentUser.split('@')[0]}</span>${badgeHtml} ${roleHtml}`;
                 loginBtn.classList.add('hidden'); logoutBtn.classList.remove('hidden');
                 uploadIdentityInput.value = currentUser; 
                 
-                if(currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
+                if(currentUserRole === 'admin') {
                     adminUiElements.forEach(el => el.classList.remove('hidden'));
-                    greeting.innerHTML += `<span class="admin-badge-ui">ADMIN</span>`;
                 } else {
                     adminUiElements.forEach(el => el.classList.add('hidden'));
                 }
@@ -1080,6 +1222,23 @@
             }
         }
 
+        window.updateVipUI = function() {
+            if(!currentUser || !currentProfileMetadata) return;
+            const btnTrial = document.getElementById('btnVipTrial');
+            const btnCancel = document.getElementById('btnVipCancel');
+            
+            if (currentProfileMetadata.role === 'vip' && currentProfileMetadata.vipType === 'trial') {
+                btnTrial.classList.add('hidden');
+                btnCancel.classList.remove('hidden');
+            } else if (currentProfileMetadata.role === 'vip' || currentProfileMetadata.role === 'admin' || currentProfileMetadata.role === 'moderator') {
+                btnTrial.classList.add('hidden');
+                btnCancel.classList.add('hidden');
+            } else {
+                btnTrial.classList.remove('hidden');
+                btnCancel.classList.add('hidden');
+            }
+        };
+
         window.viewUserProfile = function(targetEmail) {
             if(!targetEmail) return;
             const cleanKey = escapeEmailPath(targetEmail);
@@ -1088,9 +1247,14 @@
                 let data = snapshot.exists() ? snapshot.val() : {};
                 document.getElementById('modalProfilePic').src = data.profilePic || "https://via.placeholder.com/80";
                 let displayName = data.displayName || targetEmail.split('@')[0];
-                document.getElementById('modalProfileName').innerHTML = checkIsVerified(targetEmail) ? `${displayName} <img src="${verifiedLogoUrl}" class="verified-badge">` : displayName;
                 
-                const isAdmin = currentUser && currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase();
+                let vBadge = checkIsVerified(targetEmail) ? `<img src="${verifiedLogoUrl}" class="verified-badge">` : "";
+                let rRole = targetEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? 'admin' : (data.role || 'user');
+                let rBadge = getRoleBadgeHtml(rRole);
+
+                document.getElementById('modalProfileName').innerHTML = `${displayName} ${vBadge} ${rBadge}`;
+                
+                const isAdmin = currentUserRole === 'admin';
 
                 document.getElementById('modalProfileEmail').textContent = (!data.privacyHideEmail || isAdmin) ? targetEmail : "Hidden via Privacy";
                 document.getElementById('modalProfilePhone').textContent = ((!data.privacyHidePhone || isAdmin) && data.phoneNumber) ? data.phoneNumber : (data.phoneNumber ? "Hidden via Privacy" : "Not Provided");
@@ -1249,71 +1413,152 @@
             });
         };
 
-        window.toggleLike = function(itemId) {
-            if(!currentUser) { alert("Login required to interact with listings."); return; }
-            const item = trades.find(t => t.id === itemId);
-            if(item) {
-                let likedByArray = item.likedBy ? Object.values(item.likedBy) : [];
-                let likesCount = item.likes || 0;
-                const index = likedByArray.indexOf(currentUser);
-
-                if(index === -1) {
-                    likedByArray.push(currentUser);
-                    likesCount += 1;
-                    
-                    if(item.creator !== currentUser) {
-                        push(ref(db, 'inbox'), {
-                            type: 'like',
-                            itemId: item.id,
-                            itemName: item.name,
-                            to: item.creator,
-                            from: currentUser,
-                            status: 'info',
-                            timestamp: Date.now()
-                        });
-                    }
-                } else {
-                    likedByArray.splice(index, 1);
-                    likesCount = Math.max(0, likesCount - 1);
-                }
-                update(ref(db, `trades/${itemId}`), { likes: likesCount, likedBy: likedByArray.length > 0 ? likedByArray : null });
-            }
-        };
-
-        window.replyToComment = function(itemId, username) {
-            const input = document.getElementById(`commentInput-${itemId}`);
-            if(input) { input.value = `@${username} ` + input.value; input.focus(); }
-        };
-
-        window.submitComment = function(e, itemId) {
+        window.submitAnnouncement = function(e) {
             e.preventDefault();
-            if(!currentUser) { alert("Login required to submit messages."); return; }
-            const input = document.getElementById(`commentInput-${itemId}`);
-            const text = input.value.trim();
+            if(!currentUser) return;
+            if (currentUserRole !== 'admin' && currentUserRole !== 'moderator' && currentUserRole !== 'vip') {
+                alert("Only VIPs, Moderators, and Admins can post announcements."); return;
+            }
+            const text = document.getElementById('announcementText').value.trim();
             if(!text) return;
 
-            const item = trades.find(t => t.id === itemId);
-            if(item) {
-                let commentsArray = item.comments ? Object.values(item.comments) : [];
-                let currentDisplayNameSeed = currentUser.split('@')[0];
-                if(currentProfileMetadata && currentProfileMetadata.displayName) currentDisplayNameSeed = currentProfileMetadata.displayName;
+            push(ref(db, 'announcements'), {
+                author: currentUser,
+                role: currentUserRole,
+                text: text,
+                timestamp: Date.now()
+            }).then(() => {
+                document.getElementById('announcementText').value = "";
+                alert("Announcement published globally!");
+            });
+        };
 
-                commentsArray.push({
-                    user: currentUser, userDisplayName: currentDisplayNameSeed,
-                    text: text, timestamp: new Date().toLocaleTimeString()
-                });
-
-                update(ref(db, `trades/${itemId}`), { comments: commentsArray }).then(() => { 
-                    input.value = ""; 
-                    if(item.creator !== currentUser) {
-                        push(ref(db, 'inbox'), {
-                            type: 'comment', itemId: item.id, itemName: item.name,
-                            to: item.creator, from: currentUser, textSnippet: text.substring(0, 30) + '...',
-                            status: 'info', timestamp: Date.now()
-                        });
-                    }
-                });
+        window.renderAnnouncements = function() {
+            const container = document.getElementById('announcementsList');
+            container.innerHTML = "";
+            
+            if(announcements.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No announcements at this time.</div>`;
+                return;
             }
+
+            announcements.forEach(a => {
+                const card = document.createElement('div');
+                card.className = 'announcement-card';
+                card.innerHTML = `
+                    <div class="announcement-header">
+                        <span>Posted by: ${getCreatorLabelHtml(a.author, a.role)}</span>
+                        <span>${new Date(a.timestamp).toLocaleString()}</span>
+                    </div>
+                    <div class="announcement-body">${a.text}</div>
+                    ${currentUserRole === 'admin' ? `<button onclick="remove(ref(db, 'announcements/${a.id}'))" style="margin-top:10px; background:none; border:1px solid #ff4a4a; color:#ff4a4a; padding:4px 8px; border-radius:4px; cursor:pointer;">Delete</button>` : ''}
+                `;
+                container.appendChild(card);
+            });
+        };
+
+        window.requestVipTrial = function() {
+            if(!currentUser) { alert("Log in first."); return; }
+            if(!confirm("Start your 1-Month Free VIP Trial?")) return;
+
+            update(ref(db, `users/${escapeEmailPath(currentUser)}`), {
+                role: 'vip', vipType: 'trial', vipExpiry: Date.now() + (30 * 24 * 60 * 60 * 1000)
+            }).then(() => {
+                sendModBotMessage(currentUser, "Your 1-Month Free VIP Trial has been activated successfully! You now have access to Announcements.", "💎 VIP TRIAL ACTIVATED");
+                alert("VIP Free Trial Activated!");
+                window.updateVipUI();
+            });
+        };
+
+        window.cancelVipTrial = function() {
+            if(!currentUser) return;
+            if(!confirm("Are you sure you want to cancel your Free VIP Trial?")) return;
+
+            update(ref(db, `users/${escapeEmailPath(currentUser)}`), {
+                role: 'user', vipType: null, vipExpiry: null
+            }).then(() => {
+                sendModBotMessage(currentUser, "You have canceled your Free VIP Trial. Your access has been revoked.", "⚠️ VIP TRIAL CANCELED");
+                alert("VIP Trial Canceled.");
+                window.updateVipUI();
+            });
+        };
+
+        window.submitVipPaidRequest = function(e) {
+            e.preventDefault();
+            if(!currentUser) { alert("Log in first."); return; }
+            
+            const refNum = document.getElementById('vipMayaRef').value.trim();
+            if(!refNum) return;
+
+            push(ref(db, 'vip_requests'), {
+                email: currentUser,
+                mayaRef: refNum,
+                timestamp: Date.now(),
+                status: 'pending'
+            }).then(() => {
+                sendModBotMessage(currentUser, "Your VIP subscription request (Monthly) has been sent to the Admin. Please wait for verification of your MAYA payment.", "⏳ VIP REQUEST PENDING");
+                document.getElementById('vipMayaRef').value = "";
+                alert("Request sent to Admin for verification!");
+            });
+        };
+
+        window.renderAdminVipRequests = function() {
+            const container = document.getElementById('adminVipRequestsList');
+            if(!container) return;
+            container.innerHTML = "";
+
+            const pendingReqs = vipRequests.filter(r => r.status === 'pending');
+            if(pendingReqs.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color: var(--text-muted);">No pending requests.</div>`;
+                return;
+            }
+
+            pendingReqs.forEach(req => {
+                const card = document.createElement('div');
+                card.style = "background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px;";
+                card.innerHTML = `
+                    <div style="font-size: 14px; margin-bottom: 10px;">
+                        <strong>User:</strong> <span style="color:var(--accent-color);">${req.email}</span><br>
+                        <strong>MAYA Ref:</strong> <span style="color:var(--warning-color);">${req.mayaRef}</span><br>
+                        <span style="color:var(--text-muted); font-size:12px;">Requested: ${new Date(req.timestamp).toLocaleString()}</span>
+                    </div>
+                    <div style="display:flex; gap: 10px;">
+                        <button onclick="window.adminProcessVip('${req.id}', '${req.email}', 'accept')" style="background:var(--accept-color); color:#fff; border:none; padding:8px 15px; border-radius:4px; font-weight:bold; cursor:pointer;">Accept Paid VIP</button>
+                        <button onclick="window.adminProcessVip('${req.id}', '${req.email}', 'decline')" style="background:var(--decline-color); color:#fff; border:none; padding:8px 15px; border-radius:4px; font-weight:bold; cursor:pointer;">Decline</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        };
+
+        window.adminProcessVip = function(reqId, userEmail, action) {
+            if (action === 'accept') {
+                update(ref(db, `users/${escapeEmailPath(userEmail)}`), { role: 'vip', vipType: 'paid' }).then(() => {
+                    remove(ref(db, `vip_requests/${reqId}`));
+                    sendModBotMessage(userEmail, "Congratulations! Your VIP subscription has been ACCEPTED. Thank you for your MAYA payment. You now have full VIP privileges.", "💎 VIP SUBSCRIPTION ACCEPTED");
+                    alert(`VIP Granted to ${userEmail}`);
+                });
+            } else {
+                remove(ref(db, `vip_requests/${reqId}`));
+                sendModBotMessage(userEmail, "Your VIP subscription request was DECLINED. Please ensure your MAYA payment details are correct and try again.", "❌ VIP REQUEST DECLINED");
+                alert(`VIP Request from ${userEmail} declined.`);
+            }
+        };
+
+        window.adminSetUserRole = function(e) {
+            e.preventDefault();
+            if(currentUserRole !== 'admin') return;
+            const targetEmail = document.getElementById('adminRoleEmail').value.trim();
+            const roleSelect = document.getElementById('adminRoleSelect').value;
+            
+            if(targetEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                alert("Cannot modify main admin role."); return;
+            }
+
+            update(ref(db, `users/${escapeEmailPath(targetEmail)}`), { role: roleSelect }).then(() => {
+                alert(`Role updated successfully for ${targetEmail}.`);
+                document.getElementById('adminRoleEmail').value = "";
+            });
         };
 
         window.previewProfilePic = function(event) {
@@ -1328,28 +1573,24 @@
         };
 
         window.loadProfilePaneFields = function() {
-            if(!currentUser) return;
-            const cleanKey = escapeEmailPath(currentUser);
-            get(ref(db, `users/${cleanKey}`)).then((snapshot) => {
-                if(snapshot.exists()) {
-                    const data = snapshot.val();
-                    currentProfileMetadata = data;
-                    document.getElementById('settingsProfilePicPreview').src = data.profilePic || "https://via.placeholder.com/60";
-                    document.getElementById('settingsProfilePicDataUrl').value = data.profilePic || "";
-                    document.getElementById('settingsDisplayName').value = data.displayName || "";
-                    document.getElementById('settingsBackupEmail').value = data.backupEmail || "";
-                    document.getElementById('settingsPhoneNumber').value = data.phoneNumber || "";
-                    document.getElementById('notifyNewUploads').checked = data.notifyNewUploads !== false;
-                    document.getElementById('notifyLikesComments').checked = data.notifyLikesComments !== false;
-                    document.getElementById('linkRoblox').value = data.linkRoblox || "";
-                    document.getElementById('linkYoutube').value = data.linkYoutube || "";
-                    document.getElementById('linkFacebook').value = data.linkFacebook || "";
-                    document.getElementById('privacyHideEmail').checked = data.privacyHideEmail === true;
-                    document.getElementById('privacyHidePhone').checked = data.privacyHidePhone === true;
-                    document.getElementById('privacyHideSocials').checked = data.privacyHideSocials === true;
-                    updateAuthUI();
-                }
-            });
+            if(!currentUser || !currentProfileMetadata) return;
+            const data = currentProfileMetadata;
+            document.getElementById('settingsProfilePicPreview').src = data.profilePic || "https://via.placeholder.com/60";
+            document.getElementById('settingsProfilePicDataUrl').value = data.profilePic || "";
+            document.getElementById('settingsDisplayName').value = data.displayName || "";
+            document.getElementById('settingsBackupEmail').value = data.backupEmail || "";
+            document.getElementById('settingsPhoneNumber').value = data.phoneNumber || "";
+            document.getElementById('notifyNewUploads').checked = data.notifyNewUploads !== false;
+            document.getElementById('notifyLikesComments').checked = data.notifyLikesComments !== false;
+            document.getElementById('linkRoblox').value = data.linkRoblox || "";
+            document.getElementById('linkYoutube').value = data.linkYoutube || "";
+            document.getElementById('linkFacebook').value = data.linkFacebook || "";
+            document.getElementById('privacyHideEmail').checked = data.privacyHideEmail === true;
+            document.getElementById('privacyHidePhone').checked = data.privacyHidePhone === true;
+            document.getElementById('privacyHideSocials').checked = data.privacyHideSocials === true;
+            
+            window.updateVipUI();
+            updateAuthUI();
         };
 
         window.saveProfileSettings = function(e) {
@@ -1361,7 +1602,7 @@
                 displayName: document.getElementById('settingsDisplayName').value.trim(),
                 backupEmail: document.getElementById('settingsBackupEmail').value.trim(),
                 phoneNumber: document.getElementById('settingsPhoneNumber').value.trim()
-            }).then(() => { alert("Account metadata synchronized safely."); window.loadProfilePaneFields(); });
+            }).then(() => { alert("Account metadata synchronized safely."); });
         };
 
         window.savePrivacySettings = function(e) {
@@ -1371,7 +1612,7 @@
                 privacyHideEmail: document.getElementById('privacyHideEmail').checked,
                 privacyHidePhone: document.getElementById('privacyHidePhone').checked,
                 privacyHideSocials: document.getElementById('privacyHideSocials').checked
-            }).then(() => { alert("Profile Privacy preferences secured."); window.loadProfilePaneFields(); });
+            }).then(() => { alert("Profile Privacy preferences secured."); });
         };
 
         window.updateUserPassword = function(e) {
@@ -1411,7 +1652,7 @@
 
         window.adminAddVerified = function(e) {
             e.preventDefault();
-            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            if(currentUserRole !== 'admin') return;
             const newEmail = document.getElementById('adminVerifyEmailInput').value.trim().toLowerCase();
             if(!newEmail) return;
             push(ref(db, 'verified_emails'), newEmail).then(() => {
@@ -1422,7 +1663,7 @@
 
         window.adminSetAppUpdate = function(e) {
             e.preventDefault();
-            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            if(currentUserRole !== 'admin') return;
             const targetTimeVal = document.getElementById('adminUpdateDateTime').value;
             if(!targetTimeVal) { alert("Select a date and time."); return; }
             update(ref(db, 'app_update'), {
@@ -1434,50 +1675,28 @@
 
         window.adminSendModMessage = function(e) {
             e.preventDefault();
-            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            if(currentUserRole !== 'admin') return;
             
             const targetEmail = document.getElementById('modTargetEmail').value.trim();
             const messageType = document.getElementById('modNoticeType').value;
             const messageContent = modMessages[messageType];
             
-            push(ref(db, 'inbox'), {
-                type: 'moderation', itemId: "MOD_ALERT", itemName: "🚨 MODERATOR NOTICE",
-                to: targetEmail, from: MOD_EMAIL, status: 'info', timestamp: Date.now()
+            sendModBotMessage(targetEmail, messageContent, "🚨 MODERATOR NOTICE");
+
+            push(ref(db, 'sanction_logs'), {
+                target: targetEmail,
+                action: 'Warning',
+                reason: readableModReasons[messageType] || messageType,
+                timestamp: Date.now()
             });
 
-            const roomId = getChatRoomId(MOD_EMAIL, targetEmail);
-            const msgPayload = { sender: MOD_EMAIL, text: messageContent, timestamp: Date.now() };
-            
-            push(ref(db, `chats/${roomId}/messages`), msgPayload).then(() => {
-                update(ref(db, `chats/${roomId}`), {
-                    lastMessage: messageContent, lastTime: Date.now(),
-                    participants: {
-                        [escapeEmailPath(MOD_EMAIL)]: true,
-                        [escapeEmailPath(targetEmail)]: true
-                    }
-                });
-                
-                const receiverKey = escapeEmailPath(targetEmail);
-                get(ref(db, `chats/${roomId}/unread_${receiverKey}`)).then(snap => {
-                    const currentUnread = snap.exists() ? snap.val() : 0;
-                    update(ref(db, `chats/${roomId}`), { [`unread_${receiverKey}`]: currentUnread + 1 });
-                });
-
-                push(ref(db, 'sanction_logs'), {
-                    target: targetEmail,
-                    action: 'Warning',
-                    reason: readableModReasons[messageType] || messageType,
-                    timestamp: Date.now()
-                });
-
-                alert(`Moderation warning dispatched to ${targetEmail}.`);
-                document.getElementById('modTargetEmail').value = "";
-            });
+            alert(`Moderation warning dispatched to ${targetEmail}.`);
+            document.getElementById('modTargetEmail').value = "";
         };
 
         window.adminApplySanction = function(e) {
             e.preventDefault();
-            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            if(currentUserRole !== 'admin') return;
 
             const targetEmail = document.getElementById('sanctionTargetEmail').value.trim();
             const actionType = document.getElementById('sanctionActionType').value;
@@ -1521,10 +1740,9 @@
             });
         }
 
-        // --- ADMIN STOCKS NOTIFIER SAVE FUNCTION ---
         window.adminSaveRestockLinks = function(e) {
             e.preventDefault();
-            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            if(currentUserRole !== 'admin') return;
             
             update(ref(db, 'restock_links'), {
                 gag2: document.getElementById('adminLink-gag2').value.trim(),
@@ -1535,7 +1753,6 @@
             }).then(() => alert("Restock links updated successfully!"));
         };
 
-        // --- STOCKS NOTIFIER RENDER LOGIC ---
         window.renderStocksNotifier = function() {
             const container = document.getElementById('stocksListContainer');
             if(!container) return;
@@ -1610,6 +1827,74 @@
             reader.readAsDataURL(file);
         };
 
+        window.toggleLike = function(itemId) {
+            if(!currentUser) { alert("Login required to interact with listings."); return; }
+            const item = trades.find(t => t.id === itemId);
+            if(item) {
+                let likedByArray = item.likedBy ? Object.values(item.likedBy) : [];
+                let likesCount = item.likes || 0;
+                const index = likedByArray.indexOf(currentUser);
+
+                if(index === -1) {
+                    likedByArray.push(currentUser);
+                    likesCount += 1;
+                    
+                    if(item.creator !== currentUser) {
+                        push(ref(db, 'inbox'), {
+                            type: 'like',
+                            itemId: item.id,
+                            itemName: item.name,
+                            to: item.creator,
+                            from: currentUser,
+                            status: 'info',
+                            timestamp: Date.now()
+                        });
+                    }
+                } else {
+                    likedByArray.splice(index, 1);
+                    likesCount = Math.max(0, likesCount - 1);
+                }
+                update(ref(db, `trades/${itemId}`), { likes: likesCount, likedBy: likedByArray.length > 0 ? likedByArray : null });
+            }
+        };
+
+        window.replyToComment = function(itemId, username) {
+            const input = document.getElementById(`commentInput-${itemId}`);
+            if(input) { input.value = `@${username} ` + input.value; input.focus(); }
+        };
+
+        window.submitComment = function(e, itemId) {
+            e.preventDefault();
+            if(!currentUser) { alert("Login required to submit messages."); return; }
+            const input = document.getElementById(`commentInput-${itemId}`);
+            const text = input.value.trim();
+            if(!text) return;
+
+            const item = trades.find(t => t.id === itemId);
+            if(item) {
+                let commentsArray = item.comments ? Object.values(item.comments) : [];
+                let currentDisplayNameSeed = currentUser.split('@')[0];
+                if(currentProfileMetadata && currentProfileMetadata.displayName) currentDisplayNameSeed = currentProfileMetadata.displayName;
+
+                commentsArray.push({
+                    user: currentUser, userDisplayName: currentDisplayNameSeed,
+                    text: text, timestamp: new Date().toLocaleTimeString()
+                });
+
+                update(ref(db, `trades/${itemId}`), { comments: commentsArray }).then(() => { 
+                    input.value = ""; 
+                    if(item.creator !== currentUser) {
+                        push(ref(db, 'inbox'), {
+                            type: 'comment', itemId: item.id, itemName: item.name,
+                            to: item.creator, from: currentUser, textSnippet: text.substring(0, 30) + '...',
+                            status: 'info', timestamp: Date.now()
+                        });
+                    }
+                });
+            }
+        };
+
+        // Firebase Realtime Listeners
         onValue(ref(db, 'trades'), (snapshot) => {
             const data = snapshot.val();
             trades = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
@@ -1621,6 +1906,18 @@
             inbox = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
             window.updateInboxBadge();
             if (!document.getElementById('inboxSection').classList.contains('hidden')) window.renderInbox();
+        });
+
+        onValue(ref(db, 'announcements'), (snapshot) => {
+            const data = snapshot.val();
+            announcements = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
+            if (!document.getElementById('announcementsSection').classList.contains('hidden')) window.renderAnnouncements();
+        });
+
+        onValue(ref(db, 'vip_requests'), (snapshot) => {
+            const data = snapshot.val();
+            vipRequests = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
+            if (!document.getElementById('settingsSection').classList.contains('hidden')) window.renderAdminVipRequests();
         });
 
         onValue(ref(db, 'verified_emails'), (snapshot) => {
@@ -1674,21 +1971,18 @@
             }
         });
 
-        // --- NEW REALTIME LISTENER FOR RESTOCK LINKS ---
         onValue(ref(db, 'restock_links'), (snapshot) => {
             if(snapshot.exists()) {
                 globalRestockLinks = snapshot.val();
             }
-            // Update the UI if currently open
             window.renderStocksNotifier();
             
-            // If admin, update the input fields in settings so they match the DB
-            if (currentUser && currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
-                document.getElementById('adminLink-gag2').value = globalRestockLinks.gag2 || "";
-                document.getElementById('adminLink-gag').value = globalRestockLinks.gag || "";
-                document.getElementById('adminLink-gh').value = globalRestockLinks.gh || "";
-                document.getElementById('adminLink-bf').value = globalRestockLinks.bf || "";
-                document.getElementById('adminLink-dcbt').value = globalRestockLinks.dcbt || "";
+            if (currentUserRole === 'admin') {
+                const eGag2 = document.getElementById('adminLink-gag2'); if(eGag2) eGag2.value = globalRestockLinks.gag2 || "";
+                const eGag = document.getElementById('adminLink-gag'); if(eGag) eGag.value = globalRestockLinks.gag || "";
+                const eGh = document.getElementById('adminLink-gh'); if(eGh) eGh.value = globalRestockLinks.gh || "";
+                const eBf = document.getElementById('adminLink-bf'); if(eBf) eBf.value = globalRestockLinks.bf || "";
+                const eDcbt = document.getElementById('adminLink-dcbt'); if(eDcbt) eDcbt.value = globalRestockLinks.dcbt || "";
             }
         });
 
@@ -1709,7 +2003,7 @@
                 if(offer.type === 'moderation') {
                     card.innerHTML = `<div style="font-size: 14px; border-left: 4px solid var(--decline-color); padding-left: 10px;">
                                       <strong style="color:var(--decline-color);">${offer.itemName}</strong><br>
-                                      <span style="color:var(--text-color);">Please check your Messages tab for communication from <strong>${offer.from}</strong> regarding a moderation action on your account.</span></div>
+                                      <span style="color:var(--text-color);">Please check your Messages tab for communication from <strong>${offer.from}</strong> regarding your account.</span></div>
                                       <button style="margin-top:10px; background:transparent; border:1px solid #ff4a4a; color:#ff4a4a; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="remove(ref(db, 'inbox/${offer.id}'))">Clear Notice</button>`;
                 } else if (offer.type === 'like') {
                     card.innerHTML = `<div style="font-size: 14px; color: var(--text-color);">👍 <strong>${offer.from}</strong> liked your item <strong style="color:var(--accent-color);">${offer.itemName}</strong>.</div>
@@ -1845,7 +2139,7 @@
             const filtered = trades.filter(post => (filterValue === 'All' || post.game === filterValue) && (post.creator && post.creator.toLowerCase().includes(searchQuery)));
             if(filtered.length === 0) { container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No listings found.</div>`; return; }
 
-            const isAdmin = currentUser && currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase();
+            const isAdmin = currentUserRole === 'admin';
 
             filtered.forEach(item => {
                 const card = document.createElement('div'); card.className = 'item-card';
