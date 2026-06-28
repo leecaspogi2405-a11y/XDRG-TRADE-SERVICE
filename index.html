@@ -15,8 +15,6 @@
             --decline-color: #ff4a4a;
             --accept-color: #00cc7a;
             --warning-color: #ffaa00;
-            --mod-color: #0077ff;
-            --vip-color: #cc00ff;
         }
 
         body {
@@ -306,13 +304,7 @@
         .profile-data-label { color: var(--text-muted); font-size: 14px; font-weight: bold; }
         .profile-data-value { color: #fff; font-size: 14px; text-align: right; word-break: break-all; }
         
-        .role-badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; vertical-align: middle; }
-        .role-badge-admin { background: var(--warning-color); color: #000; }
-        .role-badge-mod { background: var(--mod-color); color: #fff; }
-        .role-badge-vip { background: var(--vip-color); color: #fff; }
-        
-        .announcement-card { background: var(--panel-bg); border-left: 4px solid var(--accent-color); border-radius: 8px; padding: 20px; margin-bottom: 15px; }
-        .vip-card { background: linear-gradient(145deg, #161920, #2a1b38); border: 1px solid var(--vip-color); border-radius: 8px; padding: 25px; text-align: center; margin-bottom: 20px; }
+        .admin-badge-ui { background: var(--warning-color); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -338,9 +330,6 @@
                 <button id="uploadTab" onclick="window.switchTab('upload')">+ Upload Item</button>
                 <button id="inboxTab" onclick="window.switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
                 <button id="chatTab" onclick="window.switchTab('chat')">💬 Messages <span id="chatBadge" style="color:var(--warning-color); font-weight:bold;"></span></button>
-                <button id="stocksTab" onclick="window.switchTab('stocks')">📈 Stocks Notifier</button>
-                <button id="announcementsTab" onclick="window.switchTab('announcements')">📢 Announcements</button>
-                <button id="vipTab" onclick="window.switchTab('vip')">💎 VIP Store</button>
                 <button id="settingsTab" onclick="window.switchTab('settings')">⚙️ Account Settings</button>
             </div>
 
@@ -361,38 +350,6 @@
             <div class="item-grid" id="itemGrid"></div>
         </div>
 
-        <div id="stocksSection" class="hidden" style="max-width: 800px; margin: 0 auto;">
-            <h2 style="color: var(--accent-color); margin-top: 0;">📈 Restock Notifications (Messenger Groups)</h2>
-            <p style="color: var(--text-muted); font-size: 14px;">Join these official group chats to get notified instantly when stocks for these games are replenished.</p>
-            <div id="stocksListContainer" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;"></div>
-        </div>
-
-        <div id="announcementsSection" class="hidden" style="max-width: 800px; margin: 0 auto;">
-            <div id="announcementPostContainer" class="hidden" style="background:var(--panel-bg); border:1px solid var(--border-color); border-radius:8px; padding:20px; margin-bottom:20px;">
-                <h3 style="color:var(--accent-color); margin-top:0;">Post Announcement</h3>
-                <textarea id="announcementInput" placeholder="Write your announcement here..." style="width:100%; height:80px; background:#0f1115; border:1px solid var(--border-color); color:#fff; padding:10px; border-radius:4px; margin-bottom:10px;"></textarea>
-                <button onclick="window.postAnnouncement()" style="background:var(--accent-color); color:#000; font-weight:bold; padding:10px 20px; border:none; border-radius:4px; cursor:pointer;">Broadcast Announcement</button>
-            </div>
-            <h2 style="color: var(--accent-color); margin-top: 0;">📢 Server Announcements</h2>
-            <div id="announcementsListContainer"></div>
-        </div>
-
-        <div id="vipSection" class="hidden" style="max-width: 800px; margin: 0 auto;">
-            <h2 style="color: var(--vip-color); margin-top: 0; text-align: center;">💎 Premium VIP Subscription</h2>
-            
-            <div class="vip-card">
-                <h3 style="color: #fff; margin-top: 0;">VIP Membership Status</h3>
-                <div id="vipStatusDisplay" style="font-size: 18px; margin: 15px 0; color: var(--text-muted);">Fetching status...</div>
-                
-                <div id="vipActionsContainer" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-top:20px;">
-                    <button id="btnVipTrial" class="hidden" onclick="window.vipAction('trial')" style="background:var(--accept-color); color:#fff; font-weight:bold; padding:12px 24px; border:none; border-radius:4px; cursor:pointer;">Start 1 Month Free Trial</button>
-                    <button id="btnVipBuy" class="hidden" onclick="window.vipAction('buy')" style="background:var(--vip-color); color:#fff; font-weight:bold; padding:12px 24px; border:none; border-radius:4px; cursor:pointer;">Buy 1 Month (₱249)</button>
-                    <button id="btnVipRebuy" class="hidden" onclick="window.vipAction('rebuy')" style="background:var(--warning-color); color:#000; font-weight:bold; padding:12px 24px; border:none; border-radius:4px; cursor:pointer;">ReBuy VIP (₱249)</button>
-                    <button id="btnVipCancel" class="hidden" onclick="window.vipAction('cancel')" style="background:var(--decline-color); color:#fff; font-weight:bold; padding:12px 24px; border:none; border-radius:4px; cursor:pointer;">Cancel Subscription</button>
-                </div>
-            </div>
-        </div>
-
         <div id="inboxSection" class="hidden">
             <h2 style="color: var(--accent-color); margin-top: 0;">Your Notifications & Trade Offers</h2>
             <div id="inboxGrid"></div>
@@ -402,14 +359,16 @@
             <div class="chat-layout">
                 <div class="chat-sidebar">
                     <div class="chat-sidebar-header">Recent Chats</div>
-                    <div class="chat-user-list" id="chatContactList"></div>
+                    <div class="chat-user-list" id="chatContactList">
+                        </div>
                 </div>
                 <div class="chat-window" id="activeChatWindow">
                     <div class="chat-header">
                         <img src="https://via.placeholder.com/40" id="currentChatAvatar" class="chat-user-avatar" style="display:none;">
                         <span id="currentChatName" style="color:#fff; font-weight:bold;">Select a conversation to start messaging</span>
                     </div>
-                    <div class="chat-messages" id="chatMessageArea"></div>
+                    <div class="chat-messages" id="chatMessageArea">
+                        </div>
                     <div class="chat-input-area" id="chatInputArea" style="display:none;">
                         <input type="text" id="chatInputBox" placeholder="Type your message here..." onkeypress="if(event.key === 'Enter') window.sendChatMessage()">
                         <button onclick="window.sendChatMessage()">Send</button>
@@ -493,14 +452,11 @@
                     <button class="settings-sidebar-btn" id="paneBtn-linked" onclick="window.switchSettingsPane('linked')">🔗 Linked Accounts</button>
                     <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
                     <button class="settings-sidebar-btn" id="paneBtn-tutorial" onclick="window.switchSettingsPane('tutorial')">📖 Service Tutorial</button>
-                    <button class="settings-sidebar-btn" id="paneBtn-guidelines" onclick="window.switchSettingsPane('guidelines')">📜 Guidelines & Logs</button>
                     
-                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-roles" onclick="window.switchSettingsPane('admin-roles')">🛡️ Roles Manager</button>
-                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-vip" onclick="window.switchSettingsPane('admin-vip')">💎 VIP Requests</button>
+                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verification Accts</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 Update App Link</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-mod" onclick="window.switchSettingsPane('admin-mod')">🛑 Moderation Desk</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-sanction" onclick="window.switchSettingsPane('admin-sanction')">⚖️ Ban/Kick Manager</button>
-                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-restock" onclick="window.switchSettingsPane('admin-restock')">🔗 Restocker Links</button>
                 </div>
                 
                 <div class="settings-content">
@@ -616,64 +572,32 @@
 
                     <div class="settings-pane" id="pane-tutorial">
                         <h3>Trading Service Interactive Guide</h3>
+                        
                         <div class="tutorial-step">
                             <h4>Step 1: Authenticate or Claim Profile Identity</h4>
                             <p>Access the 'Sign Up / Log In' access portal in the navigation header. Input an email line along with a secure management pass phrase.</p>
                         </div>
+
                         <div class="tutorial-step">
                             <h4>Step 2: Post Catalog Inventory Listings</h4>
                             <p>Select the '+ Upload Item' action link. Choose your game module, fill out explicit weight criteria, mutation aura attributes, and values data.</p>
                         </div>
+
                         <div class="tutorial-step">
                             <h4>Step 3: Negotiating & Chatting</h4>
                             <p>Click on a user's profile name to send them a direct message, or hit 'Send Trade Offer' to dispatch transaction logs straight to their inbox.</p>
                         </div>
                     </div>
 
-                    <div class="settings-pane" id="pane-guidelines">
-                        <h3>Platform Guidelines & Sanction Logs</h3>
-                        <div style="margin-bottom: 25px; padding: 15px; background: #1a1f26; border-left: 3px solid var(--warning-color); border-radius: 4px;">
-                            <h4 style="margin: 0 0 10px 0; color: #fff;">📜 Community Rules (What NOT to do):</h4>
-                            <ul style="margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.6;">
-                                <li><strong>Scamming/Fraud:</strong> Do not use deceptive trading practices or trick users out of their items.</li>
-                                <li><strong>Spam/Duplicate Listings:</strong> Do not upload the exact same item multiple times. This clutters the feed.</li>
-                                <li><strong>Copyright Infringement:</strong> Do not use unauthorized assets, steal others' images, or pretend to be another creator.</li>
-                                <li><strong>Harassment:</strong> Treat all traders with respect in comments and chats. Toxic behavior is not tolerated.</li>
-                                <li><strong>Off-Platform Trading:</strong> Keep all negotiations visible and safe within the platform to avoid being scammed.</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 style="color: var(--decline-color); margin-bottom: 10px;">🔨 Public Moderation & Sanction Logs</h4>
-                            <p style="font-size: 13px; color: var(--text-muted); margin-top: 0;">Below is a live record of accounts that have received warnings, kicks, bans, or unbans.</p>
-                            <div id="guidelinesSanctionLogs" style="background: #11141a; border: 1px solid var(--border-color); padding: 15px; border-radius: 4px; max-height: 300px; overflow-y: auto; font-size: 14px; display: flex; flex-direction: column; gap: 8px;"></div>
-                        </div>
-                    </div>
-
-                    <div class="settings-pane" id="pane-admin-roles">
-                        <h3>🛡️ Admin: Roles Manager</h3>
-                        <p style="font-size:13px; color:var(--text-muted);">Assign Admin, Moderator, or VIP status directly.</p>
-                        <form onsubmit="window.adminManageRole(event)">
+                    <div class="settings-pane" id="pane-admin-verify">
+                        <h3>Admin: Add Verification Accounts</h3>
+                        <form onsubmit="window.adminAddVerified(event)">
                             <div class="form-group">
-                                <label>Target User Email:</label>
-                                <input type="email" id="adminRoleEmail" required placeholder="user@gmail.com">
+                                <label>User Gmail Address to Verify:</label>
+                                <input type="email" id="adminVerifyEmailInput" required placeholder="user@gmail.com">
                             </div>
-                            <div class="form-group">
-                                <label>Select Role:</label>
-                                <select id="adminRoleType" required>
-                                    <option value="ADMIN">Admin</option>
-                                    <option value="MODERATOR">Moderator</option>
-                                    <option value="VIP">VIP (Lifetime)</option>
-                                    <option value="REMOVE">Remove All Roles</option>
-                                </select>
-                            </div>
-                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Update Role</button>
+                            <button type="submit" style="background: var(--warning-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Grant Verified Status</button>
                         </form>
-                    </div>
-
-                    <div class="settings-pane" id="pane-admin-vip">
-                        <h3>💎 Admin: VIP Requests & Actions</h3>
-                        <p style="font-size:13px; color:var(--text-muted);">Approve or decline VIP Buy, ReBuy, and Cancelation requests.</p>
-                        <div id="adminVipRequestsContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
                     </div>
 
                     <div class="settings-pane" id="pane-admin-update">
@@ -737,34 +661,6 @@
                         </form>
                     </div>
 
-                    <div class="settings-pane" id="pane-admin-restock">
-                        <h3 style="color:var(--accent-color);">🔗 Admin: Stocks Notifier Links</h3>
-                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Update the Messenger/Group links for the Stocks Notifier tab here. Leave blank if Not Available.</p>
-                        <form onsubmit="window.adminSaveRestockLinks(event)">
-                            <div class="form-group">
-                                <label>Grow A Garden 2:</label>
-                                <input type="url" id="adminLink-gag2" placeholder="e.g. https://m.me/j/..." value="https://m.me/j/AbbG9tlzYmMRg09Q/?send_source=gc%3Acopy_invite_link_c">
-                            </div>
-                            <div class="form-group">
-                                <label>Grow A Garden:</label>
-                                <input type="url" id="adminLink-gag" placeholder="Not Available">
-                            </div>
-                            <div class="form-group">
-                                <label>Garden Horizon:</label>
-                                <input type="url" id="adminLink-gh" placeholder="Not Available">
-                            </div>
-                            <div class="form-group">
-                                <label>BloxFruit:</label>
-                                <input type="url" id="adminLink-bf" placeholder="Not Available">
-                            </div>
-                            <div class="form-group">
-                                <label>Don't Crash By Train For Brainrots:</label>
-                                <input type="url" id="adminLink-dcbt" placeholder="Not Available">
-                            </div>
-                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Save Restocker Links</button>
-                        </form>
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -773,11 +669,14 @@
     <div id="userProfileModal" class="modal">
         <div class="modal-content">
             <h3 style="margin-top:0; color:var(--accent-color); text-align: center; font-size: 20px;">Trader Profile</h3>
+            
             <img id="modalProfilePic" src="https://via.placeholder.com/80" class="modal-profile-pic">
             <h4 id="modalProfileName" style="text-align: center; margin: 5px 0 20px 0; color: #fff;">Unknown User</h4>
+
             <div style="text-align:center; margin-bottom: 20px;">
                 <button id="modalMessageBtn" style="background: var(--accent-color); color: #000; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">💬 Send Message</button>
             </div>
+
             <div class="profile-data-row">
                 <span class="profile-data-label">Email Address</span>
                 <span class="profile-data-value" id="modalProfileEmail">Hidden</span>
@@ -798,6 +697,7 @@
                 <span class="profile-data-label">Facebook</span>
                 <span class="profile-data-value" id="modalProfileFacebook">Hidden</span>
             </div>
+
             <button onclick="window.closeModal('userProfileModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 15px;">Close Profile</button>
         </div>
     </div>
@@ -806,7 +706,9 @@
         <div class="modal-content">
             <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Secure Access Portal</h3>
             <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Please authenticate utilizing your secure account email format verification line to track correspondence logs and trade requests.</p>
+            
             <div id="loginLockoutContainer" class="hidden"></div>
+
             <form id="modalLoginForm" onsubmit="window.login(event)">
                 <div class="form-group">
                     <label>Account Registration Email:</label>
@@ -858,26 +760,13 @@
             "review": "🔍 Account Status: Your profile and active listings are currently under manual review by the administration team for suspicious activity."
         };
 
-        const readableModReasons = {
-            "copyright": "Copyright Infringement",
-            "scammer": "Scamming / Fraud",
-            "duplicate": "Duplicate Uploads (Spam)",
-            "deleted": "Listing Deleted by Admin",
-            "review": "Account Under Review"
-        };
+        const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
+        const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519654119353221210/1000030631.png?ex=6a3e57af&is=6a3d062f&hm=f5e27828d282be493d90fa81a93cca58b760a643b459d5b8f54fbf17a0536254&";
 
         let trades = [];
         let inbox = [];
         let chats = {};
-        let announcementsData = [];
-        let vipRequestsData = [];
-        let globalRoles = { admins: {}, mods: {}, vips: {} };
-        
-        let globalRestockLinks = {
-            gag2: "https://m.me/j/AbbG9tlzYmMRg09Q/?send_source=gc%3Acopy_invite_link_c",
-            gag: "", gh: "", bf: "", dcbt: ""
-        };
-
+        let dynamicVerifiedEmails = [];
         let currentUser = localStorage.getItem('roblox_user_email') || "";
         let currentProfileMetadata = null;
         let editingListingId = null;
@@ -886,35 +775,12 @@
         let activeChatTarget = null;
         let accountMonitorUnsubscribe = null;
 
-        // Ensure browser permission for notifications
-        if ("Notification" in window) {
-            Notification.requestPermission();
-        }
-
         function escapeEmailPath(email) {
             return email.toLowerCase().replace(/\./g, '_').replace(/@/g, '_at_');
         }
 
         function getChatRoomId(email1, email2) {
             return [escapeEmailPath(email1), escapeEmailPath(email2)].sort().join('___');
-        }
-
-        function getUserRole(email) {
-            if (!email) return '';
-            const clean = escapeEmailPath(email);
-            if (clean === escapeEmailPath(ADMIN_EMAIL) || (globalRoles.admins && globalRoles.admins[clean])) return 'ADMIN';
-            if (globalRoles.mods && globalRoles.mods[clean]) return 'MODERATOR';
-            if (globalRoles.vips && globalRoles.vips[clean]) {
-                if (globalRoles.vips[clean] === 'LIFETIME' || globalRoles.vips[clean] > Date.now()) return 'VIP';
-            }
-            return '';
-        }
-
-        function getRoleBadgeHtml(role) {
-            if (role === 'ADMIN') return `<span class="role-badge role-badge-admin">ADMIN</span>`;
-            if (role === 'MODERATOR') return `<span class="role-badge role-badge-mod">MODERATOR</span>`;
-            if (role === 'VIP') return `<span class="role-badge role-badge-vip">VIP</span>`;
-            return '';
         }
 
         window.openModal = function(id) { 
@@ -927,11 +793,17 @@
         window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
         window.switchTab = function(tab) {
-            const sections = ['uploadSection', 'feedSection', 'inboxSection', 'settingsSection', 'chatSection', 'stocksSection', 'announcementsSection', 'vipSection'];
-            const tabs = ['uploadTab', 'viewTab', 'inboxTab', 'settingsTab', 'chatTab', 'stocksTab', 'announcementsTab', 'vipTab'];
+            document.getElementById('uploadSection').classList.add('hidden');
+            document.getElementById('feedSection').classList.add('hidden');
+            document.getElementById('inboxSection').classList.add('hidden');
+            document.getElementById('settingsSection').classList.add('hidden');
+            document.getElementById('chatSection').classList.add('hidden');
             
-            sections.forEach(s => document.getElementById(s).classList.add('hidden'));
-            tabs.forEach(t => document.getElementById(t).classList.remove('active'));
+            document.getElementById('uploadTab').classList.remove('active');
+            document.getElementById('viewTab').classList.remove('active');
+            document.getElementById('inboxTab').classList.remove('active');
+            document.getElementById('settingsTab').classList.remove('active');
+            document.getElementById('chatTab').classList.remove('active');
 
             if(tab === 'upload') {
                 if(!currentUser) { alert("Unauthorized Access: Log in first!"); window.openModal('loginModal'); return; }
@@ -957,19 +829,6 @@
                 document.getElementById('settingsSection').classList.remove('hidden');
                 document.getElementById('settingsTab').classList.add('active');
                 if(currentUser) window.loadProfilePaneFields();
-            } else if (tab === 'stocks') {
-                document.getElementById('stocksSection').classList.remove('hidden');
-                document.getElementById('stocksTab').classList.add('active');
-                window.renderStocksNotifier();
-            } else if (tab === 'announcements') {
-                document.getElementById('announcementsSection').classList.remove('hidden');
-                document.getElementById('announcementsTab').classList.add('active');
-                window.renderAnnouncements();
-            } else if (tab === 'vip') {
-                if(!currentUser) { alert("Unauthorized Access: Log in first!"); window.openModal('loginModal'); return; }
-                document.getElementById('vipSection').classList.remove('hidden');
-                document.getElementById('vipTab').classList.add('active');
-                window.renderVipDashboard();
             } else {
                 document.getElementById('feedSection').classList.remove('hidden');
                 document.getElementById('viewTab').classList.add('active');
@@ -985,6 +844,7 @@
             document.getElementById(`paneBtn-${paneId}`).classList.add('active');
         };
 
+        // Real-time listener to kick/ban users dynamically
         function monitorAccountStatus(email) {
             if(accountMonitorUnsubscribe) { accountMonitorUnsubscribe(); }
             const cleanKey = escapeEmailPath(email);
@@ -996,7 +856,7 @@
                         window.logout(true);
                     } else if (status === 'kicked') {
                         alert("⚠️ You have been KICKED by a moderator. You may log back in, but please follow the rules.");
-                        update(ref(db, `users/${cleanKey}`), { accountStatus: 'active' }); 
+                        update(ref(db, `users/${cleanKey}`), { accountStatus: 'active' }); // reset status so they can login again
                         window.logout(true);
                     }
                 }
@@ -1023,6 +883,7 @@
                         email: emailInput, password: passwordInput, displayName: emailInput.split('@')[0],
                         profilePic: "", backupEmail: "", phoneNumber: "", notifyNewUploads: true,
                         notifyLikesComments: true, linkRoblox: "", linkYoutube: "", linkFacebook: "",
+                        privacyHideEmail: false, privacyHidePhone: false, privacyHideSocials: false,
                         accountStatus: 'active'
                     };
                     update(userRef, registrationPayload).then(() => {
@@ -1096,7 +957,13 @@
             window.updateInboxBadge(); window.renderItems();
         };
 
+        // On App Load, resume monitor if user logged in
         if(currentUser) monitorAccountStatus(currentUser);
+
+        function checkIsVerified(email) {
+            const clean = email.toLowerCase().trim();
+            return verifiedEmails.includes(clean) || dynamicVerifiedEmails.includes(clean);
+        }
 
         function getCreatorLabelHtml(email) {
             if(!email) return "Unknown Trader";
@@ -1107,8 +974,7 @@
             } else {
                 nameString = email.split('@')[0];
             }
-            const role = getUserRole(cleanEmail);
-            const badgeHtml = getRoleBadgeHtml(role);
+            let badgeHtml = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
             return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${nameString}</strong></a>${badgeHtml}`;
         }
 
@@ -1116,8 +982,7 @@
             if(!email) return "Trader";
             const cleanEmail = email.toLowerCase().trim();
             const cleanLabel = fallbackName || email.split('@')[0];
-            const role = getUserRole(cleanEmail);
-            const badgeHtml = getRoleBadgeHtml(role);
+            let badgeHtml = checkIsVerified(cleanEmail) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
             return `<a href="#" onclick="window.viewUserProfile('${email}'); return false;" style="color:var(--accent-color); text-decoration:none;"><strong>${cleanLabel}</strong></a>${badgeHtml}`;
         }
 
@@ -1128,271 +993,25 @@
             const uploadIdentityInput = document.getElementById('formUserIdentity');
             
             const adminUiElements = document.querySelectorAll('.admin-ui');
-            const announceBox = document.getElementById('announcementPostContainer');
 
             if(currentUser) {
-                const role = getUserRole(currentUser);
-                const badgeHtml = getRoleBadgeHtml(role);
+                let badgeHtml = checkIsVerified(currentUser) ? ` <img src="${verifiedLogoUrl}" class="verified-badge">` : "";
                 greeting.innerHTML = `Session: <span style="color:var(--text-color);">${currentUser.split('@')[0]}</span>${badgeHtml}`;
                 loginBtn.classList.add('hidden'); logoutBtn.classList.remove('hidden');
                 uploadIdentityInput.value = currentUser; 
                 
-                if(role === 'ADMIN') {
+                if(currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
                     adminUiElements.forEach(el => el.classList.remove('hidden'));
+                    greeting.innerHTML += `<span class="admin-badge-ui">ADMIN</span>`;
                 } else {
                     adminUiElements.forEach(el => el.classList.add('hidden'));
-                }
-
-                if(role === 'ADMIN' || role === 'MODERATOR' || role === 'VIP') {
-                    if(announceBox) announceBox.classList.remove('hidden');
-                } else {
-                    if(announceBox) announceBox.classList.add('hidden');
                 }
             } else {
                 greeting.textContent = ""; loginBtn.classList.remove('hidden'); logoutBtn.classList.add('hidden');
                 uploadIdentityInput.value = ""; adminUiElements.forEach(el => el.classList.add('hidden'));
-                if(announceBox) announceBox.classList.add('hidden');
             }
         }
 
-        // ---------- ANNOUNCEMENTS LOGIC ----------
-        window.postAnnouncement = function() {
-            if(!currentUser) return;
-            const text = document.getElementById('announcementInput').value.trim();
-            if(!text) return;
-
-            const role = getUserRole(currentUser);
-            if(!role) return;
-
-            push(ref(db, 'announcements'), {
-                sender: currentUser,
-                role: role,
-                text: text,
-                timestamp: Date.now()
-            }).then(() => {
-                document.getElementById('announcementInput').value = "";
-                alert("Announcement broadcasted successfully!");
-            });
-        };
-
-        window.renderAnnouncements = function() {
-            const container = document.getElementById('announcementsListContainer');
-            if(!container) return;
-            container.innerHTML = "";
-            
-            if(announcementsData.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-muted);">No announcements yet.</div>`;
-                return;
-            }
-
-            announcementsData.slice().reverse().forEach(ann => {
-                const badge = getRoleBadgeHtml(ann.role);
-                const dateStr = new Date(ann.timestamp).toLocaleString();
-                const card = document.createElement('div');
-                card.className = 'announcement-card';
-                card.innerHTML = `
-                    <div style="margin-bottom: 8px;">${badge} <strong style="color:#fff;">${ann.sender.split('@')[0]}</strong></div>
-                    <div style="font-size:16px; color:var(--text-color); line-height:1.5;">${ann.text}</div>
-                    <div style="font-size:11px; color:var(--text-muted); margin-top:10px;">${dateStr}</div>
-                `;
-                container.appendChild(card);
-            });
-        };
-
-        onValue(ref(db, 'announcements'), (snapshot) => {
-            const oldLength = announcementsData.length;
-            const data = snapshot.val();
-            announcementsData = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-            
-            if(announcementsData.length > oldLength && oldLength > 0 && currentUser) {
-                const latest = announcementsData[announcementsData.length - 1];
-                if (latest.sender !== currentUser) {
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification(`Announcement from ${latest.role}`, { body: latest.text });
-                    }
-                }
-            }
-            if(!document.getElementById('announcementsSection').classList.contains('hidden')) {
-                window.renderAnnouncements();
-            }
-        });
-
-        // ---------- VIP SUBSCRIPTION LOGIC ----------
-        window.renderVipDashboard = function() {
-            if(!currentUser) return;
-            const cleanKey = escapeEmailPath(currentUser);
-            
-            const btnTrial = document.getElementById('btnVipTrial');
-            const btnBuy = document.getElementById('btnVipBuy');
-            const btnRebuy = document.getElementById('btnVipRebuy');
-            const btnCancel = document.getElementById('btnVipCancel');
-            const statusDisp = document.getElementById('vipStatusDisplay');
-
-            btnTrial.classList.add('hidden');
-            btnBuy.classList.add('hidden');
-            btnRebuy.classList.add('hidden');
-            btnCancel.classList.add('hidden');
-
-            get(ref(db, `users/${cleanKey}/vipTrialUsed`)).then(trialSnap => {
-                const trialUsed = trialSnap.exists() ? trialSnap.val() : false;
-                const activeReq = vipRequestsData.find(r => r.user === currentUser && r.status === 'pending');
-                const currentRole = getUserRole(currentUser);
-
-                if(activeReq) {
-                    statusDisp.innerHTML = `Your request to <strong>${activeReq.type.toUpperCase()}</strong> VIP is currently pending admin approval.`;
-                } else if(currentRole === 'VIP') {
-                    let expStr = "Lifetime Access";
-                    const expirationTime = globalRoles.vips[cleanKey];
-                    if (expirationTime && expirationTime !== 'LIFETIME') {
-                        expStr = "Expires on: " + new Date(expirationTime).toLocaleDateString();
-                    }
-                    statusDisp.innerHTML = `<span style="color:var(--vip-color); font-weight:bold;">Active VIP</span><br><span style="font-size:14px;">${expStr}</span>`;
-                    btnCancel.classList.remove('hidden');
-                    btnRebuy.classList.remove('hidden');
-                } else {
-                    statusDisp.innerHTML = `You do not have an active VIP subscription.`;
-                    if(!trialUsed) {
-                        btnTrial.classList.remove('hidden');
-                    }
-                    btnBuy.classList.remove('hidden');
-                }
-            });
-        };
-
-        window.vipAction = function(type) {
-            if(!currentUser) return;
-            const cleanKey = escapeEmailPath(currentUser);
-            
-            if(type === 'trial') {
-                update(ref(db, `users/${cleanKey}`), { vipTrialUsed: true });
-                const expire = Date.now() + (30 * 24 * 60 * 60 * 1000);
-                update(ref(db, `roles/vips`), { [cleanKey]: expire }).then(() => {
-                    sendInboxMessage(currentUser, MOD_EMAIL, "VIP SYSTEM", "Your 1 Month Free VIP Trial has started! Enjoy your premium features.", 'info');
-                    sendInboxMessage(ADMIN_EMAIL, MOD_EMAIL, "VIP ALERT", `${currentUser} has started their 1 Month Free VIP Trial.`, 'info');
-                    alert("1 Month Free Trial activated!");
-                    window.renderVipDashboard();
-                });
-            } else if (type === 'buy' || type === 'rebuy') {
-                push(ref(db, 'vip_requests'), {
-                    user: currentUser, type: type, status: 'pending', timestamp: Date.now()
-                }).then(() => {
-                    sendInboxMessage(currentUser, MOD_EMAIL, "VIP PAYMENT", "Thank you for choosing to purchase VIP! Please send exactly ₱249 to GCash/PayMaya number: 099519500345 (or 639519500345). Once verified, the Admin will activate your VIP status.", 'info');
-                    sendInboxMessage(ADMIN_EMAIL, MOD_EMAIL, "VIP REQUEST", `${currentUser} requested to ${type.toUpperCase()} VIP (Per Month). Check Admin VIP Requests panel.`, 'info');
-                    alert("Request submitted. Check your Inbox for payment instructions.");
-                    window.renderVipDashboard();
-                });
-            } else if (type === 'cancel') {
-                if(!confirm("Are you sure you want to request cancellation of your VIP subscription?")) return;
-                push(ref(db, 'vip_requests'), {
-                    user: currentUser, type: 'cancel', status: 'pending', timestamp: Date.now()
-                }).then(() => {
-                    sendInboxMessage(ADMIN_EMAIL, MOD_EMAIL, "VIP CANCELATION", `${currentUser} requested to CANCEL their VIP subscription. Check Admin VIP Requests panel.`, 'info');
-                    alert("Cancellation request sent to Admin.");
-                    window.renderVipDashboard();
-                });
-            }
-        };
-
-        onValue(ref(db, 'vip_requests'), (snapshot) => {
-            const data = snapshot.val();
-            vipRequestsData = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
-            if(!document.getElementById('vipSection').classList.contains('hidden')) window.renderVipDashboard();
-            if(getUserRole(currentUser) === 'ADMIN' && !document.getElementById('settingsSection').classList.contains('hidden')) {
-                window.renderAdminVipRequests();
-            }
-        });
-
-        window.renderAdminVipRequests = function() {
-            const container = document.getElementById('adminVipRequestsContainer');
-            if(!container) return;
-            container.innerHTML = "";
-            const pending = vipRequestsData.filter(r => r.status === 'pending');
-            
-            if(pending.length === 0) {
-                container.innerHTML = `<div style="color:var(--text-muted);">No pending VIP requests.</div>`;
-                return;
-            }
-
-            pending.forEach(req => {
-                const dateStr = new Date(req.timestamp).toLocaleString();
-                const div = document.createElement('div');
-                div.style.background = "#1a1f26"; div.style.padding = "15px"; div.style.borderRadius = "4px"; div.style.borderLeft = "4px solid var(--vip-color)";
-                div.innerHTML = `
-                    <div style="font-weight:bold; color:#fff;">User: ${req.user}</div>
-                    <div style="color:var(--warning-color);">Action: ${req.type.toUpperCase()}</div>
-                    <div style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">${dateStr}</div>
-                    <button onclick="window.processVipRequest('${req.id}', 'accept')" style="background:var(--accept-color); color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:bold; margin-right:5px;">Accept</button>
-                    <button onclick="window.processVipRequest('${req.id}', 'decline')" style="background:var(--decline-color); color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:bold;">Decline</button>
-                `;
-                container.appendChild(div);
-            });
-        };
-
-        window.processVipRequest = function(reqId, action) {
-            const req = vipRequestsData.find(r => r.id === reqId);
-            if(!req) return;
-            const cleanKey = escapeEmailPath(req.user);
-
-            if(action === 'accept') {
-                if(req.type === 'buy' || req.type === 'rebuy') {
-                    const expire = Date.now() + (30 * 24 * 60 * 60 * 1000);
-                    update(ref(db, `roles/vips`), { [cleanKey]: expire }).then(() => {
-                        sendInboxMessage(req.user, MOD_EMAIL, "VIP ACCEPTED", "Your VIP Request has been ACCEPTED. Thank you for your purchase!", 'info');
-                        remove(ref(db, `vip_requests/${reqId}`));
-                    });
-                } else if (req.type === 'cancel') {
-                    remove(ref(db, `roles/vips/${cleanKey}`)).then(() => {
-                        sendInboxMessage(req.user, MOD_EMAIL, "VIP CANCELLED", "Your VIP Cancellation request has been accepted. You will lose VIP benefits after your current term expires or immediately.", 'info');
-                        remove(ref(db, `vip_requests/${reqId}`));
-                    });
-                }
-            } else {
-                sendInboxMessage(req.user, MOD_EMAIL, "VIP DECLINED", `Your VIP Request (${req.type.toUpperCase()}) was DECLINED. If you made a payment, please contact support.`, 'info');
-                remove(ref(db, `vip_requests/${reqId}`));
-            }
-        };
-
-        function sendInboxMessage(to, from, title, text, status) {
-            push(ref(db, 'inbox'), {
-                type: 'system', itemId: "SYS_MSG", itemName: title, to: to, from: from,
-                status: status, textSnippet: text, timestamp: Date.now()
-            });
-        }
-
-        // ---------- ADMIN ROLES MANAGER ----------
-        window.adminManageRole = function(e) {
-            e.preventDefault();
-            if(getUserRole(currentUser) !== 'ADMIN') return;
-            
-            const target = document.getElementById('adminRoleEmail').value.trim();
-            const role = document.getElementById('adminRoleType').value;
-            const cleanKey = escapeEmailPath(target);
-            
-            if(!target) return;
-
-            let updates = {};
-            updates[`roles/admins/${cleanKey}`] = null;
-            updates[`roles/mods/${cleanKey}`] = null;
-            updates[`roles/vips/${cleanKey}`] = null;
-
-            if(role === 'ADMIN') updates[`roles/admins/${cleanKey}`] = true;
-            if(role === 'MODERATOR') updates[`roles/mods/${cleanKey}`] = true;
-            if(role === 'VIP') updates[`roles/vips/${cleanKey}`] = 'LIFETIME';
-
-            update(ref(db, '/'), updates).then(() => {
-                alert(`Roles updated successfully for ${target}.`);
-                document.getElementById('adminRoleEmail').value = "";
-            });
-        };
-
-        onValue(ref(db, 'roles'), (snapshot) => {
-            globalRoles = snapshot.exists() ? snapshot.val() : { admins: {}, mods: {}, vips: {} };
-            updateAuthUI(); window.renderItems();
-            if(!document.getElementById('vipSection').classList.contains('hidden')) window.renderVipDashboard();
-        });
-
-
-        // Existing Code Continues...
         window.viewUserProfile = function(targetEmail) {
             if(!targetEmail) return;
             const cleanKey = escapeEmailPath(targetEmail);
@@ -1401,13 +1020,9 @@
                 let data = snapshot.exists() ? snapshot.val() : {};
                 document.getElementById('modalProfilePic').src = data.profilePic || "https://via.placeholder.com/80";
                 let displayName = data.displayName || targetEmail.split('@')[0];
+                document.getElementById('modalProfileName').innerHTML = checkIsVerified(targetEmail) ? `${displayName} <img src="${verifiedLogoUrl}" class="verified-badge">` : displayName;
                 
-                const role = getUserRole(targetEmail);
-                const badgeHtml = getRoleBadgeHtml(role);
-
-                document.getElementById('modalProfileName').innerHTML = `${displayName} ${badgeHtml}`;
-                
-                const isAdmin = getUserRole(currentUser) === 'ADMIN';
+                const isAdmin = currentUser && currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase();
 
                 document.getElementById('modalProfileEmail').textContent = (!data.privacyHideEmail || isAdmin) ? targetEmail : "Hidden via Privacy";
                 document.getElementById('modalProfilePhone').textContent = ((!data.privacyHidePhone || isAdmin) && data.phoneNumber) ? data.phoneNumber : (data.phoneNumber ? "Hidden via Privacy" : "Not Provided");
@@ -1726,9 +1341,20 @@
             }).then(() => alert("Cross-platform networking profiles synchronized."));
         };
 
+        window.adminAddVerified = function(e) {
+            e.preventDefault();
+            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            const newEmail = document.getElementById('adminVerifyEmailInput').value.trim().toLowerCase();
+            if(!newEmail) return;
+            push(ref(db, 'verified_emails'), newEmail).then(() => {
+                alert(`${newEmail} granted Verified status.`);
+                document.getElementById('adminVerifyEmailInput').value = "";
+            });
+        };
+
         window.adminSetAppUpdate = function(e) {
             e.preventDefault();
-            if(getUserRole(currentUser) !== 'ADMIN') return;
+            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
             const targetTimeVal = document.getElementById('adminUpdateDateTime').value;
             if(!targetTimeVal) { alert("Select a date and time."); return; }
             update(ref(db, 'app_update'), {
@@ -1738,19 +1364,22 @@
             }).then(() => alert("Update scheduled."));
         };
 
+        // ADMIN: MODERATION MESSAGE DISPATCH
         window.adminSendModMessage = function(e) {
             e.preventDefault();
-            if(getUserRole(currentUser) !== 'ADMIN') return;
+            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
             
             const targetEmail = document.getElementById('modTargetEmail').value.trim();
             const messageType = document.getElementById('modNoticeType').value;
             const messageContent = modMessages[messageType];
             
+            // Push to Inbox
             push(ref(db, 'inbox'), {
                 type: 'moderation', itemId: "MOD_ALERT", itemName: "🚨 MODERATOR NOTICE",
                 to: targetEmail, from: MOD_EMAIL, status: 'info', timestamp: Date.now()
             });
 
+            // Push to Chats
             const roomId = getChatRoomId(MOD_EMAIL, targetEmail);
             const msgPayload = { sender: MOD_EMAIL, text: messageContent, timestamp: Date.now() };
             
@@ -1769,21 +1398,15 @@
                     update(ref(db, `chats/${roomId}`), { [`unread_${receiverKey}`]: currentUnread + 1 });
                 });
 
-                push(ref(db, 'sanction_logs'), {
-                    target: targetEmail,
-                    action: 'Warning',
-                    reason: readableModReasons[messageType] || messageType,
-                    timestamp: Date.now()
-                });
-
                 alert(`Moderation warning dispatched to ${targetEmail}.`);
                 document.getElementById('modTargetEmail').value = "";
             });
         };
 
+        // ADMIN: BAN / KICK MANAGER
         window.adminApplySanction = function(e) {
             e.preventDefault();
-            if(getUserRole(currentUser) !== 'ADMIN') return;
+            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
 
             const targetEmail = document.getElementById('sanctionTargetEmail').value.trim();
             const actionType = document.getElementById('sanctionActionType').value;
@@ -1793,78 +1416,18 @@
                 alert("Cannot apply sanctions to the admin account."); return;
             }
 
-            let logActionName = actionType === 'kick' ? 'Kicked' : (actionType === 'ban' ? 'Banned' : 'Unbanned');
-
             if(actionType === 'kick') {
                 update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'kicked' })
-                .then(() => {
-                    logSanctionAction(targetEmail, logActionName, 'Admin Intervention');
-                    alert(`${targetEmail} has been kicked/logged out.`);
-                });
+                .then(() => alert(`${targetEmail} has been kicked/logged out.`));
             } else if (actionType === 'ban') {
                 update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'banned' })
-                .then(() => {
-                    logSanctionAction(targetEmail, logActionName, 'Admin Intervention');
-                    alert(`${targetEmail} is now permanently banned.`);
-                });
+                .then(() => alert(`${targetEmail} is now permanently banned.`));
             } else if (actionType === 'unban') {
                 update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'active' })
-                .then(() => {
-                    logSanctionAction(targetEmail, logActionName, 'Admin Revoked Ban');
-                    alert(`Ban revoked for ${targetEmail}.`);
-                });
+                .then(() => alert(`Ban revoked for ${targetEmail}.`));
             }
             
             document.getElementById('sanctionTargetEmail').value = "";
-        };
-
-        function logSanctionAction(target, actionString, reasonString) {
-            push(ref(db, 'sanction_logs'), {
-                target: target,
-                action: actionString,
-                reason: reasonString,
-                timestamp: Date.now()
-            });
-        }
-
-        window.adminSaveRestockLinks = function(e) {
-            e.preventDefault();
-            if(getUserRole(currentUser) !== 'ADMIN') return;
-            
-            update(ref(db, 'restock_links'), {
-                gag2: document.getElementById('adminLink-gag2').value.trim(),
-                gag: document.getElementById('adminLink-gag').value.trim(),
-                gh: document.getElementById('adminLink-gh').value.trim(),
-                bf: document.getElementById('adminLink-bf').value.trim(),
-                dcbt: document.getElementById('adminLink-dcbt').value.trim()
-            }).then(() => alert("Restock links updated successfully!"));
-        };
-
-        window.renderStocksNotifier = function() {
-            const container = document.getElementById('stocksListContainer');
-            if(!container) return;
-            
-            const games = [
-                { id: 'gag2', name: 'Grow A Garden 2' },
-                { id: 'gag', name: 'Grow A Garden' },
-                { id: 'gh', name: 'Garden Horizon' },
-                { id: 'bf', name: 'BloxFruit' },
-                { id: 'dcbt', name: "Don't Crash By Train For Brainrots" }
-            ];
-
-            container.innerHTML = games.map(g => {
-                const link = globalRestockLinks[g.id];
-                const btnHtml = link 
-                    ? `<a href="${link}" target="_blank" style="background:var(--accent-color); color:#000; padding:8px 15px; border-radius:4px; text-decoration:none; font-weight:bold;">Join Group</a>`
-                    : `<span style="background:#242b35; color:var(--text-muted); padding:8px 15px; border-radius:4px; font-weight:bold;">Not Available</span>`;
-                
-                return `
-                    <div style="background:var(--panel-bg); border:1px solid var(--border-color); border-radius:8px; padding:20px; display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:16px; font-weight:bold; color:#fff;">${g.name}</span>
-                        ${btnHtml}
-                    </div>
-                `;
-            }).join('');
         };
 
         window.submitPlatformBug = function(e) {
@@ -1927,6 +1490,12 @@
             if (!document.getElementById('inboxSection').classList.contains('hidden')) window.renderInbox();
         });
 
+        onValue(ref(db, 'verified_emails'), (snapshot) => {
+            const data = snapshot.val();
+            dynamicVerifiedEmails = data ? Object.values(data).map(v => v.toLowerCase().trim()) : [];
+            updateAuthUI(); window.renderItems();
+        });
+
         onValue(ref(db, 'app_update'), (snapshot) => {
             const data = snapshot.val();
             const banner = document.getElementById('updateBannerContainer');
@@ -1943,48 +1512,6 @@
                     }
                 }, 1000);
             } else { banner.style.display = 'none'; }
-        });
-
-        onValue(ref(db, 'sanction_logs'), (snapshot) => {
-            const container = document.getElementById('guidelinesSanctionLogs');
-            container.innerHTML = "";
-            if (snapshot.exists()) {
-                const logs = Object.values(snapshot.val()).sort((a, b) => b.timestamp - a.timestamp);
-                logs.forEach(log => {
-                    const div = document.createElement('div');
-                    div.style.padding = "10px";
-                    div.style.borderBottom = "1px solid var(--border-color)";
-                    
-                    let actionColor = 'var(--text-color)';
-                    if (log.action === 'Warning') actionColor = 'var(--warning-color)';
-                    else if (log.action === 'Unbanned') actionColor = 'var(--accept-color)';
-                    else if (log.action === 'Kicked' || log.action === 'Banned') actionColor = 'var(--decline-color)';
-                    
-                    div.innerHTML = `
-                        <span style="color: ${actionColor}; font-weight: bold; text-transform: uppercase;">[${log.action}]</span> 
-                        <strong style="color: #fff;">${log.target}</strong> - <span style="color: #ddd;">${log.reason}</span>
-                        <div style="color: var(--text-muted); font-size: 11px; margin-top: 4px;">${new Date(log.timestamp).toLocaleString()}</div>
-                    `;
-                    container.appendChild(div);
-                });
-            } else {
-                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">No moderation actions recorded yet.</div>`;
-            }
-        });
-
-        onValue(ref(db, 'restock_links'), (snapshot) => {
-            if(snapshot.exists()) {
-                globalRestockLinks = snapshot.val();
-            }
-            window.renderStocksNotifier();
-            
-            if (getUserRole(currentUser) === 'ADMIN') {
-                document.getElementById('adminLink-gag2').value = globalRestockLinks.gag2 || "";
-                document.getElementById('adminLink-gag').value = globalRestockLinks.gag || "";
-                document.getElementById('adminLink-gh').value = globalRestockLinks.gh || "";
-                document.getElementById('adminLink-bf').value = globalRestockLinks.bf || "";
-                document.getElementById('adminLink-dcbt').value = globalRestockLinks.dcbt || "";
-            }
         });
 
         window.renderInbox = function() {
@@ -2005,11 +1532,6 @@
                     card.innerHTML = `<div style="font-size: 14px; border-left: 4px solid var(--decline-color); padding-left: 10px;">
                                       <strong style="color:var(--decline-color);">${offer.itemName}</strong><br>
                                       <span style="color:var(--text-color);">Please check your Messages tab for communication from <strong>${offer.from}</strong> regarding a moderation action on your account.</span></div>
-                                      <button style="margin-top:10px; background:transparent; border:1px solid #ff4a4a; color:#ff4a4a; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="remove(ref(db, 'inbox/${offer.id}'))">Clear Notice</button>`;
-                } else if(offer.type === 'system') {
-                    card.innerHTML = `<div style="font-size: 14px; border-left: 4px solid var(--vip-color); padding-left: 10px;">
-                                      <strong style="color:var(--vip-color);">${offer.itemName}</strong><br>
-                                      <span style="color:var(--text-color);">${offer.textSnippet}</span></div>
                                       <button style="margin-top:10px; background:transparent; border:1px solid #ff4a4a; color:#ff4a4a; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="remove(ref(db, 'inbox/${offer.id}'))">Clear Notice</button>`;
                 } else if (offer.type === 'like') {
                     card.innerHTML = `<div style="font-size: 14px; color: var(--text-color);">👍 <strong>${offer.from}</strong> liked your item <strong style="color:var(--accent-color);">${offer.itemName}</strong>.</div>
@@ -2104,19 +1626,13 @@
         window.startEditListing = function(itemId) {
             const item = trades.find(t => t.id === itemId);
             if (!item) return;
-            
-            window.switchTab('upload'); 
-            editingListingId = itemId;
-            
+            editingListingId = itemId; window.switchTab('upload');
             document.getElementById('uploadFormHeader').textContent = "Modify Trade Item";
             document.getElementById('formSubmitBtn').textContent = "Save Changes";
-            document.getElementById('formGameType').value = item.game; 
-            window.updateFormFields();
-            
+            document.getElementById('formGameType').value = item.game; window.updateFormFields();
             const config = gameItemsDatabase[item.game];
             if (config && config.items.includes(item.name)) document.getElementById('formItemName').value = item.name;
             else { document.getElementById('formItemName').value = "CUSTOM_ITEM_VAL"; window.checkCustomItem(); document.getElementById('formCustomItemName').value = item.name; }
-            
             document.getElementById('formStock').value = item.stock;
             document.getElementById('imageDataUrl').value = (item.image && item.image.startsWith('data:')) ? item.image : "";
             document.getElementById('formWorth').value = item.worth === "None" ? "" : (item.worth || "");
@@ -2145,7 +1661,7 @@
             const filtered = trades.filter(post => (filterValue === 'All' || post.game === filterValue) && (post.creator && post.creator.toLowerCase().includes(searchQuery)));
             if(filtered.length === 0) { container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-muted);">No listings found.</div>`; return; }
 
-            const isAdmin = getUserRole(currentUser) === 'ADMIN';
+            const isAdmin = currentUser && currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase();
 
             filtered.forEach(item => {
                 const card = document.createElement('div'); card.className = 'item-card';
@@ -2193,7 +1709,7 @@
             });
         };
 
-        updateAuthUI(); window.updateFormFields(); if(currentUser) window.loadProfilePaneFields(); window.renderStocksNotifier();
+        updateAuthUI(); window.updateFormFields(); if(currentUser) window.loadProfilePaneFields();
 
         onValue(ref(db, 'chats'), (snapshot) => {
             if(currentUser && document.getElementById('chatSection').classList.contains('hidden')) {
