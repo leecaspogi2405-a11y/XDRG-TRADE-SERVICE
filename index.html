@@ -330,6 +330,7 @@
                 <button id="uploadTab" onclick="window.switchTab('upload')">+ Upload Item</button>
                 <button id="inboxTab" onclick="window.switchTab('inbox')">📥 Inbox <span id="inboxBadge" style="color:var(--accent-color); font-weight:bold;"></span></button>
                 <button id="chatTab" onclick="window.switchTab('chat')">💬 Messages <span id="chatBadge" style="color:var(--warning-color); font-weight:bold;"></span></button>
+                <button id="stocksTab" onclick="window.switchTab('stocks')">📈 Stocks Notifier</button>
                 <button id="settingsTab" onclick="window.switchTab('settings')">⚙️ Account Settings</button>
             </div>
 
@@ -350,6 +351,13 @@
             <div class="item-grid" id="itemGrid"></div>
         </div>
 
+        <div id="stocksSection" class="hidden" style="max-width: 800px; margin: 0 auto;">
+            <h2 style="color: var(--accent-color); margin-top: 0;">📈 Restock Notifications (Messenger Groups)</h2>
+            <p style="color: var(--text-muted); font-size: 14px;">Join these official group chats to get notified instantly when stocks for these games are replenished.</p>
+            <div id="stocksListContainer" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                </div>
+        </div>
+
         <div id="inboxSection" class="hidden">
             <h2 style="color: var(--accent-color); margin-top: 0;">Your Notifications & Trade Offers</h2>
             <div id="inboxGrid"></div>
@@ -359,16 +367,14 @@
             <div class="chat-layout">
                 <div class="chat-sidebar">
                     <div class="chat-sidebar-header">Recent Chats</div>
-                    <div class="chat-user-list" id="chatContactList">
-                        </div>
+                    <div class="chat-user-list" id="chatContactList"></div>
                 </div>
                 <div class="chat-window" id="activeChatWindow">
                     <div class="chat-header">
                         <img src="https://via.placeholder.com/40" id="currentChatAvatar" class="chat-user-avatar" style="display:none;">
                         <span id="currentChatName" style="color:#fff; font-weight:bold;">Select a conversation to start messaging</span>
                     </div>
-                    <div class="chat-messages" id="chatMessageArea">
-                        </div>
+                    <div class="chat-messages" id="chatMessageArea"></div>
                     <div class="chat-input-area" id="chatInputArea" style="display:none;">
                         <input type="text" id="chatInputBox" placeholder="Type your message here..." onkeypress="if(event.key === 'Enter') window.sendChatMessage()">
                         <button onclick="window.sendChatMessage()">Send</button>
@@ -452,11 +458,13 @@
                     <button class="settings-sidebar-btn" id="paneBtn-linked" onclick="window.switchSettingsPane('linked')">🔗 Linked Accounts</button>
                     <button class="settings-sidebar-btn" id="paneBtn-bugs" onclick="window.switchSettingsPane('bugs')">🐛 Bug Reports</button>
                     <button class="settings-sidebar-btn" id="paneBtn-tutorial" onclick="window.switchSettingsPane('tutorial')">📖 Service Tutorial</button>
+                    <button class="settings-sidebar-btn" id="paneBtn-guidelines" onclick="window.switchSettingsPane('guidelines')">📜 Guidelines & Logs</button>
                     
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-verify" onclick="window.switchSettingsPane('admin-verify')">🛡️ Verification Accts</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-update" onclick="window.switchSettingsPane('admin-update')">🚀 Update App Link</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-mod" onclick="window.switchSettingsPane('admin-mod')">🛑 Moderation Desk</button>
                     <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-sanction" onclick="window.switchSettingsPane('admin-sanction')">⚖️ Ban/Kick Manager</button>
+                    <button class="settings-sidebar-btn admin-ui hidden" id="paneBtn-admin-restock" onclick="window.switchSettingsPane('admin-restock')">🔗 Restocker Links</button>
                 </div>
                 
                 <div class="settings-content">
@@ -572,20 +580,36 @@
 
                     <div class="settings-pane" id="pane-tutorial">
                         <h3>Trading Service Interactive Guide</h3>
-                        
                         <div class="tutorial-step">
                             <h4>Step 1: Authenticate or Claim Profile Identity</h4>
                             <p>Access the 'Sign Up / Log In' access portal in the navigation header. Input an email line along with a secure management pass phrase.</p>
                         </div>
-
                         <div class="tutorial-step">
                             <h4>Step 2: Post Catalog Inventory Listings</h4>
                             <p>Select the '+ Upload Item' action link. Choose your game module, fill out explicit weight criteria, mutation aura attributes, and values data.</p>
                         </div>
-
                         <div class="tutorial-step">
                             <h4>Step 3: Negotiating & Chatting</h4>
                             <p>Click on a user's profile name to send them a direct message, or hit 'Send Trade Offer' to dispatch transaction logs straight to their inbox.</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-pane" id="pane-guidelines">
+                        <h3>Platform Guidelines & Sanction Logs</h3>
+                        <div style="margin-bottom: 25px; padding: 15px; background: #1a1f26; border-left: 3px solid var(--warning-color); border-radius: 4px;">
+                            <h4 style="margin: 0 0 10px 0; color: #fff;">📜 Community Rules (What NOT to do):</h4>
+                            <ul style="margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.6;">
+                                <li><strong>Scamming/Fraud:</strong> Do not use deceptive trading practices or trick users out of their items.</li>
+                                <li><strong>Spam/Duplicate Listings:</strong> Do not upload the exact same item multiple times. This clutters the feed.</li>
+                                <li><strong>Copyright Infringement:</strong> Do not use unauthorized assets, steal others' images, or pretend to be another creator.</li>
+                                <li><strong>Harassment:</strong> Treat all traders with respect in comments and chats. Toxic behavior is not tolerated.</li>
+                                <li><strong>Off-Platform Trading:</strong> Keep all negotiations visible and safe within the platform to avoid being scammed.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--decline-color); margin-bottom: 10px;">🔨 Public Moderation & Sanction Logs</h4>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-top: 0;">Below is a live record of accounts that have received warnings, kicks, bans, or unbans.</p>
+                            <div id="guidelinesSanctionLogs" style="background: #11141a; border: 1px solid var(--border-color); padding: 15px; border-radius: 4px; max-height: 300px; overflow-y: auto; font-size: 14px; display: flex; flex-direction: column; gap: 8px;"></div>
                         </div>
                     </div>
 
@@ -661,6 +685,34 @@
                         </form>
                     </div>
 
+                    <div class="settings-pane" id="pane-admin-restock">
+                        <h3 style="color:var(--accent-color);">🔗 Admin: Stocks Notifier Links</h3>
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Update the Messenger/Group links for the Stocks Notifier tab here. Leave blank if Not Available.</p>
+                        <form onsubmit="window.adminSaveRestockLinks(event)">
+                            <div class="form-group">
+                                <label>Grow A Garden 2:</label>
+                                <input type="url" id="adminLink-gag2" placeholder="e.g. https://m.me/j/..." value="https://m.me/j/AbbG9tlzYmMRg09Q/?send_source=gc%3Acopy_invite_link_c">
+                            </div>
+                            <div class="form-group">
+                                <label>Grow A Garden:</label>
+                                <input type="url" id="adminLink-gag" placeholder="Not Available">
+                            </div>
+                            <div class="form-group">
+                                <label>Garden Horizon:</label>
+                                <input type="url" id="adminLink-gh" placeholder="Not Available">
+                            </div>
+                            <div class="form-group">
+                                <label>BloxFruit:</label>
+                                <input type="url" id="adminLink-bf" placeholder="Not Available">
+                            </div>
+                            <div class="form-group">
+                                <label>Don't Crash By Train For Brainrots:</label>
+                                <input type="url" id="adminLink-dcbt" placeholder="Not Available">
+                            </div>
+                            <button type="submit" style="background: var(--accent-color); color:#000; font-weight:bold; padding: 10px 20px; border:none; border-radius:4px; cursor:pointer;">Save Restocker Links</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -669,14 +721,11 @@
     <div id="userProfileModal" class="modal">
         <div class="modal-content">
             <h3 style="margin-top:0; color:var(--accent-color); text-align: center; font-size: 20px;">Trader Profile</h3>
-            
             <img id="modalProfilePic" src="https://via.placeholder.com/80" class="modal-profile-pic">
             <h4 id="modalProfileName" style="text-align: center; margin: 5px 0 20px 0; color: #fff;">Unknown User</h4>
-
             <div style="text-align:center; margin-bottom: 20px;">
                 <button id="modalMessageBtn" style="background: var(--accent-color); color: #000; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">💬 Send Message</button>
             </div>
-
             <div class="profile-data-row">
                 <span class="profile-data-label">Email Address</span>
                 <span class="profile-data-value" id="modalProfileEmail">Hidden</span>
@@ -697,7 +746,6 @@
                 <span class="profile-data-label">Facebook</span>
                 <span class="profile-data-value" id="modalProfileFacebook">Hidden</span>
             </div>
-
             <button onclick="window.closeModal('userProfileModal')" style="background: transparent; color: var(--text-muted); padding: 10px; width: 100%; border: none; cursor: pointer; margin-top: 15px;">Close Profile</button>
         </div>
     </div>
@@ -706,9 +754,7 @@
         <div class="modal-content">
             <h3 id="modalTitle" style="margin-top:0; color:var(--accent-color); font-size: 20px;">Secure Access Portal</h3>
             <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">Please authenticate utilizing your secure account email format verification line to track correspondence logs and trade requests.</p>
-            
             <div id="loginLockoutContainer" class="hidden"></div>
-
             <form id="modalLoginForm" onsubmit="window.login(event)">
                 <div class="form-group">
                     <label>Account Registration Email:</label>
@@ -760,6 +806,14 @@
             "review": "🔍 Account Status: Your profile and active listings are currently under manual review by the administration team for suspicious activity."
         };
 
+        const readableModReasons = {
+            "copyright": "Copyright Infringement",
+            "scammer": "Scamming / Fraud",
+            "duplicate": "Duplicate Uploads (Spam)",
+            "deleted": "Listing Deleted by Admin",
+            "review": "Account Under Review"
+        };
+
         const verifiedEmails = ["testunkown42@gmail.com", "l88635807@gmail.com", "devxdragon3@gmail.com"];
         const verifiedLogoUrl = "https://cdn.discordapp.com/attachments/1501911631708422215/1519654119353221210/1000030631.png?ex=6a3e57af&is=6a3d062f&hm=f5e27828d282be493d90fa81a93cca58b760a643b459d5b8f54fbf17a0536254&";
 
@@ -767,6 +821,15 @@
         let inbox = [];
         let chats = {};
         let dynamicVerifiedEmails = [];
+        // Default restock links
+        let globalRestockLinks = {
+            gag2: "https://m.me/j/AbbG9tlzYmMRg09Q/?send_source=gc%3Acopy_invite_link_c",
+            gag: "",
+            gh: "",
+            bf: "",
+            dcbt: ""
+        };
+
         let currentUser = localStorage.getItem('roblox_user_email') || "";
         let currentProfileMetadata = null;
         let editingListingId = null;
@@ -798,12 +861,14 @@
             document.getElementById('inboxSection').classList.add('hidden');
             document.getElementById('settingsSection').classList.add('hidden');
             document.getElementById('chatSection').classList.add('hidden');
+            document.getElementById('stocksSection').classList.add('hidden');
             
             document.getElementById('uploadTab').classList.remove('active');
             document.getElementById('viewTab').classList.remove('active');
             document.getElementById('inboxTab').classList.remove('active');
             document.getElementById('settingsTab').classList.remove('active');
             document.getElementById('chatTab').classList.remove('active');
+            document.getElementById('stocksTab').classList.remove('active');
 
             if(tab === 'upload') {
                 if(!currentUser) { alert("Unauthorized Access: Log in first!"); window.openModal('loginModal'); return; }
@@ -829,6 +894,10 @@
                 document.getElementById('settingsSection').classList.remove('hidden');
                 document.getElementById('settingsTab').classList.add('active');
                 if(currentUser) window.loadProfilePaneFields();
+            } else if (tab === 'stocks') {
+                document.getElementById('stocksSection').classList.remove('hidden');
+                document.getElementById('stocksTab').classList.add('active');
+                window.renderStocksNotifier();
             } else {
                 document.getElementById('feedSection').classList.remove('hidden');
                 document.getElementById('viewTab').classList.add('active');
@@ -856,7 +925,7 @@
                         window.logout(true);
                     } else if (status === 'kicked') {
                         alert("⚠️ You have been KICKED by a moderator. You may log back in, but please follow the rules.");
-                        update(ref(db, `users/${cleanKey}`), { accountStatus: 'active' }); // reset status so they can login again
+                        update(ref(db, `users/${cleanKey}`), { accountStatus: 'active' }); 
                         window.logout(true);
                     }
                 }
@@ -957,7 +1026,6 @@
             window.updateInboxBadge(); window.renderItems();
         };
 
-        // On App Load, resume monitor if user logged in
         if(currentUser) monitorAccountStatus(currentUser);
 
         function checkIsVerified(email) {
@@ -1364,7 +1432,6 @@
             }).then(() => alert("Update scheduled."));
         };
 
-        // ADMIN: MODERATION MESSAGE DISPATCH
         window.adminSendModMessage = function(e) {
             e.preventDefault();
             if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
@@ -1373,13 +1440,11 @@
             const messageType = document.getElementById('modNoticeType').value;
             const messageContent = modMessages[messageType];
             
-            // Push to Inbox
             push(ref(db, 'inbox'), {
                 type: 'moderation', itemId: "MOD_ALERT", itemName: "🚨 MODERATOR NOTICE",
                 to: targetEmail, from: MOD_EMAIL, status: 'info', timestamp: Date.now()
             });
 
-            // Push to Chats
             const roomId = getChatRoomId(MOD_EMAIL, targetEmail);
             const msgPayload = { sender: MOD_EMAIL, text: messageContent, timestamp: Date.now() };
             
@@ -1398,12 +1463,18 @@
                     update(ref(db, `chats/${roomId}`), { [`unread_${receiverKey}`]: currentUnread + 1 });
                 });
 
+                push(ref(db, 'sanction_logs'), {
+                    target: targetEmail,
+                    action: 'Warning',
+                    reason: readableModReasons[messageType] || messageType,
+                    timestamp: Date.now()
+                });
+
                 alert(`Moderation warning dispatched to ${targetEmail}.`);
                 document.getElementById('modTargetEmail').value = "";
             });
         };
 
-        // ADMIN: BAN / KICK MANAGER
         window.adminApplySanction = function(e) {
             e.preventDefault();
             if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
@@ -1416,18 +1487,80 @@
                 alert("Cannot apply sanctions to the admin account."); return;
             }
 
+            let logActionName = actionType === 'kick' ? 'Kicked' : (actionType === 'ban' ? 'Banned' : 'Unbanned');
+
             if(actionType === 'kick') {
                 update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'kicked' })
-                .then(() => alert(`${targetEmail} has been kicked/logged out.`));
+                .then(() => {
+                    logSanctionAction(targetEmail, logActionName, 'Admin Intervention');
+                    alert(`${targetEmail} has been kicked/logged out.`);
+                });
             } else if (actionType === 'ban') {
                 update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'banned' })
-                .then(() => alert(`${targetEmail} is now permanently banned.`));
+                .then(() => {
+                    logSanctionAction(targetEmail, logActionName, 'Admin Intervention');
+                    alert(`${targetEmail} is now permanently banned.`);
+                });
             } else if (actionType === 'unban') {
                 update(ref(db, `users/${cleanTargetKey}`), { accountStatus: 'active' })
-                .then(() => alert(`Ban revoked for ${targetEmail}.`));
+                .then(() => {
+                    logSanctionAction(targetEmail, logActionName, 'Admin Revoked Ban');
+                    alert(`Ban revoked for ${targetEmail}.`);
+                });
             }
             
             document.getElementById('sanctionTargetEmail').value = "";
+        };
+
+        function logSanctionAction(target, actionString, reasonString) {
+            push(ref(db, 'sanction_logs'), {
+                target: target,
+                action: actionString,
+                reason: reasonString,
+                timestamp: Date.now()
+            });
+        }
+
+        // --- ADMIN STOCKS NOTIFIER SAVE FUNCTION ---
+        window.adminSaveRestockLinks = function(e) {
+            e.preventDefault();
+            if(!currentUser || currentUser.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase()) return;
+            
+            update(ref(db, 'restock_links'), {
+                gag2: document.getElementById('adminLink-gag2').value.trim(),
+                gag: document.getElementById('adminLink-gag').value.trim(),
+                gh: document.getElementById('adminLink-gh').value.trim(),
+                bf: document.getElementById('adminLink-bf').value.trim(),
+                dcbt: document.getElementById('adminLink-dcbt').value.trim()
+            }).then(() => alert("Restock links updated successfully!"));
+        };
+
+        // --- STOCKS NOTIFIER RENDER LOGIC ---
+        window.renderStocksNotifier = function() {
+            const container = document.getElementById('stocksListContainer');
+            if(!container) return;
+            
+            const games = [
+                { id: 'gag2', name: 'Grow A Garden 2' },
+                { id: 'gag', name: 'Grow A Garden' },
+                { id: 'gh', name: 'Garden Horizon' },
+                { id: 'bf', name: 'BloxFruit' },
+                { id: 'dcbt', name: "Don't Crash By Train For Brainrots" }
+            ];
+
+            container.innerHTML = games.map(g => {
+                const link = globalRestockLinks[g.id];
+                const btnHtml = link 
+                    ? `<a href="${link}" target="_blank" style="background:var(--accent-color); color:#000; padding:8px 15px; border-radius:4px; text-decoration:none; font-weight:bold;">Join Group</a>`
+                    : `<span style="background:#242b35; color:var(--text-muted); padding:8px 15px; border-radius:4px; font-weight:bold;">Not Available</span>`;
+                
+                return `
+                    <div style="background:var(--panel-bg); border:1px solid var(--border-color); border-radius:8px; padding:20px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:16px; font-weight:bold; color:#fff;">${g.name}</span>
+                        ${btnHtml}
+                    </div>
+                `;
+            }).join('');
         };
 
         window.submitPlatformBug = function(e) {
@@ -1512,6 +1645,51 @@
                     }
                 }, 1000);
             } else { banner.style.display = 'none'; }
+        });
+
+        onValue(ref(db, 'sanction_logs'), (snapshot) => {
+            const container = document.getElementById('guidelinesSanctionLogs');
+            container.innerHTML = "";
+            if (snapshot.exists()) {
+                const logs = Object.values(snapshot.val()).sort((a, b) => b.timestamp - a.timestamp);
+                logs.forEach(log => {
+                    const div = document.createElement('div');
+                    div.style.padding = "10px";
+                    div.style.borderBottom = "1px solid var(--border-color)";
+                    
+                    let actionColor = 'var(--text-color)';
+                    if (log.action === 'Warning') actionColor = 'var(--warning-color)';
+                    else if (log.action === 'Unbanned') actionColor = 'var(--accept-color)';
+                    else if (log.action === 'Kicked' || log.action === 'Banned') actionColor = 'var(--decline-color)';
+                    
+                    div.innerHTML = `
+                        <span style="color: ${actionColor}; font-weight: bold; text-transform: uppercase;">[${log.action}]</span> 
+                        <strong style="color: #fff;">${log.target}</strong> - <span style="color: #ddd;">${log.reason}</span>
+                        <div style="color: var(--text-muted); font-size: 11px; margin-top: 4px;">${new Date(log.timestamp).toLocaleString()}</div>
+                    `;
+                    container.appendChild(div);
+                });
+            } else {
+                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">No moderation actions recorded yet.</div>`;
+            }
+        });
+
+        // --- NEW REALTIME LISTENER FOR RESTOCK LINKS ---
+        onValue(ref(db, 'restock_links'), (snapshot) => {
+            if(snapshot.exists()) {
+                globalRestockLinks = snapshot.val();
+            }
+            // Update the UI if currently open
+            window.renderStocksNotifier();
+            
+            // If admin, update the input fields in settings so they match the DB
+            if (currentUser && currentUser.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
+                document.getElementById('adminLink-gag2').value = globalRestockLinks.gag2 || "";
+                document.getElementById('adminLink-gag').value = globalRestockLinks.gag || "";
+                document.getElementById('adminLink-gh').value = globalRestockLinks.gh || "";
+                document.getElementById('adminLink-bf').value = globalRestockLinks.bf || "";
+                document.getElementById('adminLink-dcbt').value = globalRestockLinks.dcbt || "";
+            }
         });
 
         window.renderInbox = function() {
@@ -1626,13 +1804,19 @@
         window.startEditListing = function(itemId) {
             const item = trades.find(t => t.id === itemId);
             if (!item) return;
-            editingListingId = itemId; window.switchTab('upload');
+            
+            window.switchTab('upload'); 
+            editingListingId = itemId;
+            
             document.getElementById('uploadFormHeader').textContent = "Modify Trade Item";
             document.getElementById('formSubmitBtn').textContent = "Save Changes";
-            document.getElementById('formGameType').value = item.game; window.updateFormFields();
+            document.getElementById('formGameType').value = item.game; 
+            window.updateFormFields();
+            
             const config = gameItemsDatabase[item.game];
             if (config && config.items.includes(item.name)) document.getElementById('formItemName').value = item.name;
             else { document.getElementById('formItemName').value = "CUSTOM_ITEM_VAL"; window.checkCustomItem(); document.getElementById('formCustomItemName').value = item.name; }
+            
             document.getElementById('formStock').value = item.stock;
             document.getElementById('imageDataUrl').value = (item.image && item.image.startsWith('data:')) ? item.image : "";
             document.getElementById('formWorth').value = item.worth === "None" ? "" : (item.worth || "");
@@ -1709,7 +1893,7 @@
             });
         };
 
-        updateAuthUI(); window.updateFormFields(); if(currentUser) window.loadProfilePaneFields();
+        updateAuthUI(); window.updateFormFields(); if(currentUser) window.loadProfilePaneFields(); window.renderStocksNotifier();
 
         onValue(ref(db, 'chats'), (snapshot) => {
             if(currentUser && document.getElementById('chatSection').classList.contains('hidden')) {
