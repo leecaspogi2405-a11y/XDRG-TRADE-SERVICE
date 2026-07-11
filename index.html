@@ -281,6 +281,8 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+    import { getDatabase, ref as dbRef, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     // Your web app's new Firebase configuration
     const firebaseConfig = {
@@ -298,15 +300,25 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     
-    // Attach to window object if you intend to use it in the legacy script below
+    // Expose Firebase to Global Window for legacy script use
     window.firebaseApp = app;
+    window.firebaseDB = getDatabase(app);
+    window.firebaseSet = set;
+    window.firebaseDbRef = dbRef;
+    window.firebaseGet = get;
+    window.firebaseChild = child;
+    
+    window.firebaseStorage = getStorage(app);
+    window.firebaseStorageRef = storageRef;
+    window.firebaseUploadBytes = uploadBytes;
+    window.firebaseGetDownloadURL = getDownloadURL;
 </script>
 
 <script>
     // --- AUTOSAVE / LOCAL STORAGE DATABASE ---
     const ADMIN_EMAIL = "xdrgxdragon@gmail.com";
     
-    // DB Initialization
+    // DB Initialization (Fallback local cache)
     let users = JSON.parse(localStorage.getItem('xdrg_users_v2')) || { 
         [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, vipPending: false } 
     }; 
@@ -316,11 +328,53 @@
     let currentUser = null;
     let tempCheckoutTotal = 0;
 
+    // Load data from Firebase Online Database
+    function loadFromFirebase() {
+        if (!window.firebaseDB) {
+            setTimeout(loadFromFirebase, 500); // Retry if module not loaded yet
+            return;
+        }
+        const dbRef = window.firebaseDbRef(window.firebaseDB);
+        window.firebaseGet(window.firebaseChild(dbRef, `xdrg_shop_data`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                if(data.users) users = data.users;
+                if(data.products) products = data.products;
+                if(data.userCarts) userCarts = data.userCarts;
+                if(data.orders) orders = data.orders;
+                
+                // Refresh UI if user is logged in
+                if (currentUser) {
+                    if (currentUser === ADMIN_EMAIL) {
+                       renderAdminProducts();
+                    } else {
+                       updateCartCount();
+                       renderProducts();
+                    }
+                }
+            }
+        }).catch(err => console.error(err));
+    }
+
+    // Call on page load
+    setTimeout(loadFromFirebase, 500);
+
     function saveDatabase() {
+        // Save locally as cache
         localStorage.setItem('xdrg_users_v2', JSON.stringify(users));
         localStorage.setItem('xdrg_products_v2', JSON.stringify(products));
         localStorage.setItem('xdrg_carts_v2', JSON.stringify(userCarts));
         localStorage.setItem('xdrg_orders_v2', JSON.stringify(orders));
+
+        // Push to Firebase Realtime Database
+        if (window.firebaseDB) {
+            window.firebaseSet(window.firebaseDbRef(window.firebaseDB, 'xdrg_shop_data'), {
+                users: users,
+                products: products,
+                userCarts: userCarts,
+                orders: orders
+            }).catch(e => console.error(e));
+        }
     }
 
     // --- UTILS ---
@@ -374,7 +428,7 @@
 
             if (email === ADMIN_EMAIL) {
                 document.getElementById('admin-section').classList.remove('hidden');
-                showAdminTab('manage-products'); // Default to manage products
+                showAdminTab('manage-products'); 
             } else {
                 if (!userCarts[currentUser]) userCarts[currentUser] = [];
                 document.getElementById('buyer-section').classList.remove('hidden');
@@ -551,7 +605,6 @@
         if (product && product.stocks > 0) {
             product.stocks -= 1; 
             
-            // Push clone to cart to separate cart item logic from main product
             userCarts[currentUser].push({...product}); 
             saveDatabase(); 
             
@@ -606,8 +659,8 @@
         let isMidmanChecked = document.getElementById('midman-check').checked;
         let finalTotal = subtotal;
 
-        if (isVIP) finalTotal = finalTotal * 0.85; // 15% VIP discount
-        if (isMidmanChecked && !isVIP) finalTotal += 5; // Middleman fee
+        if (isVIP) finalTotal = finalTotal * 0.85; 
+        if (isMidmanChecked && !isVIP) finalTotal += 5; 
 
         tempCheckoutTotal = Math.round(finalTotal * 100) / 100; 
         
@@ -621,7 +674,7 @@
     function removeFromCart(index, productId) {
         userCarts[currentUser].splice(index, 1);
         const product = products.find(p => p.id === productId);
-        if (product) product.stocks += 1; // return stock
+        if (product) product.stocks += 1; 
         saveDatabase(); 
         renderCart();
         updateCartCount();
@@ -716,7 +769,7 @@
         login(); 
     }
 
-    // --- SHARED ADD PRODUCT LOGIC (Admin & VIP) ---
+    // --- SHARED ADD PRODUCT LOGIC WITH FIREBASE STORAGE ---
     function processImageAndAddProduct(source) {
         const prefix = source === 'admin' ? 'admin' : 'vip';
         const name = document.getElementById(`${prefix}-prod-name`).value;
@@ -725,7 +778,20 @@
         const stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value);
         const imageFile = document.getElementById(`${prefix}-prod-image`).files[0];
 
-        if (!name || isNaN(price) || !info || isNaN(stocks)) return alert("Please fill out all text and number fields properly!");
+        if (!name || isNaN(price) || !info || isNaN(stocks)) {
+            return alert("Please fill out all text and number fields properly!");
+        }
+
+        const btn = source === 'admin' ? document.querySelector('#admin-add-product .btn-main') : document.querySelector('#buyer-vip-dashboard .btn-vip');
+        const origBtnText = btn.innerText;
+        btn.innerText = "Uploading to Firebase... Wait lang!";
+        btn.disabled = true;
+
+        const finalizeSave = (imageUrl) => {
+            saveProductData(name, price, info, stocks, imageUrl, prefix);
+            btn.innerText = origBtnText;
+            btn.disabled = false;
+        };
 
         if (imageFile) {
             const reader = new FileReader();
@@ -740,14 +806,34 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
-                    const compressedImageUrl = canvas.toDataURL('image/jpeg', 0.7); 
-                    saveProductData(name, price, info, stocks, compressedImageUrl, prefix);
+                    canvas.toBlob(function(blob) {
+                        if(!window.firebaseStorage) {
+                            alert("Firebase not ready yet, please wait 1 second and try again.");
+                            btn.innerText = origBtnText;
+                            btn.disabled = false;
+                            return;
+                        }
+                        
+                        const fileName = `products/${Date.now()}_${imageFile.name}`;
+                        const imgRef = window.firebaseStorageRef(window.firebaseStorage, fileName);
+                        
+                        window.firebaseUploadBytes(imgRef, blob).then((snapshot) => {
+                            window.firebaseGetDownloadURL(snapshot.ref).then((downloadURL) => {
+                                finalizeSave(downloadURL); 
+                            });
+                        }).catch((error) => {
+                            console.error("Upload failed:", error);
+                            alert("Failed to upload image.");
+                            btn.innerText = origBtnText;
+                            btn.disabled = false;
+                        });
+                    }, 'image/jpeg', 0.7);
                 }
                 img.src = e.target.result;
             };
             reader.readAsDataURL(imageFile);
         } else {
-            saveProductData(name, price, info, stocks, "", prefix);
+            finalizeSave(""); 
         }
     }
 
@@ -763,20 +849,16 @@
             addedByName: users[currentUser].username
         });
         
-        try {
-            saveDatabase(); 
-            alert("Product published successfully!");
-            document.getElementById(`${prefix}-prod-name`).value = '';
-            document.getElementById(`${prefix}-prod-price`).value = '';
-            document.getElementById(`${prefix}-prod-info`).value = '';
-            document.getElementById(`${prefix}-prod-stocks`).value = '';
-            document.getElementById(`${prefix}-prod-image`).value = '';
-            
-            if(prefix === 'admin') renderAdminProducts();
-        } catch(err) {
-            alert("Storage full! Please clear browser data.");
-            products.pop(); 
-        }
+        saveDatabase(); 
+        alert("Product published successfully!");
+        
+        document.getElementById(`${prefix}-prod-name`).value = '';
+        document.getElementById(`${prefix}-prod-price`).value = '';
+        document.getElementById(`${prefix}-prod-info`).value = '';
+        document.getElementById(`${prefix}-prod-stocks`).value = '';
+        document.getElementById(`${prefix}-prod-image`).value = '';
+        
+        if(prefix === 'admin') renderAdminProducts();
     }
 
     // --- ADMIN FUNCTIONS ---
@@ -800,13 +882,11 @@
         }
     }
 
-    // ADMIN: MANAGE PRODUCTS (Edit/Delete)
+    // ADMIN: MANAGE PRODUCTS
     function renderAdminProducts() {
         const list = document.getElementById('admin-product-list');
         list.innerHTML = '';
         
-        // Admin sees all their products (or can manage all if requested, but let's filter to admin's or show all to admin)
-        // Since admin is superuser, let's let admin edit/delete any product.
         if (products.length === 0) {
             list.innerHTML = "<div class='list-card'><p>No products in the shop.</p></div>";
             return;
@@ -923,7 +1003,6 @@
         const newStatus = document.getElementById(`status-${index}`).value;
         const oldStatus = orders[index].status;
         
-        // Stock Return Logic if Cancelled
         if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
             let confirmation = confirm("Changing status to 'Cancelled' will automatically return the stock of these items to the shop. Proceed?");
             if(!confirmation) {
@@ -931,7 +1010,6 @@
                 return;
             }
             
-            // Loop through ordered items and restore global product stocks
             orders[index].items.forEach(orderItem => {
                 let shopProduct = products.find(p => p.id === orderItem.id);
                 if (shopProduct) {
