@@ -140,7 +140,7 @@
             <div style="background: white; padding: 20px; text-align: right; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); margin-top: 20px; border-radius:4px;">
                 <div style="margin-bottom: 15px; display:flex; justify-content:flex-end; align-items:center;">
                     <input type="checkbox" id="midman-check" onchange="renderCart()" style="width:auto; margin:0 10px 0 0; transform: scale(1.2);">
-                    <label for="midman-check" style="font-size: 16px;">Add Midman / Service (₱5 per order)</label>
+                    <label for="midman-check" style="font-size: 16px;">Add Middleman / Service (₱5 per order)</label>
                     <span id="vip-free-text" class="hidden" style="color:var(--vip-color); margin-left: 10px; font-weight:bold;">(FREE FOR VIP)</span>
                 </div>
                 <div id="vip-discount-text" class="hidden" style="color: green; font-weight:bold; margin-bottom: 5px;">VIP 15% Discount Applied!</div>
@@ -267,7 +267,7 @@
     <div class="modal-content" style="text-align: center;">
         <span class="close-modal" onclick="closeModal('vip-modal')">&times;</span>
         <h2 style="color: var(--vip-color);">Become a VIP</h2>
-        <p style="font-size: 16px;">Enjoy 15% OFF, FREE Midman Service, and the ability to add your own products!</p>
+        <p style="font-size: 16px;">Enjoy 15% OFF, FREE Middleman Service, and the ability to add your own products!</p>
         <div style="background: #fdfaf2; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px dashed var(--vip-color);">
             <p style="margin: 0; font-size: 14px; color: #555;">Send VIP Fee To Maya:</p>
             <h3 style="margin: 5px 0; color: #333;">099519500345</h3>
@@ -282,15 +282,16 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 
+    // Your web app's new Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyD8cWqDhvzq2qGMeiFICTcFLAXSlg1rne0",
-      authDomain: "xdrg-trade-service.firebaseapp.com",
-      databaseURL: "https://xdrg-trade-service-default-rtdb.firebaseio.com",
-      projectId: "xdrg-trade-service",
-      storageBucket: "xdrg-trade-service.firebasestorage.app",
-      messagingSenderId: "560761615319",
-      appId: "1:560761615319:web:7bf9834c997298c2231192",
-      measurementId: "G-80X5XBG17C"
+      apiKey: "AIzaSyBZxrNWl0GOi9JR4DWOugENogX23kjteFY",
+      authDomain: "xdrg-9a004.firebaseapp.com",
+      databaseURL: "https://xdrg-9a004-default-rtdb.firebaseio.com",
+      projectId: "xdrg-9a004",
+      storageBucket: "xdrg-9a004.firebasestorage.app",
+      messagingSenderId: "288989154830",
+      appId: "1:288989154830:web:03db5b90fe35d7cbed765f",
+      measurementId: "G-0S4EPW31GR"
     };
 
     // Initialize Firebase
@@ -300,7 +301,6 @@
     // Attach to window object if you intend to use it in the legacy script below
     window.firebaseApp = app;
 </script>
-
 
 <script>
     // --- AUTOSAVE / LOCAL STORAGE DATABASE ---
@@ -346,7 +346,7 @@
         const pass = document.getElementById('reg-pass').value;
         const confirm = document.getElementById('reg-confirm').value;
 
-        if (!username || !email || !pass) return alert("Please fill all fields.");
+        if (!username || !email || !pass) return alert("Please fill out all fields.");
         if (pass !== confirm) return alert("Passwords do not match.");
         if (users[email]) return alert("Email already exists.");
 
@@ -354,8 +354,12 @@
         userCarts[email] = [];
         saveDatabase(); 
         
-        alert("Registration successful! You can now log in.");
-        toggleAuth();
+        alert("Registration successful! Logging you in automatically.");
+        
+        // Auto Login Fix
+        document.getElementById('login-email').value = email;
+        document.getElementById('login-pass').value = pass;
+        login();
     }
 
     function login() {
@@ -603,13 +607,13 @@
         let finalTotal = subtotal;
 
         if (isVIP) finalTotal = finalTotal * 0.85; // 15% VIP discount
-        if (isMidmanChecked && !isVIP) finalTotal += 5; // Midman fee
+        if (isMidmanChecked && !isVIP) finalTotal += 5; // Middleman fee
 
         tempCheckoutTotal = Math.round(finalTotal * 100) / 100; 
         
         let detailsHtml = `Subtotal: ₱${subtotal}`;
         if(isVIP) detailsHtml += ` <br><span style="color:green; font-size:14px;">- 15% VIP Discount</span>`;
-        if(isMidmanChecked) detailsHtml += isVIP ? ` <br><span style="color:var(--vip-color); font-size:14px;">+ Midman Service (Free)</span>` : ` <br><span style="color:gray; font-size:14px;">+ ₱5 Midman Service</span>`;
+        if(isMidmanChecked) detailsHtml += isVIP ? ` <br><span style="color:var(--vip-color); font-size:14px;">+ Middleman Service (Free)</span>` : ` <br><span style="color:gray; font-size:14px;">+ ₱5 Middleman Service</span>`;
         
         document.getElementById('cart-total').innerHTML = `${detailsHtml} <br> <span style="font-size:24px;">Total: ₱${tempCheckoutTotal}</span>`;
     }
@@ -680,7 +684,7 @@
         myOrders.forEach(o => {
             let statusColor = o.status === "Completed" ? "green" : (o.status === "Cancelled" ? "red" : (o.status === "Pending Payment" ? "#d4af37" : "var(--main-color)"));
             let itemsHtml = o.items.map(item => `<li>${item.name} - ₱${item.price}</li>`).join('');
-            let midmanText = o.midman ? `<p style="font-size:12px; color:gray; margin: 5px 0;">Includes Midman/Service Option</p>` : '';
+            let midmanText = o.midman ? `<p style="font-size:12px; color:gray; margin: 5px 0;">Includes Middleman/Service Option</p>` : '';
 
             list.innerHTML += `
                 <div class="list-card" style="display:block;">
@@ -721,7 +725,7 @@
         const stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value);
         const imageFile = document.getElementById(`${prefix}-prod-image`).files[0];
 
-        if (!name || isNaN(price) || !info || isNaN(stocks)) return alert("Please fill all text and number fields properly!");
+        if (!name || isNaN(price) || !info || isNaN(stocks)) return alert("Please fill out all text and number fields properly!");
 
         if (imageFile) {
             const reader = new FileReader();
@@ -881,7 +885,7 @@
         reversedOrders.forEach((o) => {
             let originalIndex = orders.findIndex(x => x.id === o.id); 
             let itemsHtml = o.items.map(item => `<li>${item.name} - ₱${item.price}</li>`).join('');
-            let midmanText = o.midman ? `<span style="background:#eee; padding:2px 5px; font-size:12px; border-radius:3px;">Requested Midman</span>` : '';
+            let midmanText = o.midman ? `<span style="background:#eee; padding:2px 5px; font-size:12px; border-radius:3px;">Requested Middleman</span>` : '';
 
             list.innerHTML += `
                 <div class="list-card" style="display:block;">
