@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XDRG Shop - Local</title>
+    <title>XDRG Shop</title>
     <style>
-        /* XDRG SHOP UI THEME */
-        :root { --main-color: #ee4d2d; --bg-color: #f5f5f5; --text-dark: rgba(0,0,0,.8); --vip-color: #d4af37; }
+        /* XDRG SHOP UI THEME (Shopee Inspired) */
+        :root { --main-color: #ee4d2d; --main-light: #ff7337; --bg-color: #f5f5f5; --text-dark: rgba(0,0,0,.8); --vip-color: #d4af37; }
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; color: var(--text-dark); }
         
         /* HEADER & NAVBAR */
@@ -21,27 +21,36 @@
         /* FORMS & CARDS */
         .form-box { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .form-box h2 { text-align: center; color: var(--main-color); margin-top: 0; }
-        input, select { padding: 12px; margin: 8px 0; width: 100%; box-sizing: border-box; border: 1px solid #ccc; border-radius: 2px; outline: none; }
-        input:focus { border-color: var(--main-color); }
-        .btn-main { background-color: var(--main-color); color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 2px; margin-top: 10px; }
+        input, select, textarea { padding: 12px; margin: 8px 0; width: 100%; box-sizing: border-box; border: 1px solid #ccc; border-radius: 2px; outline: none; font-family: inherit;}
+        input:focus, textarea:focus { border-color: var(--main-color); }
+        input:disabled { background: #f0f0f0; color: #777; cursor: not-allowed; }
+        
+        /* BUTTONS */
+        .btn-main { background-color: var(--main-color); color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 2px; margin-top: 10px; transition: 0.2s;}
         .btn-main:hover { background-color: #d73a1e; }
         .btn-main:disabled { background-color: #fca996; cursor: not-allowed; }
+        .btn-outline { background-color: rgba(255, 87, 34, 0.1); color: var(--main-color); border: 1px solid var(--main-color); padding: 12px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 2px; margin-top: 10px; transition: 0.2s;}
+        .btn-outline:hover { background-color: rgba(255, 87, 34, 0.2); }
         .btn-vip { background-color: var(--vip-color); color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 2px; margin-top: 10px; }
         .btn-vip:hover { background-color: #b5952f; }
+        .btn-danger { background-color: #ff4d4f; color: white; border: none; padding: 8px 12px; cursor: pointer; font-weight: bold; border-radius: 2px; }
+        .btn-danger:hover { background-color: #d9363e; }
+        .btn-action { background-color: #1890ff; color: white; border: none; padding: 8px 12px; cursor: pointer; font-weight: bold; border-radius: 2px; }
         
         .hidden { display: none !important; }
         
         /* PRODUCT GRID */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-        .product-card { background: white; border-radius: 2px; transition: transform 0.2s; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); display: flex; flex-direction: column; overflow: hidden; cursor: pointer; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+        .product-card { background: white; border-radius: 2px; transition: transform 0.2s; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); display: flex; flex-direction: column; overflow: hidden; cursor: pointer; border: 1px solid transparent; }
         .product-card:hover { transform: translateY(-2px); box-shadow: 0 2px 8px 0 rgba(0,0,0,.15); border: 1px solid var(--main-color); }
-        .product-card img { width: 100%; height: 200px; object-fit: cover; background: #eee; }
+        .product-card img { width: 100%; height: 220px; object-fit: cover; background: #eee; }
         .product-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-title { font-size: 14px; margin: 0 0 10px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+        .product-title { font-size: 14px; margin: 0 0 10px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; font-weight: normal; }
         .product-price { color: var(--main-color); font-size: 18px; font-weight: bold; margin-bottom: 5px; }
-        .product-stocks { font-size: 12px; color: #757575; text-align: right; margin-bottom: 10px; }
+        .product-seller { font-size: 11px; color: #888; margin-bottom: 5px; }
+        .product-stocks { font-size: 12px; color: #757575; text-align: right; }
         
-        /* LISTS (Cart & Orders) */
+        /* LISTS (Cart, Orders & Management) */
         .list-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 2px; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); display: flex; justify-content: space-between; align-items: center; }
         .badge { background: white; color: var(--main-color); padding: 2px 6px; border-radius: 10px; font-size: 12px; font-weight: bold; margin-left: 5px; }
         ul { padding-left: 20px; font-size: 14px; }
@@ -49,13 +58,16 @@
         
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 30px; border-radius: 8px; max-width: 500px; width: 90%; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 30px; border-radius: 4px; max-width: 600px; width: 90%; position: relative; max-height: 90vh; overflow-y: auto; }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #999; }
         .close-modal:hover { color: red; }
+        
+        .info-box { background: #fafafa; border: 1px dashed #d9d9d9; padding: 10px; border-radius: 4px; font-size: 13px; color: #555; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
+<!-- AUTHENTICATION SECTION -->
 <div id="auth-section">
     <div class="header">
         <h1>XDRG Shop</h1>
@@ -81,19 +93,23 @@
     </div>
 </div>
 
+<!-- BUYER / USER SECTION -->
 <div id="buyer-section" class="hidden">
     <div class="header">
-        <h1>XDRG Shop</h1>
+        <h1 onclick="showBuyerTab('products')">XDRG Shop</h1>
         <div class="header-nav">
             <span id="buyer-email-display" style="font-size: 14px; margin-right: 15px; font-weight: bold;"></span>
             <button onclick="showBuyerTab('products')">Home</button>
             <button onclick="showBuyerTab('cart')">Cart <span id="cart-count" class="badge">0</span></button>
             <button onclick="showBuyerTab('orders')">My Purchases</button>
+            <button onclick="showBuyerTab('profile')">My Profile</button>
             <button id="vip-nav-btn" class="hidden" style="background: var(--vip-color); border:none;" onclick="showBuyerTab('vip-dashboard')">VIP Dashboard</button>
             <button style="border: none;" onclick="logout()">Logout</button>
         </div>
     </div>
     <div class="container">
+        
+        <!-- Products Grid (Home) -->
         <div id="buyer-products">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h2 style="color: var(--text-dark);">Daily Discover</h2>
@@ -102,11 +118,32 @@
             <div id="product-list" class="product-grid" style="margin-top: 15px;"></div>
         </div>
 
+        <!-- My Profile Tab -->
+        <div id="buyer-profile" class="hidden">
+            <h2 style="color: var(--text-dark);">My Profile</h2>
+            <div class="form-box" style="margin: 0; max-width: 600px;">
+                <p style="font-size: 14px; color: gray;">Manage and protect your account</p>
+                <hr>
+                <label><b>Username</b></label>
+                <input type="text" id="profile-username" placeholder="Your name">
+                
+                <label><b>Email</b> (Cannot be changed)</label>
+                <input type="email" id="profile-email" disabled>
+                
+                <label><b>Phone Number</b> (Optional)</label>
+                <input type="text" id="profile-phone" placeholder="e.g. 09123456789">
+                
+                <button class="btn-main" style="width: 150px;" onclick="saveProfile()">Save Profile</button>
+            </div>
+        </div>
+
+        <!-- Cart Tab -->
         <div id="buyer-cart" class="hidden">
             <h2 style="color: var(--text-dark);">Shopping Cart</h2>
             <div id="cart-list"></div>
             
             <div style="background: white; padding: 20px; text-align: right; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); margin-top: 20px; border-radius:4px;">
+                <!-- Midman Option specifically placed in Cart Checkout -->
                 <div style="margin-bottom: 15px; display:flex; justify-content:flex-end; align-items:center;">
                     <input type="checkbox" id="midman-check" onchange="renderCart()" style="width:auto; margin:0 10px 0 0; transform: scale(1.2);">
                     <label for="midman-check" style="font-size: 16px;">Add Midman / Service (₱5 per order)</label>
@@ -118,11 +155,13 @@
             </div>
         </div>
 
+        <!-- Orders Tab -->
         <div id="buyer-orders" class="hidden">
             <h2 style="color: var(--text-dark);">My Purchases</h2>
             <div id="buyer-order-list"></div>
         </div>
 
+        <!-- VIP Dashboard -->
         <div id="buyer-vip-dashboard" class="hidden">
             <h2 style="color: var(--vip-color);">Seller Centre (VIP)</h2>
             <p>As a VIP, you can add products to XDRG Shop!</p>
@@ -133,7 +172,7 @@
                 <label><b>Price (₱)</b></label>
                 <input type="number" id="vip-prod-price" placeholder="e.g. 500">
                 <label><b>Product Description</b></label>
-                <input type="text" id="vip-prod-info" placeholder="Information/Specs">
+                <textarea id="vip-prod-info" rows="3" placeholder="Information/Specs"></textarea>
                 <label><b>Stocks</b></label>
                 <input type="number" id="vip-prod-stocks" placeholder="Number of available items">
                 <label><b>Upload Image</b></label>
@@ -144,26 +183,30 @@
     </div>
 </div>
 
+<!-- ADMIN SECTION -->
 <div id="admin-section" class="hidden">
     <div class="header">
         <h1>XDRG Admin</h1>
         <div class="header-nav">
             <span style="font-size: 14px; margin-right: 15px; font-weight:bold;">Admin Panel</span>
             <button onclick="showAdminTab('add-product')">Add Product</button>
+            <button onclick="showAdminTab('manage-products')">Manage Products</button>
             <button onclick="showAdminTab('manage-orders')">Manage Orders</button>
             <button onclick="showAdminTab('manage-users')">Manage VIPs</button>
             <button style="border: none;" onclick="logout()">Logout</button>
         </div>
     </div>
     <div class="container">
-        <div id="admin-add-product" class="form-box" style="max-width: 600px; margin:0;">
+        
+        <!-- Admin Add Product -->
+        <div id="admin-add-product" class="form-box hidden" style="max-width: 600px; margin:0;">
             <h2>Add New Product</h2>
             <label><b>Product Name</b></label>
             <input type="text" id="admin-prod-name" placeholder="e.g. Bluetooth Headphones">
             <label><b>Price (₱)</b></label>
             <input type="number" id="admin-prod-price" placeholder="e.g. 500">
             <label><b>Product Description</b></label>
-            <input type="text" id="admin-prod-info" placeholder="Information/Specs">
+            <textarea id="admin-prod-info" rows="3" placeholder="Information/Specs"></textarea>
             <label><b>Stocks</b></label>
             <input type="number" id="admin-prod-stocks" placeholder="Number of available items">
             <label><b>Upload Image</b></label>
@@ -171,11 +214,20 @@
             <button class="btn-main" onclick="processImageAndAddProduct('admin')">Save & Publish</button>
         </div>
 
+        <!-- Admin Manage Products (Edit/Delete) -->
+        <div id="admin-manage-products" class="hidden">
+            <h2 style="color: var(--text-dark);">Manage My Products</h2>
+            <p style="font-size: 14px; color: gray;">Edit names, descriptions, update stocks, or delete products.</p>
+            <div id="admin-product-list"></div>
+        </div>
+
+        <!-- Admin Manage Orders -->
         <div id="admin-manage-orders" class="hidden">
             <h2 style="color: var(--text-dark);">Customer Orders</h2>
             <div id="admin-order-list"></div>
         </div>
 
+        <!-- Admin Manage Users -->
         <div id="admin-manage-users" class="hidden">
             <h2 style="color: var(--text-dark);">User & VIP Management</h2>
             <div id="admin-user-list"></div>
@@ -183,13 +235,37 @@
     </div>
 </div>
 
+<!-- MODALS -->
+
+<!-- Product Details Modal (Shopee Style) -->
 <div id="product-modal" class="modal-overlay hidden">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 800px; display: flex; gap: 20px; flex-wrap: wrap;">
         <span class="close-modal" onclick="closeModal('product-modal')">&times;</span>
-        <div id="modal-product-details"></div>
+        <div id="modal-product-details" style="width: 100%; display: flex; flex-wrap: wrap; gap: 20px;">
+            <!-- Dynamically injected content -->
+        </div>
     </div>
 </div>
 
+<!-- Edit Product Modal (Admin) -->
+<div id="edit-product-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('edit-product-modal')">&times;</span>
+        <h2 style="color: var(--main-color);">Edit Product</h2>
+        <input type="hidden" id="edit-prod-id">
+        <label><b>Product Name</b></label>
+        <input type="text" id="edit-prod-name">
+        <label><b>Price (₱)</b></label>
+        <input type="number" id="edit-prod-price">
+        <label><b>Product Description</b></label>
+        <textarea id="edit-prod-info" rows="3"></textarea>
+        <label><b>Stocks</b></label>
+        <input type="number" id="edit-prod-stocks">
+        <button class="btn-main" onclick="saveEditedProduct()">Save Changes</button>
+    </div>
+</div>
+
+<!-- Checkout Payment Modal -->
 <div id="checkout-modal" class="modal-overlay hidden">
     <div class="modal-content" style="text-align: center;">
         <span class="close-modal" onclick="closeModal('checkout-modal')">&times;</span>
@@ -206,6 +282,7 @@
     </div>
 </div>
 
+<!-- VIP Purchase Modal -->
 <div id="vip-modal" class="modal-overlay hidden">
     <div class="modal-content" style="text-align: center;">
         <span class="close-modal" onclick="closeModal('vip-modal')">&times;</span>
@@ -225,22 +302,21 @@
     // --- AUTOSAVE / LOCAL STORAGE DATABASE ---
     const ADMIN_EMAIL = "xdrgxdragon@gmail.com";
     
-    // We change the localstorage keys to ensure it resets cleanly for the new code structure
-    let users = JSON.parse(localStorage.getItem('xdrg_users')) || { 
-        [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", isVIP: true, vipPending: false } 
+    // DB Initialization
+    let users = JSON.parse(localStorage.getItem('xdrg_users_v2')) || { 
+        [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, vipPending: false } 
     }; 
-    let products = JSON.parse(localStorage.getItem('xdrg_products')) || []; 
-    let userCarts = JSON.parse(localStorage.getItem('xdrg_carts')) || {};
-    let orders = JSON.parse(localStorage.getItem('xdrg_orders')) || [];
+    let products = JSON.parse(localStorage.getItem('xdrg_products_v2')) || []; 
+    let userCarts = JSON.parse(localStorage.getItem('xdrg_carts_v2')) || {};
+    let orders = JSON.parse(localStorage.getItem('xdrg_orders_v2')) || [];
     let currentUser = null;
     let tempCheckoutTotal = 0;
 
-    // Save Function (AUTOSAVE)
     function saveDatabase() {
-        localStorage.setItem('xdrg_users', JSON.stringify(users));
-        localStorage.setItem('xdrg_products', JSON.stringify(products));
-        localStorage.setItem('xdrg_carts', JSON.stringify(userCarts));
-        localStorage.setItem('xdrg_orders', JSON.stringify(orders));
+        localStorage.setItem('xdrg_users_v2', JSON.stringify(users));
+        localStorage.setItem('xdrg_products_v2', JSON.stringify(products));
+        localStorage.setItem('xdrg_carts_v2', JSON.stringify(userCarts));
+        localStorage.setItem('xdrg_orders_v2', JSON.stringify(orders));
     }
 
     // --- UTILS ---
@@ -248,7 +324,6 @@
         document.getElementById('auth-section').classList.add('hidden');
         document.getElementById('buyer-section').classList.add('hidden');
         document.getElementById('admin-section').classList.add('hidden');
-        document.getElementById('buyer-vip-dashboard').classList.add('hidden');
     }
 
     function closeModal(id) {
@@ -271,7 +346,7 @@
         if (pass !== confirm) return alert("Passwords do not match.");
         if (users[email]) return alert("Email already exists.");
 
-        users[email] = { pass: pass, username: username, isVIP: false, vipPending: false };
+        users[email] = { pass: pass, username: username, phone: "", isVIP: false, vipPending: false };
         userCarts[email] = [];
         saveDatabase(); 
         
@@ -291,18 +366,14 @@
 
             if (email === ADMIN_EMAIL) {
                 document.getElementById('admin-section').classList.remove('hidden');
-                showAdminTab('add-product');
+                showAdminTab('manage-products'); // Default to manage products
             } else {
                 if (!userCarts[currentUser]) userCarts[currentUser] = [];
                 document.getElementById('buyer-section').classList.remove('hidden');
                 
-                // Show Username and VIP status
-                let userObj = users[currentUser];
-                let displayHtml = `${userObj.username} (${currentUser})`;
-                if(userObj.isVIP) displayHtml += ` <span class="vip-badge">VIP</span>`;
-                document.getElementById('buyer-email-display').innerHTML = displayHtml;
+                updateUserNavDisplay();
                 
-                // Handle VIP UI elements
+                let userObj = users[currentUser];
                 if(userObj.isVIP) {
                     document.getElementById('vip-nav-btn').classList.remove('hidden');
                     document.getElementById('buy-vip-btn').classList.add('hidden');
@@ -337,6 +408,7 @@
         document.getElementById('buyer-products').classList.add('hidden');
         document.getElementById('buyer-cart').classList.add('hidden');
         document.getElementById('buyer-orders').classList.add('hidden');
+        document.getElementById('buyer-profile').classList.add('hidden');
         document.getElementById('buyer-vip-dashboard').classList.add('hidden');
         
         if (tab === 'products') {
@@ -348,10 +420,41 @@
         } else if (tab === 'orders') {
             document.getElementById('buyer-orders').classList.remove('hidden');
             renderBuyerOrders();
+        } else if (tab === 'profile') {
+            document.getElementById('buyer-profile').classList.remove('hidden');
+            loadProfile();
         } else if (tab === 'vip-dashboard') {
             document.getElementById('buyer-vip-dashboard').classList.remove('hidden');
         }
         updateCartCount();
+    }
+
+    function updateUserNavDisplay() {
+        let userObj = users[currentUser];
+        let displayHtml = `${userObj.username}`;
+        if(userObj.isVIP) displayHtml += ` <span class="vip-badge">VIP</span>`;
+        document.getElementById('buyer-email-display').innerHTML = displayHtml;
+    }
+
+    function loadProfile() {
+        let u = users[currentUser];
+        document.getElementById('profile-username').value = u.username;
+        document.getElementById('profile-email').value = currentUser;
+        document.getElementById('profile-phone').value = u.phone || "";
+    }
+
+    function saveProfile() {
+        let newName = document.getElementById('profile-username').value;
+        let newPhone = document.getElementById('profile-phone').value;
+        
+        if(!newName) return alert("Username cannot be empty.");
+        
+        users[currentUser].username = newName;
+        users[currentUser].phone = newPhone;
+        saveDatabase();
+        
+        updateUserNavDisplay();
+        alert("Profile saved successfully!");
     }
 
     function renderProducts() {
@@ -359,23 +462,23 @@
         list.innerHTML = '';
         
         if (products.length === 0) {
-            list.innerHTML = "<p>No products available right now. Please wait for the admin to add items.</p>";
+            list.innerHTML = "<p>No products available right now.</p>";
             return;
         }
 
         products.forEach(p => {
-            let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="background:#eee; height:200px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
+            let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="background:#eee; height:220px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
 
-            // Wrap in div that triggers modal click
             list.innerHTML += `
                 <div class="product-card" onclick="viewProduct(${p.id})">
                     ${imgHtml}
                     <div class="product-info">
                         <div>
                             <h4 class="product-title">${p.name}</h4>
+                            <p class="product-seller">Sold by: ${p.addedByName} <br> ${p.addedByEmail}</p>
                             <p class="product-price">₱${p.price}</p>
                         </div>
-                        <p class="product-stocks">${p.stocks} items left</p>
+                        <p class="product-stocks">${p.stocks} left</p>
                     </div>
                 </div>
             `;
@@ -385,36 +488,74 @@
     function viewProduct(id) {
         const p = products.find(prod => prod.id === id);
         if(!p) return;
+        
+        const myInfo = users[currentUser];
 
-        let imgHtml = p.image ? `<img src="${p.image}" style="width:100%; max-height:300px; object-fit:contain; background:#f9f9f9; border-radius:4px; margin-bottom:15px;">` : ``;
+        let imgHtml = p.image ? `<img src="${p.image}" style="width:100%; max-width: 350px; object-fit:contain; background:#f9f9f9; border-radius:4px;">` : `<div style="width:100%; max-width:350px; height:350px; background:#eee; display:flex; align-items:center; justify-content:center;">No Image</div>`;
         let btnDisabled = p.stocks <= 0 ? 'disabled' : '';
-        let btnText = p.stocks <= 0 ? 'Out of Stock' : 'Add to Cart';
+        let stockText = p.stocks <= 0 ? 'Out of Stock' : 'Add to Cart';
 
         const detailDiv = document.getElementById('modal-product-details');
+        
         detailDiv.innerHTML = `
-            ${imgHtml}
-            <h2 style="margin: 0 0 10px 0; color:var(--text-dark);">${p.name}</h2>
-            <h3 style="color:var(--main-color); font-size:24px; margin: 0 0 10px 0;">₱${p.price}</h3>
-            <p><b>Description:</b> <br> ${p.info}</p>
-            <p style="color:#757575;">Stocks Available: ${p.stocks}</p>
-            <p style="font-size:12px; color:#aaa;">Product ID: ${p.id}</p>
-            <button class="btn-main" onclick="addToCart(${p.id})" ${btnDisabled}>${btnText}</button>
+            <div style="flex: 1; min-width: 250px;">
+                ${imgHtml}
+            </div>
+            <div style="flex: 1.5; min-width: 300px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h2 style="margin: 0 0 10px 0; color:var(--text-dark);">${p.name}</h2>
+                    <h3 style="color:var(--main-color); font-size:28px; margin: 0 0 15px 0; background: #fafafa; padding: 10px;">₱${p.price}</h3>
+                    
+                    <div style="display:flex; gap:20px; margin-bottom:15px;">
+                        <div class="info-box" style="flex:1;">
+                            <b style="color:var(--main-color);">Seller Information:</b><br>
+                            Name: ${p.addedByName}<br>
+                            Email: ${p.addedByEmail}
+                        </div>
+                        
+                        <div class="info-box" style="flex:1; border-color:var(--main-color); background:#fff6f5;">
+                            <b style="color:var(--main-color);">Your Delivery Info:</b><br>
+                            Name: ${myInfo.username}<br>
+                            Phone: ${myInfo.phone || "<i style='color:red;'>Not set in profile</i>"}<br>
+                            Email: ${currentUser}
+                        </div>
+                    </div>
+
+                    <p><b>Description:</b> <br> <span style="white-space: pre-wrap; font-size:14px;">${p.info}</span></p>
+                    <p style="color:#757575; font-size: 14px;">Stocks Available: <b>${p.stocks}</b></p>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn-outline" style="margin:0;" onclick="addToCart(${p.id}, false)" ${btnDisabled}>
+                        <svg viewBox="0 0 24 24" style="width:18px; height:18px; vertical-align:middle; fill:currentColor; margin-right:5px;"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg> 
+                        ${stockText}
+                    </button>
+                    <button class="btn-main" style="margin:0;" onclick="addToCart(${p.id}, true)" ${btnDisabled}>Buy Now</button>
+                </div>
+            </div>
         `;
 
         document.getElementById('product-modal').classList.remove('hidden');
     }
 
-    function addToCart(id) {
+    function addToCart(id, buyNow) {
         const product = products.find(p => p.id === id);
-        if (product.stocks > 0) {
+        if (product && product.stocks > 0) {
             product.stocks -= 1; 
-            userCarts[currentUser].push(product);
+            
+            // Push clone to cart to separate cart item logic from main product
+            userCarts[currentUser].push({...product}); 
             saveDatabase(); 
             
             updateCartCount();
             renderProducts(); 
             closeModal('product-modal');
-            alert(`${product.name} added to cart!`);
+            
+            if (buyNow) {
+                showBuyerTab('cart');
+            } else {
+                alert(`${product.name} added to cart!`);
+            }
         }
     }
 
@@ -449,26 +590,18 @@
                             <span style="color:var(--main-color); font-weight:bold;">₱${item.price}</span>
                         </div>
                     </div>
-                    <button class="btn-main" style="width:auto; background:white; color:var(--text-dark); border:1px solid #ccc; padding: 5px 10px;" onclick="removeFromCart(${index}, ${item.id})">Remove</button>
+                    <button class="btn-main" style="width:auto; background:white; color:var(--text-dark); border:1px solid #ccc; padding: 5px 10px; margin:0;" onclick="removeFromCart(${index}, ${item.id})">Remove</button>
                 </div>
             `;
         });
 
-        // Calculations
         let isMidmanChecked = document.getElementById('midman-check').checked;
         let finalTotal = subtotal;
 
-        // Apply VIP 15% discount
-        if (isVIP) {
-            finalTotal = finalTotal * 0.85;
-        }
+        if (isVIP) finalTotal = finalTotal * 0.85; // 15% VIP discount
+        if (isMidmanChecked && !isVIP) finalTotal += 5; // Midman fee
 
-        // Apply Midman Fee if checked (Free for VIP)
-        if (isMidmanChecked && !isVIP) {
-            finalTotal += 5;
-        }
-
-        tempCheckoutTotal = Math.round(finalTotal * 100) / 100; // Store for checkout rounding to 2 decimals
+        tempCheckoutTotal = Math.round(finalTotal * 100) / 100; 
         
         let detailsHtml = `Subtotal: ₱${subtotal}`;
         if(isVIP) detailsHtml += ` <br><span style="color:green; font-size:14px;">- 15% VIP Discount</span>`;
@@ -480,7 +613,7 @@
     function removeFromCart(index, productId) {
         userCarts[currentUser].splice(index, 1);
         const product = products.find(p => p.id === productId);
-        if (product) product.stocks += 1;
+        if (product) product.stocks += 1; // return stock
         saveDatabase(); 
         renderCart();
         updateCartCount();
@@ -489,6 +622,15 @@
     function openCheckoutModal() {
         let cart = userCarts[currentUser];
         if (!cart || cart.length === 0) return alert("Cart is empty!");
+        let myInfo = users[currentUser];
+        if (!myInfo.phone) {
+            let proceed = confirm("Your Phone Number is missing in your Profile. Do you want to checkout anyway?");
+            if(!proceed) {
+                closeModal('checkout-modal');
+                showBuyerTab('profile');
+                return;
+            }
+        }
         document.getElementById('checkout-final-amount').innerText = `₱${tempCheckoutTotal}`;
         document.getElementById('checkout-modal').classList.remove('hidden');
     }
@@ -497,16 +639,18 @@
         let cart = userCarts[currentUser];
         let dateNow = new Date().toLocaleString(); 
         let isMidmanChecked = document.getElementById('midman-check').checked;
+        let myInfo = users[currentUser];
 
         orders.push({
             id: Date.now(),
             date: dateNow,
             buyerEmail: currentUser,
-            buyerUsername: users[currentUser].username,
+            buyerUsername: myInfo.username,
+            buyerPhone: myInfo.phone || "Not provided",
             items: [...cart],
             total: tempCheckoutTotal,
             midman: isMidmanChecked,
-            status: "Pending Payment" // Requires admin approval
+            status: "Pending Payment" 
         });
 
         userCarts[currentUser] = []; 
@@ -530,7 +674,7 @@
         }
 
         myOrders.forEach(o => {
-            let statusColor = o.status === "Completed" ? "green" : (o.status === "Pending Payment" ? "#d4af37" : "var(--main-color)");
+            let statusColor = o.status === "Completed" ? "green" : (o.status === "Cancelled" ? "red" : (o.status === "Pending Payment" ? "#d4af37" : "var(--main-color)"));
             let itemsHtml = o.items.map(item => `<li>${item.name} - ₱${item.price}</li>`).join('');
             let midmanText = o.midman ? `<p style="font-size:12px; color:gray; margin: 5px 0;">Includes Midman/Service Option</p>` : '';
 
@@ -561,7 +705,7 @@
         saveDatabase();
         closeModal('vip-modal');
         alert("VIP Upgrade Requested! The admin will verify your ₱159 Maya payment.");
-        login(); // refresh UI
+        login(); 
     }
 
     // --- SHARED ADD PRODUCT LOGIC (Admin & VIP) ---
@@ -607,7 +751,8 @@
             info: info, 
             stocks: stocks,
             image: imageUrl,
-            addedBy: users[currentUser].username
+            addedByEmail: currentUser,
+            addedByName: users[currentUser].username
         });
         
         try {
@@ -618,6 +763,8 @@
             document.getElementById(`${prefix}-prod-info`).value = '';
             document.getElementById(`${prefix}-prod-stocks`).value = '';
             document.getElementById(`${prefix}-prod-image`).value = '';
+            
+            if(prefix === 'admin') renderAdminProducts();
         } catch(err) {
             alert("Storage full! Please clear browser data.");
             products.pop(); 
@@ -627,11 +774,15 @@
     // --- ADMIN FUNCTIONS ---
     function showAdminTab(tab) {
         document.getElementById('admin-add-product').classList.add('hidden');
+        document.getElementById('admin-manage-products').classList.add('hidden');
         document.getElementById('admin-manage-orders').classList.add('hidden');
         document.getElementById('admin-manage-users').classList.add('hidden');
         
         if (tab === 'add-product') {
             document.getElementById('admin-add-product').classList.remove('hidden');
+        } else if (tab === 'manage-products') {
+            document.getElementById('admin-manage-products').classList.remove('hidden');
+            renderAdminProducts();
         } else if (tab === 'manage-orders') {
             document.getElementById('admin-manage-orders').classList.remove('hidden');
             renderAdminOrders();
@@ -641,6 +792,78 @@
         }
     }
 
+    // ADMIN: MANAGE PRODUCTS (Edit/Delete)
+    function renderAdminProducts() {
+        const list = document.getElementById('admin-product-list');
+        list.innerHTML = '';
+        
+        // Admin sees all their products (or can manage all if requested, but let's filter to admin's or show all to admin)
+        // Since admin is superuser, let's let admin edit/delete any product.
+        if (products.length === 0) {
+            list.innerHTML = "<div class='list-card'><p>No products in the shop.</p></div>";
+            return;
+        }
+
+        products.forEach(p => {
+            let imgHtml = p.image ? `<img src="${p.image}" style="width:50px; height:50px; object-fit:cover; margin-right:15px;">` : ``;
+            list.innerHTML += `
+                <div class="list-card">
+                    <div style="display:flex; align-items:center;">
+                        ${imgHtml}
+                        <div>
+                            <b style="font-size:16px;">${p.name}</b> <span style="color:gray; font-size:12px;">(ID: ${p.id})</span><br>
+                            <span style="color:var(--main-color); font-weight:bold;">₱${p.price}</span> | Stocks: ${p.stocks} <br>
+                            <span style="font-size: 11px; color: #888;">Seller: ${p.addedByName}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn-action" onclick="openEditProduct(${p.id})">Edit</button>
+                        <button class="btn-danger" onclick="deleteProduct(${p.id})">Delete</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function openEditProduct(id) {
+        let p = products.find(x => x.id === id);
+        if(!p) return;
+
+        document.getElementById('edit-prod-id').value = p.id;
+        document.getElementById('edit-prod-name').value = p.name;
+        document.getElementById('edit-prod-price').value = p.price;
+        document.getElementById('edit-prod-info').value = p.info;
+        document.getElementById('edit-prod-stocks').value = p.stocks;
+
+        document.getElementById('edit-product-modal').classList.remove('hidden');
+    }
+
+    function saveEditedProduct() {
+        let id = parseInt(document.getElementById('edit-prod-id').value);
+        let pIndex = products.findIndex(x => x.id === id);
+        
+        if(pIndex > -1) {
+            products[pIndex].name = document.getElementById('edit-prod-name').value;
+            products[pIndex].price = parseFloat(document.getElementById('edit-prod-price').value);
+            products[pIndex].info = document.getElementById('edit-prod-info').value;
+            products[pIndex].stocks = parseInt(document.getElementById('edit-prod-stocks').value);
+            
+            saveDatabase();
+            alert("Product updated successfully!");
+            closeModal('edit-product-modal');
+            renderAdminProducts();
+        }
+    }
+
+    function deleteProduct(id) {
+        if(confirm("Are you sure you want to delete this product?")) {
+            products = products.filter(x => x.id !== id);
+            saveDatabase();
+            renderAdminProducts();
+        }
+    }
+
+    // ADMIN: MANAGE ORDERS
     function renderAdminOrders() {
         const list = document.getElementById('admin-order-list');
         list.innerHTML = '';
@@ -661,25 +884,26 @@
                     <div style="display:flex; justify-content:space-between;">
                         <div>
                             <span style="font-size:12px; color:#757575;">Order ID: ${o.id} | Date: ${o.date}</span><br>
-                            <b style="font-size:16px;">Username: ${o.buyerUsername}</b> <span style="font-size:12px; color:gray;">(${o.buyerEmail})</span><br>
+                            <b style="font-size:16px;">Buyer: ${o.buyerUsername}</b> <span style="font-size:12px; color:gray;">(${o.buyerEmail})</span><br>
+                            <span style="font-size:13px;">Phone: <b>${o.buyerPhone}</b></span><br>
                             ${midmanText}
                         </div>
-                        <b style="color:var(--main-color);">${o.status}</b>
+                        <b style="color:${o.status === 'Cancelled' ? 'red' : 'var(--main-color)'};">${o.status}</b>
                     </div>
                     <hr>
                     <ul style="list-style-type:none; padding:0; margin:0;">${itemsHtml}</ul>
                     <hr>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <p style="margin:0;">Total to Verify (Maya): <b style="color:var(--main-color); font-size:18px;">₱${o.total}</b></p>
+                        <p style="margin:0;">Total to Verify: <b style="color:var(--main-color); font-size:18px;">₱${o.total}</b></p>
                         <div>
-                            <select id="status-${originalIndex}" style="width:auto; padding:8px; display:inline-block;">
+                            <select id="status-${originalIndex}" style="width:auto; padding:8px; display:inline-block;" ${o.status === 'Cancelled' ? 'disabled' : ''}>
                                 <option value="Pending Payment" ${o.status === 'Pending Payment' ? 'selected' : ''}>Pending Payment</option>
-                                <option value="To Ship" ${o.status === 'To Ship' ? 'selected' : ''}>To Ship (Payment Verified)</option>
+                                <option value="To Ship" ${o.status === 'To Ship' ? 'selected' : ''}>To Ship (Verified)</option>
                                 <option value="Shipping" ${o.status === 'Shipping' ? 'selected' : ''}>Shipping</option>
                                 <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                                <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled (Return Stocks)</option>
                             </select>
-                            <button class="btn-main" style="width:auto; padding:8px 15px; margin:0;" onclick="updateOrderStatus(${originalIndex})">Update</button>
+                            <button class="btn-main" style="width:auto; padding:8px 15px; margin:0;" onclick="updateOrderStatus(${originalIndex})" ${o.status === 'Cancelled' ? 'disabled' : ''}>Update</button>
                         </div>
                     </div>
                 </div>
@@ -689,18 +913,38 @@
 
     function updateOrderStatus(index) {
         const newStatus = document.getElementById(`status-${index}`).value;
+        const oldStatus = orders[index].status;
+        
+        // Stock Return Logic if Cancelled
+        if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
+            let confirmation = confirm("Changing status to 'Cancelled' will automatically return the stock of these items to the shop. Proceed?");
+            if(!confirmation) {
+                document.getElementById(`status-${index}`).value = oldStatus;
+                return;
+            }
+            
+            // Loop through ordered items and restore global product stocks
+            orders[index].items.forEach(orderItem => {
+                let shopProduct = products.find(p => p.id === orderItem.id);
+                if (shopProduct) {
+                    shopProduct.stocks += 1;
+                }
+            });
+        }
+
         orders[index].status = newStatus;
         saveDatabase(); 
         alert("Order status updated!");
         renderAdminOrders();
     }
 
+    // ADMIN: MANAGE USERS
     function renderAdminUsers() {
         const list = document.getElementById('admin-user-list');
         list.innerHTML = '';
         
         for (const [email, data] of Object.entries(users)) {
-            if (email === ADMIN_EMAIL) continue; // Skip admin
+            if (email === ADMIN_EMAIL) continue; 
             
             let statusBtn = '';
             if (data.vipPending) {
@@ -715,7 +959,7 @@
                 <div class="list-card">
                     <div>
                         <b>${data.username}</b> <br>
-                        <span style="font-size:12px; color:gray;">${email}</span>
+                        <span style="font-size:12px; color:gray;">${email} | Phone: ${data.phone || "N/A"}</span>
                     </div>
                     <div>${statusBtn}</div>
                 </div>
