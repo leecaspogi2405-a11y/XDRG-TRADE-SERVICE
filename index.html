@@ -234,7 +234,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Replaced with your new Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAquf42dRD0A4l0lzHjTJD7Oe4Sel2kT48",
       authDomain: "xdrg-shop-1.firebaseapp.com",
@@ -287,7 +286,7 @@
     });
 
     function saveDatabase() {
-        set(dbRef, {
+        return set(dbRef, {
             users: users,
             products: products,
             userCarts: userCarts,
@@ -722,13 +721,15 @@
         const price = parseFloat(document.getElementById(`${prefix}-prod-price`).value);
         const info = document.getElementById(`${prefix}-prod-info`).value.trim();
         const stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value);
-        const imageFile = document.getElementById(`${prefix}-prod-image`).files[0];
+        const imageInput = document.getElementById(`${prefix}-prod-image`);
+        const imageFile = imageInput.files[0];
 
         if (!name || isNaN(price) || !info || isNaN(stocks)) return alert("Fill out all fields properly!");
 
         const btn = document.querySelector(source === 'admin' ? '#admin-add-product .btn-main' : '#buyer-vip-dashboard .btn-verify');
         const origBtnText = btn.innerText;
-        btn.innerText = "Saving...";
+        
+        btn.innerText = "Saving... ⏳";
         btn.disabled = true;
 
         const finalizeSave = (imgUrl) => {
@@ -736,16 +737,30 @@
                 id: Date.now(), name: name, price: price, info: info, stocks: stocks, image: imgUrl,
                 addedByEmail: currentUser, addedByName: users[currentUser].username
             });
-            saveDatabase();
             
-            document.getElementById(`${prefix}-prod-name`).value = '';
-            document.getElementById(`${prefix}-prod-price`).value = '';
-            document.getElementById(`${prefix}-prod-info`).value = '';
-            document.getElementById(`${prefix}-prod-stocks`).value = '';
-            
-            btn.innerText = origBtnText;
-            btn.disabled = false;
-            alert("Product published!");
+            saveDatabase().then(() => {
+                document.getElementById(`${prefix}-prod-name`).value = '';
+                document.getElementById(`${prefix}-prod-price`).value = '';
+                document.getElementById(`${prefix}-prod-info`).value = '';
+                document.getElementById(`${prefix}-prod-stocks`).value = '';
+                imageInput.value = ''; 
+
+                btn.innerText = "Done ✅";
+                btn.style.backgroundColor = "var(--verify-color)"; 
+                btn.style.color = "white";
+                
+                setTimeout(() => {
+                    btn.innerText = origBtnText;
+                    btn.disabled = false;
+                    btn.style.backgroundColor = ""; 
+                    btn.style.color = "";
+                }, 3000); 
+
+            }).catch((error) => {
+                alert("Error saving to cloud: " + error.message);
+                btn.innerText = origBtnText;
+                btn.disabled = false;
+            });
         };
 
         if (imageFile) {
