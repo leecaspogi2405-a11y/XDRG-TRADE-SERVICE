@@ -278,12 +278,12 @@
 </div>
 
 <script type="module">
+    // Firebase imports (NO STORAGE IMPORT NEEDED)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
     import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    // Firebase Config
+    // Your exact Firebase Config applied here
     const firebaseConfig = {
       apiKey: "AIzaSyBZxrNWl0GOi9JR4DWOugENogX23kjteFY",
       authDomain: "xdrg-9a004.firebaseapp.com",
@@ -291,16 +291,16 @@
       projectId: "xdrg-9a004",
       storageBucket: "xdrg-9a004.firebasestorage.app",
       messagingSenderId: "288989154830",
-      appId: "1:288989154830:web:03db5b90fe35d7cbed765f",
-      measurementId: "G-0S4EPW31GR"
+      appId: "1:288989154830:web:e47eed9cc5eb8f85ed765f",
+      measurementId: "G-BJ726Q1QFK"
     };
 
+    // Initialize Firebase Services
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const db = getDatabase(app);
-    const storage = getStorage(app);
 
-    // FIX 1: Robust LocalStorage Parsing to completely eliminate "null" bugs
+    // Robust LocalStorage Parsing
     function getSafeData(key, defaultVal) {
         try {
             let val = localStorage.getItem(key);
@@ -314,7 +314,6 @@
 
     const ADMIN_EMAIL = "xdrgxdragon@gmail.com";
     
-    // Using the fixed safe parser
     let users = getSafeData('xdrg_users_v2', { 
         [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, vipPending: false } 
     }); 
@@ -322,7 +321,6 @@
     let userCarts = getSafeData('xdrg_carts_v2', {});
     let orders = getSafeData('xdrg_orders_v2', []);
     
-    // FIX 2: Persistent Login (Check if user was logged in previously)
     let currentUser = localStorage.getItem('xdrg_logged_in_user');
     let tempCheckoutTotal = 0;
 
@@ -342,7 +340,6 @@
                 if(data.userCarts) userCarts = data.userCarts;
                 if(data.orders) orders = data.orders;
                 
-                // Refresh UI if user is already persistently logged in
                 if (currentUser && users[currentUser]) {
                     routeUser(currentUser);
                 }
@@ -372,7 +369,6 @@
         });
     }
 
-    // Centralized routing logic
     function routeUser(email) {
         currentUser = email;
         window.hideAll();
@@ -406,7 +402,6 @@
         }
     }
 
-    // --- HTML BINDINGS ---
     window.hideAll = function() {
         document.getElementById('auth-section').classList.add('hidden');
         document.getElementById('buyer-section').classList.add('hidden');
@@ -437,8 +432,6 @@
         saveDatabase(); 
         
         alert("Registration successful! Logging you in automatically.");
-        
-        // Save persistent login
         localStorage.setItem('xdrg_logged_in_user', email);
         
         document.getElementById('login-email').value = '';
@@ -451,9 +444,7 @@
         const pass = document.getElementById('login-pass').value;
 
         if (users[email] && users[email].pass === pass) {
-            // Save persistent login
             localStorage.setItem('xdrg_logged_in_user', email);
-            
             document.getElementById('login-email').value = '';
             document.getElementById('login-pass').value = '';
             routeUser(email);
@@ -464,7 +455,7 @@
 
     window.logout = function() {
         currentUser = null;
-        localStorage.removeItem('xdrg_logged_in_user'); // Clear persistent login
+        localStorage.removeItem('xdrg_logged_in_user');
         window.hideAll();
         document.getElementById('auth-section').classList.remove('hidden');
     }
@@ -535,8 +526,6 @@
 
         products.forEach(p => {
             let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="background:#eee; height:220px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
-
-            // Fix 3: Added fallbacks to prevent "null" texts
             let sellerName = p.addedByName || 'Unknown Seller';
             let sellerEmail = p.addedByEmail || 'No Email';
             let productName = p.name || 'Unnamed Product';
@@ -619,7 +608,6 @@
         const product = products.find(p => p.id === id);
         if (product && product.stocks > 0) {
             product.stocks -= 1; 
-            
             if (!userCarts[currentUser]) userCarts[currentUser] = [];
             userCarts[currentUser].push({...product}); 
             saveDatabase(); 
@@ -789,6 +777,7 @@
         routeUser(currentUser); 
     }
 
+    // THE BASE64 IMAGE CONVERSION FUNCTION (Replaces Storage)
     window.processImageAndAddProduct = function(source) {
         const prefix = source === 'admin' ? 'admin' : 'vip';
         const name = document.getElementById(`${prefix}-prod-name`).value.trim();
@@ -803,7 +792,7 @@
 
         const btn = source === 'admin' ? document.querySelector('#admin-add-product .btn-main') : document.querySelector('#buyer-vip-dashboard .btn-vip');
         const origBtnText = btn.innerText;
-        btn.innerText = "Uploading to Firebase... Wait lang!";
+        btn.innerText = "Saving to Database... Wait lang!";
         btn.disabled = true;
 
         const finalizeSave = (imageUrl) => {
@@ -825,21 +814,9 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
-                    canvas.toBlob(function(blob) {
-                        const fileName = `products/${Date.now()}_${imageFile.name}`;
-                        const imgRef = storageRef(storage, fileName);
-                        
-                        uploadBytes(imgRef, blob).then((snapshot) => {
-                            getDownloadURL(snapshot.ref).then((downloadURL) => {
-                                finalizeSave(downloadURL); 
-                            });
-                        }).catch((error) => {
-                            console.error("Upload failed:", error);
-                            alert("Failed to upload image.");
-                            btn.innerText = origBtnText;
-                            btn.disabled = false;
-                        });
-                    }, 'image/jpeg', 0.7);
+                    // Convert image to Base64 text
+                    const base64Image = canvas.toDataURL('image/jpeg', 0.7);
+                    finalizeSave(base64Image); 
                 }
                 img.src = e.target.result;
             };
