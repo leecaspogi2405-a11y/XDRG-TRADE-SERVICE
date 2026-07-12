@@ -2,152 +2,253 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XDRG Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>XDRG Shop 1.1</title>
     <style>
         :root {
-            --main-color: #ff4757;
+            --main-color: #ee4d2d; /* Shopee Orange */
+            --bg-color: #f5f5f5;
             --text-dark: #2f3542;
             --vip-color: #9c88ff;
             --verify-color: #2ed573;
         }
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f1f2f6; color: var(--text-dark); }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: var(--bg-color); 
+            color: var(--text-dark); 
+            padding-bottom: 70px; /* Space for bottom nav */
+            padding-top: 60px; /* Space for top bar */
+        }
         .hidden { display: none !important; }
         
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .product-card, .list-card { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 6px; }
-        .product-card { cursor: pointer; transition: 0.3s; }
-        .product-card:hover { border-color: var(--main-color); }
+        /* App Layout */
+        .top-bar {
+            position: fixed; top: 0; left: 0; width: 100%; background: white; z-index: 100;
+            padding: 10px 15px; box-sizing: border-box; display: flex; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .top-bar input {
+            flex: 1; margin: 0; border: 2px solid var(--main-color); border-radius: 4px;
+            padding: 8px 12px; outline: none;
+        }
         
-        .nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .nav button { padding: 10px 15px; cursor: pointer; border: none; background: #eee; border-radius: 4px; }
-        .nav button:hover { background: #ddd; }
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white; z-index: 100;
+            display: flex; justify-content: space-around; border-top: 1px solid #ddd;
+            padding: 10px 0; box-shadow: 0 -1px 5px rgba(0,0,0,0.05);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; font-size: 12px; 
+            color: gray; cursor: pointer; position: relative;
+        }
+        .nav-item.active { color: var(--main-color); font-weight: bold; }
+        .nav-badge {
+            position: absolute; top: -5px; right: -10px; background: var(--main-color);
+            color: white; font-size: 10px; padding: 2px 5px; border-radius: 10px;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 10px; }
         
+        /* 2x2 Grid Shopee Style */
+        .product-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+        }
+        .product-card { 
+            background: white; border-radius: 4px; overflow: hidden; cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; }
+        .product-info { padding: 10px; }
+        .product-title { font-size: 14px; margin: 0 0 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .product-price { color: var(--main-color); font-size: 16px; margin: 5px 0; }
+        .product-meta { font-size: 11px; color: gray; display: flex; justify-content: space-between; }
+        
+        .list-card { background: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 6px; }
+        
+        /* Admin specific tabs */
+        .admin-nav { display: flex; gap: 5px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .admin-nav button { white-space: nowrap; }
+
         button { cursor: pointer; padding: 10px; border-radius: 4px; border: none; font-weight: bold; }
         .btn-main { background: var(--main-color); color: white; width: 100%; margin-top: 10px; }
         .btn-outline { border: 1px solid var(--main-color); color: var(--main-color); background: transparent; }
-        .btn-action { background: #1e90ff; color: white; }
-        .btn-danger { background: #ff4757; color: white; }
+        .btn-action { background: #1e90ff; color: white; padding: 5px 10px; }
+        .btn-danger { background: #ff4757; color: white; padding: 5px 10px;}
         .btn-vip { background: var(--vip-color); color: white; }
         .btn-verify { background: var(--verify-color); color: white; }
         
         input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         
         .badge { color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
         .badge-vip { background: var(--vip-color); }
         .badge-verify { background: var(--verify-color); }
 
         #voucher-banner { background: #ffeb3b; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; margin-bottom: 15px; }
+
+        /* Chat UI */
+        .chat-msg { margin-bottom: 15px; padding: 10px; border-radius: 8px; font-size: 14px; position: relative; clear: both;}
+        .chat-admin { background: #e3f2fd; float: left; border: 1px solid #bbdefb; max-width: 80%; }
+        .chat-date { font-size: 10px; color: gray; margin-top: 5px; display: block; text-align: right; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- AUTH SECTION -->
     <div id="auth-section">
-        <div id="login-form">
-            <h2>Login to XDRG Shop</h2>
+        <div id="login-form" class="list-card">
+            <h2 style="color:var(--main-color); text-align:center;">Login to XDRG Shop</h2>
             <input type="email" id="login-email" placeholder="Email">
             <input type="password" id="login-pass" placeholder="Password">
             <button class="btn-main" onclick="window.login()">Login</button>
-            <p style="text-align: center; margin-top: 15px;">Need an account? <a href="#" onclick="window.toggleAuth()">Register here</a></p>
+            <p style="text-align: center; margin-top: 15px;">Need an account? <a href="#" style="color:var(--main-color);" onclick="window.toggleAuth()">Register here</a></p>
         </div>
 
-        <div id="register-form" class="hidden">
-            <h2>Register</h2>
+        <div id="register-form" class="list-card hidden">
+            <h2 style="color:var(--main-color); text-align:center;">Register</h2>
             <input type="text" id="reg-username" placeholder="Username">
             <input type="email" id="reg-email" placeholder="Email">
             <input type="password" id="reg-pass" placeholder="Password">
             <input type="password" id="reg-confirm" placeholder="Confirm Password">
             <button class="btn-main" onclick="window.register()">Register</button>
-            <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="#" onclick="window.toggleAuth()">Login here</a></p>
+            <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="#" style="color:var(--main-color);" onclick="window.toggleAuth()">Login here</a></p>
         </div>
     </div>
 
+    <!-- BUYER APP UI -->
     <div id="buyer-section" class="hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2>Welcome, <span id="buyer-email-display"></span></h2>
-            <button onclick="window.logout()">Logout</button>
-        </div>
         
-        <div class="nav">
-            <button onclick="window.showBuyerTab('products')">Products</button>
-            <button onclick="window.showBuyerTab('cart')">Cart (<span id="cart-count">0</span>)</button>
-            <button onclick="window.showBuyerTab('orders')">My Orders</button>
-            <button onclick="window.showBuyerTab('profile')">Profile</button>
-            <button id="vip-nav-btn" class="hidden btn-vip" onclick="window.showBuyerTab('vip-dashboard')">Seller Dashboard</button>
-            <button id="buy-vip-btn" class="btn-vip" onclick="window.openVipModal()">Upgrade to VIP</button>
+        <div class="top-bar">
+            <input type="text" id="buyer-search" placeholder="Search item name, seller, or ID..." onkeyup="window.searchProducts()">
         </div>
 
-        <div id="buyer-products">
-            <h3>Shop Products</h3>
-            <div id="product-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;"></div>
-        </div>
-
-        <div id="buyer-cart" class="hidden">
-            <h3>Shopping Cart</h3>
+        <!-- Home / Products Tab -->
+        <div id="buyer-home">
             <div id="voucher-banner" class="hidden">New User Voucher: 10% OFF! Ends in: <span id="voucher-timer"></span></div>
+            <div id="product-list" class="product-grid"></div>
+        </div>
+
+        <!-- Cart Tab -->
+        <div id="buyer-cart" class="hidden">
+            <h3 style="margin-top:0;">My Cart</h3>
             <div id="cart-list"></div>
-            <div id="cart-total" style="text-align: right; font-weight: bold; margin-top: 20px;"></div>
-            <div style="text-align: right; margin-top: 10px;">
-                <label><input type="checkbox" id="midman-check" onchange="window.renderCart()"> Use Middleman Service (+₱5)</label>
-                <p id="vip-free-text" class="hidden" style="color:var(--vip-color); font-size:12px; margin:0;">*Middleman is FREE for VIPs</p>
-                <button class="btn-main" style="width: auto; padding: 10px 30px;" onclick="window.openCheckoutModal()">Checkout</button>
+            <div class="list-card" style="margin-top:20px;">
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <label><input type="checkbox" id="midman-check" style="width:auto;" onchange="window.renderCart()"> Request Middleman (+₱5)</label>
+                    <p id="vip-free-text" class="hidden" style="color:var(--vip-color); font-size:12px; margin:0;">*Middleman is FREE for VIPs</p>
+                </div>
+                <div id="cart-total" style="text-align: right; font-weight: bold;"></div>
+                <button class="btn-main" onclick="window.openCheckoutModal()">Checkout</button>
             </div>
         </div>
 
-        <div id="buyer-orders" class="hidden">
-            <h3>My Orders</h3>
-            <div id="buyer-order-list"></div>
+        <!-- Messages / Notifications Tab -->
+        <div id="buyer-messages" class="hidden">
+            <h3 style="margin-top:0;">Messages from Admin</h3>
+            <div id="buyer-inbox-list" class="list-card" style="min-height:300px;">
+                <!-- Messages go here -->
+            </div>
+            <p style="font-size:12px; text-align:center; color:gray;">Only xdrgxdragon@gmail.com can send messages here.</p>
         </div>
 
-        <div id="buyer-profile" class="hidden">
-            <h3>My Profile</h3>
-            <label>Username</label>
-            <input type="text" id="profile-username">
-            <label>Email (Unchangeable)</label>
-            <input type="email" id="profile-email" disabled>
-            <label>Phone Number</label>
-            <input type="text" id="profile-phone" placeholder="e.g. 09123456789">
-            <p id="vip-discount-text" class="hidden" style="color:green; font-weight:bold;">15% Lifetime Discount Active (VIP)</p>
-            <button class="btn-main" onclick="window.saveProfile()">Save Profile</button>
-            
-            <hr style="margin: 30px 0;">
-            
-            <div id="seller-verification-section">
-                <h3 style="color:var(--verify-color);">Become a Seller</h3>
-                <p>Input the verification code sent by the admin to start selling your items.</p>
-                <input type="text" id="verify-code-input" placeholder="Insert code here">
-                <button class="btn-verify" onclick="window.verifySellerCode()">Verify Code</button>
-                <p id="verify-timer" style="color:red; font-weight:bold;"></p>
+        <!-- Me / Profile Tab -->
+        <div id="buyer-me" class="hidden">
+            <div class="list-card" style="display:flex; align-items:center; gap:15px; background:var(--main-color); color:white;">
+                <div style="width:60px; height:60px; border-radius:50%; background:white; color:var(--main-color); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:bold;">Me</div>
+                <div>
+                    <h2 style="margin:0;"><span id="buyer-email-display"></span></h2>
+                    <p style="margin:5px 0 0 0; font-size:12px;" id="buyer-email-sub"></p>
+                </div>
+            </div>
+
+            <div class="list-card">
+                <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('orders')">My Orders</button>
+                <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('profile-edit')">Edit Profile</button>
+                <button id="vip-nav-btn" class="btn-verify hidden" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('vip-dashboard')">Seller Dashboard (Add Product)</button>
+                <button id="buy-vip-btn" class="btn-vip" style="width:100%; margin-bottom:10px;" onclick="window.openVipModal()">Upgrade to VIP</button>
+                <button class="btn-main" style="background:#555;" onclick="window.logout()">Logout</button>
+            </div>
+
+            <!-- Sub Tabs inside Me -->
+            <div id="me-orders" class="hidden list-card">
+                <h3>My Purchases</h3>
+                <div id="buyer-order-list"></div>
+            </div>
+
+            <div id="me-profile-edit" class="hidden list-card">
+                <h3>Profile Settings</h3>
+                <label>Username</label>
+                <input type="text" id="profile-username">
+                <label>Phone Number</label>
+                <input type="text" id="profile-phone" placeholder="e.g. 09123456789">
+                <p id="vip-discount-text" class="hidden" style="color:green; font-weight:bold;">15% Lifetime Discount Active (VIP)</p>
+                <button class="btn-main" onclick="window.saveProfile()">Save Profile</button>
+                
+                <hr style="margin: 30px 0;">
+                
+                <div id="seller-verification-section">
+                    <h3 style="color:var(--verify-color);">Become a Seller</h3>
+                    <p style="font-size:14px; color:gray;">To sell, you must request verification. Admin will review and send a code to your Messages tab.</p>
+                    
+                    <div id="request-code-area">
+                        <button id="btn-request-seller" class="btn-outline" style="width:100%; margin-bottom:15px;" onclick="window.requestSellerStatus()">1. Request Verification</button>
+                    </div>
+
+                    <label>2. Input Verification Code (Check Messages)</label>
+                    <input type="text" id="verify-code-input" placeholder="Insert code here">
+                    <button class="btn-verify" style="width:100%;" onclick="window.verifySellerCode()">Verify Code</button>
+                    <p id="verify-timer" style="color:red; font-weight:bold; text-align:center;"></p>
+                </div>
+            </div>
+
+            <div id="me-vip-dashboard" class="hidden list-card">
+                <h3 style="color:var(--verify-color);">Seller Dashboard - Publish Item</h3>
+                <input type="text" id="vip-prod-name" placeholder="Product Name">
+                <input type="number" id="vip-prod-price" placeholder="Price (₱)">
+                <textarea id="vip-prod-info" placeholder="Product Description"></textarea>
+                <input type="number" id="vip-prod-stocks" placeholder="Number of Stocks">
+                <label>Product Image (Optional)</label>
+                <input type="file" id="vip-prod-image" accept="image/*">
+                <button class="btn-verify" style="width: 100%;" onclick="window.processImageAndAddProduct('vip')">Publish Product</button>
             </div>
         </div>
 
-        <div id="buyer-vip-dashboard" class="hidden">
-            <h3 style="color:var(--verify-color);">Seller Dashboard - Sell Your Products</h3>
-            <input type="text" id="vip-prod-name" placeholder="Product Name">
-            <input type="number" id="vip-prod-price" placeholder="Price (₱)">
-            <textarea id="vip-prod-info" placeholder="Product Description"></textarea>
-            <input type="number" id="vip-prod-stocks" placeholder="Number of Stocks">
-            <label>Product Image (Optional)</label>
-            <input type="file" id="vip-prod-image" accept="image/*">
-            <button class="btn-verify" style="width: 100%; padding: 10px; border:none;" onclick="window.processImageAndAddProduct('vip')">Publish Product</button>
+        <div class="bottom-nav">
+            <div class="nav-item active" id="nav-home" onclick="window.showBuyerTab('home')">
+                <b style="font-size:20px;">🏠</b><span>Home</span>
+            </div>
+            <div class="nav-item" id="nav-cart" onclick="window.showBuyerTab('cart')">
+                <b style="font-size:20px;">🛒</b><span>Cart</span>
+                <div class="nav-badge hidden" id="cart-badge">0</div>
+            </div>
+            <div class="nav-item" id="nav-messages" onclick="window.showBuyerTab('messages')">
+                <b style="font-size:20px;">💬</b><span>Messages</span>
+                <div class="nav-badge hidden" id="msg-badge">!</div>
+            </div>
+            <div class="nav-item" id="nav-me" onclick="window.showBuyerTab('me')">
+                <b style="font-size:20px;">👤</b><span>Me</span>
+            </div>
         </div>
     </div>
 
-    <div id="admin-section" class="hidden">
+    <!-- ADMIN SECTION -->
+    <div id="admin-section" class="hidden list-card" style="margin-top:20px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2>Admin Panel</h2>
-            <button onclick="window.logout()">Logout</button>
+            <button style="background:#555; color:white;" onclick="window.logout()">Logout</button>
         </div>
 
-        <div class="nav">
-            <button onclick="window.showAdminTab('manage-products')">Manage Products</button>
-            <button onclick="window.showAdminTab('add-product')">Add New Product</button>
-            <button onclick="window.showAdminTab('manage-orders')">Manage Orders</button>
-            <button onclick="window.showAdminTab('manage-users')">Manage Users</button>
+        <div class="admin-nav">
+            <button class="btn-outline" onclick="window.showAdminTab('manage-products')">Products</button>
+            <button class="btn-outline" onclick="window.showAdminTab('add-product')">Add Item</button>
+            <button class="btn-outline" onclick="window.showAdminTab('manage-orders')">Orders</button>
+            <button class="btn-outline" onclick="window.showAdminTab('manage-users')">Users</button>
+            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.showAdminTab('admin-messages')">Messages</button>
         </div>
 
         <div id="admin-add-product" class="hidden">
@@ -175,37 +276,44 @@
             <h3>User Management</h3>
             <div id="admin-user-list"></div>
         </div>
+
+        <div id="admin-messages-tab" class="hidden">
+            <h3>Buyer Chats</h3>
+            <p style="font-size:12px; color:gray;">Click a buyer to open chat and send a message.</p>
+            <div id="admin-chat-user-list" class="list-card"></div>
+        </div>
     </div>
 </div>
 
+<!-- MODALS -->
 <div id="product-modal" class="modal hidden">
     <div class="modal-content">
-        <div id="modal-product-details" style="display:flex; flex-wrap:wrap; gap:20px;"></div>
-        <button onclick="window.closeModal('product-modal')" style="margin-top:20px; width:100%;">Close</button>
+        <div id="modal-product-details"></div>
+        <button onclick="window.closeModal('product-modal')" class="btn-outline" style="margin-top:20px; width:100%;">Close</button>
     </div>
 </div>
 
 <div id="checkout-modal" class="modal hidden">
     <div class="modal-content">
-        <h2>Confirm Checkout</h2>
+        <h2 style="color:var(--main-color); margin-top:0;">Confirm Checkout</h2>
         <p>Final Amount to Pay: <b id="checkout-final-amount" style="color:var(--main-color); font-size:24px;"></b></p>
-        <p>Please ensure your phone number in your profile is correct so the seller/admin can contact you.</p>
+        <p style="font-size:14px;">Please ensure your phone number in your profile is correct.</p>
         <button class="btn-main" onclick="window.confirmCheckout()">Place Order</button>
-        <button style="width:100%; margin-top:10px;" onclick="window.closeModal('checkout-modal')">Cancel</button>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('checkout-modal')">Cancel</button>
     </div>
 </div>
 
 <div id="vip-modal" class="modal hidden">
     <div class="modal-content">
-        <h2 style="color:var(--vip-color);">Upgrade to VIP</h2>
+        <h2 style="color:var(--vip-color); margin-top:0;">Upgrade to VIP</h2>
         <p><b>Benefits:</b></p>
         <ul>
-            <li>15% Lifetime Discount on all products</li>
+            <li>15% Lifetime Discount</li>
             <li>Free Middleman Services</li>
         </ul>
         <p><b>Instructions:</b> Send <b>₱159</b> to Maya: <b>09123456789</b></p>
-        <button class="btn-vip" style="width:100%; padding:10px; border:none;" onclick="window.confirmVipPurchase()">I have paid, Request VIP</button>
-        <button style="width:100%; margin-top:10px;" onclick="window.closeModal('vip-modal')">Cancel</button>
+        <button class="btn-vip" style="width:100%;" onclick="window.confirmVipPurchase()">I have paid, Request VIP</button>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('vip-modal')">Cancel</button>
     </div>
 </div>
 
@@ -218,17 +326,27 @@
         <label>Description</label><textarea id="edit-prod-info"></textarea>
         <label>Stocks</label><input type="number" id="edit-prod-stocks">
         <button class="btn-main" onclick="window.saveEditedProduct()">Save Changes</button>
-        <button style="width:100%; margin-top:10px;" onclick="window.closeModal('edit-product-modal')">Cancel</button>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('edit-product-modal')">Cancel</button>
     </div>
 </div>
 
-<div id="admin-verify-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2 style="color:var(--verify-color);">Send Verification Code</h2>
-        <textarea id="admin-verify-text" style="height: 150px; font-size: 16px;" readonly></textarea>
-        <button style="width:100%; margin-top:10px;" onclick="window.closeModal('admin-verify-modal')">Close</button>
+<!-- Admin Chat Modal -->
+<div id="admin-chat-modal" class="modal hidden">
+    <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
+        <h3 id="chat-target-name" style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px;">Chat</h3>
+        
+        <div id="chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;">
+            <!-- Admin messages show here -->
+        </div>
+        
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <input type="text" id="admin-chat-input" placeholder="Type a message..." style="margin:0; flex:1;">
+            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.sendAdminMessage()">Send</button>
+        </div>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('admin-chat-modal')">Close Chat</button>
     </div>
 </div>
+
 
 <!-- SUPABASE SDK INSTEAD OF FIREBASE -->
 <script type="module">
@@ -240,76 +358,58 @@
 
     const ADMIN_EMAIL = "xdrgxdragon@gmail.com";
     
-    let users = { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true } }; 
+    let users = { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox: [] } }; 
     let products = []; 
     let userCarts = {};
     let orders = [];
     
     let currentUser = localStorage.getItem('xdrg_logged_in_user');
     let tempCheckoutTotal = 0;
-    let currentActiveTab = '';
+    let currentActiveTab = 'home';
     let isAdminView = false;
+    let chatTargetUser = "";
 
-    // Supabase: Function to process pulled data
     function syncStateFromDB(data) {
         if (!data) return;
-        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true } };
+        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox:[] } };
         products = data.products || [];
         userCarts = data.userCarts || {};
         orders = data.orders || [];
         
+        // Ensure all users have inbox array
+        for(let k in users) { if(!users[k].inbox) users[k].inbox = []; }
+
         if (currentUser && users[currentUser]) {
-            window.updateUserNavDisplay();
-            window.updateCartCount();
             if(isAdminView) {
                 if(currentActiveTab === 'manage-products') window.renderAdminProducts();
                 if(currentActiveTab === 'manage-orders') window.renderAdminOrders();
                 if(currentActiveTab === 'manage-users') window.renderAdminUsers();
+                if(currentActiveTab === 'admin-messages') window.renderAdminChatList();
+                if(chatTargetUser) window.renderAdminChatHistory(); // Update live chat
             } else {
-                if(currentActiveTab === 'products') window.renderProducts();
+                window.updateUserNavDisplay();
+                window.updateBadges();
+                if(currentActiveTab === 'home') window.searchProducts();
                 if(currentActiveTab === 'cart') window.renderCart();
-                if(currentActiveTab === 'orders') window.renderBuyerOrders();
+                if(currentActiveTab === 'me') window.loadProfile();
+                if(currentActiveTab === 'messages') window.renderBuyerMessages();
             }
         }
     }
 
-    // Supabase: Initial Data Fetch
     async function initDB() {
-        const { data, error } = await supabase
-            .from('shop_data')
-            .select('data')
-            .eq('id', 1)
-            .single();
-            
-        if (data && data.data) {
-            syncStateFromDB(data.data);
-        }
-
-        // Supabase: Realtime Subscription (acts like Firebase onValue)
-        supabase
-            .channel('public:shop_data')
+        const { data, error } = await supabase.from('shop_data').select('data').eq('id', 1).single();
+        if (data && data.data) syncStateFromDB(data.data);
+        
+        supabase.channel('public:shop_data')
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'shop_data', filter: 'id=eq.1' }, payload => {
                 syncStateFromDB(payload.new.data);
-            })
-            .subscribe();
+            }).subscribe();
     }
-    
     initDB();
 
-    // Supabase: Save Function (acts like Firebase set)
     window.saveDatabase = function() {
-        const payload = {
-            users: users,
-            products: products,
-            userCarts: userCarts,
-            orders: orders
-        };
-        return supabase
-            .from('shop_data')
-            .upsert({ id: 1, data: payload })
-            .then(({ error }) => {
-                if (error) throw error;
-            });
+        return supabase.from('shop_data').upsert({ id: 1, data: { users, products, userCarts, orders } }).then(({ error }) => { if (error) throw error; });
     }
 
     setInterval(() => {
@@ -326,9 +426,7 @@
                 let m = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
                 let s = Math.floor((timeLeft % (1000 * 60)) / 1000);
                 document.getElementById('voucher-timer').innerText = `${h}h ${m}m ${s}s`;
-            } else {
-                banner.classList.add('hidden');
-            }
+            } else { banner.classList.add('hidden'); }
         }
 
         if (u.sellCodeExpiry) {
@@ -340,61 +438,28 @@
                 timerEl.innerText = `Code expires in: ${m}m ${s}s`;
             } else if (u.sellCode) {
                 timerEl.innerText = "Code expired. Request a new one.";
-            } else {
-                timerEl.innerText = "";
-            }
+            } else { timerEl.innerText = ""; }
         }
     }, 1000);
 
     function routeUser(email) {
         currentUser = email;
-        window.hideAll();
+        document.getElementById('auth-section').classList.add('hidden');
         
         if (email === ADMIN_EMAIL) {
             isAdminView = true;
             document.getElementById('admin-section').classList.remove('hidden');
+            document.getElementById('buyer-section').classList.add('hidden');
             window.showAdminTab('manage-products'); 
         } else {
             isAdminView = false;
             if (!userCarts[currentUser]) userCarts[currentUser] = [];
+            if (!users[currentUser].inbox) users[currentUser].inbox = [];
+            document.getElementById('admin-section').classList.add('hidden');
             document.getElementById('buyer-section').classList.remove('hidden');
-            
             window.updateUserNavDisplay();
-            
-            let u = users[currentUser];
-            if(u && u.isVIP) {
-                document.getElementById('buy-vip-btn').classList.add('hidden');
-                document.getElementById('vip-discount-text').classList.remove('hidden');
-                document.getElementById('vip-free-text').classList.remove('hidden');
-            } else {
-                document.getElementById('buy-vip-btn').classList.remove('hidden');
-                document.getElementById('vip-discount-text').classList.add('hidden');
-                document.getElementById('vip-free-text').classList.add('hidden');
-                if(u && u.vipPending) {
-                    document.getElementById('buy-vip-btn').innerText = "VIP Requested (Pending)";
-                    document.getElementById('buy-vip-btn').disabled = true;
-                }
-            }
-
-            if(u && u.isVerifiedSeller) {
-                document.getElementById('vip-nav-btn').classList.remove('hidden');
-                document.getElementById('seller-verification-section').innerHTML = '<h3 style="color:var(--verify-color);">Verification Status</h3><p>You are a verified seller.</p>';
-            } else {
-                document.getElementById('vip-nav-btn').classList.add('hidden');
-            }
-
-            window.showBuyerTab('products');
+            window.showBuyerTab('home');
         }
-    }
-
-    window.hideAll = function() {
-        document.getElementById('auth-section').classList.add('hidden');
-        document.getElementById('buyer-section').classList.add('hidden');
-        document.getElementById('admin-section').classList.add('hidden');
-    }
-
-    window.closeModal = function(id) {
-        document.getElementById(id).classList.add('hidden');
     }
 
     window.toggleAuth = function() {
@@ -412,18 +477,9 @@
         if (pass !== confirm) return alert("Passwords do not match.");
         if (users[email]) return alert("Email already exists.");
 
-        users[email] = { 
-            pass: pass, 
-            username: username, 
-            phone: "", 
-            isVIP: false, 
-            vipPending: false,
-            isVerifiedSeller: false,
-            registeredAt: Date.now() 
-        };
+        users[email] = { pass, username, phone: "", isVIP: false, vipPending: false, isVerifiedSeller: false, sellerRequested: false, registeredAt: Date.now(), inbox: [] };
         userCarts[email] = [];
         window.saveDatabase(); 
-        
         localStorage.setItem('xdrg_logged_in_user', email);
         routeUser(email);
     }
@@ -431,46 +487,45 @@
     window.login = function() {
         const email = document.getElementById('login-email').value.trim();
         const pass = document.getElementById('login-pass').value;
-
         if (users[email] && users[email].pass === pass) {
             localStorage.setItem('xdrg_logged_in_user', email);
             routeUser(email);
-        } else {
-            alert("Invalid email or password.");
-        }
+        } else alert("Invalid email or password.");
     }
 
     window.logout = function() {
         currentUser = null;
         localStorage.removeItem('xdrg_logged_in_user');
-        window.hideAll();
+        document.getElementById('buyer-section').classList.add('hidden');
+        document.getElementById('admin-section').classList.add('hidden');
         document.getElementById('auth-section').classList.remove('hidden');
     }
 
+    // --- BUYER NAV LOGIC ---
     window.showBuyerTab = function(tab) {
         currentActiveTab = tab;
-        document.getElementById('buyer-products').classList.add('hidden');
-        document.getElementById('buyer-cart').classList.add('hidden');
-        document.getElementById('buyer-orders').classList.add('hidden');
-        document.getElementById('buyer-profile').classList.add('hidden');
-        document.getElementById('buyer-vip-dashboard').classList.add('hidden');
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`nav-${tab}`).classList.add('active');
         
-        if (tab === 'products') {
-            document.getElementById('buyer-products').classList.remove('hidden');
-            window.renderProducts();
-        } else if (tab === 'cart') {
-            document.getElementById('buyer-cart').classList.remove('hidden');
-            window.renderCart();
-        } else if (tab === 'orders') {
-            document.getElementById('buyer-orders').classList.remove('hidden');
-            window.renderBuyerOrders();
-        } else if (tab === 'profile') {
-            document.getElementById('buyer-profile').classList.remove('hidden');
+        ['home', 'cart', 'messages', 'me'].forEach(t => {
+            document.getElementById(`buyer-${t}`).classList.add('hidden');
+        });
+        document.getElementById(`buyer-${tab}`).classList.remove('hidden');
+
+        if (tab === 'home') window.searchProducts();
+        if (tab === 'cart') window.renderCart();
+        if (tab === 'messages') window.renderBuyerMessages();
+        if (tab === 'me') {
             window.loadProfile();
-        } else if (tab === 'vip-dashboard') {
-            document.getElementById('buyer-vip-dashboard').classList.remove('hidden');
+            window.showMeSubTab('orders'); // default sub-tab
         }
-        window.updateCartCount();
+        window.updateBadges();
+    }
+    
+    window.showMeSubTab = function(subtab) {
+        ['orders', 'profile-edit', 'vip-dashboard'].forEach(t => document.getElementById(`me-${t}`).classList.add('hidden'));
+        document.getElementById(`me-${subtab}`).classList.remove('hidden');
+        if(subtab === 'orders') window.renderBuyerOrders();
     }
 
     window.updateUserNavDisplay = function() {
@@ -479,67 +534,74 @@
         if(u.isVIP) displayHtml += ` <span class="badge badge-vip">VIP</span>`;
         if(u.isVerifiedSeller) displayHtml += ` <span class="badge badge-verify">Seller</span>`;
         document.getElementById('buyer-email-display').innerHTML = displayHtml;
-    }
-
-    window.loadProfile = function() {
-        let u = users[currentUser] || {};
-        document.getElementById('profile-username').value = u.username || "";
-        document.getElementById('profile-email').value = currentUser || "";
-        document.getElementById('profile-phone').value = u.phone || "";
-    }
-
-    window.saveProfile = function() {
-        let newName = document.getElementById('profile-username').value.trim();
-        let newPhone = document.getElementById('profile-phone').value.trim();
-        if(!newName) return alert("Username cannot be empty.");
+        document.getElementById('buyer-email-sub').innerText = currentUser;
         
-        users[currentUser].username = newName;
-        users[currentUser].phone = newPhone;
-        window.saveDatabase();
-        alert("Profile saved!");
-    }
-
-    window.verifySellerCode = function() {
-        let u = users[currentUser];
-        let input = document.getElementById('verify-code-input').value.trim();
-        
-        if (!u.sellCode) return alert("No code requested/sent.");
-        if (Date.now() > u.sellCodeExpiry) return alert("Code has expired.");
-        
-        if (input === u.sellCode) {
-            u.isVerifiedSeller = true;
-            u.sellCode = null; 
-            window.saveDatabase();
-            alert("Verification successful! You can now sell items.");
-            routeUser(currentUser); 
+        // Handle VIP button
+        if(u.isVIP) {
+            document.getElementById('buy-vip-btn').classList.add('hidden');
+            document.getElementById('vip-discount-text').classList.remove('hidden');
+            if(document.getElementById('vip-free-text')) document.getElementById('vip-free-text').classList.remove('hidden');
         } else {
-            alert("Invalid code.");
+            document.getElementById('buy-vip-btn').classList.remove('hidden');
+            document.getElementById('vip-discount-text').classList.add('hidden');
+            if(document.getElementById('vip-free-text')) document.getElementById('vip-free-text').classList.add('hidden');
+            if(u.vipPending) {
+                document.getElementById('buy-vip-btn').innerText = "VIP Requested (Pending)";
+                document.getElementById('buy-vip-btn').disabled = true;
+            }
         }
     }
 
-    window.renderProducts = function() {
+    window.updateBadges = function() {
+        if(!currentUser || !users[currentUser]) return;
+        let cartCount = userCarts[currentUser] ? userCarts[currentUser].length : 0;
+        let cBadge = document.getElementById('cart-badge');
+        if(cartCount > 0) { cBadge.innerText = cartCount; cBadge.classList.remove('hidden'); } 
+        else { cBadge.classList.add('hidden'); }
+        
+        // Show message badge if there are messages
+        let msgCount = users[currentUser].inbox ? users[currentUser].inbox.length : 0;
+        let mBadge = document.getElementById('msg-badge');
+        if(msgCount > 0) { mBadge.innerText = msgCount; mBadge.classList.remove('hidden'); }
+        else { mBadge.classList.add('hidden'); }
+    }
+
+    // --- PRODUCT SEARCH & RENDER (HOME TAB) ---
+    window.searchProducts = function() {
+        let q = (document.getElementById('buyer-search').value || '').toLowerCase();
+        const available = products.filter(p => p.stocks > 0);
+        
+        let filtered = available;
+        if(q) {
+            filtered = available.filter(p => 
+                p.name.toLowerCase().includes(q) || 
+                p.addedByName.toLowerCase().includes(q) || 
+                p.id.toString().includes(q)
+            );
+        }
+        window.renderProducts(filtered);
+    }
+
+    window.renderProducts = function(listToRender) {
         const list = document.getElementById('product-list');
         list.innerHTML = '';
-        
-        const availableProducts = products.filter(p => p.stocks > 0);
-        
-        if (availableProducts.length === 0) {
-            list.innerHTML = "<p>No products available right now.</p>";
-            return;
-        }
+        if (listToRender.length === 0) return list.innerHTML = "<p style='grid-column: span 2; text-align:center;'>No products found.</p>";
 
-        availableProducts.forEach(p => {
-            let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%; height:200px; object-fit:cover;">` : `<div style="background:#eee; height:220px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
+        listToRender.forEach(p => {
+            let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="background:#eee; height:160px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
             list.innerHTML += `
                 <div class="product-card" onclick="window.viewProduct(${p.id})">
                     ${imgHtml}
-                    <div class="product-info" style="margin-top:10px;">
-                        <div>
-                            <h4 style="margin:0 0 5px 0;">${p.name}</h4>
-                            <p style="margin:0; font-size:12px; color:gray;">Sold by: ${p.addedByName}</p>
-                            <p style="color:var(--main-color); font-weight:bold; margin:5px 0;">₱${p.price}</p>
+                    <div class="product-info">
+                        <div class="product-title">${p.name}</div>
+                        <div class="product-price">₱${p.price}</div>
+                        <div class="product-meta">
+                            <span>ID: ${p.id}</span>
+                            <span>${p.stocks} left</span>
                         </div>
-                        <p style="font-size:12px; margin:0;">${p.stocks} left</p>
+                        <div class="product-meta" style="margin-top:5px; color:var(--main-color);">
+                            Seller: ${p.addedByName}
+                        </div>
                     </div>
                 </div>
             `;
@@ -549,36 +611,27 @@
     window.viewProduct = function(id) {
         const p = products.find(prod => prod.id === id);
         if(!p) return;
-        
         const myInfo = users[currentUser] || {};
-        let imgHtml = p.image ? `<img src="${p.image}" style="width:100%; max-width: 350px; object-fit:contain; background:#f9f9f9; border-radius:4px;">` : `<div style="width:100%; max-width:350px; height:350px; background:#eee; display:flex; align-items:center; justify-content:center;">No Image</div>`;
+        let imgHtml = p.image ? `<img src="${p.image}" style="width:100%; height:250px; object-fit:contain; background:#fff; border-radius:4px;">` : ``;
         let btnDisabled = p.stocks <= 0 ? 'disabled' : '';
-        let buyerPhone = myInfo.phone || "<i style='color:red;'>Not set</i>";
 
         const detailDiv = document.getElementById('modal-product-details');
         detailDiv.innerHTML = `
-            <div style="flex: 1; min-width: 250px;">${imgHtml}</div>
-            <div style="flex: 1.5; min-width: 300px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <h2 style="margin: 0 0 10px 0;">${p.name}</h2>
-                    <h3 style="color:var(--main-color); font-size:28px; margin: 0 0 15px 0; background: #fafafa; padding: 10px;">₱${p.price}</h3>
-                    <div style="display:flex; gap:20px; margin-bottom:15px; flex-wrap:wrap;">
-                        <div style="flex:1; border:1px solid #ccc; padding:10px; border-radius:4px;">
-                            <b style="color:var(--main-color);">Seller:</b><br>
-                            <span style="font-size:14px;">${p.addedByName}<br>${p.addedByEmail}</span>
-                        </div>
-                        <div style="flex:1; border:1px solid var(--main-color); background:#fff6f5; padding:10px; border-radius:4px;">
-                            <b style="color:var(--main-color);">Your Delivery Info:</b><br>
-                            <span style="font-size:14px;">${myInfo.username}<br>${buyerPhone}</span>
-                        </div>
-                    </div>
-                    <p><b>Description:</b> <br> <span style="white-space: pre-wrap; font-size:14px;">${p.info}</span></p>
-                    <p style="color:#757575; font-size: 14px;">Stocks: <b>${p.stocks}</b></p>
-                </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button class="btn-outline" style="flex:1;" onclick="window.addToCart(${p.id}, false)" ${btnDisabled}>Add to Cart</button>
-                    <button class="btn-main" style="flex:1; margin:0;" onclick="window.addToCart(${p.id}, true)" ${btnDisabled}>Buy Now</button>
-                </div>
+            ${imgHtml}
+            <h3 style="margin: 10px 0 5px 0;">${p.name}</h3>
+            <h2 style="color:var(--main-color); margin: 0 0 15px 0;">₱${p.price}</h2>
+            
+            <div style="font-size:14px; background:#f9f9f9; padding:10px; border-radius:4px; margin-bottom:15px;">
+                <b>Seller:</b> ${p.addedByName} <br>
+                <b>Item ID:</b> ${p.id} <br>
+                <b>Stocks Left:</b> ${p.stocks}
+            </div>
+            
+            <p style="font-size:14px; white-space: pre-wrap;">${p.info}</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-outline" style="flex:1;" onclick="window.addToCart(${p.id}, false)" ${btnDisabled}>Add to Cart</button>
+                <button class="btn-main" style="flex:1; margin:0;" onclick="window.addToCart(${p.id}, true)" ${btnDisabled}>Buy Now</button>
             </div>
         `;
         document.getElementById('product-modal').classList.remove('hidden');
@@ -592,16 +645,13 @@
             userCarts[currentUser].push({...products[pIndex]}); 
             window.saveDatabase(); 
             window.closeModal('product-modal');
+            window.updateBadges();
             if (buyNow) window.showBuyerTab('cart');
+            else alert("Added to cart!");
         }
     }
 
-    window.updateCartCount = function() {
-        if(currentUser && userCarts[currentUser]) {
-            document.getElementById('cart-count').innerText = userCarts[currentUser].length || 0;
-        }
-    }
-
+    // --- CART ---
     window.renderCart = function() {
         const list = document.getElementById('cart-list');
         list.innerHTML = '';
@@ -610,24 +660,24 @@
         let u = users[currentUser] || {};
 
         if (cart.length === 0) {
-            list.innerHTML = "<div class='list-card'><p>Cart is empty.</p></div>";
+            list.innerHTML = "<div class='list-card'><p>Your shopping cart is empty.</p></div>";
             document.getElementById('cart-total').innerText = `Total: ₱0`;
             return;
         }
 
         cart.forEach((item, index) => {
             subtotal += item.price;
-            let imgHtml = item.image ? `<img src="${item.image}" style="width:60px; height:60px; object-fit:cover; margin-right:15px; border:1px solid #eee;">` : ``;
+            let imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; object-fit:cover; margin-right:10px; border-radius:4px;">` : ``;
             list.innerHTML += `
-                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center; padding:10px;">
                     <div style="display:flex; align-items:center;">
                         ${imgHtml}
                         <div>
-                            <b style="font-size:16px;">${item.name}</b><br>
-                            <span style="color:var(--main-color); font-weight:bold;">₱${item.price}</span>
+                            <div style="font-size:14px; font-weight:bold;">${item.name}</div>
+                            <div style="color:var(--main-color); font-size:14px;">₱${item.price}</div>
                         </div>
                     </div>
-                    <button class="btn-danger" style="width:auto; padding: 5px 10px;" onclick="window.removeFromCart(${index}, ${item.id})">Remove</button>
+                    <button class="btn-danger" style="margin:0;" onclick="window.removeFromCart(${index}, ${item.id})">Del</button>
                 </div>
             `;
         });
@@ -635,28 +685,17 @@
         let isMidmanChecked = document.getElementById('midman-check').checked;
         let isVIP = u.isVIP;
         let finalTotal = subtotal;
-        
         let detailsHtml = `Subtotal: ₱${subtotal}`;
 
-        if (isVIP) {
-            finalTotal = finalTotal * 0.85; 
-            detailsHtml += ` <br><span style="color:green; font-size:14px;">- 15% VIP Discount</span>`;
-        }
-        
+        if (isVIP) { finalTotal = finalTotal * 0.85; detailsHtml += ` <br><span style="color:green; font-size:12px;">- 15% VIP Discount</span>`; }
         if (u.registeredAt && (Date.now() - u.registeredAt < (12 * 60 * 60 * 1000))) {
-            finalTotal = finalTotal * 0.90;
-            detailsHtml += ` <br><span style="color:#f39c12; font-size:14px;">- 10% New User Voucher</span>`;
+            finalTotal = finalTotal * 0.90; detailsHtml += ` <br><span style="color:#f39c12; font-size:12px;">- 10% New User Voucher</span>`;
         }
-
-        if (isMidmanChecked && !isVIP) {
-            finalTotal += 5; 
-            detailsHtml += ` <br><span style="color:gray; font-size:14px;">+ ₱5 Middleman Service</span>`;
-        } else if (isMidmanChecked && isVIP) {
-            detailsHtml += ` <br><span style="color:var(--vip-color); font-size:14px;">+ Middleman Service (Free)</span>`;
-        }
+        if (isMidmanChecked && !isVIP) { finalTotal += 5; detailsHtml += ` <br><span style="color:gray; font-size:12px;">+ ₱5 Middleman Service</span>`; } 
+        else if (isMidmanChecked && isVIP) { detailsHtml += ` <br><span style="color:var(--vip-color); font-size:12px;">+ Middleman Service (Free)</span>`; }
 
         tempCheckoutTotal = Math.round(finalTotal * 100) / 100; 
-        document.getElementById('cart-total').innerHTML = `${detailsHtml} <br> <span style="font-size:24px;">Total: ₱${tempCheckoutTotal}</span>`;
+        document.getElementById('cart-total').innerHTML = `${detailsHtml} <br> <span style="font-size:20px; color:var(--main-color);">Total: ₱${tempCheckoutTotal}</span>`;
     }
 
     window.removeFromCart = function(index, productId) {
@@ -664,73 +703,114 @@
         let pIndex = products.findIndex(p => p.id === productId);
         if (pIndex > -1) products[pIndex].stocks += 1; 
         window.saveDatabase(); 
+        window.renderCart();
+        window.updateBadges();
     }
 
     window.openCheckoutModal = function() {
         if (!userCarts[currentUser] || userCarts[currentUser].length === 0) return alert("Cart is empty!");
         let myInfo = users[currentUser] || {};
-        if (!myInfo.phone) {
-            if(!confirm("Your Phone is missing. Checkout anyway?")) return window.showBuyerTab('profile');
-        }
+        if (!myInfo.phone) if(!confirm("Your Phone is missing in Profile. Checkout anyway?")) return window.showBuyerTab('me');
         document.getElementById('checkout-final-amount').innerText = `₱${tempCheckoutTotal}`;
         document.getElementById('checkout-modal').classList.remove('hidden');
     }
 
     window.confirmCheckout = function() {
         orders.push({
-            id: Date.now(),
-            date: new Date().toLocaleString(),
-            buyerEmail: currentUser,
-            buyerUsername: users[currentUser].username,
+            id: Date.now(), date: new Date().toLocaleString(),
+            buyerEmail: currentUser, buyerUsername: users[currentUser].username,
             buyerPhone: users[currentUser].phone || "Not provided",
-            items: [...userCarts[currentUser]],
-            total: tempCheckoutTotal,
-            midman: document.getElementById('midman-check').checked,
-            status: "Pending Payment" 
+            items: [...userCarts[currentUser]], total: tempCheckoutTotal,
+            midman: document.getElementById('midman-check').checked, status: "Pending Payment" 
         });
         userCarts[currentUser] = []; 
         document.getElementById('midman-check').checked = false;
         window.saveDatabase(); 
-        
         window.closeModal('checkout-modal');
-        window.showBuyerTab('orders');
+        window.showBuyerTab('me');
+        window.showMeSubTab('orders');
+    }
+
+    // --- ME / PROFILE LOGIC ---
+    window.loadProfile = function() {
+        let u = users[currentUser] || {};
+        document.getElementById('profile-username').value = u.username || "";
+        document.getElementById('profile-phone').value = u.phone || "";
+        
+        // Verification section check
+        if (u.isVerifiedSeller) {
+            document.getElementById('vip-nav-btn').classList.remove('hidden');
+            document.getElementById('seller-verification-section').innerHTML = '<h3 style="color:var(--verify-color);">Verification Status</h3><p>You are a verified seller.</p>';
+        } else {
+            document.getElementById('vip-nav-btn').classList.add('hidden');
+            if (u.sellerRequested) {
+                document.getElementById('btn-request-seller').innerText = "Request Sent (Pending Admin Approval)";
+                document.getElementById('btn-request-seller').disabled = true;
+            }
+        }
+    }
+
+    window.saveProfile = function() {
+        let newName = document.getElementById('profile-username').value.trim();
+        let newPhone = document.getElementById('profile-phone').value.trim();
+        if(!newName) return alert("Username cannot be empty.");
+        users[currentUser].username = newName; users[currentUser].phone = newPhone;
+        window.saveDatabase();
+        alert("Profile saved!");
+        window.updateUserNavDisplay();
+    }
+    
+    window.requestSellerStatus = function() {
+        users[currentUser].sellerRequested = true;
+        window.saveDatabase();
+        document.getElementById('btn-request-seller').innerText = "Request Sent (Pending Admin Approval)";
+        document.getElementById('btn-request-seller').disabled = true;
+        alert("Request sent to Admin! Check your Messages tab later for the code.");
+    }
+
+    window.verifySellerCode = function() {
+        let u = users[currentUser];
+        let input = document.getElementById('verify-code-input').value.trim();
+        if (!u.sellCode) return alert("No valid code requested/sent.");
+        if (Date.now() > u.sellCodeExpiry) return alert("Code has expired.");
+        if (input === u.sellCode) {
+            u.isVerifiedSeller = true; u.sellCode = null; 
+            window.saveDatabase();
+            alert("Verification successful! You can now publish items.");
+            window.loadProfile();
+        } else alert("Invalid code.");
     }
 
     window.renderBuyerOrders = function() {
         const list = document.getElementById('buyer-order-list');
         list.innerHTML = '';
         const myOrders = orders.filter(o => o.buyerEmail === currentUser).reverse(); 
-
-        if (myOrders.length === 0) {
-            list.innerHTML = "<div class='list-card'><p>No orders yet.</p></div>";
-            return;
-        }
+        if (myOrders.length === 0) return list.innerHTML = "<p>No orders yet.</p>";
 
         myOrders.forEach(o => {
-            let statusColor = o.status === "Completed" ? "green" : (o.status === "Cancelled" ? "red" : (o.status === "Pending Payment" ? "#d4af37" : "var(--main-color)"));
-            let itemsHtml = o.items.map(item => `<li>${item.name} - ₱${item.price}</li>`).join('');
+            let statusColor = o.status === "Completed" ? "green" : (o.status === "Cancelled" ? "red" : "var(--main-color)");
+            let itemsHtml = o.items.map(item => `<div style="font-size:14px;">${item.name} <span style="float:right;">₱${item.price}</span></div>`).join('');
             list.innerHTML += `
-                <div class="list-card" style="display:block;">
-                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:10px;">
-                        <span style="font-size:12px; color:#757575;">ID: ${o.id} <br> Date: ${o.date}</span>
-                        <b style="color:${statusColor}; text-transform:uppercase;">${o.status}</b>
+                <div class="list-card" style="border:1px solid #eee;">
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px dashed #ccc; padding-bottom:10px; margin-bottom:10px;">
+                        <span style="font-size:12px; color:gray;">ID: ${o.id} <br> ${o.date}</span>
+                        <b style="color:${statusColor}; text-transform:uppercase; font-size:14px;">${o.status}</b>
                     </div>
-                    <ul style="list-style-type:none; padding:0; margin:0;">${itemsHtml}</ul>
-                    ${o.midman ? `<p style="font-size:12px; color:gray;">Includes Middleman Option</p>` : ''}
-                    <hr>
-                    <div style="text-align:right;">Order Total: <b style="color:var(--main-color); font-size:18px;">₱${o.total}</b></div>
+                    ${itemsHtml}
+                    ${o.midman ? `<p style="font-size:11px; color:gray; margin:5px 0;">+ Middleman Requested</p>` : ''}
+                    <div style="text-align:right; margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
+                        Total: <b style="color:var(--main-color); font-size:16px;">₱${o.total}</b>
+                    </div>
                 </div>
             `;
         });
     }
 
     window.openVipModal = function() { document.getElementById('vip-modal').classList.remove('hidden'); }
-
     window.confirmVipPurchase = function() {
-        users[currentUser].vipPending = true;
-        window.saveDatabase();
-        window.closeModal('vip-modal');
-        alert("VIP Requested! Admin will verify payment.");
+        users[currentUser].vipPending = true; window.saveDatabase();
+        window.closeModal('vip-modal'); alert("VIP Requested! Admin will verify payment.");
+        window.updateUserNavDisplay();
     }
 
     window.processImageAndAddProduct = function(source) {
@@ -739,45 +819,19 @@
         const price = parseFloat(document.getElementById(`${prefix}-prod-price`).value);
         const info = document.getElementById(`${prefix}-prod-info`).value.trim();
         const stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value);
-        const imageInput = document.getElementById(`${prefix}-prod-image`);
-        const imageFile = imageInput.files[0];
+        const imageFile = document.getElementById(`${prefix}-prod-image`).files[0];
 
-        if (!name || isNaN(price) || !info || isNaN(stocks)) return alert("Fill out all fields properly!");
-
-        const btn = document.querySelector(source === 'admin' ? '#admin-add-product .btn-main' : '#buyer-vip-dashboard .btn-verify');
-        const origBtnText = btn.innerText;
-        
-        btn.innerText = "Saving... ⏳";
-        btn.disabled = true;
+        if (!name || isNaN(price) || !info || isNaN(stocks)) return alert("Fill out all fields!");
 
         const finalizeSave = (imgUrl) => {
-            products.push({ 
-                id: Date.now(), name: name, price: price, info: info, stocks: stocks, image: imgUrl,
-                addedByEmail: currentUser, addedByName: users[currentUser].username
-            });
-            
+            products.push({ id: Date.now(), name, price, info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username });
             window.saveDatabase().then(() => {
+                alert("Product Published!");
                 document.getElementById(`${prefix}-prod-name`).value = '';
                 document.getElementById(`${prefix}-prod-price`).value = '';
                 document.getElementById(`${prefix}-prod-info`).value = '';
                 document.getElementById(`${prefix}-prod-stocks`).value = '';
-                imageInput.value = ''; 
-
-                btn.innerText = "Done ✅";
-                btn.style.backgroundColor = "var(--verify-color)"; 
-                btn.style.color = "white";
-                
-                setTimeout(() => {
-                    btn.innerText = origBtnText;
-                    btn.disabled = false;
-                    btn.style.backgroundColor = ""; 
-                    btn.style.color = "";
-                }, 3000); 
-
-            }).catch((error) => {
-                alert("Error saving to cloud: " + error.message);
-                btn.innerText = origBtnText;
-                btn.disabled = false;
+                document.getElementById(`${prefix}-prod-image`).value = ''; 
             });
         };
 
@@ -786,51 +840,68 @@
             reader.onload = e => {
                 const img = new Image();
                 img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const scale = 400 / img.width;
+                    const canvas = document.createElement('canvas'); const scale = 400 / img.width;
                     canvas.width = 400; canvas.height = img.height * scale;
                     canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
                     finalizeSave(canvas.toDataURL('image/jpeg', 0.7)); 
-                }
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(imageFile);
-        } else {
-            finalizeSave(""); 
-        }
+                }; img.src = e.target.result;
+            }; reader.readAsDataURL(imageFile);
+        } else finalizeSave(""); 
     }
 
+    // --- BUYER MESSAGES UI ---
+    window.renderBuyerMessages = function() {
+        const list = document.getElementById('buyer-inbox-list');
+        list.innerHTML = '';
+        let myInbox = users[currentUser].inbox || [];
+        
+        if(myInbox.length === 0) {
+            list.innerHTML = "<p style='text-align:center; color:gray; margin-top:50px;'>No messages yet.</p>";
+            return;
+        }
+
+        // Show newest messages at bottom like chat
+        myInbox.forEach(msg => {
+            list.innerHTML += `
+                <div class="chat-msg chat-admin">
+                    <b>Admin Xdragon:</b><br>
+                    <span style="white-space: pre-wrap;">${msg.text}</span>
+                    <span class="chat-date">${msg.date}</span>
+                </div>
+            `;
+        });
+        
+        // Scroll to bottom
+        list.scrollTop = list.scrollHeight;
+    }
+
+
+    // --- ADMIN PANEL LOGIC ---
     window.showAdminTab = function(tab) {
         currentActiveTab = tab;
-        document.getElementById('admin-add-product').classList.add('hidden');
-        document.getElementById('admin-manage-products').classList.add('hidden');
-        document.getElementById('admin-manage-orders').classList.add('hidden');
-        document.getElementById('admin-manage-users').classList.add('hidden');
-        
-        document.getElementById(`admin-${tab}`).classList.remove('hidden');
-        if (tab === 'manage-products') window.renderAdminProducts();
-        if (tab === 'manage-orders') window.renderAdminOrders();
-        if (tab === 'manage-users') window.renderAdminUsers();
+        ['admin-add-product', 'admin-manage-products', 'admin-manage-orders', 'admin-manage-users', 'admin-messages-tab'].forEach(t => {
+            document.getElementById(t).classList.add('hidden');
+        });
+        document.getElementById(tab).classList.remove('hidden');
+        if (tab === 'admin-manage-products') window.renderAdminProducts();
+        if (tab === 'admin-manage-orders') window.renderAdminOrders();
+        if (tab === 'admin-manage-users') window.renderAdminUsers();
+        if (tab === 'admin-messages-tab') window.renderAdminChatList();
     }
 
     window.renderAdminProducts = function() {
         const list = document.getElementById('admin-product-list');
         list.innerHTML = '';
         if (products.length === 0) return list.innerHTML = "<p>No products.</p>";
-
         products.forEach(p => {
-            let imgHtml = p.image ? `<img src="${p.image}" style="width:50px; height:50px; object-fit:cover; margin-right:15px;">` : ``;
             list.innerHTML += `
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; align-items:center;">
-                        ${imgHtml}
-                        <div>
-                            <b>${p.name}</b> <span style="color:gray; font-size:12px;">(ID: ${p.id})</span><br>
-                            <span style="color:var(--main-color);">₱${p.price}</span> | Stocks: ${p.stocks} <br>
-                            <span style="font-size: 11px;">Seller: ${p.addedByName}</span>
-                        </div>
-                    </div>
                     <div>
+                        <b>${p.name}</b> <br>
+                        <span style="color:var(--main-color);">₱${p.price}</span> | Stocks: ${p.stocks} <br>
+                        <span style="font-size: 11px; color:gray;">Seller: ${p.addedByName} (ID: ${p.id})</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:5px;">
                         <button class="btn-action" onclick="window.openEditProduct(${p.id})">Edit</button>
                         <button class="btn-danger" onclick="window.deleteProduct(${p.id})">Del</button>
                     </div>
@@ -858,15 +929,13 @@
             products[pIndex].price = parseFloat(document.getElementById('edit-prod-price').value);
             products[pIndex].info = document.getElementById('edit-prod-info').value;
             products[pIndex].stocks = parseInt(document.getElementById('edit-prod-stocks').value);
-            window.saveDatabase();
-            window.closeModal('edit-product-modal');
+            window.saveDatabase(); window.closeModal('edit-product-modal');
         }
     }
 
     window.deleteProduct = function(id) {
         if(confirm("Delete this product?")) {
-            products = products.filter(x => x.id !== id);
-            window.saveDatabase();
+            products = products.filter(x => x.id !== id); window.saveDatabase();
         }
     }
 
@@ -878,29 +947,22 @@
 
         reversed.forEach((o) => {
             let originalIndex = orders.findIndex(x => x.id === o.id); 
-            let itemsHtml = o.items.map(item => `<li>${item.name} - ₱${item.price}</li>`).join('');
             list.innerHTML += `
                 <div class="list-card">
-                    <div style="display:flex; justify-content:space-between;">
-                        <div>
-                            <span style="font-size:12px; color:gray;">ID: ${o.id} | ${o.date}</span><br>
-                            <b>Buyer: ${o.buyerUsername}</b> (${o.buyerEmail})<br>
-                            <span style="font-size:13px;">Phone: <b>${o.buyerPhone}</b></span><br>
-                            ${o.midman ? `<span style="background:#eee; padding:2px; font-size:12px;">Requested Middleman</span>` : ''}
-                        </div>
-                        <b style="color:${o.status === 'Cancelled' ? 'red' : 'var(--main-color)'};">${o.status}</b>
-                    </div>
-                    <hr><ul style="padding:0; margin:0;">${itemsHtml}</ul><hr>
+                    <span style="font-size:12px; color:gray;">ID: ${o.id} | ${o.date}</span><br>
+                    <b>Buyer: ${o.buyerUsername}</b> (${o.buyerEmail})<br>
+                    <span style="font-size:13px;">Phone: <b>${o.buyerPhone}</b></span><br>
+                    <hr>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <p>Total: <b style="color:var(--main-color); font-size:18px;">₱${o.total}</b></p>
-                        <div>
-                            <select id="status-${originalIndex}" style="padding:8px;" ${o.status === 'Cancelled' ? 'disabled' : ''}>
-                                <option value="Pending Payment" ${o.status === 'Pending Payment' ? 'selected' : ''}>Pending Payment</option>
+                        <b style="color:var(--main-color); font-size:16px;">Total: ₱${o.total}</b>
+                        <div style="display:flex; gap:5px;">
+                            <select id="status-${originalIndex}" style="padding:5px; margin:0;" ${o.status === 'Cancelled' ? 'disabled' : ''}>
+                                <option value="Pending Payment" ${o.status === 'Pending Payment' ? 'selected' : ''}>Pending</option>
                                 <option value="To Ship" ${o.status === 'To Ship' ? 'selected' : ''}>To Ship</option>
                                 <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
                                 <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
                             </select>
-                            <button class="btn-main" style="width:auto; padding:8px 15px;" onclick="window.updateOrderStatus(${originalIndex})" ${o.status === 'Cancelled' ? 'disabled' : ''}>Update</button>
+                            <button class="btn-main" style="margin:0; width:auto; padding:5px 10px;" onclick="window.updateOrderStatus(${originalIndex})" ${o.status === 'Cancelled' ? 'disabled' : ''}>Update</button>
                         </div>
                     </div>
                 </div>
@@ -911,7 +973,6 @@
     window.updateOrderStatus = function(index) {
         const newStatus = document.getElementById(`status-${index}`).value;
         const oldStatus = orders[index].status;
-        
         if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
             if(!confirm("Changing to 'Cancelled' returns stock. Proceed?")) return;
             orders[index].items.forEach(orderItem => {
@@ -919,8 +980,7 @@
                 if (shopProduct) shopProduct.stocks += 1;
             });
         }
-        orders[index].status = newStatus;
-        window.saveDatabase(); 
+        orders[index].status = newStatus; window.saveDatabase(); 
     }
 
     window.renderAdminUsers = function() {
@@ -930,11 +990,11 @@
             if (email === ADMIN_EMAIL) continue; 
             
             let btnStr = '';
-            if (data.vipPending) btnStr += `<button class="btn-vip" onclick="window.approveVIP('${email}')">Approve VIP</button> `;
+            if (data.vipPending) btnStr += `<button class="btn-vip" style="margin-bottom:5px;" onclick="window.approveVIP('${email}')">Approve VIP</button><br>`;
             
-            if (!data.isVerifiedSeller) {
-                btnStr += `<button class="btn-verify" onclick="window.sendCode('${email}')">Send Verify Code</button>`;
-            } else {
+            if (data.sellerRequested && !data.isVerifiedSeller) {
+                btnStr += `<button class="btn-verify" onclick="window.approveSellerRequest('${email}')">Approve Seller Request (Sends Code)</button>`;
+            } else if (data.isVerifiedSeller) {
                 btnStr += `<span class="badge badge-verify">Verified Seller</span>`;
             }
 
@@ -942,32 +1002,90 @@
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
                         <b>${data.username}</b> ${data.isVIP ? '<span class="badge badge-vip">VIP</span>' : ''}<br>
-                        <span style="font-size:12px; color:gray;">${email} | Phone: ${data.phone || 'N/A'}</span>
+                        <span style="font-size:12px; color:gray;">${email} | Ph: ${data.phone || 'N/A'}</span>
                     </div>
-                    <div>${btnStr}</div>
+                    <div style="text-align:right;">${btnStr}</div>
                 </div>
             `;
         }
     }
 
     window.approveVIP = function(email) {
-        users[email].isVIP = true;
-        users[email].vipPending = false;
-        window.saveDatabase();
+        users[email].isVIP = true; users[email].vipPending = false; window.saveDatabase();
     }
 
-    window.sendCode = function(email) {
+    window.approveSellerRequest = function(email) {
         let code = Math.floor(100000 + Math.random() * 900000).toString();
         users[email].sellCode = code;
-        users[email].sellCodeExpiry = Date.now() + (5 * 60 * 1000); 
-        window.saveDatabase();
+        users[email].sellCodeExpiry = Date.now() + (30 * 60 * 1000); // 30 mins
+        users[email].sellerRequested = false; 
         
-        let msg = `Hello I'm Xdragon, I hear you want to sell an item? Please scan your IDs Xdrg Shop, delete that after 30 minutes!\n\nYour Verification code is: ${code}\n\n(Code expires in 5 minutes)`;
-        document.getElementById('admin-verify-text').value = msg;
-        document.getElementById('admin-verify-modal').classList.remove('hidden');
+        let msg = `Hello I'm Xdragon, I hear you want to sell an item? Please scan your IDs Xdrg Shop, delete that after 30 minutes!\n\nYour Verification code is: ${code}\n\n(Code expires in 30 minutes)`;
+        
+        // Push message to user's inbox
+        users[email].inbox.push({ text: msg, date: new Date().toLocaleString() });
+        
+        window.saveDatabase().then(() => {
+            alert(`Code generated and sent to ${email}'s Messages!`);
+        });
     }
 
-    if (currentUser) { routeUser(currentUser); }
+    // --- ADMIN MESSAGING UI ---
+    window.renderAdminChatList = function() {
+        const list = document.getElementById('admin-chat-user-list');
+        list.innerHTML = '';
+        for (const [email, data] of Object.entries(users)) {
+            if (email === ADMIN_EMAIL) continue;
+            let msgCount = data.inbox ? data.inbox.length : 0;
+            list.innerHTML += `
+                <div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; cursor:pointer;" onclick="window.openAdminChat('${email}')">
+                    <div><b>${data.username}</b><br><span style="font-size:12px; color:gray;">${email}</span></div>
+                    <div style="color:gray; font-size:12px;">${msgCount} msgs sent ></div>
+                </div>
+            `;
+        }
+    }
+
+    window.openAdminChat = function(email) {
+        chatTargetUser = email;
+        document.getElementById('chat-target-name').innerText = `Chatting with: ${users[email].username}`;
+        window.renderAdminChatHistory();
+        document.getElementById('admin-chat-modal').classList.remove('hidden');
+    }
+
+    window.renderAdminChatHistory = function() {
+        if(!chatTargetUser || !users[chatTargetUser]) return;
+        let history = users[chatTargetUser].inbox || [];
+        const box = document.getElementById('chat-history');
+        box.innerHTML = '';
+        
+        history.forEach(msg => {
+            box.innerHTML += `
+                <div class="chat-msg chat-admin" style="float:right; background:var(--main-color); color:white; border:none;">
+                    <span style="white-space: pre-wrap;">${msg.text}</span>
+                    <span class="chat-date" style="color:#ffd2cc;">${msg.date}</span>
+                </div>
+            `;
+        });
+        box.scrollTop = box.scrollHeight;
+    }
+
+    window.sendAdminMessage = function() {
+        let inputEl = document.getElementById('admin-chat-input');
+        let text = inputEl.value.trim();
+        if(!text || !chatTargetUser) return;
+
+        users[chatTargetUser].inbox.push({ text: text, date: new Date().toLocaleString() });
+        window.saveDatabase().then(() => {
+            inputEl.value = '';
+            window.renderAdminChatHistory();
+        });
+    }
+
+    window.closeModal = function(id) {
+        document.getElementById(id).classList.add('hidden');
+        if(id === 'admin-chat-modal') chatTargetUser = "";
+    }
 
 </script>
 </body>
