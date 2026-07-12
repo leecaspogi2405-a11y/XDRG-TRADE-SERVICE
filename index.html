@@ -230,22 +230,13 @@
     </div>
 </div>
 
+<!-- SUPABASE SDK INSTEAD OF FIREBASE -->
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAquf42dRD0A4l0lzHjTJD7Oe4Sel2kT48",
-      authDomain: "xdrg-shop-1.firebaseapp.com",
-      projectId: "xdrg-shop-1",
-      storageBucket: "xdrg-shop-1.firebasestorage.app",
-      messagingSenderId: "338192800806",
-      appId: "1:338192800806:web:940515201dd0a8baec9ae7",
-      measurementId: "G-NM7353NMC9"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const supabaseUrl = "https://dctktojorwznvclkpoiu.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjdGt0b2pvcnd6bnZjbGtwb2l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4MzAwMDAsImV4cCI6MjA5OTQwNjAwMH0.4vd9ci4vJHGRiMkcdKWDteasfL8IRQXS9smHwUa5H8s";
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const ADMIN_EMAIL = "xdrgxdragon@gmail.com";
     
@@ -259,39 +250,66 @@
     let currentActiveTab = '';
     let isAdminView = false;
 
-    const dbRef = ref(db, 'xdrg_shop_data_v3');
-
-    onValue(dbRef, (snapshot) => {
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true } };
-            products = data.products || [];
-            userCarts = data.userCarts || {};
-            orders = data.orders || [];
-            
-            if (currentUser && users[currentUser]) {
-                window.updateUserNavDisplay();
-                window.updateCartCount();
-                if(isAdminView) {
-                    if(currentActiveTab === 'manage-products') window.renderAdminProducts();
-                    if(currentActiveTab === 'manage-orders') window.renderAdminOrders();
-                    if(currentActiveTab === 'manage-users') window.renderAdminUsers();
-                } else {
-                    if(currentActiveTab === 'products') window.renderProducts();
-                    if(currentActiveTab === 'cart') window.renderCart();
-                    if(currentActiveTab === 'orders') window.renderBuyerOrders();
-                }
+    // Supabase: Function to process pulled data
+    function syncStateFromDB(data) {
+        if (!data) return;
+        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true } };
+        products = data.products || [];
+        userCarts = data.userCarts || {};
+        orders = data.orders || [];
+        
+        if (currentUser && users[currentUser]) {
+            window.updateUserNavDisplay();
+            window.updateCartCount();
+            if(isAdminView) {
+                if(currentActiveTab === 'manage-products') window.renderAdminProducts();
+                if(currentActiveTab === 'manage-orders') window.renderAdminOrders();
+                if(currentActiveTab === 'manage-users') window.renderAdminUsers();
+            } else {
+                if(currentActiveTab === 'products') window.renderProducts();
+                if(currentActiveTab === 'cart') window.renderCart();
+                if(currentActiveTab === 'orders') window.renderBuyerOrders();
             }
         }
-    });
+    }
 
-    function saveDatabase() {
-        return set(dbRef, {
+    // Supabase: Initial Data Fetch
+    async function initDB() {
+        const { data, error } = await supabase
+            .from('shop_data')
+            .select('data')
+            .eq('id', 1)
+            .single();
+            
+        if (data && data.data) {
+            syncStateFromDB(data.data);
+        }
+
+        // Supabase: Realtime Subscription (acts like Firebase onValue)
+        supabase
+            .channel('public:shop_data')
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'shop_data', filter: 'id=eq.1' }, payload => {
+                syncStateFromDB(payload.new.data);
+            })
+            .subscribe();
+    }
+    
+    initDB();
+
+    // Supabase: Save Function (acts like Firebase set)
+    window.saveDatabase = function() {
+        const payload = {
             users: users,
             products: products,
             userCarts: userCarts,
             orders: orders
-        });
+        };
+        return supabase
+            .from('shop_data')
+            .upsert({ id: 1, data: payload })
+            .then(({ error }) => {
+                if (error) throw error;
+            });
     }
 
     setInterval(() => {
@@ -404,7 +422,7 @@
             registeredAt: Date.now() 
         };
         userCarts[email] = [];
-        saveDatabase(); 
+        window.saveDatabase(); 
         
         localStorage.setItem('xdrg_logged_in_user', email);
         routeUser(email);
@@ -477,7 +495,7 @@
         
         users[currentUser].username = newName;
         users[currentUser].phone = newPhone;
-        saveDatabase();
+        window.saveDatabase();
         alert("Profile saved!");
     }
 
@@ -491,7 +509,7 @@
         if (input === u.sellCode) {
             u.isVerifiedSeller = true;
             u.sellCode = null; 
-            saveDatabase();
+            window.saveDatabase();
             alert("Verification successful! You can now sell items.");
             routeUser(currentUser); 
         } else {
@@ -572,7 +590,7 @@
             products[pIndex].stocks -= 1; 
             if (!userCarts[currentUser]) userCarts[currentUser] = [];
             userCarts[currentUser].push({...products[pIndex]}); 
-            saveDatabase(); 
+            window.saveDatabase(); 
             window.closeModal('product-modal');
             if (buyNow) window.showBuyerTab('cart');
         }
@@ -645,7 +663,7 @@
         userCarts[currentUser].splice(index, 1);
         let pIndex = products.findIndex(p => p.id === productId);
         if (pIndex > -1) products[pIndex].stocks += 1; 
-        saveDatabase(); 
+        window.saveDatabase(); 
     }
 
     window.openCheckoutModal = function() {
@@ -672,7 +690,7 @@
         });
         userCarts[currentUser] = []; 
         document.getElementById('midman-check').checked = false;
-        saveDatabase(); 
+        window.saveDatabase(); 
         
         window.closeModal('checkout-modal');
         window.showBuyerTab('orders');
@@ -710,7 +728,7 @@
 
     window.confirmVipPurchase = function() {
         users[currentUser].vipPending = true;
-        saveDatabase();
+        window.saveDatabase();
         window.closeModal('vip-modal');
         alert("VIP Requested! Admin will verify payment.");
     }
@@ -738,7 +756,7 @@
                 addedByEmail: currentUser, addedByName: users[currentUser].username
             });
             
-            saveDatabase().then(() => {
+            window.saveDatabase().then(() => {
                 document.getElementById(`${prefix}-prod-name`).value = '';
                 document.getElementById(`${prefix}-prod-price`).value = '';
                 document.getElementById(`${prefix}-prod-info`).value = '';
@@ -840,7 +858,7 @@
             products[pIndex].price = parseFloat(document.getElementById('edit-prod-price').value);
             products[pIndex].info = document.getElementById('edit-prod-info').value;
             products[pIndex].stocks = parseInt(document.getElementById('edit-prod-stocks').value);
-            saveDatabase();
+            window.saveDatabase();
             window.closeModal('edit-product-modal');
         }
     }
@@ -848,7 +866,7 @@
     window.deleteProduct = function(id) {
         if(confirm("Delete this product?")) {
             products = products.filter(x => x.id !== id);
-            saveDatabase();
+            window.saveDatabase();
         }
     }
 
@@ -902,7 +920,7 @@
             });
         }
         orders[index].status = newStatus;
-        saveDatabase(); 
+        window.saveDatabase(); 
     }
 
     window.renderAdminUsers = function() {
@@ -935,14 +953,14 @@
     window.approveVIP = function(email) {
         users[email].isVIP = true;
         users[email].vipPending = false;
-        saveDatabase();
+        window.saveDatabase();
     }
 
     window.sendCode = function(email) {
         let code = Math.floor(100000 + Math.random() * 900000).toString();
         users[email].sellCode = code;
         users[email].sellCodeExpiry = Date.now() + (5 * 60 * 1000); 
-        saveDatabase();
+        window.saveDatabase();
         
         let msg = `Hello I'm Xdragon, I hear you want to sell an item? Please scan your IDs Xdrg Shop, delete that after 30 minutes!\n\nYour Verification code is: ${code}\n\n(Code expires in 5 minutes)`;
         document.getElementById('admin-verify-text').value = msg;
