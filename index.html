@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XDRG Shop 1.1</title>
+    <title>XDRG Shop</title>
     <style>
         :root {
             --main-color: #ee4d2d; /* Shopee Orange */
@@ -99,45 +99,22 @@
 <body>
 
 <div class="container">
-    <!-- AUTH SECTION -->
-    <div id="auth-section">
-        <div id="login-form" class="list-card">
-            <h2 style="color:var(--main-color); text-align:center;">Login to XDRG Shop</h2>
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-pass" placeholder="Password">
-            <button class="btn-main" onclick="window.login()">Login</button>
-            <p style="text-align: center; margin-top: 15px;">Need an account? <a href="#" style="color:var(--main-color);" onclick="window.toggleAuth()">Register here</a></p>
-        </div>
 
-        <div id="register-form" class="list-card hidden">
-            <h2 style="color:var(--main-color); text-align:center;">Register</h2>
-            <input type="text" id="reg-username" placeholder="Username">
-            <input type="email" id="reg-email" placeholder="Email">
-            <input type="password" id="reg-pass" placeholder="Password">
-            <input type="password" id="reg-confirm" placeholder="Confirm Password">
-            <button class="btn-main" onclick="window.register()">Register</button>
-            <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="#" style="color:var(--main-color);" onclick="window.toggleAuth()">Login here</a></p>
-        </div>
-    </div>
-
-    <!-- BUYER APP UI -->
     <div id="buyer-section" class="hidden">
         
         <div class="top-bar">
             <input type="text" id="buyer-search" placeholder="Search item name, seller, or ID..." onkeyup="window.searchProducts()">
         </div>
 
-        <!-- Home / Products Tab -->
         <div id="buyer-home">
             <div id="voucher-banner" class="hidden">New User Voucher: 10% OFF! Ends in: <span id="voucher-timer"></span></div>
             <div id="product-list" class="product-grid"></div>
         </div>
 
-        <!-- Cart Tab -->
         <div id="buyer-cart" class="hidden">
             <h3 style="margin-top:0;">My Cart</h3>
             <div id="cart-list"></div>
-            <div class="list-card" style="margin-top:20px;">
+            <div class="list-card" id="cart-checkout-card" style="margin-top:20px;">
                 <div style="text-align: right; margin-bottom: 10px;">
                     <label><input type="checkbox" id="midman-check" style="width:auto;" onchange="window.renderCart()"> Request Middleman (+₱5)</label>
                     <p id="vip-free-text" class="hidden" style="color:var(--vip-color); font-size:12px; margin:0;">*Middleman is FREE for VIPs</p>
@@ -147,74 +124,93 @@
             </div>
         </div>
 
-        <!-- Messages / Notifications Tab -->
         <div id="buyer-messages" class="hidden">
             <h3 style="margin-top:0;">Messages from Admin</h3>
             <div id="buyer-inbox-list" class="list-card" style="min-height:300px;">
-                <!-- Messages go here -->
-            </div>
+                </div>
             <p style="font-size:12px; text-align:center; color:gray;">Only xdrgxdragon@gmail.com can send messages here.</p>
         </div>
 
-        <!-- Me / Profile Tab -->
         <div id="buyer-me" class="hidden">
-            <div class="list-card" style="display:flex; align-items:center; gap:15px; background:var(--main-color); color:white;">
-                <div style="width:60px; height:60px; border-radius:50%; background:white; color:var(--main-color); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:bold;">Me</div>
-                <div>
-                    <h2 style="margin:0;"><span id="buyer-email-display"></span></h2>
-                    <p style="margin:5px 0 0 0; font-size:12px;" id="buyer-email-sub"></p>
+            
+            <div id="auth-section">
+                <div id="login-form" class="list-card">
+                    <h2 style="color:var(--main-color); text-align:center;">Login to XDRG Shop</h2>
+                    <input type="email" id="login-email" placeholder="Email">
+                    <input type="password" id="login-pass" placeholder="Password">
+                    <button class="btn-main" onclick="window.login()">Login</button>
+                    <p style="text-align: center; margin-top: 15px;">Need an account? <a href="#" style="color:var(--main-color);" onclick="window.toggleAuth()">Register here</a></p>
+                </div>
+
+                <div id="register-form" class="list-card hidden">
+                    <h2 style="color:var(--main-color); text-align:center;">Register</h2>
+                    <input type="text" id="reg-username" placeholder="Username">
+                    <input type="email" id="reg-email" placeholder="Email">
+                    <input type="password" id="reg-pass" placeholder="Password">
+                    <input type="password" id="reg-confirm" placeholder="Confirm Password">
+                    <button class="btn-main" onclick="window.register()">Register</button>
+                    <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="#" style="color:var(--main-color);" onclick="window.toggleAuth()">Login here</a></p>
                 </div>
             </div>
 
-            <div class="list-card">
-                <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('orders')">My Orders</button>
-                <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('profile-edit')">Edit Profile</button>
-                <button id="vip-nav-btn" class="btn-verify hidden" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('vip-dashboard')">Seller Dashboard (Add Product)</button>
-                <button id="buy-vip-btn" class="btn-vip" style="width:100%; margin-bottom:10px;" onclick="window.openVipModal()">Upgrade to VIP</button>
-                <button class="btn-main" style="background:#555;" onclick="window.logout()">Logout</button>
-            </div>
-
-            <!-- Sub Tabs inside Me -->
-            <div id="me-orders" class="hidden list-card">
-                <h3>My Purchases</h3>
-                <div id="buyer-order-list"></div>
-            </div>
-
-            <div id="me-profile-edit" class="hidden list-card">
-                <h3>Profile Settings</h3>
-                <label>Username</label>
-                <input type="text" id="profile-username">
-                <label>Phone Number</label>
-                <input type="text" id="profile-phone" placeholder="e.g. 09123456789">
-                <p id="vip-discount-text" class="hidden" style="color:green; font-weight:bold;">15% Lifetime Discount Active (VIP)</p>
-                <button class="btn-main" onclick="window.saveProfile()">Save Profile</button>
-                
-                <hr style="margin: 30px 0;">
-                
-                <div id="seller-verification-section">
-                    <h3 style="color:var(--verify-color);">Become a Seller</h3>
-                    <p style="font-size:14px; color:gray;">To sell, you must request verification. Admin will review and send a code to your Messages tab.</p>
-                    
-                    <div id="request-code-area">
-                        <button id="btn-request-seller" class="btn-outline" style="width:100%; margin-bottom:15px;" onclick="window.requestSellerStatus()">1. Request Verification</button>
+            <div id="logged-in-me" class="hidden">
+                <div class="list-card" style="display:flex; align-items:center; gap:15px; background:var(--main-color); color:white;">
+                    <div style="width:60px; height:60px; border-radius:50%; background:white; color:var(--main-color); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:bold;">Me</div>
+                    <div>
+                        <h2 style="margin:0;"><span id="buyer-email-display"></span></h2>
+                        <p style="margin:5px 0 0 0; font-size:12px;" id="buyer-email-sub"></p>
                     </div>
-
-                    <label>2. Input Verification Code (Check Messages)</label>
-                    <input type="text" id="verify-code-input" placeholder="Insert code here">
-                    <button class="btn-verify" style="width:100%;" onclick="window.verifySellerCode()">Verify Code</button>
-                    <p id="verify-timer" style="color:red; font-weight:bold; text-align:center;"></p>
                 </div>
-            </div>
 
-            <div id="me-vip-dashboard" class="hidden list-card">
-                <h3 style="color:var(--verify-color);">Seller Dashboard - Publish Item</h3>
-                <input type="text" id="vip-prod-name" placeholder="Product Name">
-                <input type="number" id="vip-prod-price" placeholder="Price (₱)">
-                <textarea id="vip-prod-info" placeholder="Product Description"></textarea>
-                <input type="number" id="vip-prod-stocks" placeholder="Number of Stocks">
-                <label>Product Image (Optional)</label>
-                <input type="file" id="vip-prod-image" accept="image/*">
-                <button class="btn-verify" style="width: 100%;" onclick="window.processImageAndAddProduct('vip')">Publish Product</button>
+                <div class="list-card">
+                    <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('orders')">My Orders</button>
+                    <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('profile-edit')">Edit Profile</button>
+                    <button id="vip-nav-btn" class="btn-verify hidden" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('vip-dashboard')">Seller Dashboard (Add Product)</button>
+                    <button id="buy-vip-btn" class="btn-vip" style="width:100%; margin-bottom:10px;" onclick="window.openVipModal()">Upgrade to VIP</button>
+                    <button class="btn-main" style="background:#555;" onclick="window.logout()">Logout</button>
+                </div>
+
+                <div id="me-orders" class="hidden list-card">
+                    <h3>My Purchases</h3>
+                    <div id="buyer-order-list"></div>
+                </div>
+
+                <div id="me-profile-edit" class="hidden list-card">
+                    <h3>Profile Settings</h3>
+                    <label>Username</label>
+                    <input type="text" id="profile-username">
+                    <label>Phone Number</label>
+                    <input type="text" id="profile-phone" placeholder="e.g. 09123456789">
+                    <p id="vip-discount-text" class="hidden" style="color:green; font-weight:bold;">15% Lifetime Discount Active (VIP)</p>
+                    <button class="btn-main" onclick="window.saveProfile()">Save Profile</button>
+                    
+                    <hr style="margin: 30px 0;">
+                    
+                    <div id="seller-verification-section">
+                        <h3 style="color:var(--verify-color);">Become a Seller</h3>
+                        <p style="font-size:14px; color:gray;">To sell, you must request verification. Admin will review and send a code to your Messages tab.</p>
+                        
+                        <div id="request-code-area">
+                            <button id="btn-request-seller" class="btn-outline" style="width:100%; margin-bottom:15px;" onclick="window.requestSellerStatus()">1. Request Verification</button>
+                        </div>
+
+                        <label>2. Input Verification Code (Check Messages)</label>
+                        <input type="text" id="verify-code-input" placeholder="Insert code here">
+                        <button class="btn-verify" style="width:100%;" onclick="window.verifySellerCode()">Verify Code</button>
+                        <p id="verify-timer" style="color:red; font-weight:bold; text-align:center;"></p>
+                    </div>
+                </div>
+
+                <div id="me-vip-dashboard" class="hidden list-card">
+                    <h3 style="color:var(--verify-color);">Seller Dashboard - Publish Item</h3>
+                    <input type="text" id="vip-prod-name" placeholder="Product Name">
+                    <input type="number" id="vip-prod-price" placeholder="Price (₱)">
+                    <textarea id="vip-prod-info" placeholder="Product Description"></textarea>
+                    <input type="number" id="vip-prod-stocks" placeholder="Number of Stocks">
+                    <label>Product Image (Optional)</label>
+                    <input type="file" id="vip-prod-image" accept="image/*">
+                    <button class="btn-verify" style="width: 100%;" onclick="window.processImageAndAddProduct('vip')">Publish Product</button>
+                </div>
             </div>
         </div>
 
@@ -236,7 +232,6 @@
         </div>
     </div>
 
-    <!-- ADMIN SECTION -->
     <div id="admin-section" class="hidden list-card" style="margin-top:20px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2>Admin Panel</h2>
@@ -244,11 +239,11 @@
         </div>
 
         <div class="admin-nav">
-            <button class="btn-outline" onclick="window.showAdminTab('manage-products')">Products</button>
-            <button class="btn-outline" onclick="window.showAdminTab('add-product')">Add Item</button>
-            <button class="btn-outline" onclick="window.showAdminTab('manage-orders')">Orders</button>
-            <button class="btn-outline" onclick="window.showAdminTab('manage-users')">Users</button>
-            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.showAdminTab('admin-messages')">Messages</button>
+            <button class="btn-outline" onclick="window.showAdminTab('admin-manage-products')">Products</button>
+            <button class="btn-outline" onclick="window.showAdminTab('admin-add-product')">Add Item</button>
+            <button class="btn-outline" onclick="window.showAdminTab('admin-manage-orders')">Orders</button>
+            <button class="btn-outline" onclick="window.showAdminTab('admin-manage-users')">Users</button>
+            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.showAdminTab('admin-messages-tab')">Messages</button>
         </div>
 
         <div id="admin-add-product" class="hidden">
@@ -285,7 +280,6 @@
     </div>
 </div>
 
-<!-- MODALS -->
 <div id="product-modal" class="modal hidden">
     <div class="modal-content">
         <div id="modal-product-details"></div>
@@ -330,14 +324,12 @@
     </div>
 </div>
 
-<!-- Admin Chat Modal -->
 <div id="admin-chat-modal" class="modal hidden">
     <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
         <h3 id="chat-target-name" style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px;">Chat</h3>
         
         <div id="chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;">
-            <!-- Admin messages show here -->
-        </div>
+            </div>
         
         <div style="display:flex; gap:10px; margin-top:15px;">
             <input type="text" id="admin-chat-input" placeholder="Type a message..." style="margin:0; flex:1;">
@@ -347,8 +339,6 @@
     </div>
 </div>
 
-
-<!-- SUPABASE SDK INSTEAD OF FIREBASE -->
 <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -376,16 +366,15 @@
         userCarts = data.userCarts || {};
         orders = data.orders || [];
         
-        // Ensure all users have inbox array
         for(let k in users) { if(!users[k].inbox) users[k].inbox = []; }
 
         if (currentUser && users[currentUser]) {
             if(isAdminView) {
-                if(currentActiveTab === 'manage-products') window.renderAdminProducts();
-                if(currentActiveTab === 'manage-orders') window.renderAdminOrders();
-                if(currentActiveTab === 'manage-users') window.renderAdminUsers();
-                if(currentActiveTab === 'admin-messages') window.renderAdminChatList();
-                if(chatTargetUser) window.renderAdminChatHistory(); // Update live chat
+                if(currentActiveTab === 'admin-manage-products') window.renderAdminProducts();
+                if(currentActiveTab === 'admin-manage-orders') window.renderAdminOrders();
+                if(currentActiveTab === 'admin-manage-users') window.renderAdminUsers();
+                if(currentActiveTab === 'admin-messages-tab') window.renderAdminChatList();
+                if(chatTargetUser) window.renderAdminChatHistory(); 
             } else {
                 window.updateUserNavDisplay();
                 window.updateBadges();
@@ -394,12 +383,26 @@
                 if(currentActiveTab === 'me') window.loadProfile();
                 if(currentActiveTab === 'messages') window.renderBuyerMessages();
             }
+        } else {
+            // Keep guest UI up to date
+            if(currentActiveTab === 'home') window.searchProducts();
         }
     }
 
     async function initDB() {
         const { data, error } = await supabase.from('shop_data').select('data').eq('id', 1).single();
-        if (data && data.data) syncStateFromDB(data.data);
+        if (data && data.data) {
+            syncStateFromDB(data.data);
+        }
+        
+        // Let user browse if not logged in, otherwise auto route them
+        if (currentUser && users[currentUser]) {
+            routeUser(currentUser);
+        } else {
+            document.getElementById('admin-section').classList.add('hidden');
+            document.getElementById('buyer-section').classList.remove('hidden');
+            window.showBuyerTab('home');
+        }
         
         supabase.channel('public:shop_data')
             .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'shop_data', filter: 'id=eq.1' }, payload => {
@@ -444,21 +447,31 @@
 
     function routeUser(email) {
         currentUser = email;
-        document.getElementById('auth-section').classList.add('hidden');
         
         if (email === ADMIN_EMAIL) {
             isAdminView = true;
-            document.getElementById('admin-section').classList.remove('hidden');
             document.getElementById('buyer-section').classList.add('hidden');
-            window.showAdminTab('manage-products'); 
+            document.getElementById('admin-section').classList.remove('hidden');
+            window.showAdminTab('admin-manage-products'); 
         } else {
             isAdminView = false;
             if (!userCarts[currentUser]) userCarts[currentUser] = [];
             if (!users[currentUser].inbox) users[currentUser].inbox = [];
+            
             document.getElementById('admin-section').classList.add('hidden');
             document.getElementById('buyer-section').classList.remove('hidden');
+            
+            // Show logged in section inside the ME tab
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('logged-in-me').classList.remove('hidden');
+            
             window.updateUserNavDisplay();
-            window.showBuyerTab('home');
+            
+            if (currentActiveTab === 'me') {
+                window.showBuyerTab('me'); 
+            } else {
+                window.showBuyerTab('home');
+            }
         }
     }
 
@@ -496,9 +509,13 @@
     window.logout = function() {
         currentUser = null;
         localStorage.removeItem('xdrg_logged_in_user');
-        document.getElementById('buyer-section').classList.add('hidden');
+        
+        // Boot user out to guest view (Me tab)
         document.getElementById('admin-section').classList.add('hidden');
-        document.getElementById('auth-section').classList.remove('hidden');
+        document.getElementById('buyer-section').classList.remove('hidden');
+        
+        window.updateBadges();
+        window.showBuyerTab('me');
     }
 
     // --- BUYER NAV LOGIC ---
@@ -515,9 +532,17 @@
         if (tab === 'home') window.searchProducts();
         if (tab === 'cart') window.renderCart();
         if (tab === 'messages') window.renderBuyerMessages();
+        
         if (tab === 'me') {
-            window.loadProfile();
-            window.showMeSubTab('orders'); // default sub-tab
+            if (currentUser) {
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('logged-in-me').classList.remove('hidden');
+                window.loadProfile();
+                window.showMeSubTab('orders'); 
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('logged-in-me').classList.add('hidden');
+            }
         }
         window.updateBadges();
     }
@@ -529,14 +554,14 @@
     }
 
     window.updateUserNavDisplay = function() {
-        let u = users[currentUser] || { username: "User" };
+        if(!currentUser || !users[currentUser]) return;
+        let u = users[currentUser];
         let displayHtml = `${u.username}`;
         if(u.isVIP) displayHtml += ` <span class="badge badge-vip">VIP</span>`;
         if(u.isVerifiedSeller) displayHtml += ` <span class="badge badge-verify">Seller</span>`;
         document.getElementById('buyer-email-display').innerHTML = displayHtml;
         document.getElementById('buyer-email-sub').innerText = currentUser;
         
-        // Handle VIP button
         if(u.isVIP) {
             document.getElementById('buy-vip-btn').classList.add('hidden');
             document.getElementById('vip-discount-text').classList.remove('hidden');
@@ -553,14 +578,17 @@
     }
 
     window.updateBadges = function() {
-        if(!currentUser || !users[currentUser]) return;
-        let cartCount = userCarts[currentUser] ? userCarts[currentUser].length : 0;
+        let cartCount = 0;
+        let msgCount = 0;
+        if (currentUser && users[currentUser]) {
+            cartCount = userCarts[currentUser] ? userCarts[currentUser].length : 0;
+            msgCount = users[currentUser].inbox ? users[currentUser].inbox.length : 0;
+        }
+
         let cBadge = document.getElementById('cart-badge');
         if(cartCount > 0) { cBadge.innerText = cartCount; cBadge.classList.remove('hidden'); } 
         else { cBadge.classList.add('hidden'); }
         
-        // Show message badge if there are messages
-        let msgCount = users[currentUser].inbox ? users[currentUser].inbox.length : 0;
         let mBadge = document.getElementById('msg-badge');
         if(msgCount > 0) { mBadge.innerText = msgCount; mBadge.classList.remove('hidden'); }
         else { mBadge.classList.add('hidden'); }
@@ -611,7 +639,6 @@
     window.viewProduct = function(id) {
         const p = products.find(prod => prod.id === id);
         if(!p) return;
-        const myInfo = users[currentUser] || {};
         let imgHtml = p.image ? `<img src="${p.image}" style="width:100%; height:250px; object-fit:contain; background:#fff; border-radius:4px;">` : ``;
         let btnDisabled = p.stocks <= 0 ? 'disabled' : '';
 
@@ -638,6 +665,13 @@
     }
 
     window.addToCart = function(id, buyNow) {
+        if (!currentUser) {
+            alert("Please Login or Register first to add items to your cart!");
+            window.closeModal('product-modal');
+            window.showBuyerTab('me');
+            return;
+        }
+
         let pIndex = products.findIndex(p => p.id === id);
         if (pIndex > -1 && products[pIndex].stocks > 0) {
             products[pIndex].stocks -= 1; 
@@ -655,6 +689,15 @@
     window.renderCart = function() {
         const list = document.getElementById('cart-list');
         list.innerHTML = '';
+        
+        if (!currentUser) {
+            list.innerHTML = "<div class='list-card'><p style='text-align:center;'>Please login to view your cart.</p><button class='btn-main' onclick='window.showBuyerTab(\"me\")'>Login</button></div>";
+            document.getElementById('cart-checkout-card').classList.add('hidden');
+            return;
+        } else {
+            document.getElementById('cart-checkout-card').classList.remove('hidden');
+        }
+
         let subtotal = 0;
         let cart = userCarts[currentUser] || [];
         let u = users[currentUser] || {};
@@ -662,6 +705,7 @@
         if (cart.length === 0) {
             list.innerHTML = "<div class='list-card'><p>Your shopping cart is empty.</p></div>";
             document.getElementById('cart-total').innerText = `Total: ₱0`;
+            document.getElementById('cart-checkout-card').classList.add('hidden');
             return;
         }
 
@@ -733,11 +777,11 @@
 
     // --- ME / PROFILE LOGIC ---
     window.loadProfile = function() {
+        if (!currentUser) return;
         let u = users[currentUser] || {};
         document.getElementById('profile-username').value = u.username || "";
         document.getElementById('profile-phone').value = u.phone || "";
         
-        // Verification section check
         if (u.isVerifiedSeller) {
             document.getElementById('vip-nav-btn').classList.remove('hidden');
             document.getElementById('seller-verification-section').innerHTML = '<h3 style="color:var(--verify-color);">Verification Status</h3><p>You are a verified seller.</p>';
@@ -782,6 +826,7 @@
     }
 
     window.renderBuyerOrders = function() {
+        if (!currentUser) return;
         const list = document.getElementById('buyer-order-list');
         list.innerHTML = '';
         const myOrders = orders.filter(o => o.buyerEmail === currentUser).reverse(); 
@@ -831,7 +876,7 @@
                 document.getElementById(`${prefix}-prod-price`).value = '';
                 document.getElementById(`${prefix}-prod-info`).value = '';
                 document.getElementById(`${prefix}-prod-stocks`).value = '';
-                document.getElementById(`${prefix}-prod-image`).value = ''; 
+                if(document.getElementById(`${prefix}-prod-image`)) document.getElementById(`${prefix}-prod-image`).value = ''; 
             });
         };
 
@@ -853,6 +898,12 @@
     window.renderBuyerMessages = function() {
         const list = document.getElementById('buyer-inbox-list');
         list.innerHTML = '';
+        
+        if (!currentUser) {
+             list.innerHTML = "<div class='list-card'><p style='text-align:center;'>Please login to view your messages.</p><button class='btn-main' onclick='window.showBuyerTab(\"me\")'>Login</button></div>";
+             return;
+        }
+
         let myInbox = users[currentUser].inbox || [];
         
         if(myInbox.length === 0) {
@@ -860,7 +911,6 @@
             return;
         }
 
-        // Show newest messages at bottom like chat
         myInbox.forEach(msg => {
             list.innerHTML += `
                 <div class="chat-msg chat-admin">
@@ -870,8 +920,6 @@
                 </div>
             `;
         });
-        
-        // Scroll to bottom
         list.scrollTop = list.scrollHeight;
     }
 
@@ -883,6 +931,7 @@
             document.getElementById(t).classList.add('hidden');
         });
         document.getElementById(tab).classList.remove('hidden');
+        
         if (tab === 'admin-manage-products') window.renderAdminProducts();
         if (tab === 'admin-manage-orders') window.renderAdminOrders();
         if (tab === 'admin-manage-users') window.renderAdminUsers();
@@ -1017,12 +1066,11 @@
     window.approveSellerRequest = function(email) {
         let code = Math.floor(100000 + Math.random() * 900000).toString();
         users[email].sellCode = code;
-        users[email].sellCodeExpiry = Date.now() + (30 * 60 * 1000); // 30 mins
+        users[email].sellCodeExpiry = Date.now() + (30 * 60 * 1000); 
         users[email].sellerRequested = false; 
         
         let msg = `Hello I'm Xdragon, I hear you want to sell an item? Please scan your IDs Xdrg Shop, delete that after 30 minutes!\n\nYour Verification code is: ${code}\n\n(Code expires in 30 minutes)`;
         
-        // Push message to user's inbox
         users[email].inbox.push({ text: msg, date: new Date().toLocaleString() });
         
         window.saveDatabase().then(() => {
