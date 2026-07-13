@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XDRG Shop 1.3</title>
+    <title>XDRG Shop 1.4</title>
     <style>
         :root {
             --main-color: #ee4d2d;
@@ -19,14 +19,17 @@
             background: var(--bg-color); 
             color: var(--text-dark); 
             padding-bottom: 70px; 
-            padding-top: 110px; 
+            padding-top: 140px; 
         }
         .hidden { display: none !important; }
         
         .top-bar {
             position: fixed; top: 0; left: 0; width: 100%; background: white; z-index: 100;
-            padding: 10px 15px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px;
+            padding: 10px 15px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .top-bar-title {
+            margin: 0; color: var(--main-color); text-align: center; font-size: 20px; font-weight: bold;
         }
         .top-bar input {
             width: 100%; margin: 0; border: 2px solid var(--main-color); border-radius: 4px;
@@ -65,13 +68,13 @@
         }
         .product-card { 
             background: white; border-radius: 4px; overflow: hidden; cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: relative;
         }
         .product-card img { width: 100%; height: 160px; object-fit: cover; }
         .product-info { padding: 10px; }
-        .product-title { font-size: 14px; margin: 0 0 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .product-price { color: var(--main-color); font-size: 16px; margin: 5px 0; }
-        .product-meta { font-size: 11px; color: gray; display: flex; justify-content: space-between; }
+        .product-title { font-size: 14px; margin: 0 0 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: bold;}
+        .product-price { color: var(--main-color); font-size: 16px; margin: 5px 0; font-weight: bold;}
+        .product-meta { font-size: 11px; color: gray; display: flex; justify-content: space-between; align-items: center;}
         
         .list-card { background: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 6px; }
         
@@ -95,6 +98,20 @@
         .badge-vip { background: var(--vip-color); }
         .badge-verify { background: var(--verify-color); }
 
+        .verified-icon { background: #1da1f2; color: white; border-radius: 50%; font-size: 9px; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; margin-left: 4px; vertical-align: middle; font-weight: bold; }
+
+        .rarity-badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; display: inline-block; margin-bottom: 5px; background: rgba(0,0,0,0.05); }
+        .rarity-1-of-1 { color: #ff0000; border: 1px solid #ff0000; }
+        .rarity-super { background: linear-gradient(90deg, red, orange, #e6c200, green, blue, indigo, violet); -webkit-background-clip: text; color: transparent; border: 1px solid #ccc; }
+        .rarity-mythical { color: #ff0000; border: 1px solid #ff0000; }
+        .rarity-legendary { color: #f1c40f; border: 1px solid #f1c40f; }
+        .rarity-rare { color: #0000ff; border: 1px solid #0000ff; }
+        .rarity-uncommon { color: #008000; border: 1px solid #008000; }
+        .rarity-common { color: #808080; border: 1px solid #808080; }
+        .rarity-limited { color: #000; border: 1px solid #000; }
+
+        .timer-text { font-size: 11px; color: #ff4757; font-weight: bold; margin-top: 2px; }
+
         #voucher-banner { background: #ffeb3b; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; margin-bottom: 15px; }
 
         .chat-msg { margin-bottom: 15px; padding: 10px; border-radius: 8px; font-size: 14px; position: relative; clear: both;}
@@ -111,6 +128,7 @@
     <div id="buyer-section" class="hidden">
         
         <div class="top-bar">
+            <h2 class="top-bar-title">XDRG Shop 1.4</h2>
             <input type="text" id="buyer-search" placeholder="Search item name, seller, or ID..." onkeyup="window.searchProducts()">
             <div id="category-bar">
                 <button class="cat-btn active" id="cat-All" onclick="window.setCategory('All')">All</button>
@@ -243,6 +261,21 @@
                             <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
                             <option value="Other">Other</option>
                         </select>
+                        <select id="vip-prod-rarity" onchange="window.toggleTimer('vip')">
+                            <option value="">Rarity (Optional)</option>
+                            <option value="1 of 1">1 of 1</option>
+                            <option value="Limited">Limited</option>
+                            <option value="Super">Super</option>
+                            <option value="Mythical">Mythical</option>
+                            <option value="Legendary">Legendary</option>
+                            <option value="Rare">Rare</option>
+                            <option value="Uncommon">Uncommon</option>
+                            <option value="Common">Common</option>
+                        </select>
+                        <div id="vip-timer-group" class="hidden">
+                            <label>Limited Timer (Optional End Date & Time)</label>
+                            <input type="datetime-local" id="vip-prod-timer">
+                        </div>
                         <input type="number" id="vip-prod-price" placeholder="Price (₱)">
                         <textarea id="vip-prod-info" placeholder="Product Description"></textarea>
                         <input type="number" id="vip-prod-stocks" placeholder="Number of Stocks">
@@ -305,6 +338,21 @@
                 <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
                 <option value="Other">Other</option>
             </select>
+            <select id="admin-prod-rarity" onchange="window.toggleTimer('admin')">
+                <option value="">Rarity (Optional)</option>
+                <option value="1 of 1">1 of 1</option>
+                <option value="Limited">Limited</option>
+                <option value="Super">Super</option>
+                <option value="Mythical">Mythical</option>
+                <option value="Legendary">Legendary</option>
+                <option value="Rare">Rare</option>
+                <option value="Uncommon">Uncommon</option>
+                <option value="Common">Common</option>
+            </select>
+            <div id="admin-timer-group" class="hidden">
+                <label>Limited Timer (Optional End Date & Time)</label>
+                <input type="datetime-local" id="admin-prod-timer">
+            </div>
             <input type="number" id="admin-prod-price" placeholder="Price (₱)">
             <textarea id="admin-prod-info" placeholder="Product Description"></textarea>
             <input type="number" id="admin-prod-stocks" placeholder="Number of Stocks">
@@ -360,7 +408,7 @@
         <div style="background:#f9f9f9; padding:10px; border-radius:5px; margin-bottom:15px; border: 1px solid #ddd;">
             <p style="margin:0 0 5px 0;"><b>Payment Method: Maya</b></p>
             <p style="margin:0;">Name: <b>ANDREA CASTRENCE</b></p>
-            <p style="margin:0;">Number: <b>099519500345</b></p>
+            <p style="margin:0;">Number: <b>639519500345</b></p>
         </div>
 
         <p>Total to Pay Now: <b id="checkout-final-amount" style="color:var(--main-color); font-size:24px;"></b></p>
@@ -380,7 +428,7 @@
             <li>15% Lifetime Discount</li>
             <li>Free Middleman Services</li>
         </ul>
-        <p><b>Instructions:</b> Send <b>₱159</b> to Maya: <b>09123456789</b></p>
+        <p><b>Instructions:</b> Send <b>₱159</b> to Maya: <b>639519500345</b></p>
         <button class="btn-vip" style="width:100%;" onclick="window.confirmVipPurchase()">I have paid, Request VIP</button>
         <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('vip-modal')">Cancel</button>
     </div>
@@ -400,6 +448,22 @@
             <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
             <option value="Other">Other</option>
         </select>
+        <label>Rarity</label>
+        <select id="edit-prod-rarity" onchange="window.toggleTimer('edit')">
+            <option value="">Rarity (Optional)</option>
+            <option value="1 of 1">1 of 1</option>
+            <option value="Limited">Limited</option>
+            <option value="Super">Super</option>
+            <option value="Mythical">Mythical</option>
+            <option value="Legendary">Legendary</option>
+            <option value="Rare">Rare</option>
+            <option value="Uncommon">Uncommon</option>
+            <option value="Common">Common</option>
+        </select>
+        <div id="edit-timer-group" class="hidden">
+            <label>Limited Timer (Optional End Date & Time)</label>
+            <input type="datetime-local" id="edit-prod-timer">
+        </div>
         <label>Price</label><input type="number" id="edit-prod-price">
         <label>Description</label><textarea id="edit-prod-info"></textarea>
         <label>Stocks</label><input type="number" id="edit-prod-stocks">
@@ -514,7 +578,29 @@
         return supabase.from('shop_data').upsert({ id: 1, data: { users, products, userCarts, orders, vouchers } }).then(({ error }) => { if (error) throw error; });
     }
 
+    window.toggleTimer = function(prefix) {
+        let val = document.getElementById(`${prefix}-prod-rarity`).value;
+        let group = document.getElementById(`${prefix}-timer-group`);
+        if(val === 'Limited') { group.classList.remove('hidden'); }
+        else { group.classList.add('hidden'); }
+    }
+
     setInterval(() => {
+        document.querySelectorAll('.timer-text').forEach(el => {
+            let end = parseInt(el.getAttribute('data-endtime'));
+            if (end) {
+                let left = end - Date.now();
+                if (left > 0) {
+                    let h = Math.floor(left / (1000 * 60 * 60));
+                    let m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
+                    let s = Math.floor((left % (1000 * 60)) / 1000);
+                    el.innerText = `Ends in: ${h}h ${m}m ${s}s`;
+                } else {
+                    el.innerText = "Expired";
+                }
+            }
+        });
+
         if(!currentUser || !users[currentUser] || isAdminView) return;
         let u = users[currentUser];
         let now = Date.now();
@@ -713,7 +799,8 @@
                 p.name.toLowerCase().includes(q) || 
                 p.addedByName.toLowerCase().includes(q) || 
                 p.id.toString().includes(q) ||
-                (p.category && p.category.toLowerCase().includes(q))
+                (p.category && p.category.toLowerCase().includes(q)) ||
+                (p.rarity && p.rarity.toLowerCase().includes(q))
             );
         }
         window.renderProducts(filtered);
@@ -726,20 +813,36 @@
 
         listToRender.forEach(p => {
             let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="background:#eee; height:160px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
+            
             let catLabel = p.category ? `<span style="background:#ddd; padding:2px 5px; border-radius:3px; font-size:10px;">${p.category}</span>` : '';
+            
+            let rarityHtml = '';
+            let timerHtml = '';
+            if (p.rarity) {
+                let rClass = p.rarity.toLowerCase().replace(/ /g, '-');
+                rarityHtml = `<div class="rarity-badge rarity-${rClass}">${p.rarity}</div>`;
+                if (p.rarity === 'Limited' && p.limitedTime) {
+                    timerHtml = `<div class="timer-text" data-endtime="${p.limitedTime}"></div>`;
+                }
+            }
+
+            let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
+
             list.innerHTML += `
                 <div class="product-card" onclick="window.viewProduct(${p.id})">
                     ${imgHtml}
                     <div class="product-info">
+                        ${rarityHtml}
                         <div class="product-title">${p.name}</div>
                         ${catLabel}
+                        ${timerHtml}
                         <div class="product-price">₱${p.price}</div>
                         <div class="product-meta">
                             <span>ID: ${p.id}</span>
                             <span>${p.stocks} left</span>
                         </div>
                         <div class="product-meta" style="margin-top:5px; color:var(--main-color);">
-                            Seller: ${p.addedByName}
+                            Seller: ${p.addedByName} ${verifiedHtml}
                         </div>
                     </div>
                 </div>
@@ -757,15 +860,29 @@
         let imgHtml = p.image ? `<img src="${p.image}" style="width:100%; height:250px; object-fit:contain; background:#fff; border-radius:4px;">` : ``;
         let btnDisabled = p.stocks <= 0 ? 'disabled' : '';
 
+        let rarityHtml = '';
+        let timerHtml = '';
+        if (p.rarity) {
+            let rClass = p.rarity.toLowerCase().replace(/ /g, '-');
+            rarityHtml = `<div class="rarity-badge rarity-${rClass}">${p.rarity}</div>`;
+            if (p.rarity === 'Limited' && p.limitedTime) {
+                timerHtml = `<div class="timer-text" data-endtime="${p.limitedTime}" style="font-size:13px; margin-bottom:10px;"></div>`;
+            }
+        }
+        
+        let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
+
         const detailDiv = document.getElementById('modal-product-details');
         detailDiv.innerHTML = `
             ${imgHtml}
             <h3 style="margin: 10px 0 5px 0;">${p.name}</h3>
-            <span style="background:#eee; padding:3px 8px; border-radius:4px; font-size:12px;">${p.category || 'Uncategorized'}</span>
+            ${rarityHtml}
+            <span style="background:#eee; padding:3px 8px; border-radius:4px; font-size:12px; display:inline-block; margin-bottom:5px;">${p.category || 'Uncategorized'}</span>
+            ${timerHtml}
             <h2 style="color:var(--main-color); margin: 10px 0 15px 0;">₱${p.price}</h2>
             
             <div style="font-size:14px; background:#f9f9f9; padding:10px; border-radius:4px; margin-bottom:15px;">
-                <b>Seller:</b> ${p.addedByName} <br>
+                <b>Seller:</b> ${p.addedByName} ${verifiedHtml} <br>
                 <b>Item ID:</b> ${p.id} <br>
                 <b>Stocks Left:</b> <span id="modal-stock-left">${p.stocks}</span>
             </div>
@@ -863,12 +980,14 @@
             let q = item.qty || 1;
             subtotal += (item.price * q);
             let imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; object-fit:cover; margin-right:10px; border-radius:4px;">` : ``;
+            let rarityHtml = item.rarity ? `<span class="rarity-badge rarity-${item.rarity.toLowerCase().replace(/ /g, '-')}" style="margin-left:5px;">${item.rarity}</span>` : '';
+            
             list.innerHTML += `
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center; padding:10px;">
                     <div style="display:flex; align-items:center;">
                         ${imgHtml}
                         <div>
-                            <div style="font-size:14px; font-weight:bold;">${item.name}</div>
+                            <div style="font-size:14px; font-weight:bold;">${item.name} ${rarityHtml}</div>
                             <div style="color:var(--main-color); font-size:14px;">₱${item.price} <span style="color:gray;">x${q}</span></div>
                         </div>
                     </div>
@@ -1063,18 +1182,28 @@
         const prefix = source === 'admin' ? 'admin' : 'vip';
         const name = document.getElementById(`${prefix}-prod-name`).value.trim();
         const category = document.getElementById(`${prefix}-prod-category`).value;
+        const rarity = document.getElementById(`${prefix}-prod-rarity`).value;
         const price = parseFloat(document.getElementById(`${prefix}-prod-price`).value);
         const info = document.getElementById(`${prefix}-prod-info`).value.trim();
         const stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value);
         const imageFile = document.getElementById(`${prefix}-prod-image`).files[0];
 
+        let limitedTime = null;
+        if(rarity === 'Limited') {
+            let t = document.getElementById(`${prefix}-prod-timer`).value;
+            if (t) limitedTime = new Date(t).getTime();
+        }
+
         if (!name || isNaN(price) || !info || isNaN(stocks)) return alert("Fill out all fields!");
 
         const finalizeSave = (imgUrl) => {
-            products.push({ id: Date.now(), name, category, price, info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username });
+            products.push({ id: Date.now(), name, category, rarity, limitedTime, price, info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username });
             window.saveDatabase().then(() => {
                 alert("Product Published!");
                 document.getElementById(`${prefix}-prod-name`).value = '';
+                document.getElementById(`${prefix}-prod-rarity`).value = '';
+                document.getElementById(`${prefix}-prod-timer`).value = '';
+                document.getElementById(`${prefix}-timer-group`).classList.add('hidden');
                 document.getElementById(`${prefix}-prod-price`).value = '';
                 document.getElementById(`${prefix}-prod-info`).value = '';
                 document.getElementById(`${prefix}-prod-stocks`).value = '';
@@ -1161,13 +1290,15 @@
         list.innerHTML = '';
         if (products.length === 0) return list.innerHTML = "<p>No products.</p>";
         products.forEach(p => {
+            let rarityHtml = p.rarity ? `<span class="rarity-badge rarity-${p.rarity.toLowerCase().replace(/ /g, '-')}">${p.rarity}</span>` : '';
+            let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
             list.innerHTML += `
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <b>${p.name}</b> <br>
+                        <b>${p.name}</b> ${rarityHtml} <br>
                         <span style="font-size:11px; background:#eee; padding:2px 4px;">${p.category || 'None'}</span><br>
                         <span style="color:var(--main-color);">₱${p.price}</span> | Stocks: ${p.stocks} <br>
-                        <span style="font-size: 11px; color:gray;">Seller: ${p.addedByName} (ID: ${p.id})</span>
+                        <span style="font-size: 11px; color:gray;">Seller: ${p.addedByName} ${verifiedHtml} (ID: ${p.id})</span>
                     </div>
                     <div style="display:flex; flex-direction:column; gap:5px;">
                         <button class="btn-action" onclick="window.openEditProduct(${p.id})">Edit</button>
@@ -1184,6 +1315,17 @@
         document.getElementById('edit-prod-id').value = p.id;
         document.getElementById('edit-prod-name').value = p.name;
         document.getElementById('edit-prod-category').value = p.category || "Other";
+        document.getElementById('edit-prod-rarity').value = p.rarity || "";
+        
+        window.toggleTimer('edit');
+        if(p.rarity === 'Limited' && p.limitedTime) {
+            let d = new Date(p.limitedTime);
+            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            document.getElementById('edit-prod-timer').value = d.toISOString().slice(0, 16);
+        } else {
+            document.getElementById('edit-prod-timer').value = "";
+        }
+
         document.getElementById('edit-prod-price').value = p.price;
         document.getElementById('edit-prod-info').value = p.info;
         document.getElementById('edit-prod-stocks').value = p.stocks;
@@ -1196,6 +1338,15 @@
         if(pIndex > -1) {
             products[pIndex].name = document.getElementById('edit-prod-name').value;
             products[pIndex].category = document.getElementById('edit-prod-category').value;
+            products[pIndex].rarity = document.getElementById('edit-prod-rarity').value;
+            
+            if(products[pIndex].rarity === 'Limited') {
+                let t = document.getElementById('edit-prod-timer').value;
+                products[pIndex].limitedTime = t ? new Date(t).getTime() : null;
+            } else {
+                products[pIndex].limitedTime = null;
+            }
+
             products[pIndex].price = parseFloat(document.getElementById('edit-prod-price').value);
             products[pIndex].info = document.getElementById('edit-prod-info').value;
             products[pIndex].stocks = parseInt(document.getElementById('edit-prod-stocks').value);
@@ -1277,7 +1428,7 @@
             if (data.sellerRequested && !data.isVerifiedSeller) {
                 btnStr += `<button class="btn-verify" onclick="window.approveSellerRequest('${email}')">Approve Seller Request (Sends Code)</button>`;
             } else if (data.isVerifiedSeller) {
-                btnStr += `<span class="badge badge-verify">Verified Seller</span>`;
+                btnStr += `<span class="badge badge-verify">Verified Seller</span> <span class="verified-icon">✓</span>`;
             }
 
             list.innerHTML += `
