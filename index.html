@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XDRG Shop</title>
+    <title>XDRG Shop 1.3</title>
     <style>
         :root {
-            --main-color: #ee4d2d; /* Shopee Orange */
+            --main-color: #ee4d2d;
             --bg-color: #f5f5f5;
             --text-dark: #2f3542;
             --vip-color: #9c88ff;
@@ -18,22 +18,31 @@
             padding: 0; 
             background: var(--bg-color); 
             color: var(--text-dark); 
-            padding-bottom: 70px; /* Space for bottom nav */
-            padding-top: 60px; /* Space for top bar */
+            padding-bottom: 70px; 
+            padding-top: 110px; 
         }
         .hidden { display: none !important; }
         
-        /* App Layout */
         .top-bar {
             position: fixed; top: 0; left: 0; width: 100%; background: white; z-index: 100;
-            padding: 10px 15px; box-sizing: border-box; display: flex; align-items: center;
+            padding: 10px 15px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .top-bar input {
-            flex: 1; margin: 0; border: 2px solid var(--main-color); border-radius: 4px;
-            padding: 8px 12px; outline: none;
+            width: 100%; margin: 0; border: 2px solid var(--main-color); border-radius: 4px;
+            padding: 8px 12px; outline: none; box-sizing: border-box;
         }
         
+        #category-bar {
+            display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; padding-bottom: 5px;
+        }
+        #category-bar::-webkit-scrollbar { display: none; }
+        .cat-btn {
+            background: #f0f0f0; border: none; padding: 5px 12px; border-radius: 15px; font-size: 12px;
+            color: #333; cursor: pointer; transition: 0.2s;
+        }
+        .cat-btn.active { background: var(--main-color); color: white; }
+
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; background: white; z-index: 100;
             display: flex; justify-content: space-around; border-top: 1px solid #ddd;
@@ -51,7 +60,6 @@
 
         .container { max-width: 800px; margin: 0 auto; padding: 10px; }
         
-        /* 2x2 Grid Shopee Style */
         .product-grid {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
         }
@@ -67,7 +75,6 @@
         
         .list-card { background: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 6px; }
         
-        /* Admin specific tabs */
         .admin-nav { display: flex; gap: 5px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
         .admin-nav button { white-space: nowrap; }
 
@@ -90,20 +97,30 @@
 
         #voucher-banner { background: #ffeb3b; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; margin-bottom: 15px; }
 
-        /* Chat UI */
         .chat-msg { margin-bottom: 15px; padding: 10px; border-radius: 8px; font-size: 14px; position: relative; clear: both;}
         .chat-admin { background: #e3f2fd; float: left; border: 1px solid #bbdefb; max-width: 80%; }
         .chat-date { font-size: 10px; color: gray; margin-top: 5px; display: block; text-align: right; }
+        
+        .qty-control { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; }
+        .qty-btn { background: #eee; border: 1px solid #ccc; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-
     <div id="buyer-section" class="hidden">
         
         <div class="top-bar">
             <input type="text" id="buyer-search" placeholder="Search item name, seller, or ID..." onkeyup="window.searchProducts()">
+            <div id="category-bar">
+                <button class="cat-btn active" id="cat-All" onclick="window.setCategory('All')">All</button>
+                <button class="cat-btn" id="cat-Grow A Garden" onclick="window.setCategory('Grow A Garden')">Grow A Garden</button>
+                <button class="cat-btn" id="cat-Grow A Garden 2" onclick="window.setCategory('Grow A Garden 2')">Grow A Garden 2</button>
+                <button class="cat-btn" id="cat-Steal A Brainrot" onclick="window.setCategory('Steal A Brainrot')">Steal A Brainrot</button>
+                <button class="cat-btn" id="cat-Kick A Lucky Blocks" onclick="window.setCategory('Kick A Lucky Blocks')">Kick A Lucky Blocks</button>
+                <button class="cat-btn" id="cat-Don't Crash By Train For Brainrots" onclick="window.setCategory('Don\'t Crash By Train For Brainrots')">Don't Crash By Train For Brainrots</button>
+                <button class="cat-btn" id="cat-Other" onclick="window.setCategory('Other')">Other</button>
+            </div>
         </div>
 
         <div id="buyer-home">
@@ -114,21 +131,32 @@
         <div id="buyer-cart" class="hidden">
             <h3 style="margin-top:0;">My Cart</h3>
             <div id="cart-list"></div>
+            
             <div class="list-card" id="cart-checkout-card" style="margin-top:20px;">
-                <div style="text-align: right; margin-bottom: 10px;">
+                <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                    <input type="text" id="voucher-input-code" placeholder="Enter Voucher Code" style="margin:0;">
+                    <button class="btn-action" style="margin:0; width:auto;" onclick="window.applyVoucher()">Apply</button>
+                </div>
+                
+                <div style="text-align: right; margin-bottom: 5px;">
                     <label><input type="checkbox" id="midman-check" style="width:auto;" onchange="window.renderCart()"> Request Middleman (+₱5)</label>
                     <p id="vip-free-text" class="hidden" style="color:var(--vip-color); font-size:12px; margin:0;">*Middleman is FREE for VIPs</p>
                 </div>
+                
+                <div style="text-align: right; margin-bottom: 10px; padding-top: 5px; border-top: 1px dashed #ccc;">
+                    <label style="font-weight: bold; color: var(--main-color);">
+                        <input type="checkbox" id="downpayment-check" style="width:auto;" onchange="window.renderCart()"> 50% Downpayment
+                    </label>
+                </div>
+
                 <div id="cart-total" style="text-align: right; font-weight: bold;"></div>
                 <button class="btn-main" onclick="window.openCheckoutModal()">Checkout</button>
             </div>
         </div>
 
         <div id="buyer-messages" class="hidden">
-            <h3 style="margin-top:0;">Messages from Admin</h3>
-            <div id="buyer-inbox-list" class="list-card" style="min-height:300px;">
-                </div>
-            <p style="font-size:12px; text-align:center; color:gray;">Only xdrgxdragon@gmail.com can send messages here.</p>
+            <h3 style="margin-top:0;">Messages</h3>
+            <div id="buyer-inbox-list" class="list-card" style="min-height:300px;"></div>
         </div>
 
         <div id="buyer-me" class="hidden">
@@ -165,7 +193,7 @@
                 <div class="list-card">
                     <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('orders')">My Orders</button>
                     <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('profile-edit')">Edit Profile</button>
-                    <button id="vip-nav-btn" class="btn-verify hidden" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('vip-dashboard')">Seller Dashboard (Add Product)</button>
+                    <button id="vip-nav-btn" class="btn-verify hidden" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('vip-dashboard')">Seller Dashboard</button>
                     <button id="buy-vip-btn" class="btn-vip" style="width:100%; margin-bottom:10px;" onclick="window.openVipModal()">Upgrade to VIP</button>
                     <button class="btn-main" style="background:#555;" onclick="window.logout()">Logout</button>
                 </div>
@@ -202,14 +230,33 @@
                 </div>
 
                 <div id="me-vip-dashboard" class="hidden list-card">
-                    <h3 style="color:var(--verify-color);">Seller Dashboard - Publish Item</h3>
-                    <input type="text" id="vip-prod-name" placeholder="Product Name">
-                    <input type="number" id="vip-prod-price" placeholder="Price (₱)">
-                    <textarea id="vip-prod-info" placeholder="Product Description"></textarea>
-                    <input type="number" id="vip-prod-stocks" placeholder="Number of Stocks">
-                    <label>Product Image (Optional)</label>
-                    <input type="file" id="vip-prod-image" accept="image/*">
-                    <button class="btn-verify" style="width: 100%;" onclick="window.processImageAndAddProduct('vip')">Publish Product</button>
+                    <h3 style="color:var(--verify-color);">Seller Dashboard</h3>
+                    
+                    <div style="background:#f9f9f9; padding:15px; border-radius:5px; margin-bottom:15px;">
+                        <h4 style="margin-top:0;">Publish Item</h4>
+                        <input type="text" id="vip-prod-name" placeholder="Product Name">
+                        <select id="vip-prod-category">
+                            <option value="Grow A Garden">Grow A Garden</option>
+                            <option value="Grow A Garden 2">Grow A Garden 2</option>
+                            <option value="Steal A Brainrot">Steal A Brainrot</option>
+                            <option value="Kick A Lucky Blocks">Kick A Lucky Blocks</option>
+                            <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="number" id="vip-prod-price" placeholder="Price (₱)">
+                        <textarea id="vip-prod-info" placeholder="Product Description"></textarea>
+                        <input type="number" id="vip-prod-stocks" placeholder="Number of Stocks">
+                        <label>Product Image (Optional)</label>
+                        <input type="file" id="vip-prod-image" accept="image/*">
+                        <button class="btn-verify" style="width: 100%;" onclick="window.processImageAndAddProduct('vip')">Publish Product</button>
+                    </div>
+
+                    <div style="background:#fff3cd; padding:15px; border-radius:5px;">
+                        <h4 style="margin-top:0;">Voucher Creator</h4>
+                        <input type="text" id="vip-voucher-name" placeholder="Voucher Name / Code (e.g. SAVE10)">
+                        <input type="number" id="vip-voucher-pct" placeholder="% Off (e.g. 10)">
+                        <button class="btn-main" onclick="window.createVoucher('vip')">Create Voucher</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -243,12 +290,21 @@
             <button class="btn-outline" onclick="window.showAdminTab('admin-add-product')">Add Item</button>
             <button class="btn-outline" onclick="window.showAdminTab('admin-manage-orders')">Orders</button>
             <button class="btn-outline" onclick="window.showAdminTab('admin-manage-users')">Users</button>
+            <button class="btn-outline" onclick="window.showAdminTab('admin-vouchers-tab')">Vouchers</button>
             <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.showAdminTab('admin-messages-tab')">Messages</button>
         </div>
 
         <div id="admin-add-product" class="hidden">
             <h3>Add Product to Shop</h3>
             <input type="text" id="admin-prod-name" placeholder="Product Name">
+            <select id="admin-prod-category">
+                <option value="Grow A Garden">Grow A Garden</option>
+                <option value="Grow A Garden 2">Grow A Garden 2</option>
+                <option value="Steal A Brainrot">Steal A Brainrot</option>
+                <option value="Kick A Lucky Blocks">Kick A Lucky Blocks</option>
+                <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
+                <option value="Other">Other</option>
+            </select>
             <input type="number" id="admin-prod-price" placeholder="Price (₱)">
             <textarea id="admin-prod-info" placeholder="Product Description"></textarea>
             <input type="number" id="admin-prod-stocks" placeholder="Number of Stocks">
@@ -272,9 +328,19 @@
             <div id="admin-user-list"></div>
         </div>
 
+        <div id="admin-vouchers-tab" class="hidden">
+            <h3>Voucher Creator</h3>
+            <div class="list-card">
+                <input type="text" id="admin-voucher-name" placeholder="Voucher Name / Code (e.g. SAVE10)">
+                <input type="number" id="admin-voucher-pct" placeholder="% Off (e.g. 10)">
+                <button class="btn-main" onclick="window.createVoucher('admin')">Create Voucher</button>
+            </div>
+            <h4>Active Vouchers</h4>
+            <div id="admin-voucher-list"></div>
+        </div>
+
         <div id="admin-messages-tab" class="hidden">
-            <h3>Buyer Chats</h3>
-            <p style="font-size:12px; color:gray;">Click a buyer to open chat and send a message.</p>
+            <h3>Chats</h3>
             <div id="admin-chat-user-list" class="list-card"></div>
         </div>
     </div>
@@ -290,7 +356,16 @@
 <div id="checkout-modal" class="modal hidden">
     <div class="modal-content">
         <h2 style="color:var(--main-color); margin-top:0;">Confirm Checkout</h2>
-        <p>Final Amount to Pay: <b id="checkout-final-amount" style="color:var(--main-color); font-size:24px;"></b></p>
+        
+        <div style="background:#f9f9f9; padding:10px; border-radius:5px; margin-bottom:15px; border: 1px solid #ddd;">
+            <p style="margin:0 0 5px 0;"><b>Payment Method: Maya</b></p>
+            <p style="margin:0;">Name: <b>ANDREA CASTRENCE</b></p>
+            <p style="margin:0;">Number: <b>099519500345</b></p>
+        </div>
+
+        <p>Total to Pay Now: <b id="checkout-final-amount" style="color:var(--main-color); font-size:24px;"></b></p>
+        <p id="checkout-balance-info" class="hidden" style="color:red; font-size:14px; font-weight:bold;"></p>
+        
         <p style="font-size:14px;">Please ensure your phone number in your profile is correct.</p>
         <button class="btn-main" onclick="window.confirmCheckout()">Place Order</button>
         <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('checkout-modal')">Cancel</button>
@@ -316,6 +391,15 @@
         <h2>Edit Product</h2>
         <input type="hidden" id="edit-prod-id">
         <label>Name</label><input type="text" id="edit-prod-name">
+        <label>Category</label>
+        <select id="edit-prod-category">
+            <option value="Grow A Garden">Grow A Garden</option>
+            <option value="Grow A Garden 2">Grow A Garden 2</option>
+            <option value="Steal A Brainrot">Steal A Brainrot</option>
+            <option value="Kick A Lucky Blocks">Kick A Lucky Blocks</option>
+            <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
+            <option value="Other">Other</option>
+        </select>
         <label>Price</label><input type="number" id="edit-prod-price">
         <label>Description</label><textarea id="edit-prod-info"></textarea>
         <label>Stocks</label><input type="number" id="edit-prod-stocks">
@@ -328,14 +412,21 @@
     <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
         <h3 id="chat-target-name" style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px;">Chat</h3>
         
-        <div id="chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;">
-            </div>
+        <div id="chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;"></div>
         
         <div style="display:flex; gap:10px; margin-top:15px;">
             <input type="text" id="admin-chat-input" placeholder="Type a message..." style="margin:0; flex:1;">
             <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.sendAdminMessage()">Send</button>
         </div>
         <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('admin-chat-modal')">Close Chat</button>
+    </div>
+</div>
+
+<div id="send-voucher-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 style="margin-top:0;">Send Voucher to Buyer</h3>
+        <div id="send-voucher-list"></div>
+        <button class="btn-outline" style="width:100%; margin-top:15px;" onclick="window.closeModal('send-voucher-modal')">Cancel</button>
     </div>
 </div>
 
@@ -352,12 +443,20 @@
     let products = []; 
     let userCarts = {};
     let orders = [];
+    let vouchers = [];
     
     let currentUser = localStorage.getItem('xdrg_logged_in_user');
     let tempCheckoutTotal = 0;
+    let tempBalance = 0;
     let currentActiveTab = 'home';
     let isAdminView = false;
     let chatTargetUser = "";
+    let currentCategory = "All";
+    
+    window.tempSelectedQty = 1;
+    window.currentViewProductId = null;
+    window.appliedVoucher = null;
+    window.tempVoucherTarget = null;
 
     function syncStateFromDB(data) {
         if (!data) return;
@@ -365,6 +464,7 @@
         products = data.products || [];
         userCarts = data.userCarts || {};
         orders = data.orders || [];
+        vouchers = data.vouchers || [];
         
         for(let k in users) { if(!users[k].inbox) users[k].inbox = []; }
 
@@ -373,6 +473,7 @@
                 if(currentActiveTab === 'admin-manage-products') window.renderAdminProducts();
                 if(currentActiveTab === 'admin-manage-orders') window.renderAdminOrders();
                 if(currentActiveTab === 'admin-manage-users') window.renderAdminUsers();
+                if(currentActiveTab === 'admin-vouchers-tab') window.renderAdminVouchers();
                 if(currentActiveTab === 'admin-messages-tab') window.renderAdminChatList();
                 if(chatTargetUser) window.renderAdminChatHistory(); 
             } else {
@@ -384,7 +485,6 @@
                 if(currentActiveTab === 'messages') window.renderBuyerMessages();
             }
         } else {
-            // Keep guest UI up to date
             if(currentActiveTab === 'home') window.searchProducts();
         }
     }
@@ -395,7 +495,6 @@
             syncStateFromDB(data.data);
         }
         
-        // Let user browse if not logged in, otherwise auto route them
         if (currentUser && users[currentUser]) {
             routeUser(currentUser);
         } else {
@@ -412,7 +511,7 @@
     initDB();
 
     window.saveDatabase = function() {
-        return supabase.from('shop_data').upsert({ id: 1, data: { users, products, userCarts, orders } }).then(({ error }) => { if (error) throw error; });
+        return supabase.from('shop_data').upsert({ id: 1, data: { users, products, userCarts, orders, vouchers } }).then(({ error }) => { if (error) throw error; });
     }
 
     setInterval(() => {
@@ -447,6 +546,7 @@
 
     function routeUser(email) {
         currentUser = email;
+        window.appliedVoucher = null; 
         
         if (email === ADMIN_EMAIL) {
             isAdminView = true;
@@ -461,7 +561,6 @@
             document.getElementById('admin-section').classList.add('hidden');
             document.getElementById('buyer-section').classList.remove('hidden');
             
-            // Show logged in section inside the ME tab
             document.getElementById('auth-section').classList.add('hidden');
             document.getElementById('logged-in-me').classList.remove('hidden');
             
@@ -508,9 +607,9 @@
 
     window.logout = function() {
         currentUser = null;
+        window.appliedVoucher = null;
         localStorage.removeItem('xdrg_logged_in_user');
         
-        // Boot user out to guest view (Me tab)
         document.getElementById('admin-section').classList.add('hidden');
         document.getElementById('buyer-section').classList.remove('hidden');
         
@@ -518,7 +617,6 @@
         window.showBuyerTab('me');
     }
 
-    // --- BUYER NAV LOGIC ---
     window.showBuyerTab = function(tab) {
         currentActiveTab = tab;
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -594,17 +692,28 @@
         else { mBadge.classList.add('hidden'); }
     }
 
-    // --- PRODUCT SEARCH & RENDER (HOME TAB) ---
+    window.setCategory = function(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.cat-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(`cat-${cat}`).classList.add('active');
+        window.searchProducts();
+    }
+
     window.searchProducts = function() {
         let q = (document.getElementById('buyer-search').value || '').toLowerCase();
-        const available = products.filter(p => p.stocks > 0);
+        let available = products.filter(p => p.stocks > 0);
         
+        if (currentCategory !== "All") {
+            available = available.filter(p => p.category === currentCategory);
+        }
+
         let filtered = available;
         if(q) {
             filtered = available.filter(p => 
                 p.name.toLowerCase().includes(q) || 
                 p.addedByName.toLowerCase().includes(q) || 
-                p.id.toString().includes(q)
+                p.id.toString().includes(q) ||
+                (p.category && p.category.toLowerCase().includes(q))
             );
         }
         window.renderProducts(filtered);
@@ -617,11 +726,13 @@
 
         listToRender.forEach(p => {
             let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="background:#eee; height:160px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
+            let catLabel = p.category ? `<span style="background:#ddd; padding:2px 5px; border-radius:3px; font-size:10px;">${p.category}</span>` : '';
             list.innerHTML += `
                 <div class="product-card" onclick="window.viewProduct(${p.id})">
                     ${imgHtml}
                     <div class="product-info">
                         <div class="product-title">${p.name}</div>
+                        ${catLabel}
                         <div class="product-price">₱${p.price}</div>
                         <div class="product-meta">
                             <span>ID: ${p.id}</span>
@@ -639,6 +750,10 @@
     window.viewProduct = function(id) {
         const p = products.find(prod => prod.id === id);
         if(!p) return;
+        
+        window.currentViewProductId = id;
+        window.tempSelectedQty = 1;
+        
         let imgHtml = p.image ? `<img src="${p.image}" style="width:100%; height:250px; object-fit:contain; background:#fff; border-radius:4px;">` : ``;
         let btnDisabled = p.stocks <= 0 ? 'disabled' : '';
 
@@ -646,25 +761,42 @@
         detailDiv.innerHTML = `
             ${imgHtml}
             <h3 style="margin: 10px 0 5px 0;">${p.name}</h3>
-            <h2 style="color:var(--main-color); margin: 0 0 15px 0;">₱${p.price}</h2>
+            <span style="background:#eee; padding:3px 8px; border-radius:4px; font-size:12px;">${p.category || 'Uncategorized'}</span>
+            <h2 style="color:var(--main-color); margin: 10px 0 15px 0;">₱${p.price}</h2>
             
             <div style="font-size:14px; background:#f9f9f9; padding:10px; border-radius:4px; margin-bottom:15px;">
                 <b>Seller:</b> ${p.addedByName} <br>
                 <b>Item ID:</b> ${p.id} <br>
-                <b>Stocks Left:</b> ${p.stocks}
+                <b>Stocks Left:</b> <span id="modal-stock-left">${p.stocks}</span>
             </div>
             
             <p style="font-size:14px; white-space: pre-wrap;">${p.info}</p>
             
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn-outline" style="flex:1;" onclick="window.addToCart(${p.id}, false)" ${btnDisabled}>Add to Cart</button>
-                <button class="btn-main" style="flex:1; margin:0;" onclick="window.addToCart(${p.id}, true)" ${btnDisabled}>Buy Now</button>
+            <div class="qty-control">
+                <button class="qty-btn" onclick="window.updateQty(-1)" ${btnDisabled}>-</button>
+                <span id="modal-qty-display" style="font-weight:bold; font-size:18px;">1</span>
+                <button class="qty-btn" onclick="window.updateQty(1)" ${btnDisabled}>+</button>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn-outline" style="flex:1;" onclick="window.addToCart(false)" ${btnDisabled}>Add to Cart</button>
+                <button class="btn-main" style="flex:1; margin:0;" onclick="window.addToCart(true)" ${btnDisabled}>Buy Now</button>
             </div>
         `;
         document.getElementById('product-modal').classList.remove('hidden');
     }
 
-    window.addToCart = function(id, buyNow) {
+    window.updateQty = function(change) {
+        let p = products.find(prod => prod.id === window.currentViewProductId);
+        if(!p) return;
+        let newQty = window.tempSelectedQty + change;
+        if (newQty < 1) newQty = 1;
+        if (newQty > p.stocks) newQty = p.stocks;
+        window.tempSelectedQty = newQty;
+        document.getElementById('modal-qty-display').innerText = window.tempSelectedQty;
+    }
+
+    window.addToCart = function(buyNow) {
         if (!currentUser) {
             alert("Please Login or Register first to add items to your cart!");
             window.closeModal('product-modal');
@@ -672,11 +804,17 @@
             return;
         }
 
-        let pIndex = products.findIndex(p => p.id === id);
-        if (pIndex > -1 && products[pIndex].stocks > 0) {
-            products[pIndex].stocks -= 1; 
-            if (!userCarts[currentUser]) userCarts[currentUser] = [];
-            userCarts[currentUser].push({...products[pIndex]}); 
+        let pIndex = products.findIndex(p => p.id === window.currentViewProductId);
+        if (pIndex > -1 && products[pIndex].stocks >= window.tempSelectedQty) {
+            
+            let existingItem = userCarts[currentUser].find(i => i.id === window.currentViewProductId);
+            if (existingItem) {
+                existingItem.qty = (existingItem.qty || 1) + window.tempSelectedQty;
+            } else {
+                userCarts[currentUser].push({...products[pIndex], qty: window.tempSelectedQty}); 
+            }
+            
+            products[pIndex].stocks -= window.tempSelectedQty; 
             window.saveDatabase(); 
             window.closeModal('product-modal');
             window.updateBadges();
@@ -685,7 +823,19 @@
         }
     }
 
-    // --- CART ---
+    window.applyVoucher = function() {
+        let code = document.getElementById('voucher-input-code').value.trim();
+        if(!code) return;
+        
+        let v = vouchers.find(x => x.code === code);
+        if (!v) return alert("Invalid Voucher Code.");
+        if (v.usedBy && v.usedBy.includes(currentUser)) return alert("You have already used this voucher.");
+        
+        window.appliedVoucher = v;
+        alert(`Voucher ${v.code} Applied! (${v.discount}% OFF)`);
+        window.renderCart();
+    }
+
     window.renderCart = function() {
         const list = document.getElementById('cart-list');
         list.innerHTML = '';
@@ -710,7 +860,8 @@
         }
 
         cart.forEach((item, index) => {
-            subtotal += item.price;
+            let q = item.qty || 1;
+            subtotal += (item.price * q);
             let imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; object-fit:cover; margin-right:10px; border-radius:4px;">` : ``;
             list.innerHTML += `
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center; padding:10px;">
@@ -718,7 +869,7 @@
                         ${imgHtml}
                         <div>
                             <div style="font-size:14px; font-weight:bold;">${item.name}</div>
-                            <div style="color:var(--main-color); font-size:14px;">₱${item.price}</div>
+                            <div style="color:var(--main-color); font-size:14px;">₱${item.price} <span style="color:gray;">x${q}</span></div>
                         </div>
                     </div>
                     <button class="btn-danger" style="margin:0;" onclick="window.removeFromCart(${index}, ${item.id})">Del</button>
@@ -727,9 +878,16 @@
         });
 
         let isMidmanChecked = document.getElementById('midman-check').checked;
+        let isDownpayment = document.getElementById('downpayment-check').checked;
         let isVIP = u.isVIP;
         let finalTotal = subtotal;
         let detailsHtml = `Subtotal: ₱${subtotal}`;
+
+        if (window.appliedVoucher) {
+            let disc = window.appliedVoucher.discount;
+            finalTotal = finalTotal * ((100 - disc) / 100);
+            detailsHtml += ` <br><span style="color:#e67e22; font-size:12px;">- ${disc}% Voucher (${window.appliedVoucher.code})</span>`;
+        }
 
         if (isVIP) { finalTotal = finalTotal * 0.85; detailsHtml += ` <br><span style="color:green; font-size:12px;">- 15% VIP Discount</span>`; }
         if (u.registeredAt && (Date.now() - u.registeredAt < (12 * 60 * 60 * 1000))) {
@@ -738,14 +896,23 @@
         if (isMidmanChecked && !isVIP) { finalTotal += 5; detailsHtml += ` <br><span style="color:gray; font-size:12px;">+ ₱5 Middleman Service</span>`; } 
         else if (isMidmanChecked && isVIP) { detailsHtml += ` <br><span style="color:var(--vip-color); font-size:12px;">+ Middleman Service (Free)</span>`; }
 
-        tempCheckoutTotal = Math.round(finalTotal * 100) / 100; 
-        document.getElementById('cart-total').innerHTML = `${detailsHtml} <br> <span style="font-size:20px; color:var(--main-color);">Total: ₱${tempCheckoutTotal}</span>`;
+        if (isDownpayment) {
+            let half = finalTotal / 2;
+            tempCheckoutTotal = Math.round(half * 100) / 100;
+            tempBalance = Math.round(half * 100) / 100;
+            detailsHtml += ` <br><span style="color:var(--main-color); font-size:12px; font-weight:bold;">50% Downpayment Applied</span>`;
+        } else {
+            tempCheckoutTotal = Math.round(finalTotal * 100) / 100; 
+            tempBalance = 0;
+        }
+
+        document.getElementById('cart-total').innerHTML = `${detailsHtml} <br> <span style="font-size:20px; color:var(--main-color);">Pay Now: ₱${tempCheckoutTotal}</span>`;
     }
 
     window.removeFromCart = function(index, productId) {
-        userCarts[currentUser].splice(index, 1);
+        let removedItem = userCarts[currentUser].splice(index, 1)[0];
         let pIndex = products.findIndex(p => p.id === productId);
-        if (pIndex > -1) products[pIndex].stocks += 1; 
+        if (pIndex > -1) products[pIndex].stocks += (removedItem.qty || 1); 
         window.saveDatabase(); 
         window.renderCart();
         window.updateBadges();
@@ -755,27 +922,52 @@
         if (!userCarts[currentUser] || userCarts[currentUser].length === 0) return alert("Cart is empty!");
         let myInfo = users[currentUser] || {};
         if (!myInfo.phone) if(!confirm("Your Phone is missing in Profile. Checkout anyway?")) return window.showBuyerTab('me');
+        
         document.getElementById('checkout-final-amount').innerText = `₱${tempCheckoutTotal}`;
+        let balInfo = document.getElementById('checkout-balance-info');
+        
+        if (tempBalance > 0) {
+            balInfo.innerText = `Remaining Balance: ₱${tempBalance} (Must be paid in 3-7 days based on Seller terms)`;
+            balInfo.classList.remove('hidden');
+        } else {
+            balInfo.classList.add('hidden');
+        }
+        
         document.getElementById('checkout-modal').classList.remove('hidden');
     }
 
     window.confirmCheckout = function() {
+        if (window.appliedVoucher) {
+            let vIndex = vouchers.findIndex(x => x.code === window.appliedVoucher.code);
+            if(vIndex > -1) {
+                if(!vouchers[vIndex].usedBy) vouchers[vIndex].usedBy = [];
+                vouchers[vIndex].usedBy.push(currentUser);
+            }
+        }
+
         orders.push({
             id: Date.now(), date: new Date().toLocaleString(),
             buyerEmail: currentUser, buyerUsername: users[currentUser].username,
             buyerPhone: users[currentUser].phone || "Not provided",
-            items: [...userCarts[currentUser]], total: tempCheckoutTotal,
-            midman: document.getElementById('midman-check').checked, status: "Pending Payment" 
+            items: [...userCarts[currentUser]], 
+            totalPaid: tempCheckoutTotal,
+            balance: tempBalance,
+            midman: document.getElementById('midman-check').checked, 
+            status: "Pending Payment" 
         });
+        
         userCarts[currentUser] = []; 
         document.getElementById('midman-check').checked = false;
+        document.getElementById('downpayment-check').checked = false;
+        window.appliedVoucher = null;
+        document.getElementById('voucher-input-code').value = '';
+        
         window.saveDatabase(); 
         window.closeModal('checkout-modal');
         window.showBuyerTab('me');
         window.showMeSubTab('orders');
     }
 
-    // --- ME / PROFILE LOGIC ---
     window.loadProfile = function() {
         if (!currentUser) return;
         let u = users[currentUser] || {};
@@ -834,7 +1026,15 @@
 
         myOrders.forEach(o => {
             let statusColor = o.status === "Completed" ? "green" : (o.status === "Cancelled" ? "red" : "var(--main-color)");
-            let itemsHtml = o.items.map(item => `<div style="font-size:14px;">${item.name} <span style="float:right;">₱${item.price}</span></div>`).join('');
+            let itemsHtml = o.items.map(item => `
+                <div style="font-size:14px; display:flex; justify-content:space-between; margin-top:5px;">
+                    <span>- ${item.name} (x${item.qty || 1})</span>
+                    <span>₱${item.price * (item.qty || 1)}</span>
+                </div>
+            `).join('');
+            
+            let balHtml = o.balance > 0 ? `<p style="color:red; font-size:12px; margin:5px 0 0 0;">Balance Due: ₱${o.balance}</p>` : '';
+
             list.innerHTML += `
                 <div class="list-card" style="border:1px solid #eee;">
                     <div style="display:flex; justify-content:space-between; border-bottom:1px dashed #ccc; padding-bottom:10px; margin-bottom:10px;">
@@ -844,7 +1044,8 @@
                     ${itemsHtml}
                     ${o.midman ? `<p style="font-size:11px; color:gray; margin:5px 0;">+ Middleman Requested</p>` : ''}
                     <div style="text-align:right; margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
-                        Total: <b style="color:var(--main-color); font-size:16px;">₱${o.total}</b>
+                        Paid: <b style="color:var(--main-color); font-size:16px;">₱${o.totalPaid}</b>
+                        ${balHtml}
                     </div>
                 </div>
             `;
@@ -861,6 +1062,7 @@
     window.processImageAndAddProduct = function(source) {
         const prefix = source === 'admin' ? 'admin' : 'vip';
         const name = document.getElementById(`${prefix}-prod-name`).value.trim();
+        const category = document.getElementById(`${prefix}-prod-category`).value;
         const price = parseFloat(document.getElementById(`${prefix}-prod-price`).value);
         const info = document.getElementById(`${prefix}-prod-info`).value.trim();
         const stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value);
@@ -869,7 +1071,7 @@
         if (!name || isNaN(price) || !info || isNaN(stocks)) return alert("Fill out all fields!");
 
         const finalizeSave = (imgUrl) => {
-            products.push({ id: Date.now(), name, price, info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username });
+            products.push({ id: Date.now(), name, category, price, info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username });
             window.saveDatabase().then(() => {
                 alert("Product Published!");
                 document.getElementById(`${prefix}-prod-name`).value = '';
@@ -894,7 +1096,23 @@
         } else finalizeSave(""); 
     }
 
-    // --- BUYER MESSAGES UI ---
+    window.createVoucher = function(source) {
+        const prefix = source === 'admin' ? 'admin' : 'vip';
+        const code = document.getElementById(`${prefix}-voucher-name`).value.trim().toUpperCase();
+        const pct = parseInt(document.getElementById(`${prefix}-voucher-pct`).value);
+
+        if(!code || isNaN(pct) || pct <= 0 || pct >= 100) return alert("Invalid voucher details.");
+        if(vouchers.find(v => v.code === code)) return alert("Voucher code already exists.");
+
+        vouchers.push({ code, discount: pct, createdBy: currentUser, usedBy: [] });
+        window.saveDatabase().then(() => {
+            alert("Voucher Created!");
+            document.getElementById(`${prefix}-voucher-name`).value = '';
+            document.getElementById(`${prefix}-voucher-pct`).value = '';
+            if(isAdminView) window.renderAdminVouchers();
+        });
+    }
+
     window.renderBuyerMessages = function() {
         const list = document.getElementById('buyer-inbox-list');
         list.innerHTML = '';
@@ -914,7 +1132,7 @@
         myInbox.forEach(msg => {
             list.innerHTML += `
                 <div class="chat-msg chat-admin">
-                    <b>Admin Xdragon:</b><br>
+                    <b>Admin / System:</b><br>
                     <span style="white-space: pre-wrap;">${msg.text}</span>
                     <span class="chat-date">${msg.date}</span>
                 </div>
@@ -924,10 +1142,9 @@
     }
 
 
-    // --- ADMIN PANEL LOGIC ---
     window.showAdminTab = function(tab) {
         currentActiveTab = tab;
-        ['admin-add-product', 'admin-manage-products', 'admin-manage-orders', 'admin-manage-users', 'admin-messages-tab'].forEach(t => {
+        ['admin-add-product', 'admin-manage-products', 'admin-manage-orders', 'admin-manage-users', 'admin-vouchers-tab', 'admin-messages-tab'].forEach(t => {
             document.getElementById(t).classList.add('hidden');
         });
         document.getElementById(tab).classList.remove('hidden');
@@ -935,6 +1152,7 @@
         if (tab === 'admin-manage-products') window.renderAdminProducts();
         if (tab === 'admin-manage-orders') window.renderAdminOrders();
         if (tab === 'admin-manage-users') window.renderAdminUsers();
+        if (tab === 'admin-vouchers-tab') window.renderAdminVouchers();
         if (tab === 'admin-messages-tab') window.renderAdminChatList();
     }
 
@@ -947,6 +1165,7 @@
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
                         <b>${p.name}</b> <br>
+                        <span style="font-size:11px; background:#eee; padding:2px 4px;">${p.category || 'None'}</span><br>
                         <span style="color:var(--main-color);">₱${p.price}</span> | Stocks: ${p.stocks} <br>
                         <span style="font-size: 11px; color:gray;">Seller: ${p.addedByName} (ID: ${p.id})</span>
                     </div>
@@ -964,6 +1183,7 @@
         if(!p) return;
         document.getElementById('edit-prod-id').value = p.id;
         document.getElementById('edit-prod-name').value = p.name;
+        document.getElementById('edit-prod-category').value = p.category || "Other";
         document.getElementById('edit-prod-price').value = p.price;
         document.getElementById('edit-prod-info').value = p.info;
         document.getElementById('edit-prod-stocks').value = p.stocks;
@@ -975,16 +1195,19 @@
         let pIndex = products.findIndex(x => x.id === id);
         if(pIndex > -1) {
             products[pIndex].name = document.getElementById('edit-prod-name').value;
+            products[pIndex].category = document.getElementById('edit-prod-category').value;
             products[pIndex].price = parseFloat(document.getElementById('edit-prod-price').value);
             products[pIndex].info = document.getElementById('edit-prod-info').value;
             products[pIndex].stocks = parseInt(document.getElementById('edit-prod-stocks').value);
             window.saveDatabase(); window.closeModal('edit-product-modal');
+            window.renderAdminProducts();
         }
     }
 
     window.deleteProduct = function(id) {
         if(confirm("Delete this product?")) {
             products = products.filter(x => x.id !== id); window.saveDatabase();
+            window.renderAdminProducts();
         }
     }
 
@@ -996,15 +1219,25 @@
 
         reversed.forEach((o) => {
             let originalIndex = orders.findIndex(x => x.id === o.id); 
+            
+            let itemsHtml = o.items.map(item => `<div style="font-size:13px;">- ${item.name} <b style="color:var(--main-color)">x${item.qty || 1}</b></div>`).join('');
+
             list.innerHTML += `
                 <div class="list-card">
                     <span style="font-size:12px; color:gray;">ID: ${o.id} | ${o.date}</span><br>
                     <b>Buyer: ${o.buyerUsername}</b> (${o.buyerEmail})<br>
                     <span style="font-size:13px;">Phone: <b>${o.buyerPhone}</b></span><br>
+                    <button class="btn-outline" style="padding:2px 5px; font-size:11px; width:auto; margin-top:5px;" onclick="window.openSendVoucherModal('${o.buyerEmail}')">Send Voucher</button>
+                    <hr>
+                    <b>Items:</b>
+                    ${itemsHtml}
                     <hr>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <b style="color:var(--main-color); font-size:16px;">Total: ₱${o.total}</b>
-                        <div style="display:flex; gap:5px;">
+                        <div>
+                            <b style="color:var(--main-color); font-size:14px;">Paid: ₱${o.totalPaid}</b>
+                            ${o.balance > 0 ? `<br><b style="color:red; font-size:12px;">Balance: ₱${o.balance}</b>` : ''}
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:5px; align-items:flex-end;">
                             <select id="status-${originalIndex}" style="padding:5px; margin:0;" ${o.status === 'Cancelled' ? 'disabled' : ''}>
                                 <option value="Pending Payment" ${o.status === 'Pending Payment' ? 'selected' : ''}>Pending</option>
                                 <option value="To Ship" ${o.status === 'To Ship' ? 'selected' : ''}>To Ship</option>
@@ -1026,7 +1259,7 @@
             if(!confirm("Changing to 'Cancelled' returns stock. Proceed?")) return;
             orders[index].items.forEach(orderItem => {
                 let shopProduct = products.find(p => p.id === orderItem.id);
-                if (shopProduct) shopProduct.stocks += 1;
+                if (shopProduct) shopProduct.stocks += (orderItem.qty || 1);
             });
         }
         orders[index].status = newStatus; window.saveDatabase(); 
@@ -1061,24 +1294,70 @@
 
     window.approveVIP = function(email) {
         users[email].isVIP = true; users[email].vipPending = false; window.saveDatabase();
+        window.renderAdminUsers();
     }
 
     window.approveSellerRequest = function(email) {
         let code = Math.floor(100000 + Math.random() * 900000).toString();
         users[email].sellCode = code;
-        users[email].sellCodeExpiry = Date.now() + (30 * 60 * 1000); 
+        users[email].sellCodeExpiry = Date.now() + (5 * 60 * 1000); 
         users[email].sellerRequested = false; 
         
-        let msg = `Hello I'm Xdragon, I hear you want to sell an item? Please scan your IDs Xdrg Shop, delete that after 30 minutes!\n\nYour Verification code is: ${code}\n\n(Code expires in 30 minutes)`;
+        let msg = `Hello I'm Xdragon, I hear you want to sell an item? Please scan your IDs Xdrg Shop, delete that after 5 minutes!\n\nYour Verification code is: ${code}\n\n(Code expires in 5 minutes)`;
         
         users[email].inbox.push({ text: msg, date: new Date().toLocaleString() });
         
         window.saveDatabase().then(() => {
             alert(`Code generated and sent to ${email}'s Messages!`);
+            window.renderAdminUsers();
         });
     }
 
-    // --- ADMIN MESSAGING UI ---
+    window.renderAdminVouchers = function() {
+        const list = document.getElementById('admin-voucher-list');
+        list.innerHTML = '';
+        if(vouchers.length === 0) return list.innerHTML = "<p>No active vouchers.</p>";
+
+        vouchers.forEach(v => {
+            list.innerHTML += `
+                <div class="list-card">
+                    <b>${v.code}</b> <span style="color:var(--main-color)">${v.discount}% OFF</span><br>
+                    <span style="font-size:12px; color:gray">Created by: ${v.createdBy} | Used by: ${v.usedBy ? v.usedBy.length : 0} users</span>
+                </div>
+            `;
+        });
+    }
+
+    window.openSendVoucherModal = function(email) {
+        window.tempVoucherTarget = email;
+        const list = document.getElementById('send-voucher-list');
+        list.innerHTML = '';
+        if(vouchers.length === 0) {
+            list.innerHTML = "<p>No vouchers available. Create one first.</p>";
+        } else {
+            vouchers.forEach(v => {
+                list.innerHTML += `
+                    <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><b>${v.code}</b> (${v.discount}% OFF)</div>
+                        <button class="btn-action" style="margin:0; width:auto;" onclick="window.sendVoucherToUser('${v.code}')">Send</button>
+                    </div>
+                `;
+            });
+        }
+        document.getElementById('send-voucher-modal').classList.remove('hidden');
+    }
+
+    window.sendVoucherToUser = function(code) {
+        if(!window.tempVoucherTarget || !users[window.tempVoucherTarget]) return;
+        let v = vouchers.find(x => x.code === code);
+        let msg = `Hello! Here is a special voucher code for you: ${code}\nEnjoy ${v.discount}% OFF on your next checkout!`;
+        users[window.tempVoucherTarget].inbox.push({ text: msg, date: new Date().toLocaleString() });
+        window.saveDatabase().then(() => {
+            alert("Voucher sent via Messages!");
+            window.closeModal('send-voucher-modal');
+        });
+    }
+
     window.renderAdminChatList = function() {
         const list = document.getElementById('admin-chat-user-list');
         list.innerHTML = '';
@@ -1133,6 +1412,7 @@
     window.closeModal = function(id) {
         document.getElementById(id).classList.add('hidden');
         if(id === 'admin-chat-modal') chatTargetUser = "";
+        if(id === 'send-voucher-modal') window.tempVoucherTarget = null;
     }
 
 </script>
