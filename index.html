@@ -109,6 +109,17 @@
         .rarity-uncommon { color: #008000; border: 1px solid #008000; }
         .rarity-common { color: #808080; border: 1px solid #808080; }
         .rarity-limited { color: #000; border: 1px solid #000; }
+        
+        /* New Rarities */
+        .rarity-secret { color: #a9a9a9; background-color: #000000; border: 1px solid #a9a9a9; }
+        .rarity-divine { color: #ffd700; background-color: #000000; border: 1px solid #ffd700; }
+        .rarity-og { color: #ff0000; background-color: #000000; border: 1px solid #ff0000; }
+        .rarity-admin-abuse { 
+            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); 
+            color: #ffd700; 
+            border: 1px solid #ffd700; 
+            text-shadow: 0px 0px 5px #ff0000, 0px 0px 10px #ff4500; 
+        }
 
         .timer-text { font-size: 11px; color: #ff4757; font-weight: bold; margin-top: 2px; }
 
@@ -263,6 +274,10 @@
                         </select>
                         <select id="vip-prod-rarity" onchange="window.toggleTimer('vip')">
                             <option value="">Rarity (Optional)</option>
+                            <option value="Secret">Secret</option>
+                            <option value="Divine">Divine</option>
+                            <option value="OG">OG</option>
+                            <option value="Admin Abuse">Admin Abuse</option>
                             <option value="1 of 1">1 of 1</option>
                             <option value="Limited">Limited</option>
                             <option value="Super">Super</option>
@@ -340,6 +355,10 @@
             </select>
             <select id="admin-prod-rarity" onchange="window.toggleTimer('admin')">
                 <option value="">Rarity (Optional)</option>
+                <option value="Secret">Secret</option>
+                <option value="Divine">Divine</option>
+                <option value="OG">OG</option>
+                <option value="Admin Abuse">Admin Abuse</option>
                 <option value="1 of 1">1 of 1</option>
                 <option value="Limited">Limited</option>
                 <option value="Super">Super</option>
@@ -451,6 +470,10 @@
         <label>Rarity</label>
         <select id="edit-prod-rarity" onchange="window.toggleTimer('edit')">
             <option value="">Rarity (Optional)</option>
+            <option value="Secret">Secret</option>
+            <option value="Divine">Divine</option>
+            <option value="OG">OG</option>
+            <option value="Admin Abuse">Admin Abuse</option>
             <option value="1 of 1">1 of 1</option>
             <option value="Limited">Limited</option>
             <option value="Super">Super</option>
