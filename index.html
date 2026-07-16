@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XDRG Shop 1.4</title>
+    <title>XDRG Shop 1.5</title>
     <style>
         :root {
             --main-color: #ee4d2d;
@@ -11,6 +11,7 @@
             --text-dark: #2f3542;
             --vip-color: #9c88ff;
             --verify-color: #2ed573;
+            --ai-color: #3498db;
         }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
@@ -66,14 +67,14 @@
         .product-grid {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
         }
-        .product-card { 
+        .product-card, .vouch-card { 
             background: white; border-radius: 4px; overflow: hidden; cursor: pointer;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: relative;
         }
-        .product-card img { width: 100%; height: 160px; object-fit: cover; }
+        .product-card img, .vouch-card img { width: 100%; height: 160px; object-fit: cover; }
         .product-info { padding: 10px; }
         .product-title { font-size: 14px; margin: 0 0 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: bold;}
-        .product-price { color: var(--main-color); font-size: 16px; margin: 5px 0; font-weight: bold;}
+        .product-price { color: var(--main-color); font-size: 14px; margin: 5px 0; font-weight: bold;}
         .product-meta { font-size: 11px; color: gray; display: flex; justify-content: space-between; align-items: center;}
         
         .list-card { background: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 6px; }
@@ -109,17 +110,10 @@
         .rarity-uncommon { color: #008000; border: 1px solid #008000; }
         .rarity-common { color: #808080; border: 1px solid #808080; }
         .rarity-limited { color: #000; border: 1px solid #000; }
-        
-        /* New Rarities */
         .rarity-secret { color: #a9a9a9; background-color: #000000; border: 1px solid #a9a9a9; }
         .rarity-divine { color: #ffd700; background-color: #000000; border: 1px solid #ffd700; }
         .rarity-og { color: #ff0000; background-color: #000000; border: 1px solid #ff0000; }
-        .rarity-admin-abuse { 
-            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); 
-            color: #ffd700; 
-            border: 1px solid #ffd700; 
-            text-shadow: 0px 0px 5px #ff0000, 0px 0px 10px #ff4500; 
-        }
+        .rarity-admin-abuse { background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); color: #ffd700; border: 1px solid #ffd700; text-shadow: 0px 0px 5px #ff0000, 0px 0px 10px #ff4500; }
 
         .timer-text { font-size: 11px; color: #ff4757; font-weight: bold; margin-top: 2px; }
 
@@ -127,6 +121,8 @@
 
         .chat-msg { margin-bottom: 15px; padding: 10px; border-radius: 8px; font-size: 14px; position: relative; clear: both;}
         .chat-admin { background: #e3f2fd; float: left; border: 1px solid #bbdefb; max-width: 80%; }
+        .chat-user { background: #dcf8c6; float: right; border: 1px solid #c5e1a5; max-width: 80%; }
+        .chat-bot { background: #ebf5fb; float: left; border: 1px solid #a9cce3; max-width: 80%; border-left: 4px solid var(--ai-color); }
         .chat-date { font-size: 10px; color: gray; margin-top: 5px; display: block; text-align: right; }
         
         .qty-control { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; }
@@ -139,7 +135,7 @@
     <div id="buyer-section" class="hidden">
         
         <div class="top-bar">
-            <h2 class="top-bar-title">XDRG Shop 1.4</h2>
+            <h2 class="top-bar-title">XDRG Shop 1.5</h2>
             <input type="text" id="buyer-search" placeholder="Search item name, seller, or ID..." onkeyup="window.searchProducts()">
             <div id="category-bar">
                 <button class="cat-btn active" id="cat-All" onclick="window.setCategory('All')">All</button>
@@ -155,6 +151,14 @@
         <div id="buyer-home">
             <div id="voucher-banner" class="hidden">New User Voucher: 10% OFF! Ends in: <span id="voucher-timer"></span></div>
             <div id="product-list" class="product-grid"></div>
+        </div>
+
+        <div id="buyer-vouches" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0;">
+                <h3 style="margin:0;">Community Vouches</h3>
+                <button class="btn-action" style="margin:0; width:auto;" onclick="window.openAddVouchModal()">+ Add Proof</button>
+            </div>
+            <div id="vouch-list" class="product-grid" style="margin-top:15px;"></div>
         </div>
 
         <div id="buyer-cart" class="hidden">
@@ -185,6 +189,17 @@
 
         <div id="buyer-messages" class="hidden">
             <h3 style="margin-top:0;">Messages</h3>
+            
+            <div class="list-card" style="background:#ebf5fb; border-color:#a9cce3; cursor:pointer;" onclick="window.openBotChat()">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:40px; height:40px; border-radius:50%; background:var(--ai-color); color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:18px;">AI</div>
+                    <div>
+                        <b style="color:var(--ai-color);">Xdrg Service</b>
+                        <p style="margin:0; font-size:12px; color:gray;">Check prices, ID info & help...</p>
+                    </div>
+                </div>
+            </div>
+
             <div id="buyer-inbox-list" class="list-card" style="min-height:300px;"></div>
         </div>
 
@@ -291,7 +306,16 @@
                             <label>Limited Timer (Optional End Date & Time)</label>
                             <input type="datetime-local" id="vip-prod-timer">
                         </div>
-                        <input type="number" id="vip-prod-price" placeholder="Price (₱)">
+                        
+                        <hr style="margin: 15px 0;">
+                        <label style="font-weight:bold; font-size:14px; color:var(--main-color);">Pricing & Trade</label>
+                        <input type="number" id="vip-prod-money" placeholder="Money (₱) - Optional">
+                        <input type="number" id="vip-prod-sheckles" placeholder="Sheckles (¢) - Optional">
+                        
+                        <div id="vip-trade-container" style="margin-bottom:10px;"></div>
+                        <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('vip')">+ Add Trade</button>
+                        <hr style="margin: 15px 0;">
+
                         <textarea id="vip-prod-info" placeholder="Product Description"></textarea>
                         <input type="number" id="vip-prod-stocks" placeholder="Number of Stocks">
                         <label>Product Image (Optional)</label>
@@ -312,6 +336,9 @@
         <div class="bottom-nav">
             <div class="nav-item active" id="nav-home" onclick="window.showBuyerTab('home')">
                 <b style="font-size:20px;">🏠</b><span>Home</span>
+            </div>
+            <div class="nav-item" id="nav-vouches" onclick="window.showBuyerTab('vouches')">
+                <b style="font-size:20px;">🌟</b><span>Vouches</span>
             </div>
             <div class="nav-item" id="nav-cart" onclick="window.showBuyerTab('cart')">
                 <b style="font-size:20px;">🛒</b><span>Cart</span>
@@ -337,9 +364,10 @@
             <button class="btn-outline" onclick="window.showAdminTab('admin-manage-products')">Products</button>
             <button class="btn-outline" onclick="window.showAdminTab('admin-add-product')">Add Item</button>
             <button class="btn-outline" onclick="window.showAdminTab('admin-manage-orders')">Orders</button>
+            <button class="btn-outline" onclick="window.showAdminTab('admin-offers-tab')">Offers</button>
             <button class="btn-outline" onclick="window.showAdminTab('admin-manage-users')">Users</button>
             <button class="btn-outline" onclick="window.showAdminTab('admin-vouchers-tab')">Vouchers</button>
-            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.showAdminTab('admin-messages-tab')">Messages</button>
+            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.showAdminTab('admin-messages-tab')">Chats</button>
         </div>
 
         <div id="admin-add-product" class="hidden">
@@ -372,7 +400,16 @@
                 <label>Limited Timer (Optional End Date & Time)</label>
                 <input type="datetime-local" id="admin-prod-timer">
             </div>
-            <input type="number" id="admin-prod-price" placeholder="Price (₱)">
+            
+            <hr style="margin: 15px 0;">
+            <label style="font-weight:bold; font-size:14px; color:var(--main-color);">Pricing & Trade</label>
+            <input type="number" id="admin-prod-money" placeholder="Money (₱) - Optional">
+            <input type="number" id="admin-prod-sheckles" placeholder="Sheckles (¢) - Optional">
+            
+            <div id="admin-trade-container" style="margin-bottom:10px;"></div>
+            <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('admin')">+ Add Trade</button>
+            <hr style="margin: 15px 0;">
+
             <textarea id="admin-prod-info" placeholder="Product Description"></textarea>
             <input type="number" id="admin-prod-stocks" placeholder="Number of Stocks">
             <label>Product Image</label>
@@ -388,6 +425,11 @@
         <div id="admin-manage-orders" class="hidden">
             <h3>Customer Orders</h3>
             <div id="admin-order-list"></div>
+        </div>
+
+        <div id="admin-offers-tab" class="hidden">
+            <h3>Trade Offers</h3>
+            <div id="admin-offers-list"></div>
         </div>
 
         <div id="admin-manage-users" class="hidden">
@@ -417,6 +459,28 @@
     <div class="modal-content">
         <div id="modal-product-details"></div>
         <button onclick="window.closeModal('product-modal')" class="btn-outline" style="margin-top:20px; width:100%;">Close</button>
+    </div>
+</div>
+
+<div id="offer-modal" class="modal hidden">
+    <div class="modal-content">
+        <h2 style="color:var(--main-color); margin-top:0;">Make an Offer</h2>
+        <p style="font-size:14px;">Propose a trade for this item. The seller will review your offer.</p>
+        <textarea id="offer-text-input" placeholder="E.g. Moon Bloom 5x in trade" rows="3"></textarea>
+        <button class="btn-main" onclick="window.submitOffer()">Submit Offer</button>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('offer-modal')">Cancel</button>
+    </div>
+</div>
+
+<div id="add-vouch-modal" class="modal hidden">
+    <div class="modal-content">
+        <h2 style="margin-top:0; color:var(--main-color);">Add Proof / Vouch</h2>
+        <label>Upload Proof Image</label>
+        <input type="file" id="vouch-image" accept="image/*">
+        <label>Caption</label>
+        <textarea id="vouch-caption" placeholder="E.g. Fast transaction, trusted seller!"></textarea>
+        <button class="btn-main" onclick="window.saveVouch()">Submit Vouch</button>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('add-vouch-modal')">Cancel</button>
     </div>
 </div>
 
@@ -487,11 +551,31 @@
             <label>Limited Timer (Optional End Date & Time)</label>
             <input type="datetime-local" id="edit-prod-timer">
         </div>
-        <label>Price</label><input type="number" id="edit-prod-price">
+        
+        <hr style="margin: 15px 0;">
+        <label>Money (₱)</label><input type="number" id="edit-prod-money">
+        <label>Sheckles (¢)</label><input type="number" id="edit-prod-sheckles">
+        
+        <div id="edit-trade-container" style="margin-bottom:10px;"></div>
+        <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('edit')">+ Add Trade</button>
+        <hr style="margin: 15px 0;">
+
         <label>Description</label><textarea id="edit-prod-info"></textarea>
         <label>Stocks</label><input type="number" id="edit-prod-stocks">
         <button class="btn-main" onclick="window.saveEditedProduct()">Save Changes</button>
         <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('edit-product-modal')">Cancel</button>
+    </div>
+</div>
+
+<div id="bot-chat-modal" class="modal hidden">
+    <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
+        <h3 style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px; color:var(--ai-color);">Xdrg Service (AI)</h3>
+        <div id="bot-chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;"></div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <input type="text" id="bot-chat-input" placeholder="Ask about item IDs, prices..." style="margin:0; flex:1;">
+            <button class="btn-action" style="margin:0; width:auto; padding:10px 20px;" onclick="window.sendBotMessage()">Send</button>
+        </div>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('bot-chat-modal')">Close</button>
     </div>
 </div>
 
@@ -526,11 +610,13 @@
 
     const ADMIN_EMAIL = "xdrgxdragon@gmail.com";
     
-    let users = { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox: [] } }; 
+    let users = { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox: [], botChat: [] } }; 
     let products = []; 
     let userCarts = {};
     let orders = [];
     let vouchers = [];
+    let vouches = [];
+    let offers = [];
     
     let currentUser = localStorage.getItem('xdrg_logged_in_user');
     let tempCheckoutTotal = 0;
@@ -547,18 +633,24 @@
 
     function syncStateFromDB(data) {
         if (!data) return;
-        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox:[] } };
+        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox:[], botChat:[] } };
         products = data.products || [];
         userCarts = data.userCarts || {};
         orders = data.orders || [];
         vouchers = data.vouchers || [];
+        vouches = data.vouches || [];
+        offers = data.offers || [];
         
-        for(let k in users) { if(!users[k].inbox) users[k].inbox = []; }
+        for(let k in users) { 
+            if(!users[k].inbox) users[k].inbox = []; 
+            if(!users[k].botChat) users[k].botChat = [];
+        }
 
         if (currentUser && users[currentUser]) {
             if(isAdminView) {
                 if(currentActiveTab === 'admin-manage-products') window.renderAdminProducts();
                 if(currentActiveTab === 'admin-manage-orders') window.renderAdminOrders();
+                if(currentActiveTab === 'admin-offers-tab') window.renderAdminOffers();
                 if(currentActiveTab === 'admin-manage-users') window.renderAdminUsers();
                 if(currentActiveTab === 'admin-vouchers-tab') window.renderAdminVouchers();
                 if(currentActiveTab === 'admin-messages-tab') window.renderAdminChatList();
@@ -567,12 +659,14 @@
                 window.updateUserNavDisplay();
                 window.updateBadges();
                 if(currentActiveTab === 'home') window.searchProducts();
+                if(currentActiveTab === 'vouches') window.renderVouches();
                 if(currentActiveTab === 'cart') window.renderCart();
                 if(currentActiveTab === 'me') window.loadProfile();
                 if(currentActiveTab === 'messages') window.renderBuyerMessages();
             }
         } else {
             if(currentActiveTab === 'home') window.searchProducts();
+            if(currentActiveTab === 'vouches') window.renderVouches();
         }
     }
 
@@ -598,7 +692,7 @@
     initDB();
 
     window.saveDatabase = function() {
-        return supabase.from('shop_data').upsert({ id: 1, data: { users, products, userCarts, orders, vouchers } }).then(({ error }) => { if (error) throw error; });
+        return supabase.from('shop_data').upsert({ id: 1, data: { users, products, userCarts, orders, vouchers, vouches, offers } }).then(({ error }) => { if (error) throw error; });
     }
 
     window.toggleTimer = function(prefix) {
@@ -606,6 +700,14 @@
         let group = document.getElementById(`${prefix}-timer-group`);
         if(val === 'Limited') { group.classList.remove('hidden'); }
         else { group.classList.add('hidden'); }
+    }
+
+    window.addTradeInput = function(prefix) {
+        let container = document.getElementById(`${prefix}-trade-container`);
+        let div = document.createElement('div');
+        div.style.marginBottom = "5px";
+        div.innerHTML = `<input type="text" class="${prefix}-trade-input" placeholder="e.g. Dragon Breath 1x" style="width:75%; display:inline-block; margin:0;"><button type="button" class="btn-danger" style="width:20%; display:inline-block; margin:0 0 0 5%;" onclick="this.parentElement.remove()">X</button>`;
+        container.appendChild(div);
     }
 
     setInterval(() => {
@@ -666,6 +768,7 @@
             isAdminView = false;
             if (!userCarts[currentUser]) userCarts[currentUser] = [];
             if (!users[currentUser].inbox) users[currentUser].inbox = [];
+            if (!users[currentUser].botChat) users[currentUser].botChat = [];
             
             document.getElementById('admin-section').classList.add('hidden');
             document.getElementById('buyer-section').classList.remove('hidden');
@@ -698,7 +801,7 @@
         if (pass !== confirm) return alert("Passwords do not match.");
         if (users[email]) return alert("Email already exists.");
 
-        users[email] = { pass, username, phone: "", isVIP: false, vipPending: false, isVerifiedSeller: false, sellerRequested: false, registeredAt: Date.now(), inbox: [] };
+        users[email] = { pass, username, phone: "", isVIP: false, vipPending: false, isVerifiedSeller: false, sellerRequested: false, registeredAt: Date.now(), inbox: [], botChat: [] };
         userCarts[email] = [];
         window.saveDatabase(); 
         localStorage.setItem('xdrg_logged_in_user', email);
@@ -731,12 +834,13 @@
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById(`nav-${tab}`).classList.add('active');
         
-        ['home', 'cart', 'messages', 'me'].forEach(t => {
+        ['home', 'vouches', 'cart', 'messages', 'me'].forEach(t => {
             document.getElementById(`buyer-${t}`).classList.add('hidden');
         });
         document.getElementById(`buyer-${tab}`).classList.remove('hidden');
 
         if (tab === 'home') window.searchProducts();
+        if (tab === 'vouches') window.renderVouches();
         if (tab === 'cart') window.renderCart();
         if (tab === 'messages') window.renderBuyerMessages();
         
@@ -836,7 +940,6 @@
 
         listToRender.forEach(p => {
             let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="background:#eee; height:160px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
-            
             let catLabel = p.category ? `<span style="background:#ddd; padding:2px 5px; border-radius:3px; font-size:10px;">${p.category}</span>` : '';
             
             let rarityHtml = '';
@@ -849,6 +952,13 @@
                 }
             }
 
+            let priceArr = [];
+            if(p.money) priceArr.push(`₱${p.money}`);
+            else if(p.price) priceArr.push(`₱${p.price}`); 
+            if(p.sheckles) priceArr.push(`¢${p.sheckles}`);
+            let displayPrice = priceArr.length > 0 ? priceArr.join(' • ') : 'Trade Only';
+            let tradePreview = (p.trade && p.trade.length > 0) ? `<div style="font-size:11px; color:#e67e22; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Trade: ${p.trade.join(', ')}</div>` : '';
+
             let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
 
             list.innerHTML += `
@@ -859,8 +969,9 @@
                         <div class="product-title">${p.name}</div>
                         ${catLabel}
                         ${timerHtml}
-                        <div class="product-price">₱${p.price}</div>
-                        <div class="product-meta">
+                        <div class="product-price">${displayPrice}</div>
+                        ${tradePreview}
+                        <div class="product-meta" style="margin-top:5px;">
                             <span>ID: ${p.id}</span>
                             <span>${p.stocks} left</span>
                         </div>
@@ -893,6 +1004,16 @@
             }
         }
         
+        let priceArr = [];
+        if(p.money) priceArr.push(`₱${p.money}`);
+        else if(p.price) priceArr.push(`₱${p.price}`);
+        if(p.sheckles) priceArr.push(`¢${p.sheckles}`);
+        
+        let tradeHtml = '';
+        if(p.trade && p.trade.length > 0) {
+            tradeHtml = `<div style="margin:10px 0; padding:10px; background:#fdf2e9; border:1px solid #e67e22; border-radius:4px; font-size:14px;"><b>Trade Request:</b><br>${p.trade.map(t=>`- ${t}`).join('<br>')}</div>`;
+        }
+        
         let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
 
         const detailDiv = document.getElementById('modal-product-details');
@@ -902,9 +1023,10 @@
             ${rarityHtml}
             <span style="background:#eee; padding:3px 8px; border-radius:4px; font-size:12px; display:inline-block; margin-bottom:5px;">${p.category || 'Uncategorized'}</span>
             ${timerHtml}
-            <h2 style="color:var(--main-color); margin: 10px 0 15px 0;">₱${p.price}</h2>
+            <h2 style="color:var(--main-color); margin: 10px 0 0 0;">${priceArr.join(' • ')}</h2>
+            ${tradeHtml}
             
-            <div style="font-size:14px; background:#f9f9f9; padding:10px; border-radius:4px; margin-bottom:15px;">
+            <div style="font-size:14px; background:#f9f9f9; padding:10px; border-radius:4px; margin-bottom:15px; margin-top:10px;">
                 <b>Seller:</b> ${p.addedByName} ${verifiedHtml} <br>
                 <b>Item ID:</b> ${p.id} <br>
                 <b>Stocks Left:</b> <span id="modal-stock-left">${p.stocks}</span>
@@ -922,6 +1044,7 @@
                 <button class="btn-outline" style="flex:1;" onclick="window.addToCart(false)" ${btnDisabled}>Add to Cart</button>
                 <button class="btn-main" style="flex:1; margin:0;" onclick="window.addToCart(true)" ${btnDisabled}>Buy Now</button>
             </div>
+            <button class="btn-verify" style="width:100%; margin-top:10px; background:#f39c12;" onclick="window.openOfferModal()" ${btnDisabled}>Make an Offer</button>
         `;
         document.getElementById('product-modal').classList.remove('hidden');
     }
@@ -946,20 +1069,41 @@
 
         let pIndex = products.findIndex(p => p.id === window.currentViewProductId);
         if (pIndex > -1 && products[pIndex].stocks >= window.tempSelectedQty) {
-            
             let existingItem = userCarts[currentUser].find(i => i.id === window.currentViewProductId);
             if (existingItem) {
                 existingItem.qty = (existingItem.qty || 1) + window.tempSelectedQty;
             } else {
                 userCarts[currentUser].push({...products[pIndex], qty: window.tempSelectedQty}); 
             }
-            
             products[pIndex].stocks -= window.tempSelectedQty; 
             window.saveDatabase(); 
             window.closeModal('product-modal');
             window.updateBadges();
             if (buyNow) window.showBuyerTab('cart');
             else alert("Added to cart!");
+        }
+    }
+
+    window.openOfferModal = function() {
+        if (!currentUser) {
+            alert("Please Login or Register to make an offer!");
+            return window.showBuyerTab('me');
+        }
+        document.getElementById('product-modal').classList.add('hidden');
+        document.getElementById('offer-text-input').value = '';
+        document.getElementById('offer-modal').classList.remove('hidden');
+    }
+
+    window.submitOffer = function() {
+        let text = document.getElementById('offer-text-input').value.trim();
+        if(!text) return alert("Offer text cannot be empty!");
+        let p = products.find(x => x.id === window.currentViewProductId);
+        if(p) {
+            offers.push({ id: Date.now(), productId: p.id, buyerEmail: currentUser, text: text, status: 'Pending', date: new Date().toLocaleString() });
+            window.saveDatabase().then(() => {
+                alert("Offer submitted to the seller!");
+                window.closeModal('offer-modal');
+            });
         }
     }
 
@@ -1001,9 +1145,13 @@
 
         cart.forEach((item, index) => {
             let q = item.qty || 1;
-            subtotal += (item.price * q);
+            let pVal = item.money || item.price || 0;
+            subtotal += (pVal * q);
             let imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; object-fit:cover; margin-right:10px; border-radius:4px;">` : ``;
             let rarityHtml = item.rarity ? `<span class="rarity-badge rarity-${item.rarity.toLowerCase().replace(/ /g, '-')}" style="margin-left:5px;">${item.rarity}</span>` : '';
+            
+            let extraCostHtml = '';
+            if(item.sheckles) extraCostHtml += ` ¢${item.sheckles * q}`;
             
             list.innerHTML += `
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center; padding:10px;">
@@ -1011,7 +1159,7 @@
                         ${imgHtml}
                         <div>
                             <div style="font-size:14px; font-weight:bold;">${item.name} ${rarityHtml}</div>
-                            <div style="color:var(--main-color); font-size:14px;">₱${item.price} <span style="color:gray;">x${q}</span></div>
+                            <div style="color:var(--main-color); font-size:14px;">₱${pVal} <span style="color:gray;">x${q}</span> ${extraCostHtml}</div>
                         </div>
                     </div>
                     <button class="btn-danger" style="margin:0;" onclick="window.removeFromCart(${index}, ${item.id})">Del</button>
@@ -1168,14 +1316,23 @@
 
         myOrders.forEach(o => {
             let statusColor = o.status === "Completed" ? "green" : (o.status === "Cancelled" ? "red" : "var(--main-color)");
-            let itemsHtml = o.items.map(item => `
-                <div style="font-size:14px; display:flex; justify-content:space-between; margin-top:5px;">
+            let itemsHtml = o.items.map(item => {
+                let pVal = item.money || item.price || 0;
+                let cStr = `₱${pVal * (item.qty||1)}`;
+                if(item.sheckles) cStr += ` ¢${item.sheckles * (item.qty||1)}`;
+                if(o.isTradeOffer) cStr = 'Trade';
+                return `<div style="font-size:14px; display:flex; justify-content:space-between; margin-top:5px;">
                     <span>- ${item.name} (x${item.qty || 1})</span>
-                    <span>₱${item.price * (item.qty || 1)}</span>
-                </div>
-            `).join('');
+                    <span>${cStr}</span>
+                </div>`;
+            }).join('');
             
             let balHtml = o.balance > 0 ? `<p style="color:red; font-size:12px; margin:5px 0 0 0;">Balance Due: ₱${o.balance}</p>` : '';
+            
+            let cancelBtn = '';
+            if(o.status === 'Pending Payment') {
+                cancelBtn = `<button class="btn-danger" style="padding:5px 10px; font-size:11px; margin-top:10px; width:auto;" onclick="window.cancelOrder(${o.id})">Cancel Order</button>`;
+            }
 
             list.innerHTML += `
                 <div class="list-card" style="border:1px solid #eee;">
@@ -1188,10 +1345,25 @@
                     <div style="text-align:right; margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
                         Paid: <b style="color:var(--main-color); font-size:16px;">₱${o.totalPaid}</b>
                         ${balHtml}
+                        <br>${cancelBtn}
                     </div>
                 </div>
             `;
         });
+    }
+
+    window.cancelOrder = function(orderId) {
+        let o = orders.find(x => x.id === orderId);
+        if(o && o.status === 'Pending Payment') {
+            if(confirm("Are you sure you want to cancel this order? Stocks will be returned.")) {
+                o.status = "Cancelled";
+                o.items.forEach(orderItem => {
+                    let p = products.find(prod => prod.id === orderItem.id);
+                    if(p) p.stocks += (orderItem.qty || 1);
+                });
+                window.saveDatabase().then(() => window.renderBuyerOrders());
+            }
+        }
     }
 
     window.openVipModal = function() { document.getElementById('vip-modal').classList.remove('hidden'); }
@@ -1206,7 +1378,16 @@
         const name = document.getElementById(`${prefix}-prod-name`).value.trim();
         const category = document.getElementById(`${prefix}-prod-category`).value;
         const rarity = document.getElementById(`${prefix}-prod-rarity`).value;
-        const price = parseFloat(document.getElementById(`${prefix}-prod-price`).value);
+        
+        let mVal = document.getElementById(`${prefix}-prod-money`).value;
+        const money = mVal ? parseFloat(mVal) : 0;
+        let sVal = document.getElementById(`${prefix}-prod-sheckles`).value;
+        const sheckles = sVal ? parseInt(sVal) : 0;
+        
+        const tradeInputs = document.querySelectorAll(`.${prefix}-trade-input`);
+        let trade = [];
+        tradeInputs.forEach(inp => { if(inp.value.trim()) trade.push(inp.value.trim()); });
+        
         const info = document.getElementById(`${prefix}-prod-info`).value.trim();
         const stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value);
         const imageFile = document.getElementById(`${prefix}-prod-image`).files[0];
@@ -1217,17 +1398,19 @@
             if (t) limitedTime = new Date(t).getTime();
         }
 
-        if (!name || isNaN(price) || !info || isNaN(stocks)) return alert("Fill out all fields!");
+        if (!name || (!money && !sheckles && trade.length===0) || !info || isNaN(stocks)) return alert("Fill out Name, at least one price/trade, Info, and Stocks!");
 
         const finalizeSave = (imgUrl) => {
-            products.push({ id: Date.now(), name, category, rarity, limitedTime, price, info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username });
+            products.push({ id: Date.now(), name, category, rarity, limitedTime, money, sheckles, trade, price: money, info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username });
             window.saveDatabase().then(() => {
                 alert("Product Published!");
                 document.getElementById(`${prefix}-prod-name`).value = '';
                 document.getElementById(`${prefix}-prod-rarity`).value = '';
                 document.getElementById(`${prefix}-prod-timer`).value = '';
                 document.getElementById(`${prefix}-timer-group`).classList.add('hidden');
-                document.getElementById(`${prefix}-prod-price`).value = '';
+                document.getElementById(`${prefix}-prod-money`).value = '';
+                document.getElementById(`${prefix}-prod-sheckles`).value = '';
+                document.getElementById(`${prefix}-trade-container`).innerHTML = '';
                 document.getElementById(`${prefix}-prod-info`).value = '';
                 document.getElementById(`${prefix}-prod-stocks`).value = '';
                 if(document.getElementById(`${prefix}-prod-image`)) document.getElementById(`${prefix}-prod-image`).value = ''; 
@@ -1268,18 +1451,10 @@
     window.renderBuyerMessages = function() {
         const list = document.getElementById('buyer-inbox-list');
         list.innerHTML = '';
-        
-        if (!currentUser) {
-             list.innerHTML = "<div class='list-card'><p style='text-align:center;'>Please login to view your messages.</p><button class='btn-main' onclick='window.showBuyerTab(\"me\")'>Login</button></div>";
-             return;
-        }
+        if (!currentUser) return list.innerHTML = "<p style='text-align:center;'>Login to view messages.</p>";
 
         let myInbox = users[currentUser].inbox || [];
-        
-        if(myInbox.length === 0) {
-            list.innerHTML = "<p style='text-align:center; color:gray; margin-top:50px;'>No messages yet.</p>";
-            return;
-        }
+        if(myInbox.length === 0) return list.innerHTML = "<p style='text-align:center; color:gray; margin-top:20px;'>No direct messages yet.</p>";
 
         myInbox.forEach(msg => {
             list.innerHTML += `
@@ -1293,16 +1468,121 @@
         list.scrollTop = list.scrollHeight;
     }
 
+    window.openBotChat = function() {
+        if(!currentUser) return alert("Login to use Xdrg Service!");
+        document.getElementById('bot-chat-modal').classList.remove('hidden');
+        window.renderBotChat();
+    }
+
+    window.renderBotChat = function() {
+        let history = users[currentUser].botChat || [];
+        const box = document.getElementById('bot-chat-history');
+        box.innerHTML = '';
+        if(history.length === 0) {
+            box.innerHTML = `<div class="chat-msg chat-bot"><b>Xdrg Service:</b><br>Hello! I can help check item prices. Try asking "How much this cost {Item ID}"!</div>`;
+        }
+        history.forEach(msg => {
+            let cl = msg.sender === 'user' ? 'chat-user' : 'chat-bot';
+            let name = msg.sender === 'user' ? 'You' : 'Xdrg Service';
+            box.innerHTML += `
+                <div class="chat-msg ${cl}">
+                    <b>${name}:</b><br>
+                    <span style="white-space: pre-wrap;">${msg.text}</span>
+                    <span class="chat-date">${msg.date}</span>
+                </div>
+            `;
+        });
+        box.scrollTop = box.scrollHeight;
+    }
+
+    window.sendBotMessage = function() {
+        let text = document.getElementById('bot-chat-input').value.trim();
+        if(!text) return;
+        let u = users[currentUser];
+        u.botChat.push({ sender: 'user', text, date: new Date().toLocaleString() });
+
+        let reply = "I'm Xdrg Service! I am an AI designed to assist with this app. Need help? Try asking: 'How much this cost [ID]'";
+        let costMatch = text.match(/how much.*cost.*?(\d+)/i) || text.match(/(\d+)/);
+        
+        if(text.toLowerCase().includes('how much') && costMatch) {
+            let id = parseInt(costMatch[1]);
+            let p = products.find(x => x.id === id);
+            if(p) {
+                let costs = [];
+                if(p.money) costs.push(`₱${p.money}`);
+                if(p.sheckles) costs.push(`¢${p.sheckles}`);
+                if(p.trade && p.trade.length > 0) costs.push(`Trade: ${p.trade.join(', ')}`);
+                reply = `Item ID: ${id} (${p.name}) costs: ${costs.join(' | ')}`;
+            } else {
+                reply = `Sorry, I couldn't find an item with ID: ${id}.`;
+            }
+        }
+
+        u.botChat.push({ sender: 'bot', text: reply, date: new Date().toLocaleString() });
+        window.saveDatabase().then(() => {
+            document.getElementById('bot-chat-input').value = '';
+            window.renderBotChat();
+        });
+    }
+
+    window.openAddVouchModal = function() {
+        if(!currentUser) return alert("Please Login to add a vouch.");
+        document.getElementById('vouch-caption').value = '';
+        document.getElementById('vouch-image').value = '';
+        document.getElementById('add-vouch-modal').classList.remove('hidden');
+    }
+
+    window.saveVouch = function() {
+        const text = document.getElementById('vouch-caption').value.trim();
+        const file = document.getElementById('vouch-image').files[0];
+        if(!file) return alert("Please upload a proof image.");
+        
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas'); const scale = 400 / img.width;
+                canvas.width = 400; canvas.height = img.height * scale;
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                vouches.push({ id: Date.now(), user: users[currentUser].username, text: text, image: canvas.toDataURL('image/jpeg', 0.7), date: new Date().toLocaleDateString() });
+                window.saveDatabase().then(() => {
+                    alert("Vouch uploaded!");
+                    window.closeModal('add-vouch-modal');
+                    window.renderVouches();
+                });
+            }; img.src = e.target.result;
+        }; reader.readAsDataURL(file);
+    }
+
+    window.renderVouches = function() {
+        const list = document.getElementById('vouch-list');
+        list.innerHTML = '';
+        if(vouches.length === 0) return list.innerHTML = "<p style='grid-column: span 2; text-align:center;'>No vouches yet.</p>";
+        let rev = [...vouches].reverse();
+        rev.forEach(v => {
+            list.innerHTML += `
+                <div class="vouch-card">
+                    <img src="${v.image}" alt="Proof">
+                    <div style="padding:10px;">
+                        <b style="color:var(--main-color); font-size:13px;">${v.user}</b> <span style="font-size:10px; color:gray;">${v.date}</span>
+                        <p style="font-size:12px; margin:5px 0 0 0;">${v.text}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
 
     window.showAdminTab = function(tab) {
         currentActiveTab = tab;
-        ['admin-add-product', 'admin-manage-products', 'admin-manage-orders', 'admin-manage-users', 'admin-vouchers-tab', 'admin-messages-tab'].forEach(t => {
+        ['admin-add-product', 'admin-manage-products', 'admin-manage-orders', 'admin-offers-tab', 'admin-manage-users', 'admin-vouchers-tab', 'admin-messages-tab'].forEach(t => {
             document.getElementById(t).classList.add('hidden');
         });
         document.getElementById(tab).classList.remove('hidden');
         
         if (tab === 'admin-manage-products') window.renderAdminProducts();
         if (tab === 'admin-manage-orders') window.renderAdminOrders();
+        if (tab === 'admin-offers-tab') window.renderAdminOffers();
         if (tab === 'admin-manage-users') window.renderAdminUsers();
         if (tab === 'admin-vouchers-tab') window.renderAdminVouchers();
         if (tab === 'admin-messages-tab') window.renderAdminChatList();
@@ -1315,12 +1595,19 @@
         products.forEach(p => {
             let rarityHtml = p.rarity ? `<span class="rarity-badge rarity-${p.rarity.toLowerCase().replace(/ /g, '-')}">${p.rarity}</span>` : '';
             let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
+            
+            let priceArr = [];
+            if(p.money) priceArr.push(`₱${p.money}`);
+            else if(p.price) priceArr.push(`₱${p.price}`);
+            if(p.sheckles) priceArr.push(`¢${p.sheckles}`);
+            if(p.trade && p.trade.length) priceArr.push('Trade');
+
             list.innerHTML += `
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
                         <b>${p.name}</b> ${rarityHtml} <br>
                         <span style="font-size:11px; background:#eee; padding:2px 4px;">${p.category || 'None'}</span><br>
-                        <span style="color:var(--main-color);">₱${p.price}</span> | Stocks: ${p.stocks} <br>
+                        <span style="color:var(--main-color); font-size:12px;">${priceArr.join(' • ')}</span> | Stocks: ${p.stocks} <br>
                         <span style="font-size: 11px; color:gray;">Seller: ${p.addedByName} ${verifiedHtml} (ID: ${p.id})</span>
                     </div>
                     <div style="display:flex; flex-direction:column; gap:5px;">
@@ -1349,7 +1636,20 @@
             document.getElementById('edit-prod-timer').value = "";
         }
 
-        document.getElementById('edit-prod-price').value = p.price;
+        document.getElementById('edit-prod-money').value = p.money || p.price || '';
+        document.getElementById('edit-prod-sheckles').value = p.sheckles || '';
+        
+        let tradeCont = document.getElementById('edit-trade-container');
+        tradeCont.innerHTML = '';
+        if(p.trade) {
+            p.trade.forEach(t => {
+                let div = document.createElement('div');
+                div.style.marginBottom = "5px";
+                div.innerHTML = `<input type="text" class="edit-trade-input" value="${t}" style="width:75%; display:inline-block; margin:0;"><button type="button" class="btn-danger" style="width:20%; display:inline-block; margin:0 0 0 5%;" onclick="this.parentElement.remove()">X</button>`;
+                tradeCont.appendChild(div);
+            });
+        }
+
         document.getElementById('edit-prod-info').value = p.info;
         document.getElementById('edit-prod-stocks').value = p.stocks;
         document.getElementById('edit-product-modal').classList.remove('hidden');
@@ -1370,7 +1670,16 @@
                 products[pIndex].limitedTime = null;
             }
 
-            products[pIndex].price = parseFloat(document.getElementById('edit-prod-price').value);
+            let mVal = document.getElementById('edit-prod-money').value;
+            products[pIndex].money = mVal ? parseFloat(mVal) : 0;
+            products[pIndex].price = products[pIndex].money;
+            let sVal = document.getElementById('edit-prod-sheckles').value;
+            products[pIndex].sheckles = sVal ? parseInt(sVal) : 0;
+            
+            let tInputs = document.querySelectorAll('.edit-trade-input');
+            products[pIndex].trade = [];
+            tInputs.forEach(inp => { if(inp.value.trim()) products[pIndex].trade.push(inp.value.trim()); });
+
             products[pIndex].info = document.getElementById('edit-prod-info').value;
             products[pIndex].stocks = parseInt(document.getElementById('edit-prod-stocks').value);
             window.saveDatabase(); window.closeModal('edit-product-modal');
@@ -1394,7 +1703,13 @@
         reversed.forEach((o) => {
             let originalIndex = orders.findIndex(x => x.id === o.id); 
             
-            let itemsHtml = o.items.map(item => `<div style="font-size:13px;">- ${item.name} <b style="color:var(--main-color)">x${item.qty || 1}</b></div>`).join('');
+            let itemsHtml = o.items.map(item => {
+                let pVal = item.money || item.price || 0;
+                let cStr = `₱${pVal * (item.qty||1)}`;
+                if(item.sheckles) cStr += ` ¢${item.sheckles * (item.qty||1)}`;
+                if(o.isTradeOffer) cStr = 'Trade';
+                return `<div style="font-size:13px; display:flex; justify-content:space-between;"><span>- ${item.name} <b style="color:var(--main-color)">x${item.qty || 1}</b></span> <span>${cStr}</span></div>`;
+            }).join('');
 
             list.innerHTML += `
                 <div class="list-card">
@@ -1437,6 +1752,57 @@
             });
         }
         orders[index].status = newStatus; window.saveDatabase(); 
+    }
+
+    window.renderAdminOffers = function() {
+        const list = document.getElementById('admin-offers-list');
+        list.innerHTML = '';
+        let pending = offers.filter(o => o.status === 'Pending');
+        if (pending.length === 0) return list.innerHTML = "<p>No pending offers.</p>";
+
+        pending.forEach(o => {
+            let p = products.find(x => x.id === o.productId);
+            let u = users[o.buyerEmail];
+            list.innerHTML += `
+                <div class="list-card">
+                    <span style="font-size:12px; color:gray;">${o.date}</span><br>
+                    <b>Buyer:</b> ${u ? u.username : o.buyerEmail} <br>
+                    <b>Item:</b> ${p ? p.name : 'Unknown'} (ID: ${o.productId})<br>
+                    <div style="margin:10px 0; padding:10px; background:#fdf2e9; border:1px solid #e67e22; border-radius:4px;">
+                        <b>Offer:</b> ${o.text}
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-verify" style="flex:1;" onclick="window.resolveOffer(${o.id}, true)">Agree</button>
+                        <button class="btn-danger" style="flex:1;" onclick="window.resolveOffer(${o.id}, false)">Disagree</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.resolveOffer = function(offerId, isAgree) {
+        let off = offers.find(x => x.id === offerId);
+        let p = products.find(x => x.id === off.productId);
+        if(!off || !p) return;
+        
+        if(isAgree) {
+            off.status = 'Accepted';
+            orders.push({
+                id: Date.now(), date: new Date().toLocaleString(),
+                buyerEmail: off.buyerEmail, buyerUsername: users[off.buyerEmail].username,
+                buyerPhone: users[off.buyerEmail].phone || "",
+                items: [{...p, qty: 1}], totalPaid: 0, balance: 0, status: "To Ship",
+                midman: false, isTradeOffer: true
+            });
+            p.stocks -= 1;
+            users[off.buyerEmail].inbox.push({ text: `Agreed: your offer for ${p.name} has been accepted by seller.`, date: new Date().toLocaleString() });
+            alert("Offer Accepted. Order created automatically.");
+        } else {
+            off.status = 'Declined';
+            users[off.buyerEmail].inbox.push({ text: `Disagree: your offer for ${p.name} has been declined by seller.`, date: new Date().toLocaleString() });
+            alert("Offer Declined.");
+        }
+        window.saveDatabase().then(() => window.renderAdminOffers());
     }
 
     window.renderAdminUsers = function() {
