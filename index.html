@@ -465,8 +465,13 @@
 <div id="offer-modal" class="modal hidden">
     <div class="modal-content">
         <h2 style="color:var(--main-color); margin-top:0;">Make an Offer</h2>
-        <p style="font-size:14px;">Propose a trade for this item. The seller will review your offer.</p>
-        <textarea id="offer-text-input" placeholder="E.g. Moon Bloom 5x in trade" rows="3"></textarea>
+        <p style="font-size:14px;">Propose a trade for this item.</p>
+        
+        <div id="offer-items-container" style="margin-bottom:10px;"></div>
+        <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:15px;" onclick="window.addOfferItemInput()">+ Add Item</button>
+        
+        <label style="display:block; margin-top:10px; font-weight:bold;">More / Add Notes</label>
+        <textarea id="offer-text-input" placeholder="E.g. Adding extra items..." rows="2"></textarea>
         <button class="btn-main" onclick="window.submitOffer()">Submit Offer</button>
         <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('offer-modal')">Cancel</button>
     </div>
@@ -475,8 +480,8 @@
 <div id="add-vouch-modal" class="modal hidden">
     <div class="modal-content">
         <h2 style="margin-top:0; color:var(--main-color);">Add Proof / Vouch</h2>
-        <label>Item Name</label>
-        <input type="text" id="vouch-item-name" placeholder="Item Name (e.g. Dragon Breath)">
+        <label>Item Name or Item ID</label>
+        <input type="text" id="vouch-item-name" placeholder="Item Name or ID (e.g. Dragon Breath)">
         <label>Upload Proof Image</label>
         <input type="file" id="vouch-image" accept="image/*">
         <label>Caption</label>
@@ -634,7 +639,7 @@
     window.tempVoucherTarget = null;
 
     window.formatNum = function(num) {
-        if (!num) return 0;
+        if (!num && num !== 0) return 0;
         if (num >= 1e12) return (num / 1e12).toFixed(1).replace(/\.0$/, '') + 'T';
         if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
         if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -718,6 +723,20 @@
         let div = document.createElement('div');
         div.style.marginBottom = "5px";
         div.innerHTML = `<input type="text" class="${prefix}-trade-input" placeholder="e.g. Dragon Breath 1x" style="width:75%; display:inline-block; margin:0;"><button type="button" class="btn-danger" style="width:20%; display:inline-block; margin:0 0 0 5%;" onclick="this.parentElement.remove()">X</button>`;
+        container.appendChild(div);
+    }
+
+    window.addOfferItemInput = function() {
+        let container = document.getElementById('offer-items-container');
+        let div = document.createElement('div');
+        div.style.marginBottom = "5px";
+        div.style.display = "flex";
+        div.style.gap = "5px";
+        div.innerHTML = `
+            <input type="text" class="offer-item-name" placeholder="e.g. Dragon Breath" style="width:60%; margin:0;">
+            <input type="text" class="offer-item-qty" placeholder="e.g. 1x" style="width:20%; margin:0;">
+            <button type="button" class="btn-danger" style="width:15%; margin:0;" onclick="this.parentElement.remove()">X</button>
+        `;
         container.appendChild(div);
     }
 
@@ -1101,16 +1120,36 @@
             return window.showBuyerTab('me');
         }
         document.getElementById('product-modal').classList.add('hidden');
+        document.getElementById('offer-items-container').innerHTML = '';
         document.getElementById('offer-text-input').value = '';
+        window.addOfferItemInput();
         document.getElementById('offer-modal').classList.remove('hidden');
     }
 
     window.submitOffer = function() {
-        let text = document.getElementById('offer-text-input').value.trim();
-        if(!text) return alert("Offer text cannot be empty!");
+        let itemNames = document.querySelectorAll('.offer-item-name');
+        let itemQtys = document.querySelectorAll('.offer-item-qty');
+        let lines = [];
+        
+        for(let i = 0; i < itemNames.length; i++) {
+            let name = itemNames[i].value.trim();
+            let qty = itemQtys[i].value.trim();
+            if(name) {
+                lines.push(`${name} ${qty}`);
+            }
+        }
+        
+        let note = document.getElementById('offer-text-input').value.trim();
+        if(note) {
+            lines.push(`More/add: ${note}`);
+        }
+        
+        if(lines.length === 0) return alert("Please enter at least one item or note for your offer!");
+        
+        let fullOfferText = lines.join('\n');
         let p = products.find(x => x.id === window.currentViewProductId);
         if(p) {
-            offers.push({ id: Date.now(), productId: p.id, buyerEmail: currentUser, text: text, status: 'Pending', date: new Date().toLocaleString() });
+            offers.push({ id: Date.now(), productId: p.id, buyerEmail: currentUser, text: fullOfferText, status: 'Pending', date: new Date().toLocaleString() });
             window.saveDatabase().then(() => {
                 alert("Offer submitted to the seller!");
                 window.closeModal('offer-modal');
@@ -1159,7 +1198,7 @@
             let pVal = item.money || item.price || 0;
             subtotal += (pVal * q);
             let imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; object-fit:cover; margin-right:10px; border-radius:4px;">` : ``;
-            let rarityHtml = item.rarity ? `<span class="rarity-badge rarity-${item.rarity.toLowerCase().replace(/ /g, '-')}" style="margin-left:5px;">${item.rarity}</span>` : '';
+            let rarityHtml = item.rarity ? `<span class="rarity-badge rarity-${item.rarity.toLowerCase().replace(/ /g, '-px')}" style="margin-left:5px;">${item.rarity}</span>` : '';
             
             let extraCostHtml = '';
             if(item.sheckles) extraCostHtml += ` ¢${window.formatNum(item.sheckles * q)} Sheckles`;
@@ -1353,10 +1392,10 @@
             }
 
             let paidArr = [];
-            if (o.totalPaid > 0) paidArr.push(`₱${window.formatNum(o.totalPaid)}`);
+            paidArr.push(`₱${window.formatNum(o.totalPaid)}`);
             let totalSheck = o.items.reduce((sum, i) => sum + (i.sheckles||0)*(i.qty||1), 0);
             if (totalSheck > 0 && !o.isTradeOffer) paidArr.push(`¢${window.formatNum(totalSheck)} Sheckles`);
-            let paidText = o.isTradeOffer ? 'Trade' : (paidArr.join(' + ') || 'Free');
+            let paidText = o.isTradeOffer ? 'Trade' : paidArr.join(' + ');
 
             list.innerHTML += `
                 <div class="list-card" style="border:1px solid #eee;">
@@ -1601,7 +1640,7 @@
                 const canvas = document.createElement('canvas'); const scale = 400 / img.width;
                 canvas.width = 400; canvas.height = img.height * scale;
                 canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                vouches.push({ id: Date.now(), user: users[currentUser].username, itemName: itemName, text: text, image: canvas.toDataURL('image/jpeg', 0.7), date: new Date().toLocaleDateString() });
+                vouches.push({ id: Date.now(), user: users[currentUser].username, itemName: itemName, text: text, image: canvas.toDataURL('image/jpeg', 0.7), date: new Date().toLocaleString() });
                 window.saveDatabase().then(() => {
                     alert("Vouch uploaded!");
                     window.closeModal('add-vouch-modal');
@@ -1621,15 +1660,15 @@
                 <div class="vouch-card">
                     <img src="${v.image}" alt="Proof">
                     <div style="padding:10px;">
-                        <b style="color:var(--main-color); font-size:13px;">${v.user}</b> <span style="font-size:10px; color:gray;">${v.date}</span>
-                        <div style="font-size:12px; margin-top:5px; font-weight:bold;">Item: ${v.itemName || 'N/A'}</div>
-                        <p style="font-size:12px; margin:2px 0 0 0;">${v.text}</p>
+                        <div style="font-size:13px; margin-bottom:2px;"><b>Name:</b> ${v.user}</div>
+                        <div style="font-size:11px; color:gray; margin-bottom:5px;">${v.date}</div>
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:2px;">Item: ${v.itemName || 'N/A'}</div>
+                        <p style="font-size:12px; margin:2px 0 0 0;"><b>Proof:</b> ${v.text}</p>
                     </div>
                 </div>
             `;
         });
     }
-
 
     window.showAdminTab = function(tab) {
         currentActiveTab = tab;
@@ -1773,10 +1812,12 @@
             }).join('');
 
             let paidArr = [];
-            if (o.totalPaid > 0) paidArr.push(`₱${window.formatNum(o.totalPaid)}`);
+            paidArr.push(`₱${window.formatNum(o.totalPaid)}`);
             let totalSheck = o.items.reduce((sum, i) => sum + (i.sheckles||0)*(i.qty||1), 0);
             if (totalSheck > 0 && !o.isTradeOffer) paidArr.push(`¢${window.formatNum(totalSheck)} Sheckles`);
-            let paidText = o.isTradeOffer ? 'Trade' : (paidArr.join(' + ') || 'Free');
+            let paidText = o.isTradeOffer ? 'Trade' : paidArr.join(' + ');
+
+            let isSelectDisabled = (o.status === 'Cancelled' || o.status === 'Completed') ? 'disabled' : '';
 
             list.innerHTML += `
                 <div class="list-card">
@@ -1794,13 +1835,13 @@
                             ${o.balance > 0 ? `<br><b style="color:red; font-size:12px;">Balance: ₱${window.formatNum(o.balance)}</b>` : ''}
                         </div>
                         <div style="display:flex; flex-direction:column; gap:5px; align-items:flex-end;">
-                            <select id="status-${originalIndex}" style="padding:5px; margin:0;" ${o.status === 'Cancelled' ? 'disabled' : ''}>
+                            <select id="status-${originalIndex}" style="padding:5px; margin:0;" ${isSelectDisabled}>
                                 <option value="Pending Payment" ${o.status === 'Pending Payment' ? 'selected' : ''}>Pending</option>
                                 <option value="To Ship" ${o.status === 'To Ship' ? 'selected' : ''}>To Ship</option>
                                 <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
                                 <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
                             </select>
-                            <button class="btn-main" style="margin:0; width:auto; padding:5px 10px;" onclick="window.updateOrderStatus(${originalIndex})" ${o.status === 'Cancelled' ? 'disabled' : ''}>Update</button>
+                            <button class="btn-main" style="margin:0; width:auto; padding:5px 10px;" onclick="window.updateOrderStatus(${originalIndex})" ${isSelectDisabled}>Update</button>
                         </div>
                     </div>
                 </div>
@@ -1809,8 +1850,14 @@
     }
 
     window.updateOrderStatus = function(index) {
+        if (orders[index].status === "Cancelled" || orders[index].status === "Completed") {
+            alert("Cannot update an order that is already completed or cancelled.");
+            return;
+        }
+        
         const newStatus = document.getElementById(`status-${index}`).value;
         const oldStatus = orders[index].status;
+        
         if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
             if(!confirm("Changing to 'Cancelled' returns stock. Proceed?")) return;
             orders[index].items.forEach(orderItem => {
@@ -1835,8 +1882,8 @@
                     <span style="font-size:12px; color:gray;">${o.date}</span><br>
                     <b>Buyer:</b> ${u ? u.username : o.buyerEmail} <br>
                     <b>Item:</b> ${p ? p.name : 'Unknown'} (ID: ${o.productId})<br>
-                    <div style="margin:10px 0; padding:10px; background:#fdf2e9; border:1px solid #e67e22; border-radius:4px;">
-                        <b>Offer:</b> ${o.text}
+                    <div style="margin:10px 0; padding:10px; background:#fdf2e9; border:1px solid #e67e22; border-radius:4px; white-space: pre-wrap;">
+                        <b>Offer Content:</b>\n${o.text}
                     </div>
                     <div style="display:flex; gap:10px;">
                         <button class="btn-verify" style="flex:1;" onclick="window.resolveOffer(${o.id}, true)">Agree</button>
