@@ -98,6 +98,8 @@
         .badge { color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
         .badge-vip { background: var(--vip-color); }
         .badge-verify { background: var(--verify-color); }
+        .flash-badge { background: #ff4757; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         .verified-icon { background: #1da1f2; color: white; border-radius: 50%; font-size: 9px; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; margin-left: 4px; vertical-align: middle; font-weight: bold; }
 
@@ -115,7 +117,7 @@
         .rarity-og { color: #ff0000; background-color: #000000; border: 1px solid #ff0000; }
         .rarity-admin-abuse { background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); color: #ffd700; border: 1px solid #ffd700; text-shadow: 0px 0px 5px #ff0000, 0px 0px 10px #ff4500; }
 
-        .timer-text { font-size: 11px; color: #ff4757; font-weight: bold; margin-top: 2px; }
+        .timer-text, .flash-timer-text { font-size: 11px; color: #ff4757; font-weight: bold; margin-top: 2px; }
 
         #voucher-banner { background: #ffeb3b; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; margin-bottom: 15px; }
 
@@ -124,6 +126,8 @@
         .chat-user { background: #dcf8c6; float: right; border: 1px solid #c5e1a5; max-width: 80%; }
         .chat-bot { background: #ebf5fb; float: left; border: 1px solid #a9cce3; max-width: 80%; border-left: 4px solid var(--ai-color); }
         .chat-date { font-size: 10px; color: gray; margin-top: 5px; display: block; text-align: right; }
+        
+        #buyer-inbox-list { max-height: 400px; overflow-y: auto; }
         
         .qty-control { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; }
         .qty-btn { background: #eee; border: 1px solid #ccc; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -156,7 +160,7 @@
         <div id="buyer-vouches" class="hidden">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0;">
                 <h3 style="margin:0;">Community Vouches</h3>
-                <button class="btn-action" style="margin:0; width:auto;" onclick="window.openAddVouchModal()">+ Add Proof</button>
+                <button class="btn-action" id="btn-add-vouch" style="margin:0; width:auto;" onclick="window.openAddVouchModal()">+ Add Proof</button>
             </div>
             <div id="vouch-list" class="product-grid" style="margin-top:15px;"></div>
         </div>
@@ -200,7 +204,7 @@
                 </div>
             </div>
 
-            <div id="buyer-inbox-list" class="list-card" style="min-height:300px;"></div>
+            <div id="buyer-inbox-list" class="list-card"></div>
         </div>
 
         <div id="buyer-me" class="hidden">
@@ -253,6 +257,13 @@
                     <input type="text" id="profile-username">
                     <label>Phone Number</label>
                     <input type="text" id="profile-phone" placeholder="e.g. 09123456789">
+                    
+                    <h4 style="margin-bottom: 5px; color:var(--main-color);">Online Payment Info (For Sellers)</h4>
+                    <label>Maya Account Name</label>
+                    <input type="text" id="profile-maya-name" placeholder="e.g. JUAN DELA CRUZ">
+                    <label>Maya Number</label>
+                    <input type="text" id="profile-maya-number" placeholder="e.g. 09123456789">
+
                     <p id="vip-discount-text" class="hidden" style="color:green; font-weight:bold;">15% Lifetime Discount Active (VIP)</p>
                     <button class="btn-main" onclick="window.saveProfile()">Save Profile</button>
                     
@@ -312,6 +323,15 @@
                         <input type="number" id="vip-prod-money" placeholder="Money (₱) - Optional">
                         <input type="number" id="vip-prod-sheckles" placeholder="Sheckles (¢) - Optional">
                         
+                        <div style="margin-bottom:10px;">
+                            <label style="color:#ff4757; font-weight:bold; font-size:13px;">Flash Sale (Optional)</label>
+                            <select id="vip-flash-pct" class="flash-select" onchange="window.toggleFlashTimer('vip')"></select>
+                            <div id="vip-flash-timer-group" class="hidden" style="margin-top:5px;">
+                                <label style="font-size:12px;">Flash Sale End Date & Time</label>
+                                <input type="datetime-local" id="vip-flash-timer" style="margin-bottom:0;">
+                            </div>
+                        </div>
+
                         <div id="vip-trade-container" style="margin-bottom:10px;"></div>
                         <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('vip')">+ Add Trade</button>
                         <hr style="margin: 15px 0;">
@@ -321,6 +341,11 @@
                         <label>Product Image (Optional)</label>
                         <input type="file" id="vip-prod-image" accept="image/*">
                         <button class="btn-verify" style="width: 100%;" onclick="window.processImageAndAddProduct('vip')">Publish Product</button>
+                    </div>
+
+                    <div style="background:#f9f9f9; padding:15px; border-radius:5px; margin-bottom:15px;">
+                        <h4 style="margin-top:0;">My Published Items</h4>
+                        <div id="vip-my-products-list"></div>
                     </div>
 
                     <div style="background:#fff3cd; padding:15px; border-radius:5px;">
@@ -406,6 +431,15 @@
             <input type="number" id="admin-prod-money" placeholder="Money (₱) - Optional">
             <input type="number" id="admin-prod-sheckles" placeholder="Sheckles (¢) - Optional">
             
+            <div style="margin-bottom:10px;">
+                <label style="color:#ff4757; font-weight:bold; font-size:13px;">Flash Sale (Optional)</label>
+                <select id="admin-flash-pct" class="flash-select" onchange="window.toggleFlashTimer('admin')"></select>
+                <div id="admin-flash-timer-group" class="hidden" style="margin-top:5px;">
+                    <label style="font-size:12px;">Flash Sale End Date & Time</label>
+                    <input type="datetime-local" id="admin-flash-timer" style="margin-bottom:0;">
+                </div>
+            </div>
+
             <div id="admin-trade-container" style="margin-bottom:10px;"></div>
             <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('admin')">+ Add Trade</button>
             <hr style="margin: 15px 0;">
@@ -482,10 +516,12 @@
         <h2 style="margin-top:0; color:var(--main-color);">Add Proof / Vouch</h2>
         <label>Item Name or Item ID</label>
         <input type="text" id="vouch-item-name" placeholder="Item Name or ID (e.g. Dragon Breath)">
+        <label>Buyer Name</label>
+        <input type="text" id="vouch-buyer-name" placeholder="Name of Buyer (e.g. John Doe)">
         <label>Upload Proof Image</label>
         <input type="file" id="vouch-image" accept="image/*">
         <label>Caption</label>
-        <textarea id="vouch-caption" placeholder="E.g. Fast transaction, trusted seller!"></textarea>
+        <textarea id="vouch-caption" placeholder="E.g. Fast transaction, trusted buyer!"></textarea>
         <button class="btn-main" onclick="window.saveVouch()">Submit Vouch</button>
         <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('add-vouch-modal')">Cancel</button>
     </div>
@@ -495,11 +531,7 @@
     <div class="modal-content">
         <h2 style="color:var(--main-color); margin-top:0;">Confirm Checkout</h2>
         
-        <div style="background:#f9f9f9; padding:10px; border-radius:5px; margin-bottom:15px; border: 1px solid #ddd;">
-            <p style="margin:0 0 5px 0;"><b>Payment Method: Maya</b></p>
-            <p style="margin:0;">Name: <b>ANDREA CASTRENCE</b></p>
-            <p style="margin:0;">Number: <b>639519500345</b></p>
-        </div>
+        <div id="checkout-maya-info"></div>
 
         <p>Total to Pay Now: <b id="checkout-final-amount" style="color:var(--main-color); font-size:24px;"></b></p>
         <p id="checkout-balance-info" class="hidden" style="color:red; font-size:14px; font-weight:bold;"></p>
@@ -563,6 +595,15 @@
         <label>Money (₱)</label><input type="number" id="edit-prod-money">
         <label>Sheckles (¢)</label><input type="number" id="edit-prod-sheckles">
         
+        <div style="margin-bottom:10px;">
+            <label style="color:#ff4757; font-weight:bold; font-size:13px;">Flash Sale (Optional)</label>
+            <select id="edit-flash-pct" class="flash-select" onchange="window.toggleFlashTimer('edit')"></select>
+            <div id="edit-flash-timer-group" class="hidden" style="margin-top:5px;">
+                <label style="font-size:12px;">Flash Sale End Date & Time</label>
+                <input type="datetime-local" id="edit-flash-timer" style="margin-bottom:0;">
+            </div>
+        </div>
+
         <div id="edit-trade-container" style="margin-bottom:10px;"></div>
         <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('edit')">+ Add Trade</button>
         <hr style="margin: 15px 0;">
@@ -617,7 +658,7 @@
 
     const ADMIN_EMAIL = "xdrgxdragon@gmail.com";
     
-    let users = { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox: [], botChat: [] } }; 
+    let users = { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox: [], botChat: [], mayaName: "ANDREA CASTRENCE", mayaNumber: "639519500345" } }; 
     let products = []; 
     let userCarts = {};
     let orders = [];
@@ -647,9 +688,18 @@
         return num.toString();
     }
 
+    function populateFlash() {
+        let html = '<option value="0">No Flash Sale</option>';
+        [1,5,10,15,20,25,30,40,50,60,70,80,90,99].forEach(v => {
+            html += `<option value="${v}">${v}% OFF</option>`;
+        });
+        document.querySelectorAll('.flash-select').forEach(el => el.innerHTML = html);
+    }
+    populateFlash();
+
     function syncStateFromDB(data) {
         if (!data) return;
-        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox:[], botChat:[] } };
+        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox:[], botChat:[], mayaName: "ANDREA CASTRENCE", mayaNumber: "639519500345" } };
         products = data.products || [];
         userCarts = data.userCarts || {};
         orders = data.orders || [];
@@ -718,6 +768,13 @@
         else { group.classList.add('hidden'); }
     }
 
+    window.toggleFlashTimer = function(prefix) {
+        let val = parseInt(document.getElementById(`${prefix}-flash-pct`).value);
+        let group = document.getElementById(`${prefix}-flash-timer-group`);
+        if(val > 0) { group.classList.remove('hidden'); }
+        else { group.classList.add('hidden'); }
+    }
+
     window.addTradeInput = function(prefix) {
         let container = document.getElementById(`${prefix}-trade-container`);
         let div = document.createElement('div');
@@ -756,6 +813,21 @@
             }
         });
 
+        document.querySelectorAll('.flash-timer-text').forEach(el => {
+            let end = parseInt(el.getAttribute('data-flashend'));
+            if (end) {
+                let left = end - Date.now();
+                if (left > 0) {
+                    let h = Math.floor(left / (1000 * 60 * 60));
+                    let m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
+                    let s = Math.floor((left % (1000 * 60)) / 1000);
+                    el.innerText = `Flash Deal Ends in: ${h}h ${m}m ${s}s`;
+                } else {
+                    el.innerText = "";
+                }
+            }
+        });
+
         if(!currentUser || !users[currentUser] || isAdminView) return;
         let u = users[currentUser];
         let now = Date.now();
@@ -780,7 +852,7 @@
                 let s = Math.floor((codeTimeLeft % (1000 * 60)) / 1000);
                 timerEl.innerText = `Code expires in: ${m}m ${s}s`;
             } else if (u.sellCode) {
-                timerEl.innerText = "Code expired. Request a new one.";
+                timerEl.innerText = "Code expired. Request again.";
             } else { timerEl.innerText = ""; }
         }
     }, 1000);
@@ -831,7 +903,7 @@
         if (pass !== confirm) return alert("Passwords do not match.");
         if (users[email]) return alert("Email already exists.");
 
-        users[email] = { pass, username, phone: "", isVIP: false, vipPending: false, isVerifiedSeller: false, sellerRequested: false, registeredAt: Date.now(), inbox: [], botChat: [] };
+        users[email] = { pass, username, phone: "", mayaName: "", mayaNumber: "", isVIP: false, vipPending: false, isVerifiedSeller: false, sellerRequested: false, registeredAt: Date.now(), inbox: [], botChat: [] };
         userCarts[email] = [];
         window.saveDatabase(); 
         localStorage.setItem('xdrg_logged_in_user', email);
@@ -870,7 +942,12 @@
         document.getElementById(`buyer-${tab}`).classList.remove('hidden');
 
         if (tab === 'home') window.searchProducts();
-        if (tab === 'vouches') window.renderVouches();
+        if (tab === 'vouches') {
+            let u = users[currentUser];
+            let canVouch = (currentUser === ADMIN_EMAIL) || (u && u.isVerifiedSeller);
+            document.getElementById('btn-add-vouch').classList.toggle('hidden', !canVouch);
+            window.renderVouches();
+        }
         if (tab === 'cart') window.renderCart();
         if (tab === 'messages') window.renderBuyerMessages();
         
@@ -892,6 +969,7 @@
         ['orders', 'profile-edit', 'vip-dashboard'].forEach(t => document.getElementById(`me-${t}`).classList.add('hidden'));
         document.getElementById(`me-${subtab}`).classList.remove('hidden');
         if(subtab === 'orders') window.renderBuyerOrders();
+        if(subtab === 'vip-dashboard') window.renderVipProducts();
     }
 
     window.updateUserNavDisplay = function() {
@@ -982,9 +1060,20 @@
                 }
             }
 
+            let pVal = p.money || p.price || 0;
+            let isFlashActive = p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now());
+            let origPriceHtml = '';
+            let flashBadge = '';
+            
+            if (isFlashActive) {
+                origPriceHtml = `<span style="text-decoration:line-through; color:gray; font-size:11px;">₱${window.formatNum(pVal)}</span> `;
+                pVal = pVal * (1 - (p.flashPct / 100));
+                flashBadge = `<span class="flash-badge">⚡ ${p.flashPct}% OFF</span>`;
+                timerHtml += `<div class="flash-timer-text" data-flashend="${p.flashEndTime}"></div>`;
+            }
+
             let priceArr = [];
-            if(p.money) priceArr.push(`₱${window.formatNum(p.money)}`);
-            else if(p.price) priceArr.push(`₱${window.formatNum(p.price)}`); 
+            if(p.money || p.price) priceArr.push(`${origPriceHtml}₱${window.formatNum(pVal)}`);
             if(p.sheckles) priceArr.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
             let displayPrice = priceArr.length > 0 ? priceArr.join(' • ') : 'Trade Only';
             let tradePreview = (p.trade && p.trade.length > 0) ? `<div style="font-size:11px; color:#e67e22; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Trade: ${p.trade.join(', ')}</div>` : '';
@@ -995,8 +1084,8 @@
                 <div class="product-card" onclick="window.viewProduct(${p.id})">
                     ${imgHtml}
                     <div class="product-info">
-                        ${rarityHtml}
-                        <div class="product-title">${p.name}</div>
+                        ${rarityHtml} ${flashBadge}
+                        <div class="product-title" style="margin-top:5px;">${p.name}</div>
                         ${catLabel}
                         ${timerHtml}
                         <div class="product-price">${displayPrice}</div>
@@ -1034,9 +1123,20 @@
             }
         }
         
+        let pVal = p.money || p.price || 0;
+        let isFlashActive = p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now());
+        let origPriceHtml = '';
+        let flashBadge = '';
+        
+        if (isFlashActive) {
+            origPriceHtml = `<span style="text-decoration:line-through; color:gray; font-size:14px;">₱${window.formatNum(pVal)}</span> `;
+            pVal = pVal * (1 - (p.flashPct / 100));
+            flashBadge = `<span class="flash-badge" style="font-size:12px;">⚡ ${p.flashPct}% OFF FLASH SALE</span>`;
+            timerHtml += `<div class="flash-timer-text" data-flashend="${p.flashEndTime}" style="font-size:13px; margin-bottom:10px;"></div>`;
+        }
+
         let priceArr = [];
-        if(p.money) priceArr.push(`₱${window.formatNum(p.money)}`);
-        else if(p.price) priceArr.push(`₱${window.formatNum(p.price)}`);
+        if(p.money || p.price) priceArr.push(`${origPriceHtml}₱${window.formatNum(pVal)}`);
         if(p.sheckles) priceArr.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
         
         let tradeHtml = '';
@@ -1050,8 +1150,9 @@
         detailDiv.innerHTML = `
             ${imgHtml}
             <h3 style="margin: 10px 0 5px 0;">${p.name}</h3>
-            ${rarityHtml}
-            <span style="background:#eee; padding:3px 8px; border-radius:4px; font-size:12px; display:inline-block; margin-bottom:5px;">${p.category || 'Uncategorized'}</span>
+            ${rarityHtml} ${flashBadge}
+            <br>
+            <span style="background:#eee; padding:3px 8px; border-radius:4px; font-size:12px; display:inline-block; margin:5px 0;">${p.category || 'Uncategorized'}</span>
             ${timerHtml}
             <h2 style="color:var(--main-color); margin: 10px 0 0 0;">${priceArr.join(' • ')}</h2>
             ${tradeHtml}
@@ -1195,7 +1296,16 @@
 
         cart.forEach((item, index) => {
             let q = item.qty || 1;
-            let pVal = item.money || item.price || 0;
+            let pObj = products.find(x => x.id === item.id) || item;
+            
+            let pVal = pObj.money || pObj.price || 0;
+            let isFlashActive = pObj.flashPct && pObj.flashEndTime && (pObj.flashEndTime > Date.now());
+            let origStr = '';
+            if (isFlashActive) {
+                pVal = pVal * (1 - (pObj.flashPct / 100));
+                origStr = `<span class="flash-badge" style="margin-left:5px;">⚡ ${pObj.flashPct}% OFF</span>`;
+            }
+
             subtotal += (pVal * q);
             let imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; object-fit:cover; margin-right:10px; border-radius:4px;">` : ``;
             let rarityHtml = item.rarity ? `<span class="rarity-badge rarity-${item.rarity.toLowerCase().replace(/ /g, '-px')}" style="margin-left:5px;">${item.rarity}</span>` : '';
@@ -1208,7 +1318,7 @@
                     <div style="display:flex; align-items:center;">
                         ${imgHtml}
                         <div>
-                            <div style="font-size:14px; font-weight:bold;">${item.name} ${rarityHtml}</div>
+                            <div style="font-size:14px; font-weight:bold;">${item.name} ${rarityHtml} ${origStr}</div>
                             <div style="color:var(--main-color); font-size:14px;">₱${window.formatNum(pVal)} <span style="color:gray;">x${q}</span> ${extraCostHtml}</div>
                         </div>
                     </div>
@@ -1266,6 +1376,26 @@
         let myInfo = users[currentUser] || {};
         if (!myInfo.phone) if(!confirm("Your Phone is missing in Profile. Checkout anyway?")) return window.showBuyerTab('me');
         
+        let sellers = [...new Set(userCarts[currentUser].map(item => {
+            let origProd = products.find(p => p.id === item.id) || item;
+            return origProd.addedByEmail;
+        }))];
+        
+        let mayaHtml = "";
+        sellers.forEach(sEmail => {
+            let sUser = users[sEmail];
+            let mName = sUser?.mayaName || (sEmail === ADMIN_EMAIL ? "ANDREA CASTRENCE" : "Not Set");
+            let mNum = sUser?.mayaNumber || (sEmail === ADMIN_EMAIL ? "639519500345" : "Not Set");
+            mayaHtml += `
+            <div style="background:#f9f9f9; padding:10px; border-radius:5px; margin-bottom:10px; border: 1px solid #ddd;">
+                <p style="margin:0 0 5px 0;"><b>Payment to Seller: ${sUser?.username || sEmail}</b></p>
+                <p style="margin:0;">Method: <b>Maya</b></p>
+                <p style="margin:0;">Name: <b>${mName}</b></p>
+                <p style="margin:0;">Number: <b>${mNum}</b></p>
+            </div>`;
+        });
+        document.getElementById('checkout-maya-info').innerHTML = mayaHtml;
+
         document.getElementById('checkout-final-amount').innerText = `₱${window.formatNum(tempCheckoutTotal)}`;
         let balInfo = document.getElementById('checkout-balance-info');
         
@@ -1288,11 +1418,20 @@
             }
         }
 
+        let actualItems = userCarts[currentUser].map(item => {
+            let pObj = products.find(x => x.id === item.id) || item;
+            let finalMoney = pObj.money || pObj.price || 0;
+            if (pObj.flashPct && pObj.flashEndTime && (pObj.flashEndTime > Date.now())) {
+                finalMoney = finalMoney * (1 - (pObj.flashPct / 100));
+            }
+            return {...item, money: finalMoney, price: finalMoney};
+        });
+
         orders.push({
             id: Date.now(), date: new Date().toLocaleString(),
             buyerEmail: currentUser, buyerUsername: users[currentUser].username,
             buyerPhone: users[currentUser].phone || "Not provided",
-            items: [...userCarts[currentUser]], 
+            items: actualItems, 
             totalPaid: tempCheckoutTotal,
             balance: tempBalance,
             midman: document.getElementById('midman-check').checked, 
@@ -1317,6 +1456,8 @@
         let u = users[currentUser] || {};
         document.getElementById('profile-username').value = u.username || "";
         document.getElementById('profile-phone').value = u.phone || "";
+        document.getElementById('profile-maya-name').value = u.mayaName || "";
+        document.getElementById('profile-maya-number').value = u.mayaNumber || "";
         
         if (u.isVerifiedSeller) {
             document.getElementById('vip-nav-btn').classList.remove('hidden');
@@ -1326,6 +1467,12 @@
             if (u.sellerRequested) {
                 document.getElementById('btn-request-seller').innerText = "Request Sent (Pending Admin Approval)";
                 document.getElementById('btn-request-seller').disabled = true;
+            } else if (u.sellCode && Date.now() > u.sellCodeExpiry) {
+                document.getElementById('btn-request-seller').innerText = "Code Expired! Request Again";
+                document.getElementById('btn-request-seller').disabled = false;
+            } else {
+                document.getElementById('btn-request-seller').innerText = "1. Request Verification";
+                document.getElementById('btn-request-seller').disabled = false;
             }
         }
     }
@@ -1333,15 +1480,27 @@
     window.saveProfile = function() {
         let newName = document.getElementById('profile-username').value.trim();
         let newPhone = document.getElementById('profile-phone').value.trim();
+        let newMName = document.getElementById('profile-maya-name').value.trim();
+        let newMNum = document.getElementById('profile-maya-number').value.trim();
+        
         if(!newName) return alert("Username cannot be empty.");
-        users[currentUser].username = newName; users[currentUser].phone = newPhone;
+        users[currentUser].username = newName; 
+        users[currentUser].phone = newPhone;
+        users[currentUser].mayaName = newMName;
+        users[currentUser].mayaNumber = newMNum;
+        
         window.saveDatabase();
         alert("Profile saved!");
         window.updateUserNavDisplay();
     }
     
     window.requestSellerStatus = function() {
-        users[currentUser].sellerRequested = true;
+        let u = users[currentUser];
+        if (u.sellCodeExpiry && Date.now() > u.sellCodeExpiry) {
+            u.sellCode = null;
+            u.sellCodeExpiry = null;
+        }
+        u.sellerRequested = true;
         window.saveDatabase();
         document.getElementById('btn-request-seller').innerText = "Request Sent (Pending Admin Approval)";
         document.getElementById('btn-request-seller').disabled = true;
@@ -1447,6 +1606,13 @@
         let sVal = document.getElementById(`${prefix}-prod-sheckles`).value;
         const sheckles = sVal ? parseInt(sVal) : 0;
         
+        let flashPct = parseInt(document.getElementById(`${prefix}-flash-pct`).value) || 0;
+        let flashEndTime = null;
+        if(flashPct > 0) {
+            let ft = document.getElementById(`${prefix}-flash-timer`).value;
+            if(ft) flashEndTime = new Date(ft).getTime();
+        }
+
         const tradeInputs = document.querySelectorAll(`.${prefix}-trade-input`);
         let trade = [];
         tradeInputs.forEach(inp => { if(inp.value.trim()) trade.push(inp.value.trim()); });
@@ -1464,7 +1630,11 @@
         if (!name || (!money && !sheckles && trade.length===0) || !info || isNaN(stocks)) return alert("Fill out Name, at least one price/trade, Info, and Stocks!");
 
         const finalizeSave = (imgUrl) => {
-            products.push({ id: Date.now(), name, category, rarity, limitedTime, money, sheckles, trade, price: money, info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username });
+            products.push({ 
+                id: Date.now(), name, category, rarity, limitedTime, 
+                money, sheckles, trade, price: money, flashPct, flashEndTime,
+                info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username 
+            });
             window.saveDatabase().then(() => {
                 alert("Product Published!");
                 document.getElementById(`${prefix}-prod-name`).value = '';
@@ -1473,10 +1643,14 @@
                 document.getElementById(`${prefix}-timer-group`).classList.add('hidden');
                 document.getElementById(`${prefix}-prod-money`).value = '';
                 document.getElementById(`${prefix}-prod-sheckles`).value = '';
+                document.getElementById(`${prefix}-flash-pct`).value = '0';
+                document.getElementById(`${prefix}-flash-timer`).value = '';
+                document.getElementById(`${prefix}-flash-timer-group`).classList.add('hidden');
                 document.getElementById(`${prefix}-trade-container`).innerHTML = '';
                 document.getElementById(`${prefix}-prod-info`).value = '';
                 document.getElementById(`${prefix}-prod-stocks`).value = '';
                 if(document.getElementById(`${prefix}-prod-image`)) document.getElementById(`${prefix}-prod-image`).value = ''; 
+                if(source === 'vip') window.renderVipProducts();
             });
         };
 
@@ -1583,7 +1757,10 @@
             let p = findProd(matchPrice[1]);
             if(p) {
                 let costs = [];
-                if(p.money) costs.push(`₱${window.formatNum(p.money)}`);
+                let cMoney = p.money || p.price || 0;
+                if(p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now())) cMoney = cMoney * (1 - (p.flashPct/100));
+                
+                if(cMoney) costs.push(`₱${window.formatNum(cMoney)}`);
                 if(p.sheckles) costs.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
                 if(p.trade && p.trade.length > 0) costs.push(`Trade: ${p.trade.join(', ')}`);
                 reply = `Item: ${p.name} (ID: ${p.id})\nCosts: ${costs.join(' | ') || 'Free'}`;
@@ -1621,6 +1798,7 @@
     window.openAddVouchModal = function() {
         if(!currentUser) return alert("Please Login to add a vouch.");
         document.getElementById('vouch-item-name').value = '';
+        document.getElementById('vouch-buyer-name').value = '';
         document.getElementById('vouch-caption').value = '';
         document.getElementById('vouch-image').value = '';
         document.getElementById('add-vouch-modal').classList.remove('hidden');
@@ -1628,6 +1806,7 @@
 
     window.saveVouch = function() {
         const itemName = document.getElementById('vouch-item-name').value.trim();
+        const buyerName = document.getElementById('vouch-buyer-name').value.trim();
         const text = document.getElementById('vouch-caption').value.trim();
         const file = document.getElementById('vouch-image').files[0];
         if(!file) return alert("Please upload a proof image.");
@@ -1640,7 +1819,7 @@
                 const canvas = document.createElement('canvas'); const scale = 400 / img.width;
                 canvas.width = 400; canvas.height = img.height * scale;
                 canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                vouches.push({ id: Date.now(), user: users[currentUser].username, itemName: itemName, text: text, image: canvas.toDataURL('image/jpeg', 0.7), date: new Date().toLocaleString() });
+                vouches.push({ id: Date.now(), user: users[currentUser].username, buyerName: buyerName, itemName: itemName, text: text, image: canvas.toDataURL('image/jpeg', 0.7), date: new Date().toLocaleString() });
                 window.saveDatabase().then(() => {
                     alert("Vouch uploaded!");
                     window.closeModal('add-vouch-modal');
@@ -1660,7 +1839,8 @@
                 <div class="vouch-card">
                     <img src="${v.image}" alt="Proof">
                     <div style="padding:10px;">
-                        <div style="font-size:13px; margin-bottom:2px;"><b>Name:</b> ${v.user}</div>
+                        <div style="font-size:13px; margin-bottom:2px;"><b>Seller:</b> ${v.user}</div>
+                        <div style="font-size:13px; margin-bottom:2px; color:var(--main-color);"><b>Buyer:</b> ${v.buyerName || 'Unknown'}</div>
                         <div style="font-size:11px; color:gray; margin-bottom:5px;">${v.date}</div>
                         <div style="font-size:12px; font-weight:bold; margin-bottom:2px;">Item: ${v.itemName || 'N/A'}</div>
                         <p style="font-size:12px; margin:2px 0 0 0;"><b>Proof:</b> ${v.text}</p>
@@ -1694,18 +1874,53 @@
             let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
             
             let priceArr = [];
-            if(p.money) priceArr.push(`₱${window.formatNum(p.money)}`);
-            else if(p.price) priceArr.push(`₱${window.formatNum(p.price)}`);
+            let pMoney = p.money || p.price || 0;
+            let flashStr = "";
+            if (p.flashPct && p.flashEndTime && p.flashEndTime > Date.now()) {
+                pMoney = pMoney * (1 - (p.flashPct/100));
+                flashStr = `<span class="flash-badge" style="margin-left:5px;">⚡ ${p.flashPct}% OFF</span>`;
+            }
+
+            if(p.money || p.price) priceArr.push(`₱${window.formatNum(pMoney)}`);
             if(p.sheckles) priceArr.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
             if(p.trade && p.trade.length) priceArr.push('Trade');
 
             list.innerHTML += `
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <b>${p.name}</b> ${rarityHtml} <br>
+                        <b>${p.name}</b> ${rarityHtml} ${flashStr}<br>
                         <span style="font-size:11px; background:#eee; padding:2px 4px;">${p.category || 'None'}</span><br>
                         <span style="color:var(--main-color); font-size:12px;">${priceArr.join(' • ')}</span> | Stocks: ${p.stocks} <br>
                         <span style="font-size: 11px; color:gray;">Seller: ${p.addedByName} ${verifiedHtml} (ID: ${p.id})</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <button class="btn-action" onclick="window.openEditProduct(${p.id})">Edit</button>
+                        <button class="btn-danger" onclick="window.deleteProduct(${p.id})">Del</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.renderVipProducts = function() {
+        const list = document.getElementById('vip-my-products-list');
+        list.innerHTML = '';
+        let myProds = products.filter(p => p.addedByEmail === currentUser);
+        if(myProds.length === 0) return list.innerHTML = "<p>No products published yet.</p>";
+
+        myProds.forEach(p => {
+            let pMoney = p.money || p.price || 0;
+            let flashStr = "";
+            if (p.flashPct && p.flashEndTime && p.flashEndTime > Date.now()) {
+                pMoney = pMoney * (1 - (p.flashPct/100));
+                flashStr = `<span class="flash-badge" style="margin-left:5px;">⚡ ${p.flashPct}% OFF</span>`;
+            }
+
+            list.innerHTML += `
+                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b>${p.name}</b> ${flashStr}<br>
+                        <span style="color:var(--main-color); font-size:12px;">₱${window.formatNum(pMoney)}</span> | Stocks: ${p.stocks}
                     </div>
                     <div style="display:flex; flex-direction:column; gap:5px;">
                         <button class="btn-action" onclick="window.openEditProduct(${p.id})">Edit</button>
@@ -1735,6 +1950,16 @@
 
         document.getElementById('edit-prod-money').value = p.money || p.price || '';
         document.getElementById('edit-prod-sheckles').value = p.sheckles || '';
+        
+        document.getElementById('edit-flash-pct').value = p.flashPct || 0;
+        window.toggleFlashTimer('edit');
+        if(p.flashPct > 0 && p.flashEndTime) {
+            let fd = new Date(p.flashEndTime);
+            fd.setMinutes(fd.getMinutes() - fd.getTimezoneOffset());
+            document.getElementById('edit-flash-timer').value = fd.toISOString().slice(0, 16);
+        } else {
+            document.getElementById('edit-flash-timer').value = "";
+        }
         
         let tradeCont = document.getElementById('edit-trade-container');
         tradeCont.innerHTML = '';
@@ -1773,21 +1998,35 @@
             let sVal = document.getElementById('edit-prod-sheckles').value;
             products[pIndex].sheckles = sVal ? parseInt(sVal) : 0;
             
+            let fPct = parseInt(document.getElementById('edit-flash-pct').value) || 0;
+            products[pIndex].flashPct = fPct;
+            if (fPct > 0) {
+                let ft = document.getElementById('edit-flash-timer').value;
+                products[pIndex].flashEndTime = ft ? new Date(ft).getTime() : null;
+            } else {
+                products[pIndex].flashEndTime = null;
+            }
+            
             let tInputs = document.querySelectorAll('.edit-trade-input');
             products[pIndex].trade = [];
             tInputs.forEach(inp => { if(inp.value.trim()) products[pIndex].trade.push(inp.value.trim()); });
 
             products[pIndex].info = document.getElementById('edit-prod-info').value;
             products[pIndex].stocks = parseInt(document.getElementById('edit-prod-stocks').value);
+            
             window.saveDatabase(); window.closeModal('edit-product-modal');
-            window.renderAdminProducts();
+            if(isAdminView) window.renderAdminProducts();
+            if(users[currentUser] && users[currentUser].isVerifiedSeller) window.renderVipProducts();
+            window.searchProducts();
         }
     }
 
     window.deleteProduct = function(id) {
         if(confirm("Delete this product?")) {
             products = products.filter(x => x.id !== id); window.saveDatabase();
-            window.renderAdminProducts();
+            if(isAdminView) window.renderAdminProducts();
+            if(users[currentUser] && users[currentUser].isVerifiedSeller) window.renderVipProducts();
+            window.searchProducts();
         }
     }
 
