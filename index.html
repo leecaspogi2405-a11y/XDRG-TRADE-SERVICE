@@ -131,10 +131,6 @@
         
         .qty-control { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; }
         .qty-btn { background: #eee; border: 1px solid #ccc; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-        .code-inserter-grid { display: flex; border: 1px solid #ccc; border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
-        .code-inserter-grid input { border: none; border-radius: 0; margin: 0; flex: 1; padding: 10px; }
-        .code-inserter-grid button { border-radius: 0; margin: 0; width: auto; padding: 10px 15px; background: var(--main-color); color: white; border: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -174,6 +170,11 @@
             <div id="cart-list"></div>
             
             <div class="list-card" id="cart-checkout-card" style="margin-top:20px;">
+                <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                    <input type="text" id="voucher-input-code" placeholder="Enter Voucher Code" style="margin:0;">
+                    <button class="btn-action" style="margin:0; width:auto;" onclick="window.applyVoucher()">Apply</button>
+                </div>
+                
                 <div style="text-align: right; margin-bottom: 5px;">
                     <label><input type="checkbox" id="midman-check" style="width:auto;" onchange="window.renderCart()"> Request Middleman (+₱5)</label>
                     <p id="vip-free-text" class="hidden" style="color:var(--vip-color); font-size:12px; margin:0;">*Middleman is FREE for VIPs</p>
@@ -239,7 +240,7 @@
 
                 <div class="list-card">
                     <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('orders')">My Orders</button>
-                    <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('profile-edit')">My Profile</button>
+                    <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('profile-edit')">Edit Profile</button>
                     <button id="vip-nav-btn" class="btn-verify hidden" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('vip-dashboard')">Seller Dashboard</button>
                     <button id="buy-vip-btn" class="btn-vip" style="width:100%; margin-bottom:10px;" onclick="window.openVipModal()">Upgrade to VIP</button>
                     <button class="btn-main" style="background:#555;" onclick="window.logout()">Logout</button>
@@ -266,21 +267,7 @@
                     <p id="vip-discount-text" class="hidden" style="color:green; font-weight:bold;">15% Lifetime Discount Active (VIP)</p>
                     <button class="btn-main" onclick="window.saveProfile()">Save Profile</button>
                     
-                    <hr style="margin: 20px 0;">
-                    
-                    <!-- App Sharing & Promo Codes Area -->
-                    <h3 style="color:var(--main-color);">Share & Promos</h3>
-                    <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="window.shareXdrgApp()">Share XDRG App</button>
-                    <button class="btn-outline" style="width:100%; margin-bottom:15px;" onclick="window.profileXdrgCheck()">Profile Xdrg Check</button>
-
-                    <label style="font-weight:bold;">Code Inserter (Flash Deals / Promos)</label>
-                    <div class="code-inserter-grid">
-                        <input type="text" id="profile-inserted-code" placeholder="{Code here}">
-                        <button onclick="window.insertProfileCode()">Insert</button>
-                    </div>
-                    <p id="profile-code-status" style="color:green; font-weight:bold; font-size:12px; margin-top:0;"></p>
-
-                    <hr style="margin: 20px 0;">
+                    <hr style="margin: 30px 0;">
                     
                     <div id="seller-verification-section">
                         <h3 style="color:var(--verify-color);">Become a Seller</h3>
@@ -300,15 +287,8 @@
                 <div id="me-vip-dashboard" class="hidden list-card">
                     <h3 style="color:var(--verify-color);">Seller Dashboard</h3>
                     
-                    <!-- NEW: Seller Orders Section -->
-                    <div style="background:#e8f4f8; padding:15px; border-radius:5px; margin-bottom:15px; border: 1px solid #b3e5fc;">
-                        <h4 style="margin-top:0; color:var(--main-color);">Orders</h4>
-                        <p style="font-size:12px; margin-top:0; color:gray;">Para makita ng seller kung sino ang nag order ng product ng seller.</p>
-                        <div id="vip-seller-orders-list"></div>
-                    </div>
-
                     <div style="background:#f9f9f9; padding:15px; border-radius:5px; margin-bottom:15px;">
-                        <h4 style="margin-top:0;">Publish Item (Flash sale kada product)</h4>
+                        <h4 style="margin-top:0;">Publish Item</h4>
                         <input type="text" id="vip-prod-name" placeholder="Product Name">
                         <select id="vip-prod-category">
                             <option value="Grow A Garden">Grow A Garden</option>
@@ -368,24 +348,11 @@
                         <div id="vip-my-products-list"></div>
                     </div>
 
-                    <!-- NEW: Flash Deal Sale Section -->
                     <div style="background:#fff3cd; padding:15px; border-radius:5px;">
-                        <h4 style="margin-top:0; color:#e67e22;">👉 Flash Deal Sale</h4>
-                        <p style="font-size:12px; margin-top:0;">Ito yung panglahat na product ng seller. Big discount from 1% to 100% OFF na pwedeng ilagay ng Code. One use lang kada user.</p>
-                        
-                        <label>Name (Code Name)</label>
-                        <input type="text" id="vip-flash-name" placeholder="e.g. MEGAOFFER90">
-                        <label>Discord</label>
-                        <input type="text" id="vip-flash-discord" placeholder="Your Discord Name/Link">
-                        <label>Discount % Off</label>
-                        <input type="number" id="vip-flash-discount" placeholder="1 to 100">
-                        <label>Expired date</label>
-                        <input type="date" id="vip-flash-expire">
-                        
-                        <button class="btn-main" onclick="window.createFlashDeal()">Create Flash Deal</button>
-
-                        <h4 style="margin-top:15px; margin-bottom:5px;">My Active Flash Deals:</h4>
-                        <div id="vip-my-flash-deals"></div>
+                        <h4 style="margin-top:0;">Voucher Creator</h4>
+                        <input type="text" id="vip-voucher-name" placeholder="Voucher Name / Code (e.g. SAVE10)">
+                        <input type="number" id="vip-voucher-pct" placeholder="% Off (e.g. 10)">
+                        <button class="btn-main" onclick="window.createVoucher('vip')">Create Voucher</button>
                     </div>
                 </div>
             </div>
@@ -412,7 +379,6 @@
         </div>
     </div>
 
-    <!-- ADMIN SECTION -->
     <div id="admin-section" class="hidden list-card" style="margin-top:20px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2>Admin Panel</h2>
@@ -430,7 +396,6 @@
         </div>
 
         <div id="admin-add-product" class="hidden">
-            <!-- (Admin Add Product Fields - Kept same as original) -->
             <h3>Add Product to Shop</h3>
             <input type="text" id="admin-prod-name" placeholder="Product Name">
             <select id="admin-prod-category">
@@ -460,10 +425,12 @@
                 <label>Limited Timer (Optional End Date & Time)</label>
                 <input type="datetime-local" id="admin-prod-timer">
             </div>
+            
             <hr style="margin: 15px 0;">
             <label style="font-weight:bold; font-size:14px; color:var(--main-color);">Pricing & Trade</label>
             <input type="number" id="admin-prod-money" placeholder="Money (₱) - Optional">
             <input type="number" id="admin-prod-sheckles" placeholder="Sheckles (¢) - Optional">
+            
             <div style="margin-bottom:10px;">
                 <label style="color:#ff4757; font-weight:bold; font-size:13px;">Flash Sale (Optional)</label>
                 <select id="admin-flash-pct" class="flash-select" onchange="window.toggleFlashTimer('admin')"></select>
@@ -472,9 +439,11 @@
                     <input type="datetime-local" id="admin-flash-timer" style="margin-bottom:0;">
                 </div>
             </div>
+
             <div id="admin-trade-container" style="margin-bottom:10px;"></div>
             <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('admin')">+ Add Trade</button>
             <hr style="margin: 15px 0;">
+
             <textarea id="admin-prod-info" placeholder="Product Description"></textarea>
             <input type="number" id="admin-prod-stocks" placeholder="Number of Stocks">
             <label>Product Image</label>
@@ -503,13 +472,13 @@
         </div>
 
         <div id="admin-vouchers-tab" class="hidden">
-            <h3>Admin Global Vouchers</h3>
+            <h3>Voucher Creator</h3>
             <div class="list-card">
                 <input type="text" id="admin-voucher-name" placeholder="Voucher Name / Code (e.g. SAVE10)">
                 <input type="number" id="admin-voucher-pct" placeholder="% Off (e.g. 10)">
                 <button class="btn-main" onclick="window.createVoucher('admin')">Create Voucher</button>
             </div>
-            <h4>Active Vouchers & Flash Deals</h4>
+            <h4>Active Vouchers</h4>
             <div id="admin-voucher-list"></div>
         </div>
 
@@ -520,7 +489,6 @@
     </div>
 </div>
 
-<!-- MODALS -->
 <div id="product-modal" class="modal hidden">
     <div class="modal-content">
         <div id="modal-product-details"></div>
@@ -532,8 +500,10 @@
     <div class="modal-content">
         <h2 style="color:var(--main-color); margin-top:0;">Make an Offer</h2>
         <p style="font-size:14px;">Propose a trade for this item.</p>
+        
         <div id="offer-items-container" style="margin-bottom:10px;"></div>
         <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:15px;" onclick="window.addOfferItemInput()">+ Add Item</button>
+        
         <label style="display:block; margin-top:10px; font-weight:bold;">More / Add Notes</label>
         <textarea id="offer-text-input" placeholder="E.g. Adding extra items..." rows="2"></textarea>
         <button class="btn-main" onclick="window.submitOffer()">Submit Offer</button>
@@ -560,9 +530,12 @@
 <div id="checkout-modal" class="modal hidden">
     <div class="modal-content">
         <h2 style="color:var(--main-color); margin-top:0;">Confirm Checkout</h2>
+        
         <div id="checkout-maya-info"></div>
+
         <p>Total to Pay Now: <b id="checkout-final-amount" style="color:var(--main-color); font-size:24px;"></b></p>
         <p id="checkout-balance-info" class="hidden" style="color:red; font-size:14px; font-weight:bold;"></p>
+        
         <p style="font-size:14px;">Please ensure your phone number in your profile is correct.</p>
         <button class="btn-main" onclick="window.confirmCheckout()">Place Order</button>
         <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('checkout-modal')">Cancel</button>
@@ -583,7 +556,99 @@
     </div>
 </div>
 
-<!-- SCRIPT LOGIC -->
+<div id="edit-product-modal" class="modal hidden">
+    <div class="modal-content">
+        <h2>Edit Product</h2>
+        <input type="hidden" id="edit-prod-id">
+        <label>Name</label><input type="text" id="edit-prod-name">
+        <label>Category</label>
+        <select id="edit-prod-category">
+            <option value="Grow A Garden">Grow A Garden</option>
+            <option value="Grow A Garden 2">Grow A Garden 2</option>
+            <option value="Steal A Brainrot">Steal A Brainrot</option>
+            <option value="Kick A Lucky Blocks">Kick A Lucky Blocks</option>
+            <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
+            <option value="Other">Other</option>
+        </select>
+        <label>Rarity</label>
+        <select id="edit-prod-rarity" onchange="window.toggleTimer('edit')">
+            <option value="">Rarity (Optional)</option>
+            <option value="Secret">Secret</option>
+            <option value="Divine">Divine</option>
+            <option value="OG">OG</option>
+            <option value="Admin Abuse">Admin Abuse</option>
+            <option value="1 of 1">1 of 1</option>
+            <option value="Limited">Limited</option>
+            <option value="Super">Super</option>
+            <option value="Mythical">Mythical</option>
+            <option value="Legendary">Legendary</option>
+            <option value="Rare">Rare</option>
+            <option value="Uncommon">Uncommon</option>
+            <option value="Common">Common</option>
+        </select>
+        <div id="edit-timer-group" class="hidden">
+            <label>Limited Timer (Optional End Date & Time)</label>
+            <input type="datetime-local" id="edit-prod-timer">
+        </div>
+        
+        <hr style="margin: 15px 0;">
+        <label>Money (₱)</label><input type="number" id="edit-prod-money">
+        <label>Sheckles (¢)</label><input type="number" id="edit-prod-sheckles">
+        
+        <div style="margin-bottom:10px;">
+            <label style="color:#ff4757; font-weight:bold; font-size:13px;">Flash Sale (Optional)</label>
+            <select id="edit-flash-pct" class="flash-select" onchange="window.toggleFlashTimer('edit')"></select>
+            <div id="edit-flash-timer-group" class="hidden" style="margin-top:5px;">
+                <label style="font-size:12px;">Flash Sale End Date & Time</label>
+                <input type="datetime-local" id="edit-flash-timer" style="margin-bottom:0;">
+            </div>
+        </div>
+
+        <div id="edit-trade-container" style="margin-bottom:10px;"></div>
+        <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('edit')">+ Add Trade</button>
+        <hr style="margin: 15px 0;">
+
+        <label>Description</label><textarea id="edit-prod-info"></textarea>
+        <label>Stocks</label><input type="number" id="edit-prod-stocks">
+        <button class="btn-main" onclick="window.saveEditedProduct()">Save Changes</button>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('edit-product-modal')">Cancel</button>
+    </div>
+</div>
+
+<div id="bot-chat-modal" class="modal hidden">
+    <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
+        <h3 style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px; color:var(--ai-color);">Xdrg Service (AI)</h3>
+        <div id="bot-chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;"></div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <input type="text" id="bot-chat-input" placeholder="Ask about item IDs, prices..." style="margin:0; flex:1;">
+            <button class="btn-action" style="margin:0; width:auto; padding:10px 20px;" onclick="window.sendBotMessage()">Send</button>
+        </div>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('bot-chat-modal')">Close</button>
+    </div>
+</div>
+
+<div id="admin-chat-modal" class="modal hidden">
+    <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
+        <h3 id="chat-target-name" style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px;">Chat</h3>
+        
+        <div id="chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;"></div>
+        
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <input type="text" id="admin-chat-input" placeholder="Type a message..." style="margin:0; flex:1;">
+            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.sendAdminMessage()">Send</button>
+        </div>
+        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('admin-chat-modal')">Close Chat</button>
+    </div>
+</div>
+
+<div id="send-voucher-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 style="margin-top:0;">Send Voucher to Buyer</h3>
+        <div id="send-voucher-list"></div>
+        <button class="btn-outline" style="width:100%; margin-top:15px;" onclick="window.closeModal('send-voucher-modal')">Cancel</button>
+    </div>
+</div>
+
 <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -611,6 +676,8 @@
     
     window.tempSelectedQty = 1;
     window.currentViewProductId = null;
+    window.appliedVoucher = null;
+    window.tempVoucherTarget = null;
 
     window.formatNum = function(num) {
         if (!num && num !== 0) return 0;
@@ -652,13 +719,20 @@
                 if(currentActiveTab === 'admin-offers-tab') window.renderAdminOffers();
                 if(currentActiveTab === 'admin-manage-users') window.renderAdminUsers();
                 if(currentActiveTab === 'admin-vouchers-tab') window.renderAdminVouchers();
+                if(currentActiveTab === 'admin-messages-tab') window.renderAdminChatList();
+                if(chatTargetUser) window.renderAdminChatHistory(); 
             } else {
                 window.updateUserNavDisplay();
                 window.updateBadges();
                 if(currentActiveTab === 'home') window.searchProducts();
+                if(currentActiveTab === 'vouches') window.renderVouches();
                 if(currentActiveTab === 'cart') window.renderCart();
                 if(currentActiveTab === 'me') window.loadProfile();
+                if(currentActiveTab === 'messages') window.renderBuyerMessages();
             }
+        } else {
+            if(currentActiveTab === 'home') window.searchProducts();
+            if(currentActiveTab === 'vouches') window.renderVouches();
         }
     }
 
@@ -687,183 +761,516 @@
         return supabase.from('shop_data').upsert({ id: 1, data: { users, products, userCarts, orders, vouchers, vouches, offers } }).then(({ error }) => { if (error) throw error; });
     }
 
-    window.closeModal = function(id) {
-        document.getElementById(id).classList.add('hidden');
-    }
-    
-    // ============================================
-    // NEW ADDITIONS: SHARE & PROMO INSERT LOGIC
-    // ============================================
-
-    window.shareXdrgApp = function() {
-        let link = "https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file";
-        if(navigator.clipboard) {
-            navigator.clipboard.writeText(link).then(() => {
-                alert("App link copied to clipboard!\nYou can now paste and share it to Messenger, Facebook, Discord, etc.");
-            }).catch(() => { alert("Copy failed. Here is the link:\n" + link); });
-        } else {
-            alert("Copy not supported on this browser. Here is the link:\n" + link);
-        }
+    window.toggleTimer = function(prefix) {
+        let val = document.getElementById(`${prefix}-prod-rarity`).value;
+        let group = document.getElementById(`${prefix}-timer-group`);
+        if(val === 'Limited') { group.classList.remove('hidden'); }
+        else { group.classList.add('hidden'); }
     }
 
-    window.profileXdrgCheck = function() {
-        let u = users[currentUser];
-        let link = `XDRG Profile Check\nUsername: ${u.username}\nStatus: ${u.isVerifiedSeller ? 'Verified Seller' : 'Buyer'}\nCheck out my profile on XDRG Shop!`;
-        if(navigator.clipboard) {
-            navigator.clipboard.writeText(link).then(() => {
-                alert("Profile info copied!\nShare this to Messenger, Facebook, Twitter, Discord, etc.");
-            });
-        } else { alert("Link:\n" + link); }
+    window.toggleFlashTimer = function(prefix) {
+        let val = parseInt(document.getElementById(`${prefix}-flash-pct`).value);
+        let group = document.getElementById(`${prefix}-flash-timer-group`);
+        if(val > 0) { group.classList.remove('hidden'); }
+        else { group.classList.add('hidden'); }
     }
 
-    window.insertProfileCode = function() {
-        let code = document.getElementById('profile-inserted-code').value.trim();
-        if(!code) return alert("Please enter a code.");
-        
-        let v = vouchers.find(x => x.code === code);
-        if(!v) return alert("Invalid Flash Deal / Promo Code!");
-        
-        if(v.expiredDate && new Date(v.expiredDate) < new Date()) {
-            return alert("This Flash Deal code has expired!");
-        }
-        
-        if(v.usedBy && v.usedBy.includes(currentUser)) {
-            return alert("You have already used this code! It is one-use per user.");
-        }
-        
-        // Save promo state to user
-        users[currentUser].activePromoCode = v.code;
-        window.saveDatabase().then(() => {
-            document.getElementById('profile-code-status').innerText = `✅ Code ${v.code} (${v.discount}% OFF) is activated for your next checkout!`;
-            alert("Code inserted successfully!");
-            document.getElementById('profile-inserted-code').value = '';
-            window.renderCart(); 
-        });
+    window.addTradeInput = function(prefix) {
+        let container = document.getElementById(`${prefix}-trade-container`);
+        let div = document.createElement('div');
+        div.style.marginBottom = "5px";
+        div.innerHTML = `<input type="text" class="${prefix}-trade-input" placeholder="e.g. Dragon Breath 1x" style="width:75%; display:inline-block; margin:0;"><button type="button" class="btn-danger" style="width:20%; display:inline-block; margin:0 0 0 5%;" onclick="this.parentElement.remove()">X</button>`;
+        container.appendChild(div);
     }
 
-    window.createFlashDeal = function() {
-        let name = document.getElementById('vip-flash-name').value.trim();
-        let discord = document.getElementById('vip-flash-discord').value.trim();
-        let pct = parseInt(document.getElementById('vip-flash-discount').value);
-        let date = document.getElementById('vip-flash-expire').value;
-        
-        if(!name || !discord || !pct || !date) return alert("Please fill all Flash Deal fields!");
-        if(pct < 1 || pct > 100) return alert("Discount must be between 1% and 100%.");
-        if(vouchers.some(v => v.code === name)) return alert("Code Name already exists!");
-        
-        vouchers.push({
-            code: name,
-            discount: pct,
-            sellerEmail: currentUser,
-            discord: discord,
-            expiredDate: date,
-            usedBy: []
-        });
-        
-        window.saveDatabase().then(() => {
-            alert("Flash Deal Created successfully!");
-            document.getElementById('vip-flash-name').value = '';
-            document.getElementById('vip-flash-discord').value = '';
-            document.getElementById('vip-flash-discount').value = '';
-            document.getElementById('vip-flash-expire').value = '';
-            window.renderVipProducts();
-        });
+    window.addOfferItemInput = function() {
+        let container = document.getElementById('offer-items-container');
+        let div = document.createElement('div');
+        div.style.marginBottom = "5px";
+        div.style.display = "flex";
+        div.style.gap = "5px";
+        div.innerHTML = `
+            <input type="text" class="offer-item-name" placeholder="e.g. Dragon Breath" style="width:60%; margin:0;">
+            <input type="text" class="offer-item-qty" placeholder="e.g. 1x" style="width:20%; margin:0;">
+            <button type="button" class="btn-danger" style="width:15%; margin:0;" onclick="this.parentElement.remove()">X</button>
+        `;
+        container.appendChild(div);
     }
 
-    // ============================================
-    // SELLER DASHBOARD: ORDERS & PRODUCTS
-    // ============================================
-
-    window.renderVipProducts = function() {
-        if (!currentUser) return;
-        
-        // 1. Render Seller Orders
-        const ordersList = document.getElementById('vip-seller-orders-list');
-        ordersList.innerHTML = '';
-        let hasOrders = false;
-        
-        orders.forEach(o => {
-            let mySoldItems = o.items.filter(i => i.addedByEmail === currentUser);
-            if(mySoldItems.length > 0) {
-                hasOrders = true;
-                let itemsStr = mySoldItems.map(i => `${i.name} (x${i.qty})`).join(', ');
-                ordersList.innerHTML += `
-                <div class="list-card" style="border-left: 4px solid var(--verify-color); padding:10px;">
-                    <b style="color:var(--main-color);">Order ID: ${o.id}</b><br>
-                    <b>Buyer:</b> ${o.buyerUsername} (${o.buyerEmail})<br>
-                    <b>Ordered:</b> ${itemsStr}<br>
-                    <b>Date:</b> ${o.date}
-                </div>`;
+    setInterval(() => {
+        document.querySelectorAll('.timer-text').forEach(el => {
+            let end = parseInt(el.getAttribute('data-endtime'));
+            if (end) {
+                let left = end - Date.now();
+                if (left > 0) {
+                    let h = Math.floor(left / (1000 * 60 * 60));
+                    let m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
+                    let s = Math.floor((left % (1000 * 60)) / 1000);
+                    el.innerText = `Ends in: ${h}h ${m}m ${s}s`;
+                } else {
+                    el.innerText = "Expired";
+                }
             }
         });
-        if(!hasOrders) ordersList.innerHTML = '<p style="font-size:12px; color:gray;">Wala pang nag-order ng products mo.</p>';
 
-        // 2. Render My Published Items
-        const prodList = document.getElementById('vip-my-products-list');
-        prodList.innerHTML = '';
-        let myProds = products.filter(p => p.addedByEmail === currentUser);
-        if(myProds.length === 0) {
-            prodList.innerHTML = '<p style="font-size:12px; color:gray;">Wala ka pang published items.</p>';
-        } else {
-            myProds.forEach(p => {
-                prodList.innerHTML += `<div class="list-card" style="padding:10px;">
-                    <b>${p.name}</b> - ₱${p.price} | Stocks: ${p.stocks}<br>
-                    <span style="font-size:11px; color:gray;">ID: ${p.id} | Clicks/Views (Coming soon)</span>
-                </div>`;
-            });
+        document.querySelectorAll('.flash-timer-text').forEach(el => {
+            let end = parseInt(el.getAttribute('data-flashend'));
+            if (end) {
+                let left = end - Date.now();
+                if (left > 0) {
+                    let h = Math.floor(left / (1000 * 60 * 60));
+                    let m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
+                    let s = Math.floor((left % (1000 * 60)) / 1000);
+                    el.innerText = `Flash Deal Ends in: ${h}h ${m}m ${s}s`;
+                } else {
+                    el.innerText = "";
+                }
+            }
+        });
+
+        if(!currentUser || !users[currentUser] || isAdminView) return;
+        let u = users[currentUser];
+        let now = Date.now();
+        
+        if (u.registeredAt) {
+            let timeLeft = (u.registeredAt + (12 * 60 * 60 * 1000)) - now;
+            let banner = document.getElementById('voucher-banner');
+            if (timeLeft > 0) {
+                banner.classList.remove('hidden');
+                let h = Math.floor(timeLeft / (1000 * 60 * 60));
+                let m = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                let s = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                document.getElementById('voucher-timer').innerText = `${h}h ${m}m ${s}s`;
+            } else { banner.classList.add('hidden'); }
         }
 
-        // 3. Render Flash Deals
-        const flashList = document.getElementById('vip-my-flash-deals');
-        flashList.innerHTML = '';
-        let myDeals = vouchers.filter(v => v.sellerEmail === currentUser);
-        if(myDeals.length === 0) {
-            flashList.innerHTML = '<p style="font-size:12px; color:gray;">Wala pang active Flash Deals.</p>';
+        if (u.sellCodeExpiry) {
+            let codeTimeLeft = u.sellCodeExpiry - now;
+            let timerEl = document.getElementById('verify-timer');
+            if(codeTimeLeft > 0) {
+                let m = Math.floor(codeTimeLeft / (1000 * 60));
+                let s = Math.floor((codeTimeLeft % (1000 * 60)) / 1000);
+                timerEl.innerText = `Code expires in: ${m}m ${s}s`;
+            } else if (u.sellCode) {
+                timerEl.innerText = "Code expired. Request again.";
+            } else { timerEl.innerText = ""; }
+        }
+    }, 1000);
+
+    function routeUser(email) {
+        currentUser = email;
+        window.appliedVoucher = null; 
+        
+        if (email === ADMIN_EMAIL) {
+            isAdminView = true;
+            document.getElementById('buyer-section').classList.add('hidden');
+            document.getElementById('admin-section').classList.remove('hidden');
+            window.showAdminTab('admin-manage-products'); 
         } else {
-            myDeals.forEach(d => {
-                flashList.innerHTML += `<div class="list-card" style="padding:10px; margin-top:5px; border-left:3px solid #f1c40f;">
-                    <b>Code:</b> ${d.code} (${d.discount}% OFF)<br>
-                    <b>Discord:</b> ${d.discord}<br>
-                    <b>Expires:</b> ${d.expiredDate}<br>
-                    <span style="font-size:11px; color:gray;">Used by: ${d.usedBy ? d.usedBy.length : 0} users</span>
-                </div>`;
-            });
+            isAdminView = false;
+            if (!userCarts[currentUser]) userCarts[currentUser] = [];
+            if (!users[currentUser].inbox) users[currentUser].inbox = [];
+            if (!users[currentUser].botChat) users[currentUser].botChat = [];
+            
+            document.getElementById('admin-section').classList.add('hidden');
+            document.getElementById('buyer-section').classList.remove('hidden');
+            
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('logged-in-me').classList.remove('hidden');
+            
+            window.updateUserNavDisplay();
+            
+            if (currentActiveTab === 'me') {
+                window.showBuyerTab('me'); 
+            } else {
+                window.showBuyerTab('home');
+            }
         }
     }
 
-    // ============================================
-    // RENDER BUYER ORDERS 
-    // ============================================
+    window.toggleAuth = function() {
+        document.getElementById('login-form').classList.toggle('hidden');
+        document.getElementById('register-form').classList.toggle('hidden');
+    }
 
-    window.renderBuyerOrders = function() {
-        if (!currentUser) return;
-        const list = document.getElementById('buyer-order-list');
-        list.innerHTML = '';
-        let myOrders = orders.filter(o => o.buyerEmail === currentUser);
+    window.register = function() {
+        const username = document.getElementById('reg-username').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const pass = document.getElementById('reg-pass').value;
+        const confirm = document.getElementById('reg-confirm').value;
+
+        if (!username || !email || !pass) return alert("Please fill out all fields.");
+        if (pass !== confirm) return alert("Passwords do not match.");
+        if (users[email]) return alert("Email already exists.");
+
+        users[email] = { pass, username, phone: "", mayaName: "", mayaNumber: "", isVIP: false, vipPending: false, isVerifiedSeller: false, sellerRequested: false, registeredAt: Date.now(), inbox: [], botChat: [] };
+        userCarts[email] = [];
+        window.saveDatabase(); 
+        localStorage.setItem('xdrg_logged_in_user', email);
+        routeUser(email);
+    }
+
+    window.login = function() {
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-pass').value;
+        if (users[email] && users[email].pass === pass) {
+            localStorage.setItem('xdrg_logged_in_user', email);
+            routeUser(email);
+        } else alert("Invalid email or password.");
+    }
+
+    window.logout = function() {
+        currentUser = null;
+        window.appliedVoucher = null;
+        localStorage.removeItem('xdrg_logged_in_user');
         
-        if (myOrders.length === 0) {
-            list.innerHTML = '<p>You have no purchases yet.</p>';
-            return;
+        document.getElementById('admin-section').classList.add('hidden');
+        document.getElementById('buyer-section').classList.remove('hidden');
+        
+        window.updateBadges();
+        window.showBuyerTab('me');
+    }
+
+    window.showBuyerTab = function(tab) {
+        currentActiveTab = tab;
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`nav-${tab}`).classList.add('active');
+        
+        ['home', 'vouches', 'cart', 'messages', 'me'].forEach(t => {
+            document.getElementById(`buyer-${t}`).classList.add('hidden');
+        });
+        document.getElementById(`buyer-${tab}`).classList.remove('hidden');
+
+        if (tab === 'home') window.searchProducts();
+        if (tab === 'vouches') {
+            let u = users[currentUser];
+            let canVouch = (currentUser === ADMIN_EMAIL) || (u && u.isVerifiedSeller);
+            document.getElementById('btn-add-vouch').classList.toggle('hidden', !canVouch);
+            window.renderVouches();
         }
+        if (tab === 'cart') window.renderCart();
+        if (tab === 'messages') window.renderBuyerMessages();
         
-        myOrders.forEach(o => {
-            let itemsHtml = o.items.map(i => `${i.name} (x${i.qty})`).join('<br>');
+        if (tab === 'me') {
+            if (currentUser) {
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('logged-in-me').classList.remove('hidden');
+                window.loadProfile();
+                window.showMeSubTab('orders'); 
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('logged-in-me').classList.add('hidden');
+            }
+        }
+        window.updateBadges();
+    }
+    
+    window.showMeSubTab = function(subtab) {
+        ['orders', 'profile-edit', 'vip-dashboard'].forEach(t => document.getElementById(`me-${t}`).classList.add('hidden'));
+        document.getElementById(`me-${subtab}`).classList.remove('hidden');
+        if(subtab === 'orders') window.renderBuyerOrders();
+        if(subtab === 'vip-dashboard') window.renderVipProducts();
+    }
+
+    window.updateUserNavDisplay = function() {
+        if(!currentUser || !users[currentUser]) return;
+        let u = users[currentUser];
+        let displayHtml = `${u.username}`;
+        if(u.isVIP) displayHtml += ` <span class="badge badge-vip">VIP</span>`;
+        if(u.isVerifiedSeller) displayHtml += ` <span class="badge badge-verify">Seller</span>`;
+        document.getElementById('buyer-email-display').innerHTML = displayHtml;
+        document.getElementById('buyer-email-sub').innerText = currentUser;
+        
+        if(u.isVIP) {
+            document.getElementById('buy-vip-btn').classList.add('hidden');
+            document.getElementById('vip-discount-text').classList.remove('hidden');
+            if(document.getElementById('vip-free-text')) document.getElementById('vip-free-text').classList.remove('hidden');
+        } else {
+            document.getElementById('buy-vip-btn').classList.remove('hidden');
+            document.getElementById('vip-discount-text').classList.add('hidden');
+            if(document.getElementById('vip-free-text')) document.getElementById('vip-free-text').classList.add('hidden');
+            if(u.vipPending) {
+                document.getElementById('buy-vip-btn').innerText = "VIP Requested (Pending)";
+                document.getElementById('buy-vip-btn').disabled = true;
+            }
+        }
+    }
+
+    window.updateBadges = function() {
+        let cartCount = 0;
+        let msgCount = 0;
+        if (currentUser && users[currentUser]) {
+            cartCount = userCarts[currentUser] ? userCarts[currentUser].length : 0;
+            msgCount = users[currentUser].inbox ? users[currentUser].inbox.length : 0;
+        }
+
+        let cBadge = document.getElementById('cart-badge');
+        if(cartCount > 0) { cBadge.innerText = cartCount; cBadge.classList.remove('hidden'); } 
+        else { cBadge.classList.add('hidden'); }
+        
+        let mBadge = document.getElementById('msg-badge');
+        if(msgCount > 0) { mBadge.innerText = msgCount; mBadge.classList.remove('hidden'); }
+        else { mBadge.classList.add('hidden'); }
+    }
+
+    window.setCategory = function(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.cat-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(`cat-${cat}`).classList.add('active');
+        window.searchProducts();
+    }
+
+    window.searchProducts = function() {
+        let q = (document.getElementById('buyer-search').value || '').toLowerCase();
+        let available = products.filter(p => p.stocks > 0);
+        
+        if (currentCategory !== "All") {
+            available = available.filter(p => p.category === currentCategory);
+        }
+
+        let filtered = available;
+        if(q) {
+            filtered = available.filter(p => 
+                p.name.toLowerCase().includes(q) || 
+                p.addedByName.toLowerCase().includes(q) || 
+                p.id.toString().includes(q) ||
+                (p.category && p.category.toLowerCase().includes(q)) ||
+                (p.rarity && p.rarity.toLowerCase().includes(q))
+            );
+        }
+        window.renderProducts(filtered);
+    }
+
+    window.renderProducts = function(listToRender) {
+        const list = document.getElementById('product-list');
+        list.innerHTML = '';
+        if (listToRender.length === 0) return list.innerHTML = "<p style='grid-column: span 2; text-align:center;'>No products found.</p>";
+
+        listToRender.forEach(p => {
+            let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="background:#eee; height:160px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
+            let catLabel = p.category ? `<span style="background:#ddd; padding:2px 5px; border-radius:3px; font-size:10px;">${p.category}</span>` : '';
+            
+            let rarityHtml = '';
+            let timerHtml = '';
+            if (p.rarity) {
+                let rClass = p.rarity.toLowerCase().replace(/ /g, '-');
+                rarityHtml = `<div class="rarity-badge rarity-${rClass}">${p.rarity}</div>`;
+                if (p.rarity === 'Limited' && p.limitedTime) {
+                    timerHtml = `<div class="timer-text" data-endtime="${p.limitedTime}"></div>`;
+                }
+            }
+
+            let pVal = p.money || p.price || 0;
+            let isFlashActive = p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now());
+            let origPriceHtml = '';
+            let flashBadge = '';
+            
+            if (isFlashActive) {
+                origPriceHtml = `<span style="text-decoration:line-through; color:gray; font-size:11px;">₱${window.formatNum(pVal)}</span> `;
+                pVal = pVal * (1 - (p.flashPct / 100));
+                flashBadge = `<span class="flash-badge">⚡ ${p.flashPct}% OFF</span>`;
+                timerHtml += `<div class="flash-timer-text" data-flashend="${p.flashEndTime}"></div>`;
+            }
+
+            let priceArr = [];
+            if(p.money || p.price) priceArr.push(`${origPriceHtml}₱${window.formatNum(pVal)}`);
+            if(p.sheckles) priceArr.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
+            let displayPrice = priceArr.length > 0 ? priceArr.join(' • ') : 'Trade Only';
+            let tradePreview = (p.trade && p.trade.length > 0) ? `<div style="font-size:11px; color:#e67e22; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Trade: ${p.trade.join(', ')}</div>` : '';
+
+            let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
+
             list.innerHTML += `
-            <div class="list-card" style="border:1px solid var(--main-color);">
-                <div style="font-weight:bold; color:var(--main-color);">Order ID: ${o.id}</div>
-                <div style="font-size:12px; color:gray; margin-bottom:5px;">Date: ${o.date}</div>
-                <div style="font-size:14px; margin-bottom:5px;"><b>Items:</b><br>${itemsHtml}</div>
-                <div style="font-size:14px;"><b>Total Paid:</b> ₱${window.formatNum(o.totalPaid)}</div>
-                <div style="font-size:14px; color:${o.balance > 0 ? 'red' : 'green'};"><b>Balance:</b> ₱${window.formatNum(o.balance)}</div>
-                <div style="font-size:14px; font-weight:bold; margin-top:5px;">Status: ${o.status}</div>
-            </div>`;
+                <div class="product-card" onclick="window.viewProduct(${p.id})">
+                    ${imgHtml}
+                    <div class="product-info">
+                        ${rarityHtml} ${flashBadge}
+                        <div class="product-title" style="margin-top:5px;">${p.name}</div>
+                        ${catLabel}
+                        ${timerHtml}
+                        <div class="product-price">${displayPrice}</div>
+                        ${tradePreview}
+                        <div class="product-meta" style="margin-top:5px;">
+                            <span>ID: ${p.id}</span>
+                            <span>${p.stocks} left</span>
+                        </div>
+                        <div class="product-meta" style="margin-top:5px; color:var(--main-color);">
+                            Seller: ${p.addedByName} ${verifiedHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
         });
     }
 
-    // ============================================
-    // CART & CHECKOUT WITH PROMO CODE FIX
-    // ============================================
-    
+    window.viewProduct = function(id) {
+        const p = products.find(prod => prod.id === id);
+        if(!p) return;
+        
+        window.currentViewProductId = id;
+        window.tempSelectedQty = 1;
+        
+        let imgHtml = p.image ? `<img src="${p.image}" style="width:100%; height:250px; object-fit:contain; background:#fff; border-radius:4px;">` : ``;
+        let btnDisabled = p.stocks <= 0 ? 'disabled' : '';
+
+        let rarityHtml = '';
+        let timerHtml = '';
+        if (p.rarity) {
+            let rClass = p.rarity.toLowerCase().replace(/ /g, '-');
+            rarityHtml = `<div class="rarity-badge rarity-${rClass}">${p.rarity}</div>`;
+            if (p.rarity === 'Limited' && p.limitedTime) {
+                timerHtml = `<div class="timer-text" data-endtime="${p.limitedTime}" style="font-size:13px; margin-bottom:10px;"></div>`;
+            }
+        }
+        
+        let pVal = p.money || p.price || 0;
+        let isFlashActive = p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now());
+        let origPriceHtml = '';
+        let flashBadge = '';
+        
+        if (isFlashActive) {
+            origPriceHtml = `<span style="text-decoration:line-through; color:gray; font-size:14px;">₱${window.formatNum(pVal)}</span> `;
+            pVal = pVal * (1 - (p.flashPct / 100));
+            flashBadge = `<span class="flash-badge" style="font-size:12px;">⚡ ${p.flashPct}% OFF FLASH SALE</span>`;
+            timerHtml += `<div class="flash-timer-text" data-flashend="${p.flashEndTime}" style="font-size:13px; margin-bottom:10px;"></div>`;
+        }
+
+        let priceArr = [];
+        if(p.money || p.price) priceArr.push(`${origPriceHtml}₱${window.formatNum(pVal)}`);
+        if(p.sheckles) priceArr.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
+        
+        let tradeHtml = '';
+        if(p.trade && p.trade.length > 0) {
+            tradeHtml = `<div style="margin:10px 0; padding:10px; background:#fdf2e9; border:1px solid #e67e22; border-radius:4px; font-size:14px;"><b>Trade Request:</b><br>${p.trade.map(t=>`- ${t}`).join('<br>')}</div>`;
+        }
+        
+        let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
+
+        const detailDiv = document.getElementById('modal-product-details');
+        detailDiv.innerHTML = `
+            ${imgHtml}
+            <h3 style="margin: 10px 0 5px 0;">${p.name}</h3>
+            ${rarityHtml} ${flashBadge}
+            <br>
+            <span style="background:#eee; padding:3px 8px; border-radius:4px; font-size:12px; display:inline-block; margin:5px 0;">${p.category || 'Uncategorized'}</span>
+            ${timerHtml}
+            <h2 style="color:var(--main-color); margin: 10px 0 0 0;">${priceArr.join(' • ')}</h2>
+            ${tradeHtml}
+            
+            <div style="font-size:14px; background:#f9f9f9; padding:10px; border-radius:4px; margin-bottom:15px; margin-top:10px;">
+                <b>Seller:</b> ${p.addedByName} ${verifiedHtml} <br>
+                <b>Item ID:</b> ${p.id} <br>
+                <b>Stocks Left:</b> <span id="modal-stock-left">${p.stocks}</span>
+            </div>
+            
+            <p style="font-size:14px; white-space: pre-wrap;">${p.info}</p>
+            
+            <div class="qty-control">
+                <button class="qty-btn" onclick="window.updateQty(-1)" ${btnDisabled}>-</button>
+                <span id="modal-qty-display" style="font-weight:bold; font-size:18px;">1</span>
+                <button class="qty-btn" onclick="window.updateQty(1)" ${btnDisabled}>+</button>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn-outline" style="flex:1;" onclick="window.addToCart(false)" ${btnDisabled}>Add to Cart</button>
+                <button class="btn-main" style="flex:1; margin:0;" onclick="window.addToCart(true)" ${btnDisabled}>Buy Now</button>
+            </div>
+            <button class="btn-verify" style="width:100%; margin-top:10px; background:#f39c12;" onclick="window.openOfferModal()" ${btnDisabled}>Make an Offer</button>
+        `;
+        document.getElementById('product-modal').classList.remove('hidden');
+    }
+
+    window.updateQty = function(change) {
+        let p = products.find(prod => prod.id === window.currentViewProductId);
+        if(!p) return;
+        let newQty = window.tempSelectedQty + change;
+        if (newQty < 1) newQty = 1;
+        if (newQty > p.stocks) newQty = p.stocks;
+        window.tempSelectedQty = newQty;
+        document.getElementById('modal-qty-display').innerText = window.tempSelectedQty;
+    }
+
+    window.addToCart = function(buyNow) {
+        if (!currentUser) {
+            alert("Please Login or Register first to add items to your cart!");
+            window.closeModal('product-modal');
+            window.showBuyerTab('me');
+            return;
+        }
+
+        let pIndex = products.findIndex(p => p.id === window.currentViewProductId);
+        if (pIndex > -1 && products[pIndex].stocks >= window.tempSelectedQty) {
+            let existingItem = userCarts[currentUser].find(i => i.id === window.currentViewProductId);
+            if (existingItem) {
+                existingItem.qty = (existingItem.qty || 1) + window.tempSelectedQty;
+            } else {
+                userCarts[currentUser].push({...products[pIndex], qty: window.tempSelectedQty}); 
+            }
+            products[pIndex].stocks -= window.tempSelectedQty; 
+            window.saveDatabase(); 
+            window.closeModal('product-modal');
+            window.updateBadges();
+            if (buyNow) window.showBuyerTab('cart');
+            else alert("Added to cart!");
+        }
+    }
+
+    window.openOfferModal = function() {
+        if (!currentUser) {
+            alert("Please Login or Register to make an offer!");
+            return window.showBuyerTab('me');
+        }
+        document.getElementById('product-modal').classList.add('hidden');
+        document.getElementById('offer-items-container').innerHTML = '';
+        document.getElementById('offer-text-input').value = '';
+        window.addOfferItemInput();
+        document.getElementById('offer-modal').classList.remove('hidden');
+    }
+
+    window.submitOffer = function() {
+        let itemNames = document.querySelectorAll('.offer-item-name');
+        let itemQtys = document.querySelectorAll('.offer-item-qty');
+        let lines = [];
+        
+        for(let i = 0; i < itemNames.length; i++) {
+            let name = itemNames[i].value.trim();
+            let qty = itemQtys[i].value.trim();
+            if(name) {
+                lines.push(`${name} ${qty}`);
+            }
+        }
+        
+        let note = document.getElementById('offer-text-input').value.trim();
+        if(note) {
+            lines.push(`More/add: ${note}`);
+        }
+        
+        if(lines.length === 0) return alert("Please enter at least one item or note for your offer!");
+        
+        let fullOfferText = lines.join('\n');
+        let p = products.find(x => x.id === window.currentViewProductId);
+        if(p) {
+            offers.push({ id: Date.now(), productId: p.id, buyerEmail: currentUser, text: fullOfferText, status: 'Pending', date: new Date().toLocaleString() });
+            window.saveDatabase().then(() => {
+                alert("Offer submitted to the seller!");
+                window.closeModal('offer-modal');
+            });
+        }
+    }
+
+    window.applyVoucher = function() {
+        let code = document.getElementById('voucher-input-code').value.trim();
+        if(!code) return;
+        
+        let v = vouchers.find(x => x.code === code);
+        if (!v) return alert("Invalid Voucher Code.");
+        if (v.usedBy && v.usedBy.includes(currentUser)) return alert("You have already used this voucher.");
+        
+        window.appliedVoucher = v;
+        alert(`Voucher ${v.code} Applied! (${v.discount}% OFF)`);
+        window.renderCart();
+    }
+
     window.renderCart = function() {
         const list = document.getElementById('cart-list');
         list.innerHTML = '';
@@ -926,38 +1333,16 @@
         let finalTotal = subtotal;
         let detailsHtml = `Subtotal: ₱${window.formatNum(subtotal)}`;
 
-        // APPLY PROMO CODE INSERTED IN PROFILE
-        if (u.activePromoCode) {
-            let activeV = vouchers.find(v => v.code === u.activePromoCode);
-            if (activeV && (!activeV.usedBy || !activeV.usedBy.includes(currentUser))) {
-                if(activeV.sellerEmail) { // Flash Deal ng isang Seller
-                    let sellerItemsSubtotal = 0;
-                    cart.forEach(item => {
-                        let pObj = products.find(x => x.id === item.id) || item;
-                        if(pObj.addedByEmail === activeV.sellerEmail) {
-                            let itemPrice = pObj.money || pObj.price || 0;
-                            if (pObj.flashPct && pObj.flashEndTime && (pObj.flashEndTime > Date.now())) itemPrice *= (1 - (pObj.flashPct / 100));
-                            sellerItemsSubtotal += (itemPrice * (item.qty || 1));
-                        }
-                    });
-                    if(sellerItemsSubtotal > 0) {
-                        let discountAmount = sellerItemsSubtotal * (activeV.discount / 100);
-                        finalTotal -= discountAmount;
-                        detailsHtml += ` <br><span style="color:#e67e22; font-size:12px;">- ${activeV.discount}% Flash Deal (${activeV.code}) on Seller Items</span>`;
-                    }
-                } else { // Global Admin Voucher
-                    finalTotal = finalTotal * ((100 - activeV.discount) / 100);
-                    detailsHtml += ` <br><span style="color:#e67e22; font-size:12px;">- ${activeV.discount}% Global Voucher (${activeV.code})</span>`;
-                }
-            }
+        if (window.appliedVoucher) {
+            let disc = window.appliedVoucher.discount;
+            finalTotal = finalTotal * ((100 - disc) / 100);
+            detailsHtml += ` <br><span style="color:#e67e22; font-size:12px;">- ${disc}% Voucher (${window.appliedVoucher.code})</span>`;
         }
 
         if (isVIP) { finalTotal = finalTotal * 0.85; detailsHtml += ` <br><span style="color:green; font-size:12px;">- 15% VIP Discount</span>`; }
-        
         if (u.registeredAt && (Date.now() - u.registeredAt < (12 * 60 * 60 * 1000))) {
             finalTotal = finalTotal * 0.90; detailsHtml += ` <br><span style="color:#f39c12; font-size:12px;">- 10% New User Voucher</span>`;
         }
-
         if (isMidmanChecked && !isVIP) { finalTotal += 5; detailsHtml += ` <br><span style="color:gray; font-size:12px;">+ ₱5 Middleman Service</span>`; } 
         else if (isMidmanChecked && isVIP) { detailsHtml += ` <br><span style="color:var(--vip-color); font-size:12px;">+ Middleman Service (Free)</span>`; }
 
@@ -977,16 +1362,60 @@
         document.getElementById('cart-total').innerHTML = `${detailsHtml} <br> <span style="font-size:20px; color:var(--main-color);">Pay Now: ₱${window.formatNum(tempCheckoutTotal)}${sheckText}</span>`;
     }
 
+    window.removeFromCart = function(index, productId) {
+        let removedItem = userCarts[currentUser].splice(index, 1)[0];
+        let pIndex = products.findIndex(p => p.id === productId);
+        if (pIndex > -1) products[pIndex].stocks += (removedItem.qty || 1); 
+        window.saveDatabase(); 
+        window.renderCart();
+        window.updateBadges();
+    }
+
+    window.openCheckoutModal = function() {
+        if (!userCarts[currentUser] || userCarts[currentUser].length === 0) return alert("Cart is empty!");
+        let myInfo = users[currentUser] || {};
+        if (!myInfo.phone) if(!confirm("Your Phone is missing in Profile. Checkout anyway?")) return window.showBuyerTab('me');
+        
+        let sellers = [...new Set(userCarts[currentUser].map(item => {
+            let origProd = products.find(p => p.id === item.id) || item;
+            return origProd.addedByEmail;
+        }))];
+        
+        let mayaHtml = "";
+        sellers.forEach(sEmail => {
+            let sUser = users[sEmail];
+            let mName = sUser?.mayaName || (sEmail === ADMIN_EMAIL ? "ANDREA CASTRENCE" : "Not Set");
+            let mNum = sUser?.mayaNumber || (sEmail === ADMIN_EMAIL ? "639519500345" : "Not Set");
+            mayaHtml += `
+            <div style="background:#f9f9f9; padding:10px; border-radius:5px; margin-bottom:10px; border: 1px solid #ddd;">
+                <p style="margin:0 0 5px 0;"><b>Payment to Seller: ${sUser?.username || sEmail}</b></p>
+                <p style="margin:0;">Method: <b>Maya</b></p>
+                <p style="margin:0;">Name: <b>${mName}</b></p>
+                <p style="margin:0;">Number: <b>${mNum}</b></p>
+            </div>`;
+        });
+        document.getElementById('checkout-maya-info').innerHTML = mayaHtml;
+
+        document.getElementById('checkout-final-amount').innerText = `₱${window.formatNum(tempCheckoutTotal)}`;
+        let balInfo = document.getElementById('checkout-balance-info');
+        
+        if (tempBalance > 0) {
+            balInfo.innerText = `Remaining Balance: ₱${window.formatNum(tempBalance)} (Must be paid in 3-7 days based on Seller terms)`;
+            balInfo.classList.remove('hidden');
+        } else {
+            balInfo.classList.add('hidden');
+        }
+        
+        document.getElementById('checkout-modal').classList.remove('hidden');
+    }
+
     window.confirmCheckout = function() {
-        let u = users[currentUser];
-        // Mark Promo as used if applicable
-        if (u.activePromoCode) {
-            let vIndex = vouchers.findIndex(x => x.code === u.activePromoCode);
+        if (window.appliedVoucher) {
+            let vIndex = vouchers.findIndex(x => x.code === window.appliedVoucher.code);
             if(vIndex > -1) {
                 if(!vouchers[vIndex].usedBy) vouchers[vIndex].usedBy = [];
                 vouchers[vIndex].usedBy.push(currentUser);
             }
-            u.activePromoCode = null; // Clear active code
         }
 
         let actualItems = userCarts[currentUser].map(item => {
@@ -1013,149 +1442,15 @@
         userCarts[currentUser] = []; 
         document.getElementById('midman-check').checked = false;
         document.getElementById('downpayment-check').checked = false;
-        if(document.getElementById('profile-code-status')) document.getElementById('profile-code-status').innerText = '';
+        window.appliedVoucher = null;
+        document.getElementById('voucher-input-code').value = '';
         
         window.saveDatabase(); 
         window.closeModal('checkout-modal');
-        alert("Order Placed Successfully!");
         window.showBuyerTab('me');
         window.showMeSubTab('orders');
     }
 
-    // ============================================
-    // REMAINING REQUIRED FUNCTIONS
-    // ============================================
-
-    window.processImageAndAddProduct = function(prefix) {
-        let name = document.getElementById(`${prefix}-prod-name`).value.trim();
-        let cat = document.getElementById(`${prefix}-prod-category`).value;
-        let rarity = document.getElementById(`${prefix}-prod-rarity`).value;
-        let money = parseFloat(document.getElementById(`${prefix}-prod-money`).value) || 0;
-        let sheckles = parseFloat(document.getElementById(`${prefix}-prod-sheckles`).value) || 0;
-        let info = document.getElementById(`${prefix}-prod-info`).value.trim();
-        let stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value) || 0;
-        
-        if(!name || stocks <= 0) return alert("Product Name and Stocks (>0) are required!");
-        
-        let newProd = {
-            id: Date.now(),
-            name, category: cat, rarity, money, price: money, sheckles, info, stocks,
-            addedByEmail: currentUser, addedByName: users[currentUser].username,
-            trade: []
-        };
-        
-        document.querySelectorAll(`.${prefix}-trade-input`).forEach(el => {
-            if(el.value.trim()) newProd.trade.push(el.value.trim());
-        });
-        
-        let timer = document.getElementById(`${prefix}-prod-timer`)?.value;
-        if(rarity === 'Limited' && timer) newProd.limitedTime = new Date(timer).getTime();
-        
-        let flashPct = parseInt(document.getElementById(`${prefix}-flash-pct`)?.value) || 0;
-        let flashTime = document.getElementById(`${prefix}-flash-timer`)?.value;
-        if(flashPct > 0 && flashTime) {
-            newProd.flashPct = flashPct;
-            newProd.flashEndTime = new Date(flashTime).getTime();
-        }
-        
-        let fileInput = document.getElementById(`${prefix}-prod-image`);
-        if(fileInput && fileInput.files && fileInput.files[0]) {
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                newProd.image = e.target.result;
-                products.push(newProd);
-                finalizeProductAdd(prefix);
-            };
-            reader.readAsDataURL(fileInput.files[0]);
-        } else {
-            products.push(newProd);
-            finalizeProductAdd(prefix);
-        }
-    }
-
-    function finalizeProductAdd(prefix) {
-        window.saveDatabase().then(() => {
-            alert("Product successfully published!");
-            document.getElementById(`${prefix}-prod-name`).value = '';
-            document.getElementById(`${prefix}-prod-money`).value = '';
-            document.getElementById(`${prefix}-prod-sheckles`).value = '';
-            document.getElementById(`${prefix}-prod-info`).value = '';
-            document.getElementById(`${prefix}-prod-stocks`).value = '';
-            if(prefix === 'vip') window.renderVipProducts();
-            if(prefix === 'admin') window.renderAdminProducts();
-        });
-    }
-
-    window.toggleTimer = function(prefix) {
-        let val = document.getElementById(`${prefix}-prod-rarity`).value;
-        let group = document.getElementById(`${prefix}-timer-group`);
-        if(val === 'Limited') { group.classList.remove('hidden'); }
-        else { group.classList.add('hidden'); }
-    }
-
-    window.toggleFlashTimer = function(prefix) {
-        let val = parseInt(document.getElementById(`${prefix}-flash-pct`).value);
-        let group = document.getElementById(`${prefix}-flash-timer-group`);
-        if(val > 0) { group.classList.remove('hidden'); }
-        else { group.classList.add('hidden'); }
-    }
-
-    window.addTradeInput = function(prefix) {
-        let container = document.getElementById(`${prefix}-trade-container`);
-        let div = document.createElement('div');
-        div.style.marginBottom = "5px";
-        div.innerHTML = `<input type="text" class="${prefix}-trade-input" placeholder="e.g. Dragon Breath 1x" style="width:75%; display:inline-block; margin:0;"><button type="button" class="btn-danger" style="width:20%; display:inline-block; margin:0 0 0 5%;" onclick="this.parentElement.remove()">X</button>`;
-        container.appendChild(div);
-    }
-
-    window.createVoucher = function(prefix) {
-        let name = document.getElementById(`${prefix}-voucher-name`).value.trim();
-        let pct = parseInt(document.getElementById(`${prefix}-voucher-pct`).value);
-        if(!name || !pct) return alert("Fill out voucher details.");
-        vouchers.push({ code: name, discount: pct, usedBy: [] });
-        window.saveDatabase().then(() => {
-            alert("Voucher created!");
-            if(prefix === 'admin') window.renderAdminVouchers();
-        });
-    }
-
-    // OTHER ADMIN VIEWS (Basic fallback setup for completeness)
-    window.showAdminTab = function(tab) {
-        currentActiveTab = tab;
-        ['admin-manage-products', 'admin-add-product', 'admin-manage-orders', 'admin-offers-tab', 'admin-manage-users', 'admin-vouchers-tab', 'admin-messages-tab'].forEach(t => {
-            document.getElementById(t).classList.add('hidden');
-        });
-        document.getElementById(tab).classList.remove('hidden');
-        if(tab === 'admin-manage-products') window.renderAdminProducts();
-    }
-
-    window.renderAdminProducts = function() {
-        let list = document.getElementById('admin-product-list');
-        list.innerHTML = '';
-        products.forEach(p => {
-            list.innerHTML += `<div class="list-card"><b>${p.name}</b> - ${p.stocks} stocks left</div>`;
-        });
-    }
-
-    // Interval timers initialization
-    setInterval(() => {
-        document.querySelectorAll('.timer-text, .flash-timer-text').forEach(el => {
-            let end = parseInt(el.getAttribute('data-endtime') || el.getAttribute('data-flashend'));
-            if (end) {
-                let left = end - Date.now();
-                if (left > 0) {
-                    let h = Math.floor(left / (1000 * 60 * 60));
-                    let m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
-                    let s = Math.floor((left % (1000 * 60)) / 1000);
-                    el.innerText = `Ends in: ${h}h ${m}m ${s}s`;
-                } else {
-                    el.innerText = "Expired";
-                }
-            }
-        });
-    }, 1000);
-
-    // Profile Handling
     window.loadProfile = function() {
         if (!currentUser) return;
         let u = users[currentUser] || {};
@@ -1164,24 +1459,853 @@
         document.getElementById('profile-maya-name').value = u.mayaName || "";
         document.getElementById('profile-maya-number').value = u.mayaNumber || "";
         
-        if (u.activePromoCode) {
-            document.getElementById('profile-code-status').innerText = `✅ Active Promo for next checkout: ${u.activePromoCode}`;
-        }
-        
         if (u.isVerifiedSeller) {
             document.getElementById('vip-nav-btn').classList.remove('hidden');
             document.getElementById('seller-verification-section').innerHTML = '<h3 style="color:var(--verify-color);">Verification Status</h3><p>You are a verified seller.</p>';
         } else {
             document.getElementById('vip-nav-btn').classList.add('hidden');
+            if (u.sellerRequested) {
+                document.getElementById('btn-request-seller').innerText = "Request Sent (Pending Admin Approval)";
+                document.getElementById('btn-request-seller').disabled = true;
+            } else if (u.sellCode && Date.now() > u.sellCodeExpiry) {
+                document.getElementById('btn-request-seller').innerText = "Code Expired! Request Again";
+                document.getElementById('btn-request-seller').disabled = false;
+            } else {
+                document.getElementById('btn-request-seller').innerText = "1. Request Verification";
+                document.getElementById('btn-request-seller').disabled = false;
+            }
         }
     }
 
     window.saveProfile = function() {
-        users[currentUser].username = document.getElementById('profile-username').value.trim();
-        users[currentUser].phone = document.getElementById('profile-phone').value.trim();
-        users[currentUser].mayaName = document.getElementById('profile-maya-name').value.trim();
-        users[currentUser].mayaNumber = document.getElementById('profile-maya-number').value.trim();
-        window.saveDatabase().then(() => alert("Profile Saved!"));
+        let newName = document.getElementById('profile-username').value.trim();
+        let newPhone = document.getElementById('profile-phone').value.trim();
+        let newMName = document.getElementById('profile-maya-name').value.trim();
+        let newMNum = document.getElementById('profile-maya-number').value.trim();
+        
+        if(!newName) return alert("Username cannot be empty.");
+        users[currentUser].username = newName; 
+        users[currentUser].phone = newPhone;
+        users[currentUser].mayaName = newMName;
+        users[currentUser].mayaNumber = newMNum;
+        
+        window.saveDatabase();
+        alert("Profile saved!");
+        window.updateUserNavDisplay();
+    }
+    
+    window.requestSellerStatus = function() {
+        let u = users[currentUser];
+        if (u.sellCodeExpiry && Date.now() > u.sellCodeExpiry) {
+            u.sellCode = null;
+            u.sellCodeExpiry = null;
+        }
+        u.sellerRequested = true;
+        window.saveDatabase();
+        document.getElementById('btn-request-seller').innerText = "Request Sent (Pending Admin Approval)";
+        document.getElementById('btn-request-seller').disabled = true;
+        alert("Request sent to Admin! Check your Messages tab later for the code.");
+    }
+
+    window.verifySellerCode = function() {
+        let u = users[currentUser];
+        let input = document.getElementById('verify-code-input').value.trim();
+        if (!u.sellCode) return alert("No valid code requested/sent.");
+        if (Date.now() > u.sellCodeExpiry) return alert("Code has expired.");
+        if (input === u.sellCode) {
+            u.isVerifiedSeller = true; u.sellCode = null; 
+            window.saveDatabase();
+            alert("Verification successful! You can now publish items.");
+            window.loadProfile();
+        } else alert("Invalid code.");
+    }
+
+    window.renderBuyerOrders = function() {
+        if (!currentUser) return;
+        const list = document.getElementById('buyer-order-list');
+        list.innerHTML = '';
+        const myOrders = orders.filter(o => o.buyerEmail === currentUser).reverse(); 
+        if (myOrders.length === 0) return list.innerHTML = "<p>No orders yet.</p>";
+
+        myOrders.forEach(o => {
+            let statusColor = o.status === "Completed" ? "green" : (o.status === "Cancelled" ? "red" : "var(--main-color)");
+            let itemsHtml = o.items.map(item => {
+                let pVal = item.money || item.price || 0;
+                let cStrArr = [];
+                if (pVal > 0) cStrArr.push(`₱${window.formatNum(pVal * (item.qty||1))}`);
+                if (item.sheckles > 0) cStrArr.push(`¢${window.formatNum(item.sheckles * (item.qty||1))} Sheckles`);
+                let cStr = cStrArr.join(' + ') || 'Free';
+                if(o.isTradeOffer) cStr = 'Trade';
+                
+                return `<div style="font-size:14px; display:flex; justify-content:space-between; margin-top:5px;">
+                    <span>- ${item.name} (x${item.qty || 1})</span>
+                    <span>${cStr}</span>
+                </div>`;
+            }).join('');
+            
+            let balHtml = o.balance > 0 ? `<p style="color:red; font-size:12px; margin:5px 0 0 0;">Balance Due: ₱${window.formatNum(o.balance)}</p>` : '';
+            
+            let cancelBtn = '';
+            if(o.status === 'Pending Payment') {
+                cancelBtn = `<button class="btn-danger" style="padding:5px 10px; font-size:11px; margin-top:10px; width:auto;" onclick="window.cancelOrder(${o.id})">Cancel Order</button>`;
+            }
+
+            let paidArr = [];
+            paidArr.push(`₱${window.formatNum(o.totalPaid)}`);
+            let totalSheck = o.items.reduce((sum, i) => sum + (i.sheckles||0)*(i.qty||1), 0);
+            if (totalSheck > 0 && !o.isTradeOffer) paidArr.push(`¢${window.formatNum(totalSheck)} Sheckles`);
+            let paidText = o.isTradeOffer ? 'Trade' : paidArr.join(' + ');
+
+            list.innerHTML += `
+                <div class="list-card" style="border:1px solid #eee;">
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px dashed #ccc; padding-bottom:10px; margin-bottom:10px;">
+                        <span style="font-size:12px; color:gray;">ID: ${o.id} <br> ${o.date}</span>
+                        <b style="color:${statusColor}; text-transform:uppercase; font-size:14px;">${o.status}</b>
+                    </div>
+                    ${itemsHtml}
+                    ${o.midman ? `<p style="font-size:11px; color:gray; margin:5px 0;">+ Middleman Requested</p>` : ''}
+                    <div style="text-align:right; margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
+                        Paid: <b style="color:var(--main-color); font-size:16px;">${paidText}</b>
+                        ${balHtml}
+                        <br>${cancelBtn}
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.cancelOrder = function(orderId) {
+        let o = orders.find(x => x.id === orderId);
+        if(o && o.status === 'Pending Payment') {
+            if(confirm("Are you sure you want to cancel this order? Stocks will be returned.")) {
+                o.status = "Cancelled";
+                o.items.forEach(orderItem => {
+                    let p = products.find(prod => prod.id === orderItem.id);
+                    if(p) p.stocks += (orderItem.qty || 1);
+                });
+                window.saveDatabase().then(() => window.renderBuyerOrders());
+            }
+        }
+    }
+
+    window.openVipModal = function() { document.getElementById('vip-modal').classList.remove('hidden'); }
+    window.confirmVipPurchase = function() {
+        users[currentUser].vipPending = true; window.saveDatabase();
+        window.closeModal('vip-modal'); alert("VIP Requested! Admin will verify payment.");
+        window.updateUserNavDisplay();
+    }
+
+    window.processImageAndAddProduct = function(source) {
+        const prefix = source === 'admin' ? 'admin' : 'vip';
+        const name = document.getElementById(`${prefix}-prod-name`).value.trim();
+        const category = document.getElementById(`${prefix}-prod-category`).value;
+        const rarity = document.getElementById(`${prefix}-prod-rarity`).value;
+        
+        let mVal = document.getElementById(`${prefix}-prod-money`).value;
+        const money = mVal ? parseFloat(mVal) : 0;
+        let sVal = document.getElementById(`${prefix}-prod-sheckles`).value;
+        const sheckles = sVal ? parseInt(sVal) : 0;
+        
+        let flashPct = parseInt(document.getElementById(`${prefix}-flash-pct`).value) || 0;
+        let flashEndTime = null;
+        if(flashPct > 0) {
+            let ft = document.getElementById(`${prefix}-flash-timer`).value;
+            if(ft) flashEndTime = new Date(ft).getTime();
+        }
+
+        const tradeInputs = document.querySelectorAll(`.${prefix}-trade-input`);
+        let trade = [];
+        tradeInputs.forEach(inp => { if(inp.value.trim()) trade.push(inp.value.trim()); });
+        
+        const info = document.getElementById(`${prefix}-prod-info`).value.trim();
+        const stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value);
+        const imageFile = document.getElementById(`${prefix}-prod-image`).files[0];
+
+        let limitedTime = null;
+        if(rarity === 'Limited') {
+            let t = document.getElementById(`${prefix}-prod-timer`).value;
+            if (t) limitedTime = new Date(t).getTime();
+        }
+
+        if (!name || (!money && !sheckles && trade.length===0) || !info || isNaN(stocks)) return alert("Fill out Name, at least one price/trade, Info, and Stocks!");
+
+        const finalizeSave = (imgUrl) => {
+            products.push({ 
+                id: Date.now(), name, category, rarity, limitedTime, 
+                money, sheckles, trade, price: money, flashPct, flashEndTime,
+                info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username 
+            });
+            window.saveDatabase().then(() => {
+                alert("Product Published!");
+                document.getElementById(`${prefix}-prod-name`).value = '';
+                document.getElementById(`${prefix}-prod-rarity`).value = '';
+                document.getElementById(`${prefix}-prod-timer`).value = '';
+                document.getElementById(`${prefix}-timer-group`).classList.add('hidden');
+                document.getElementById(`${prefix}-prod-money`).value = '';
+                document.getElementById(`${prefix}-prod-sheckles`).value = '';
+                document.getElementById(`${prefix}-flash-pct`).value = '0';
+                document.getElementById(`${prefix}-flash-timer`).value = '';
+                document.getElementById(`${prefix}-flash-timer-group`).classList.add('hidden');
+                document.getElementById(`${prefix}-trade-container`).innerHTML = '';
+                document.getElementById(`${prefix}-prod-info`).value = '';
+                document.getElementById(`${prefix}-prod-stocks`).value = '';
+                if(document.getElementById(`${prefix}-prod-image`)) document.getElementById(`${prefix}-prod-image`).value = ''; 
+                if(source === 'vip') window.renderVipProducts();
+            });
+        };
+
+        if (imageFile) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas'); const scale = 400 / img.width;
+                    canvas.width = 400; canvas.height = img.height * scale;
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    finalizeSave(canvas.toDataURL('image/jpeg', 0.7)); 
+                }; img.src = e.target.result;
+            }; reader.readAsDataURL(imageFile);
+        } else finalizeSave(""); 
+    }
+
+    window.createVoucher = function(source) {
+        const prefix = source === 'admin' ? 'admin' : 'vip';
+        const code = document.getElementById(`${prefix}-voucher-name`).value.trim().toUpperCase();
+        const pct = parseInt(document.getElementById(`${prefix}-voucher-pct`).value);
+
+        if(!code || isNaN(pct) || pct <= 0 || pct >= 100) return alert("Invalid voucher details.");
+        if(vouchers.find(v => v.code === code)) return alert("Voucher code already exists.");
+
+        vouchers.push({ code, discount: pct, createdBy: currentUser, usedBy: [] });
+        window.saveDatabase().then(() => {
+            alert("Voucher Created!");
+            document.getElementById(`${prefix}-voucher-name`).value = '';
+            document.getElementById(`${prefix}-voucher-pct`).value = '';
+            if(isAdminView) window.renderAdminVouchers();
+        });
+    }
+
+    window.renderBuyerMessages = function() {
+        const list = document.getElementById('buyer-inbox-list');
+        list.innerHTML = '';
+        if (!currentUser) return list.innerHTML = "<p style='text-align:center;'>Login to view messages.</p>";
+
+        let myInbox = users[currentUser].inbox || [];
+        if(myInbox.length === 0) return list.innerHTML = "<p style='text-align:center; color:gray; margin-top:20px;'>No direct messages yet.</p>";
+
+        myInbox.forEach(msg => {
+            list.innerHTML += `
+                <div class="chat-msg chat-admin">
+                    <b>Admin / System:</b><br>
+                    <span style="white-space: pre-wrap;">${msg.text}</span>
+                    <span class="chat-date">${msg.date}</span>
+                </div>
+            `;
+        });
+        list.scrollTop = list.scrollHeight;
+    }
+
+    window.openBotChat = function() {
+        if(!currentUser) return alert("Login to use Xdrg Service!");
+        document.getElementById('bot-chat-modal').classList.remove('hidden');
+        window.renderBotChat();
+    }
+
+    window.renderBotChat = function() {
+        let history = users[currentUser].botChat || [];
+        const box = document.getElementById('bot-chat-history');
+        box.innerHTML = '';
+        if(history.length === 0) {
+            box.innerHTML = `<div class="chat-msg chat-bot"><b>Xdrg Service:</b><br>Hello! I can help check item prices, info, stock, and proofs. Try asking:<br>- How much this cost {Item ID or Name}<br>- What information on this {Item ID or Name}<br>- How many stock left on this {Item ID or Name}<br>- Show proof on this {Item ID or Name}</div>`;
+        }
+        history.forEach(msg => {
+            let cl = msg.sender === 'user' ? 'chat-user' : 'chat-bot';
+            let name = msg.sender === 'user' ? 'You' : 'Xdrg Service';
+            box.innerHTML += `
+                <div class="chat-msg ${cl}">
+                    <b>${name}:</b><br>
+                    <span style="white-space: pre-wrap;">${msg.text}</span>
+                    <span class="chat-date">${msg.date}</span>
+                </div>
+            `;
+        });
+        box.scrollTop = box.scrollHeight;
+    }
+
+    window.sendBotMessage = function() {
+        let text = document.getElementById('bot-chat-input').value.trim();
+        if(!text) return;
+        let u = users[currentUser];
+        u.botChat.push({ sender: 'user', text, date: new Date().toLocaleString() });
+
+        let reply = "I'm Xdrg Service! I am an AI designed to assist with this app. Need help? Try asking:\n- How much this cost [Name/ID]\n- What information on this [Name/ID]\n- How many stock left on this [Name/ID]\n- Show proof on this [Name/ID]";
+        
+        let findProd = (q) => {
+            if(!q) return null;
+            let cleanQ = q.replace(/[\?\.!]/g, '').trim().toLowerCase();
+            let p = products.find(x => x.id.toString() === cleanQ);
+            if(!p) p = products.find(x => x.name.toLowerCase() === cleanQ);
+            return p;
+        };
+
+        let matchPrice = text.match(/how much.*?cost.*?(.+)/i);
+        let matchInfo = text.match(/what information.*?on this.*?(.+)/i);
+        let matchStock = text.match(/how many stock.*?on this.*?(.+)/i);
+        let matchProof = text.match(/show proof.*?on this.*?(.+)/i);
+        
+        if (matchPrice) {
+            let p = findProd(matchPrice[1]);
+            if(p) {
+                let costs = [];
+                let cMoney = p.money || p.price || 0;
+                if(p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now())) cMoney = cMoney * (1 - (p.flashPct/100));
+                
+                if(cMoney) costs.push(`₱${window.formatNum(cMoney)}`);
+                if(p.sheckles) costs.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
+                if(p.trade && p.trade.length > 0) costs.push(`Trade: ${p.trade.join(', ')}`);
+                reply = `Item: ${p.name} (ID: ${p.id})\nCosts: ${costs.join(' | ') || 'Free'}`;
+            } else reply = `Sorry, I couldn't find an item matching: ${matchPrice[1]}`;
+        } else if (matchInfo) {
+            let p = findProd(matchInfo[1]);
+            if(p) {
+                reply = `Information for ${p.name} (ID: ${p.id}):\nCategory: ${p.category || 'None'}\nRarity: ${p.rarity || 'None'}\nDetails: ${p.info}`;
+            } else reply = `Sorry, I couldn't find an item matching: ${matchInfo[1]}`;
+        } else if (matchStock) {
+            let p = findProd(matchStock[1]);
+            if(p) {
+                reply = `${p.name} (ID: ${p.id}) has ${p.stocks} stock(s) left.`;
+            } else reply = `Sorry, I couldn't find an item matching: ${matchStock[1]}`;
+        } else if (matchProof) {
+            let p = findProd(matchProof[1]);
+            if(p) {
+                let relatedVouches = vouches.filter(v => v.itemName && v.itemName.toLowerCase() === p.name.toLowerCase());
+                if(relatedVouches.length > 0) {
+                    let v = relatedVouches[0];
+                    reply = `Proof for ${p.name}:\nFrom: ${v.user}\n"${v.text}"\n<img src="${v.image}" style="width:100%; border-radius:4px; margin-top:5px; object-fit:cover;">`;
+                } else {
+                    reply = `There are no community vouches/proofs yet for ${p.name}.`;
+                }
+            } else reply = `Sorry, I couldn't find an item matching: ${matchProof[1]}`;
+        }
+
+        u.botChat.push({ sender: 'bot', text: reply, date: new Date().toLocaleString() });
+        window.saveDatabase().then(() => {
+            document.getElementById('bot-chat-input').value = '';
+            window.renderBotChat();
+        });
+    }
+
+    window.openAddVouchModal = function() {
+        if(!currentUser) return alert("Please Login to add a vouch.");
+        document.getElementById('vouch-item-name').value = '';
+        document.getElementById('vouch-buyer-name').value = '';
+        document.getElementById('vouch-caption').value = '';
+        document.getElementById('vouch-image').value = '';
+        document.getElementById('add-vouch-modal').classList.remove('hidden');
+    }
+
+    window.saveVouch = function() {
+        const itemName = document.getElementById('vouch-item-name').value.trim();
+        const buyerName = document.getElementById('vouch-buyer-name').value.trim();
+        const text = document.getElementById('vouch-caption').value.trim();
+        const file = document.getElementById('vouch-image').files[0];
+        if(!file) return alert("Please upload a proof image.");
+        if(!itemName) return alert("Please enter the Item Name.");
+        
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas'); const scale = 400 / img.width;
+                canvas.width = 400; canvas.height = img.height * scale;
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                vouches.push({ id: Date.now(), user: users[currentUser].username, buyerName: buyerName, itemName: itemName, text: text, image: canvas.toDataURL('image/jpeg', 0.7), date: new Date().toLocaleString() });
+                window.saveDatabase().then(() => {
+                    alert("Vouch uploaded!");
+                    window.closeModal('add-vouch-modal');
+                    window.renderVouches();
+                });
+            }; img.src = e.target.result;
+        }; reader.readAsDataURL(file);
+    }
+
+    window.renderVouches = function() {
+        const list = document.getElementById('vouch-list');
+        list.innerHTML = '';
+        if(vouches.length === 0) return list.innerHTML = "<p style='grid-column: span 2; text-align:center;'>No vouches yet.</p>";
+        let rev = [...vouches].reverse();
+        rev.forEach(v => {
+            list.innerHTML += `
+                <div class="vouch-card">
+                    <img src="${v.image}" alt="Proof">
+                    <div style="padding:10px;">
+                        <div style="font-size:13px; margin-bottom:2px;"><b>Seller:</b> ${v.user}</div>
+                        <div style="font-size:13px; margin-bottom:2px; color:var(--main-color);"><b>Buyer:</b> ${v.buyerName || 'Unknown'}</div>
+                        <div style="font-size:11px; color:gray; margin-bottom:5px;">${v.date}</div>
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:2px;">Item: ${v.itemName || 'N/A'}</div>
+                        <p style="font-size:12px; margin:2px 0 0 0;"><b>Proof:</b> ${v.text}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.showAdminTab = function(tab) {
+        currentActiveTab = tab;
+        ['admin-add-product', 'admin-manage-products', 'admin-manage-orders', 'admin-offers-tab', 'admin-manage-users', 'admin-vouchers-tab', 'admin-messages-tab'].forEach(t => {
+            document.getElementById(t).classList.add('hidden');
+        });
+        document.getElementById(tab).classList.remove('hidden');
+        
+        if (tab === 'admin-manage-products') window.renderAdminProducts();
+        if (tab === 'admin-manage-orders') window.renderAdminOrders();
+        if (tab === 'admin-offers-tab') window.renderAdminOffers();
+        if (tab === 'admin-manage-users') window.renderAdminUsers();
+        if (tab === 'admin-vouchers-tab') window.renderAdminVouchers();
+        if (tab === 'admin-messages-tab') window.renderAdminChatList();
+    }
+
+    window.renderAdminProducts = function() {
+        const list = document.getElementById('admin-product-list');
+        list.innerHTML = '';
+        if (products.length === 0) return list.innerHTML = "<p>No products.</p>";
+        products.forEach(p => {
+            let rarityHtml = p.rarity ? `<span class="rarity-badge rarity-${p.rarity.toLowerCase().replace(/ /g, '-')}">${p.rarity}</span>` : '';
+            let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
+            
+            let priceArr = [];
+            let pMoney = p.money || p.price || 0;
+            let flashStr = "";
+            if (p.flashPct && p.flashEndTime && p.flashEndTime > Date.now()) {
+                pMoney = pMoney * (1 - (p.flashPct/100));
+                flashStr = `<span class="flash-badge" style="margin-left:5px;">⚡ ${p.flashPct}% OFF</span>`;
+            }
+
+            if(p.money || p.price) priceArr.push(`₱${window.formatNum(pMoney)}`);
+            if(p.sheckles) priceArr.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
+            if(p.trade && p.trade.length) priceArr.push('Trade');
+
+            list.innerHTML += `
+                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b>${p.name}</b> ${rarityHtml} ${flashStr}<br>
+                        <span style="font-size:11px; background:#eee; padding:2px 4px;">${p.category || 'None'}</span><br>
+                        <span style="color:var(--main-color); font-size:12px;">${priceArr.join(' • ')}</span> | Stocks: ${p.stocks} <br>
+                        <span style="font-size: 11px; color:gray;">Seller: ${p.addedByName} ${verifiedHtml} (ID: ${p.id})</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <button class="btn-action" onclick="window.openEditProduct(${p.id})">Edit</button>
+                        <button class="btn-danger" onclick="window.deleteProduct(${p.id})">Del</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.renderVipProducts = function() {
+        const list = document.getElementById('vip-my-products-list');
+        list.innerHTML = '';
+        let myProds = products.filter(p => p.addedByEmail === currentUser);
+        if(myProds.length === 0) return list.innerHTML = "<p>No products published yet.</p>";
+
+        myProds.forEach(p => {
+            let pMoney = p.money || p.price || 0;
+            let flashStr = "";
+            if (p.flashPct && p.flashEndTime && p.flashEndTime > Date.now()) {
+                pMoney = pMoney * (1 - (p.flashPct/100));
+                flashStr = `<span class="flash-badge" style="margin-left:5px;">⚡ ${p.flashPct}% OFF</span>`;
+            }
+
+            list.innerHTML += `
+                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b>${p.name}</b> ${flashStr}<br>
+                        <span style="color:var(--main-color); font-size:12px;">₱${window.formatNum(pMoney)}</span> | Stocks: ${p.stocks}
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <button class="btn-action" onclick="window.openEditProduct(${p.id})">Edit</button>
+                        <button class="btn-danger" onclick="window.deleteProduct(${p.id})">Del</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.openEditProduct = function(id) {
+        let p = products.find(x => x.id === id);
+        if(!p) return;
+        document.getElementById('edit-prod-id').value = p.id;
+        document.getElementById('edit-prod-name').value = p.name;
+        document.getElementById('edit-prod-category').value = p.category || "Other";
+        document.getElementById('edit-prod-rarity').value = p.rarity || "";
+        
+        window.toggleTimer('edit');
+        if(p.rarity === 'Limited' && p.limitedTime) {
+            let d = new Date(p.limitedTime);
+            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            document.getElementById('edit-prod-timer').value = d.toISOString().slice(0, 16);
+        } else {
+            document.getElementById('edit-prod-timer').value = "";
+        }
+
+        document.getElementById('edit-prod-money').value = p.money || p.price || '';
+        document.getElementById('edit-prod-sheckles').value = p.sheckles || '';
+        
+        document.getElementById('edit-flash-pct').value = p.flashPct || 0;
+        window.toggleFlashTimer('edit');
+        if(p.flashPct > 0 && p.flashEndTime) {
+            let fd = new Date(p.flashEndTime);
+            fd.setMinutes(fd.getMinutes() - fd.getTimezoneOffset());
+            document.getElementById('edit-flash-timer').value = fd.toISOString().slice(0, 16);
+        } else {
+            document.getElementById('edit-flash-timer').value = "";
+        }
+        
+        let tradeCont = document.getElementById('edit-trade-container');
+        tradeCont.innerHTML = '';
+        if(p.trade) {
+            p.trade.forEach(t => {
+                let div = document.createElement('div');
+                div.style.marginBottom = "5px";
+                div.innerHTML = `<input type="text" class="edit-trade-input" value="${t}" style="width:75%; display:inline-block; margin:0;"><button type="button" class="btn-danger" style="width:20%; display:inline-block; margin:0 0 0 5%;" onclick="this.parentElement.remove()">X</button>`;
+                tradeCont.appendChild(div);
+            });
+        }
+
+        document.getElementById('edit-prod-info').value = p.info;
+        document.getElementById('edit-prod-stocks').value = p.stocks;
+        document.getElementById('edit-product-modal').classList.remove('hidden');
+    }
+
+    window.saveEditedProduct = function() {
+        let id = parseInt(document.getElementById('edit-prod-id').value);
+        let pIndex = products.findIndex(x => x.id === id);
+        if(pIndex > -1) {
+            products[pIndex].name = document.getElementById('edit-prod-name').value;
+            products[pIndex].category = document.getElementById('edit-prod-category').value;
+            products[pIndex].rarity = document.getElementById('edit-prod-rarity').value;
+            
+            if(products[pIndex].rarity === 'Limited') {
+                let t = document.getElementById('edit-prod-timer').value;
+                products[pIndex].limitedTime = t ? new Date(t).getTime() : null;
+            } else {
+                products[pIndex].limitedTime = null;
+            }
+
+            let mVal = document.getElementById('edit-prod-money').value;
+            products[pIndex].money = mVal ? parseFloat(mVal) : 0;
+            products[pIndex].price = products[pIndex].money;
+            let sVal = document.getElementById('edit-prod-sheckles').value;
+            products[pIndex].sheckles = sVal ? parseInt(sVal) : 0;
+            
+            let fPct = parseInt(document.getElementById('edit-flash-pct').value) || 0;
+            products[pIndex].flashPct = fPct;
+            if (fPct > 0) {
+                let ft = document.getElementById('edit-flash-timer').value;
+                products[pIndex].flashEndTime = ft ? new Date(ft).getTime() : null;
+            } else {
+                products[pIndex].flashEndTime = null;
+            }
+            
+            let tInputs = document.querySelectorAll('.edit-trade-input');
+            products[pIndex].trade = [];
+            tInputs.forEach(inp => { if(inp.value.trim()) products[pIndex].trade.push(inp.value.trim()); });
+
+            products[pIndex].info = document.getElementById('edit-prod-info').value;
+            products[pIndex].stocks = parseInt(document.getElementById('edit-prod-stocks').value);
+            
+            window.saveDatabase(); window.closeModal('edit-product-modal');
+            if(isAdminView) window.renderAdminProducts();
+            if(users[currentUser] && users[currentUser].isVerifiedSeller) window.renderVipProducts();
+            window.searchProducts();
+        }
+    }
+
+    window.deleteProduct = function(id) {
+        if(confirm("Delete this product?")) {
+            products = products.filter(x => x.id !== id); window.saveDatabase();
+            if(isAdminView) window.renderAdminProducts();
+            if(users[currentUser] && users[currentUser].isVerifiedSeller) window.renderVipProducts();
+            window.searchProducts();
+        }
+    }
+
+    window.renderAdminOrders = function() {
+        const list = document.getElementById('admin-order-list');
+        list.innerHTML = '';
+        const reversed = [...orders].reverse();
+        if (reversed.length === 0) return list.innerHTML = "<p>No orders.</p>";
+
+        reversed.forEach((o) => {
+            let originalIndex = orders.findIndex(x => x.id === o.id); 
+            
+            let itemsHtml = o.items.map(item => {
+                let pVal = item.money || item.price || 0;
+                let cStrArr = [];
+                if (pVal > 0) cStrArr.push(`₱${window.formatNum(pVal * (item.qty||1))}`);
+                if (item.sheckles > 0) cStrArr.push(`¢${window.formatNum(item.sheckles * (item.qty||1))} Sheckles`);
+                let cStr = cStrArr.join(' + ') || 'Free';
+                if(o.isTradeOffer) cStr = 'Trade';
+                
+                return `<div style="font-size:13px; display:flex; justify-content:space-between;"><span>- ${item.name} <b style="color:var(--main-color)">x${item.qty || 1}</b></span> <span>${cStr}</span></div>`;
+            }).join('');
+
+            let paidArr = [];
+            paidArr.push(`₱${window.formatNum(o.totalPaid)}`);
+            let totalSheck = o.items.reduce((sum, i) => sum + (i.sheckles||0)*(i.qty||1), 0);
+            if (totalSheck > 0 && !o.isTradeOffer) paidArr.push(`¢${window.formatNum(totalSheck)} Sheckles`);
+            let paidText = o.isTradeOffer ? 'Trade' : paidArr.join(' + ');
+
+            let isSelectDisabled = (o.status === 'Cancelled' || o.status === 'Completed') ? 'disabled' : '';
+
+            list.innerHTML += `
+                <div class="list-card">
+                    <span style="font-size:12px; color:gray;">ID: ${o.id} | ${o.date}</span><br>
+                    <b>Buyer: ${o.buyerUsername}</b> (${o.buyerEmail})<br>
+                    <span style="font-size:13px;">Phone: <b>${o.buyerPhone}</b></span><br>
+                    <button class="btn-outline" style="padding:2px 5px; font-size:11px; width:auto; margin-top:5px;" onclick="window.openSendVoucherModal('${o.buyerEmail}')">Send Voucher</button>
+                    <hr>
+                    <b>Items:</b>
+                    ${itemsHtml}
+                    <hr>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <b style="color:var(--main-color); font-size:14px;">Paid: ${paidText}</b>
+                            ${o.balance > 0 ? `<br><b style="color:red; font-size:12px;">Balance: ₱${window.formatNum(o.balance)}</b>` : ''}
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:5px; align-items:flex-end;">
+                            <select id="status-${originalIndex}" style="padding:5px; margin:0;" ${isSelectDisabled}>
+                                <option value="Pending Payment" ${o.status === 'Pending Payment' ? 'selected' : ''}>Pending</option>
+                                <option value="To Ship" ${o.status === 'To Ship' ? 'selected' : ''}>To Ship</option>
+                                <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                                <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                            <button class="btn-main" style="margin:0; width:auto; padding:5px 10px;" onclick="window.updateOrderStatus(${originalIndex})" ${isSelectDisabled}>Update</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.updateOrderStatus = function(index) {
+        if (orders[index].status === "Cancelled" || orders[index].status === "Completed") {
+            alert("Cannot update an order that is already completed or cancelled.");
+            return;
+        }
+        
+        const newStatus = document.getElementById(`status-${index}`).value;
+        const oldStatus = orders[index].status;
+        
+        if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
+            if(!confirm("Changing to 'Cancelled' returns stock. Proceed?")) return;
+            orders[index].items.forEach(orderItem => {
+                let shopProduct = products.find(p => p.id === orderItem.id);
+                if (shopProduct) shopProduct.stocks += (orderItem.qty || 1);
+            });
+        }
+        orders[index].status = newStatus; window.saveDatabase(); 
+    }
+
+    window.renderAdminOffers = function() {
+        const list = document.getElementById('admin-offers-list');
+        list.innerHTML = '';
+        let pending = offers.filter(o => o.status === 'Pending');
+        if (pending.length === 0) return list.innerHTML = "<p>No pending offers.</p>";
+
+        pending.forEach(o => {
+            let p = products.find(x => x.id === o.productId);
+            let u = users[o.buyerEmail];
+            list.innerHTML += `
+                <div class="list-card">
+                    <span style="font-size:12px; color:gray;">${o.date}</span><br>
+                    <b>Buyer:</b> ${u ? u.username : o.buyerEmail} <br>
+                    <b>Item:</b> ${p ? p.name : 'Unknown'} (ID: ${o.productId})<br>
+                    <div style="margin:10px 0; padding:10px; background:#fdf2e9; border:1px solid #e67e22; border-radius:4px; white-space: pre-wrap;">
+                        <b>Offer Content:</b>\n${o.text}
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-verify" style="flex:1;" onclick="window.resolveOffer(${o.id}, true)">Agree</button>
+                        <button class="btn-danger" style="flex:1;" onclick="window.resolveOffer(${o.id}, false)">Disagree</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.resolveOffer = function(offerId, isAgree) {
+        let off = offers.find(x => x.id === offerId);
+        let p = products.find(x => x.id === off.productId);
+        if(!off || !p) return;
+        
+        if(isAgree) {
+            off.status = 'Accepted';
+            orders.push({
+                id: Date.now(), date: new Date().toLocaleString(),
+                buyerEmail: off.buyerEmail, buyerUsername: users[off.buyerEmail].username,
+                buyerPhone: users[off.buyerEmail].phone || "",
+                items: [{...p, qty: 1}], totalPaid: 0, balance: 0, status: "To Ship",
+                midman: false, isTradeOffer: true
+            });
+            p.stocks -= 1;
+            users[off.buyerEmail].inbox.push({ text: `Agreed: your offer for ${p.name} has been accepted by seller.`, date: new Date().toLocaleString() });
+            alert("Offer Accepted. Order created automatically.");
+        } else {
+            off.status = 'Declined';
+            users[off.buyerEmail].inbox.push({ text: `Disagree: your offer for ${p.name} has been declined by seller.`, date: new Date().toLocaleString() });
+            alert("Offer Declined.");
+        }
+        window.saveDatabase().then(() => window.renderAdminOffers());
+    }
+
+    window.renderAdminUsers = function() {
+        const list = document.getElementById('admin-user-list');
+        list.innerHTML = '';
+        for (const [email, data] of Object.entries(users)) {
+            if (email === ADMIN_EMAIL) continue; 
+            
+            let btnStr = '';
+            if (data.vipPending) btnStr += `<button class="btn-vip" style="margin-bottom:5px;" onclick="window.approveVIP('${email}')">Approve VIP</button><br>`;
+            
+            if (data.sellerRequested && !data.isVerifiedSeller) {
+                btnStr += `<button class="btn-verify" onclick="window.approveSellerRequest('${email}')">Approve Seller Request (Sends Code)</button>`;
+            } else if (data.isVerifiedSeller) {
+                btnStr += `<span class="badge badge-verify">Verified Seller</span> <span class="verified-icon">✓</span>`;
+            }
+
+            list.innerHTML += `
+                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b>${data.username}</b> ${data.isVIP ? '<span class="badge badge-vip">VIP</span>' : ''}<br>
+                        <span style="font-size:12px; color:gray;">${email} | Ph: ${data.phone || 'N/A'}</span>
+                    </div>
+                    <div style="text-align:right;">${btnStr}</div>
+                </div>
+            `;
+        }
+    }
+
+    window.approveVIP = function(email) {
+        users[email].isVIP = true; users[email].vipPending = false; window.saveDatabase();
+        window.renderAdminUsers();
+    }
+
+    window.approveSellerRequest = function(email) {
+        let code = Math.floor(100000 + Math.random() * 900000).toString();
+        users[email].sellCode = code;
+        users[email].sellCodeExpiry = Date.now() + (5 * 60 * 1000); 
+        users[email].sellerRequested = false; 
+        
+        let msg = `Hello I'm Xdragon, I hear you want to sell an item? Please scan your IDs Xdrg Shop, delete that after 5 minutes!\n\nYour Verification code is: ${code}\n\n(Code expires in 5 minutes)`;
+        
+        users[email].inbox.push({ text: msg, date: new Date().toLocaleString() });
+        
+        window.saveDatabase().then(() => {
+            alert(`Code generated and sent to ${email}'s Messages!`);
+            window.renderAdminUsers();
+        });
+    }
+
+    window.renderAdminVouchers = function() {
+        const list = document.getElementById('admin-voucher-list');
+        list.innerHTML = '';
+        if(vouchers.length === 0) return list.innerHTML = "<p>No active vouchers.</p>";
+
+        vouchers.forEach(v => {
+            list.innerHTML += `
+                <div class="list-card">
+                    <b>${v.code}</b> <span style="color:var(--main-color)">${v.discount}% OFF</span><br>
+                    <span style="font-size:12px; color:gray">Created by: ${v.createdBy} | Used by: ${v.usedBy ? v.usedBy.length : 0} users</span>
+                </div>
+            `;
+        });
+    }
+
+    window.openSendVoucherModal = function(email) {
+        window.tempVoucherTarget = email;
+        const list = document.getElementById('send-voucher-list');
+        list.innerHTML = '';
+        if(vouchers.length === 0) {
+            list.innerHTML = "<p>No vouchers available. Create one first.</p>";
+        } else {
+            vouchers.forEach(v => {
+                list.innerHTML += `
+                    <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><b>${v.code}</b> (${v.discount}% OFF)</div>
+                        <button class="btn-action" style="margin:0; width:auto;" onclick="window.sendVoucherToUser('${v.code}')">Send</button>
+                    </div>
+                `;
+            });
+        }
+        document.getElementById('send-voucher-modal').classList.remove('hidden');
+    }
+
+    window.sendVoucherToUser = function(code) {
+        if(!window.tempVoucherTarget || !users[window.tempVoucherTarget]) return;
+        let v = vouchers.find(x => x.code === code);
+        let msg = `Hello! Here is a special voucher code for you: ${code}\nEnjoy ${v.discount}% OFF on your next checkout!`;
+        users[window.tempVoucherTarget].inbox.push({ text: msg, date: new Date().toLocaleString() });
+        window.saveDatabase().then(() => {
+            alert("Voucher sent via Messages!");
+            window.closeModal('send-voucher-modal');
+        });
+    }
+
+    window.renderAdminChatList = function() {
+        const list = document.getElementById('admin-chat-user-list');
+        list.innerHTML = '';
+        for (const [email, data] of Object.entries(users)) {
+            if (email === ADMIN_EMAIL) continue;
+            let msgCount = data.inbox ? data.inbox.length : 0;
+            list.innerHTML += `
+                <div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; cursor:pointer;" onclick="window.openAdminChat('${email}')">
+                    <div><b>${data.username}</b><br><span style="font-size:12px; color:gray;">${email}</span></div>
+                    <div style="color:gray; font-size:12px;">${msgCount} msgs sent ></div>
+                </div>
+            `;
+        }
+    }
+
+    window.openAdminChat = function(email) {
+        chatTargetUser = email;
+        document.getElementById('chat-target-name').innerText = `Chatting with: ${users[email].username}`;
+        window.renderAdminChatHistory();
+        document.getElementById('admin-chat-modal').classList.remove('hidden');
+    }
+
+    window.renderAdminChatHistory = function() {
+        if(!chatTargetUser || !users[chatTargetUser]) return;
+        let history = users[chatTargetUser].inbox || [];
+        const box = document.getElementById('chat-history');
+        box.innerHTML = '';
+        
+        history.forEach(msg => {
+            box.innerHTML += `
+                <div class="chat-msg chat-admin" style="float:right; background:var(--main-color); color:white; border:none;">
+                    <span style="white-space: pre-wrap;">${msg.text}</span>
+                    <span class="chat-date" style="color:#ffd2cc;">${msg.date}</span>
+                </div>
+            `;
+        });
+        box.scrollTop = box.scrollHeight;
+    }
+
+    window.sendAdminMessage = function() {
+        let inputEl = document.getElementById('admin-chat-input');
+        let text = inputEl.value.trim();
+        if(!text || !chatTargetUser) return;
+
+        users[chatTargetUser].inbox.push({ text: text, date: new Date().toLocaleString() });
+        window.saveDatabase().then(() => {
+            inputEl.value = '';
+            window.renderAdminChatHistory();
+        });
+    }
+
+    window.closeModal = function(id) {
+        document.getElementById(id).classList.add('hidden');
+        if(id === 'admin-chat-modal') chatTargetUser = "";
+        if(id === 'send-voucher-modal') window.tempVoucherTarget = null;
     }
 
 </script>
