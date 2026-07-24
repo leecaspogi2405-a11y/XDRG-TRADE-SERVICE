@@ -253,6 +253,18 @@
 
                 <div id="me-profile-edit" class="hidden list-card">
                     <h3>Profile Settings</h3>
+                    
+                    <button class="btn-action" style="width:100%; margin-bottom:10px; background:#1da1f2;" onclick="window.shareApp()">Share XDRG App</button>
+                    <button class="btn-action" style="width:100%; margin-bottom:15px; background:#ff4757;" onclick="window.shareProfile()">Profile Xdrg Check</button>
+
+                    <div style="border:1px dashed #ccc; padding:10px; border-radius:5px; margin-bottom: 20px;">
+                        <h4 style="margin-top:0; color:var(--main-color);">Redeem Special Code</h4>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" id="profile-code-input" placeholder="{Code here}" style="margin:0; flex:1;">
+                            <button class="btn-verify" style="margin:0; width:auto;" onclick="window.insertProfileCode()">Insert</button>
+                        </div>
+                    </div>
+
                     <label>Username</label>
                     <input type="text" id="profile-username">
                     <label>Phone Number</label>
@@ -287,6 +299,21 @@
                 <div id="me-vip-dashboard" class="hidden list-card">
                     <h3 style="color:var(--verify-color);">Seller Dashboard</h3>
                     
+                    <div style="background:#ffeaa7; padding:15px; border-radius:5px; margin-bottom:15px;">
+                        <h4 style="margin-top:0;">Flash Deal Sale (All Products)</h4>
+                        <p style="font-size:12px; color:gray; margin-top:0;">Apply a massive discount to ALL your products instantly.</p>
+                        <label style="font-size:12px;">Discount Percentage</label>
+                        <select id="vip-flash-deal-pct" class="flash-select"></select>
+                        <label style="font-size:12px; display:block; margin-top:10px;">Expiration Date & Time</label>
+                        <input type="datetime-local" id="vip-flash-deal-timer">
+                        <button class="btn-main" onclick="window.applyFlashDealToAll()">Apply Flash Deal</button>
+                    </div>
+
+                    <div style="background:#f9f9f9; padding:15px; border-radius:5px; margin-bottom:15px;">
+                        <h4 style="margin-top:0;">My Store Orders</h4>
+                        <div id="vip-my-orders-list"></div>
+                    </div>
+
                     <div style="background:#f9f9f9; padding:15px; border-radius:5px; margin-bottom:15px;">
                         <h4 style="margin-top:0;">Publish Item</h4>
                         <input type="text" id="vip-prod-name" placeholder="Product Name">
@@ -349,10 +376,13 @@
                     </div>
 
                     <div style="background:#fff3cd; padding:15px; border-radius:5px;">
-                        <h4 style="margin-top:0;">Voucher Creator</h4>
-                        <input type="text" id="vip-voucher-name" placeholder="Voucher Name / Code (e.g. SAVE10)">
-                        <input type="number" id="vip-voucher-pct" placeholder="% Off (e.g. 10)">
-                        <button class="btn-main" onclick="window.createVoucher('vip')">Create Voucher</button>
+                        <h4 style="margin-top:0;">Voucher / Special Code Creator</h4>
+                        <input type="text" id="vip-voucher-name" placeholder="Name / Code (e.g. MEGA90)">
+                        <input type="text" id="vip-voucher-discord" placeholder="Discord Name (Optional)">
+                        <input type="number" id="vip-voucher-pct" placeholder="% Off (1 to 100)">
+                        <label style="font-size:12px;">Expired Date</label>
+                        <input type="datetime-local" id="vip-voucher-expiry">
+                        <button class="btn-main" onclick="window.createVoucher('vip')">Create Voucher Code</button>
                     </div>
                 </div>
             </div>
@@ -472,11 +502,14 @@
         </div>
 
         <div id="admin-vouchers-tab" class="hidden">
-            <h3>Voucher Creator</h3>
+            <h3>Voucher / Special Code Creator</h3>
             <div class="list-card">
-                <input type="text" id="admin-voucher-name" placeholder="Voucher Name / Code (e.g. SAVE10)">
-                <input type="number" id="admin-voucher-pct" placeholder="% Off (e.g. 10)">
-                <button class="btn-main" onclick="window.createVoucher('admin')">Create Voucher</button>
+                <input type="text" id="admin-voucher-name" placeholder="Name / Code (e.g. MEGA90)">
+                <input type="text" id="admin-voucher-discord" placeholder="Discord Name (Optional)">
+                <input type="number" id="admin-voucher-pct" placeholder="% Off (1 to 100)">
+                <label style="font-size:12px;">Expired Date</label>
+                <input type="datetime-local" id="admin-voucher-expiry">
+                <button class="btn-main" onclick="window.createVoucher('admin')">Create Voucher Code</button>
             </div>
             <h4>Active Vouchers</h4>
             <div id="admin-voucher-list"></div>
@@ -556,65 +589,6 @@
     </div>
 </div>
 
-<div id="edit-product-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2>Edit Product</h2>
-        <input type="hidden" id="edit-prod-id">
-        <label>Name</label><input type="text" id="edit-prod-name">
-        <label>Category</label>
-        <select id="edit-prod-category">
-            <option value="Grow A Garden">Grow A Garden</option>
-            <option value="Grow A Garden 2">Grow A Garden 2</option>
-            <option value="Steal A Brainrot">Steal A Brainrot</option>
-            <option value="Kick A Lucky Blocks">Kick A Lucky Blocks</option>
-            <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
-            <option value="Other">Other</option>
-        </select>
-        <label>Rarity</label>
-        <select id="edit-prod-rarity" onchange="window.toggleTimer('edit')">
-            <option value="">Rarity (Optional)</option>
-            <option value="Secret">Secret</option>
-            <option value="Divine">Divine</option>
-            <option value="OG">OG</option>
-            <option value="Admin Abuse">Admin Abuse</option>
-            <option value="1 of 1">1 of 1</option>
-            <option value="Limited">Limited</option>
-            <option value="Super">Super</option>
-            <option value="Mythical">Mythical</option>
-            <option value="Legendary">Legendary</option>
-            <option value="Rare">Rare</option>
-            <option value="Uncommon">Uncommon</option>
-            <option value="Common">Common</option>
-        </select>
-        <div id="edit-timer-group" class="hidden">
-            <label>Limited Timer (Optional End Date & Time)</label>
-            <input type="datetime-local" id="edit-prod-timer">
-        </div>
-        
-        <hr style="margin: 15px 0;">
-        <label>Money (₱)</label><input type="number" id="edit-prod-money">
-        <label>Sheckles (¢)</label><input type="number" id="edit-prod-sheckles">
-        
-        <div style="margin-bottom:10px;">
-            <label style="color:#ff4757; font-weight:bold; font-size:13px;">Flash Sale (Optional)</label>
-            <select id="edit-flash-pct" class="flash-select" onchange="window.toggleFlashTimer('edit')"></select>
-            <div id="edit-flash-timer-group" class="hidden" style="margin-top:5px;">
-                <label style="font-size:12px;">Flash Sale End Date & Time</label>
-                <input type="datetime-local" id="edit-flash-timer" style="margin-bottom:0;">
-            </div>
-        </div>
-
-        <div id="edit-trade-container" style="margin-bottom:10px;"></div>
-        <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('edit')">+ Add Trade</button>
-        <hr style="margin: 15px 0;">
-
-        <label>Description</label><textarea id="edit-prod-info"></textarea>
-        <label>Stocks</label><input type="number" id="edit-prod-stocks">
-        <button class="btn-main" onclick="window.saveEditedProduct()">Save Changes</button>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('edit-product-modal')">Cancel</button>
-    </div>
-</div>
-
 <div id="bot-chat-modal" class="modal hidden">
     <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
         <h3 style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px; color:var(--ai-color);">Xdrg Service (AI)</h3>
@@ -641,14 +615,6 @@
     </div>
 </div>
 
-<div id="send-voucher-modal" class="modal hidden">
-    <div class="modal-content">
-        <h3 style="margin-top:0;">Send Voucher to Buyer</h3>
-        <div id="send-voucher-list"></div>
-        <button class="btn-outline" style="width:100%; margin-top:15px;" onclick="window.closeModal('send-voucher-modal')">Cancel</button>
-    </div>
-</div>
-
 <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -658,7 +624,7 @@
 
     const ADMIN_EMAIL = "xdrgxdragon@gmail.com";
     
-    let users = { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox: [], botChat: [], mayaName: "ANDREA CASTRENCE", mayaNumber: "639519500345" } }; 
+    let users = { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox: [], botChat: [], mayaName: "ANDREA CASTRENCE", mayaNumber: "639519500345", activeProfileCode: null } }; 
     let products = []; 
     let userCarts = {};
     let orders = [];
@@ -672,12 +638,10 @@
     let currentActiveTab = 'home';
     let isAdminView = false;
     let chatTargetUser = "";
-    let currentCategory = "All";
     
     window.tempSelectedQty = 1;
     window.currentViewProductId = null;
     window.appliedVoucher = null;
-    window.tempVoucherTarget = null;
 
     window.formatNum = function(num) {
         if (!num && num !== 0) return 0;
@@ -690,7 +654,7 @@
 
     function populateFlash() {
         let html = '<option value="0">No Flash Sale</option>';
-        [1,5,10,15,20,25,30,40,50,60,70,80,90,99].forEach(v => {
+        [1,5,10,15,20,25,30,40,50,60,70,80,90,99,100].forEach(v => {
             html += `<option value="${v}">${v}% OFF</option>`;
         });
         document.querySelectorAll('.flash-select').forEach(el => el.innerHTML = html);
@@ -699,7 +663,7 @@
 
     function syncStateFromDB(data) {
         if (!data) return;
-        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox:[], botChat:[], mayaName: "ANDREA CASTRENCE", mayaNumber: "639519500345" } };
+        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox:[], botChat:[], mayaName: "ANDREA CASTRENCE", mayaNumber: "639519500345", activeProfileCode: null } };
         products = data.products || [];
         userCarts = data.userCarts || {};
         orders = data.orders || [];
@@ -720,7 +684,6 @@
                 if(currentActiveTab === 'admin-manage-users') window.renderAdminUsers();
                 if(currentActiveTab === 'admin-vouchers-tab') window.renderAdminVouchers();
                 if(currentActiveTab === 'admin-messages-tab') window.renderAdminChatList();
-                if(chatTargetUser) window.renderAdminChatHistory(); 
             } else {
                 window.updateUserNavDisplay();
                 window.updateBadges();
@@ -903,7 +866,7 @@
         if (pass !== confirm) return alert("Passwords do not match.");
         if (users[email]) return alert("Email already exists.");
 
-        users[email] = { pass, username, phone: "", mayaName: "", mayaNumber: "", isVIP: false, vipPending: false, isVerifiedSeller: false, sellerRequested: false, registeredAt: Date.now(), inbox: [], botChat: [] };
+        users[email] = { pass, username, phone: "", mayaName: "", mayaNumber: "", activeProfileCode: null, isVIP: false, vipPending: false, isVerifiedSeller: false, sellerRequested: false, registeredAt: Date.now(), inbox: [], botChat: [] };
         userCarts[email] = [];
         window.saveDatabase(); 
         localStorage.setItem('xdrg_logged_in_user', email);
@@ -969,7 +932,10 @@
         ['orders', 'profile-edit', 'vip-dashboard'].forEach(t => document.getElementById(`me-${t}`).classList.add('hidden'));
         document.getElementById(`me-${subtab}`).classList.remove('hidden');
         if(subtab === 'orders') window.renderBuyerOrders();
-        if(subtab === 'vip-dashboard') window.renderVipProducts();
+        if(subtab === 'vip-dashboard') {
+            window.renderVipProducts();
+            window.renderVipOrders();
+        }
     }
 
     window.updateUserNavDisplay = function() {
@@ -1264,7 +1230,9 @@
         
         let v = vouchers.find(x => x.code === code);
         if (!v) return alert("Invalid Voucher Code.");
-        if (v.usedBy && v.usedBy.includes(currentUser)) return alert("You have already used this voucher.");
+        
+        if (v.expiry && v.expiry < Date.now()) return alert("This voucher has expired.");
+        if (v.usedBy && v.usedBy.includes(currentUser)) return alert("You have already used this voucher. (Codes are single-use per user)");
         
         window.appliedVoucher = v;
         alert(`Voucher ${v.code} Applied! (${v.discount}% OFF)`);
@@ -1333,10 +1301,14 @@
         let finalTotal = subtotal;
         let detailsHtml = `Subtotal: ₱${window.formatNum(subtotal)}`;
 
-        if (window.appliedVoucher) {
-            let disc = window.appliedVoucher.discount;
+        // Check if manual voucher applied OR profile inserted code exists
+        let profileCodeObj = u.activeProfileCode ? vouchers.find(v => v.code === u.activeProfileCode) : null;
+        let targetVoucher = window.appliedVoucher || profileCodeObj;
+
+        if (targetVoucher) {
+            let disc = targetVoucher.discount;
             finalTotal = finalTotal * ((100 - disc) / 100);
-            detailsHtml += ` <br><span style="color:#e67e22; font-size:12px;">- ${disc}% Voucher (${window.appliedVoucher.code})</span>`;
+            detailsHtml += ` <br><span style="color:#e67e22; font-size:12px;">- ${disc}% Code Applied (${targetVoucher.code})</span>`;
         }
 
         if (isVIP) { finalTotal = finalTotal * 0.85; detailsHtml += ` <br><span style="color:green; font-size:12px;">- 15% VIP Discount</span>`; }
@@ -1410,11 +1382,15 @@
     }
 
     window.confirmCheckout = function() {
-        if (window.appliedVoucher) {
-            let vIndex = vouchers.findIndex(x => x.code === window.appliedVoucher.code);
+        let u = users[currentUser];
+        let profileCodeObj = u.activeProfileCode ? vouchers.find(v => v.code === u.activeProfileCode) : null;
+        let targetVoucher = window.appliedVoucher || profileCodeObj;
+
+        if (targetVoucher) {
+            let vIndex = vouchers.findIndex(x => x.code === targetVoucher.code);
             if(vIndex > -1) {
                 if(!vouchers[vIndex].usedBy) vouchers[vIndex].usedBy = [];
-                vouchers[vIndex].usedBy.push(currentUser);
+                vouchers[vIndex].usedBy.push(currentUser); // Mark as used
             }
         }
 
@@ -1442,8 +1418,10 @@
         userCarts[currentUser] = []; 
         document.getElementById('midman-check').checked = false;
         document.getElementById('downpayment-check').checked = false;
+        
         window.appliedVoucher = null;
         document.getElementById('voucher-input-code').value = '';
+        users[currentUser].activeProfileCode = null; // Clear from profile
         
         window.saveDatabase(); 
         window.closeModal('checkout-modal');
@@ -1494,6 +1472,39 @@
         window.updateUserNavDisplay();
     }
     
+    // Feature: Share XDRG App
+    window.shareApp = function() {
+        const link = "Download XDRG App: https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file";
+        navigator.clipboard.writeText(link).then(() => {
+            alert("App link copied to clipboard! Share it on Messenger, Facebook, Twitter, Discord, etc.");
+        }).catch(() => prompt("Copy this link:", link));
+    }
+
+    // Feature: Profile Check Share
+    window.shareProfile = function() {
+        let u = users[currentUser];
+        const text = `Check out my XDRG Profile!\nUsername: ${u.username}\nID: ${currentUser}`;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Profile info copied to clipboard! Share it on Messenger, Facebook, Twitter, Discord, etc.");
+        }).catch(() => prompt("Copy this info:", text));
+    }
+
+    // Feature: Insert Profile Code
+    window.insertProfileCode = function() {
+        let code = document.getElementById('profile-code-input').value.trim();
+        if(!code) return alert("Please enter a code.");
+        
+        let v = vouchers.find(x => x.code === code);
+        if(!v) return alert("Invalid Code.");
+        if(v.expiry && v.expiry < Date.now()) return alert("This code has expired.");
+        if(v.usedBy && v.usedBy.includes(currentUser)) return alert("You have already used this code (One use per user).");
+        
+        users[currentUser].activeProfileCode = code;
+        window.saveDatabase();
+        alert(`Code ${code} successfully inserted! Your ${v.discount}% discount will apply on your next checkout.`);
+        document.getElementById('profile-code-input').value = '';
+    }
+
     window.requestSellerStatus = function() {
         let u = users[currentUser];
         if (u.sellCodeExpiry && Date.now() > u.sellCodeExpiry) {
@@ -1524,790 +1535,289 @@
         if (!currentUser) return;
         const list = document.getElementById('buyer-order-list');
         list.innerHTML = '';
-        const myOrders = orders.filter(o => o.buyerEmail === currentUser).reverse(); 
-        if (myOrders.length === 0) return list.innerHTML = "<p>No orders yet.</p>";
-
+        let myOrders = orders.filter(o => o.buyerEmail === currentUser).reverse();
+        if (myOrders.length === 0) { list.innerHTML = "<p>No purchases found.</p>"; return; }
+        
         myOrders.forEach(o => {
-            let statusColor = o.status === "Completed" ? "green" : (o.status === "Cancelled" ? "red" : "var(--main-color)");
-            let itemsHtml = o.items.map(item => {
-                let pVal = item.money || item.price || 0;
-                let cStrArr = [];
-                if (pVal > 0) cStrArr.push(`₱${window.formatNum(pVal * (item.qty||1))}`);
-                if (item.sheckles > 0) cStrArr.push(`¢${window.formatNum(item.sheckles * (item.qty||1))} Sheckles`);
-                let cStr = cStrArr.join(' + ') || 'Free';
-                if(o.isTradeOffer) cStr = 'Trade';
-                
-                return `<div style="font-size:14px; display:flex; justify-content:space-between; margin-top:5px;">
-                    <span>- ${item.name} (x${item.qty || 1})</span>
-                    <span>${cStr}</span>
-                </div>`;
-            }).join('');
-            
-            let balHtml = o.balance > 0 ? `<p style="color:red; font-size:12px; margin:5px 0 0 0;">Balance Due: ₱${window.formatNum(o.balance)}</p>` : '';
-            
-            let cancelBtn = '';
-            if(o.status === 'Pending Payment') {
-                cancelBtn = `<button class="btn-danger" style="padding:5px 10px; font-size:11px; margin-top:10px; width:auto;" onclick="window.cancelOrder(${o.id})">Cancel Order</button>`;
-            }
-
-            let paidArr = [];
-            paidArr.push(`₱${window.formatNum(o.totalPaid)}`);
-            let totalSheck = o.items.reduce((sum, i) => sum + (i.sheckles||0)*(i.qty||1), 0);
-            if (totalSheck > 0 && !o.isTradeOffer) paidArr.push(`¢${window.formatNum(totalSheck)} Sheckles`);
-            let paidText = o.isTradeOffer ? 'Trade' : paidArr.join(' + ');
-
+            let iHtml = o.items.map(i => `${i.name} (x${i.qty || 1})`).join(', ');
             list.innerHTML += `
-                <div class="list-card" style="border:1px solid #eee;">
-                    <div style="display:flex; justify-content:space-between; border-bottom:1px dashed #ccc; padding-bottom:10px; margin-bottom:10px;">
-                        <span style="font-size:12px; color:gray;">ID: ${o.id} <br> ${o.date}</span>
-                        <b style="color:${statusColor}; text-transform:uppercase; font-size:14px;">${o.status}</b>
-                    </div>
-                    ${itemsHtml}
-                    ${o.midman ? `<p style="font-size:11px; color:gray; margin:5px 0;">+ Middleman Requested</p>` : ''}
-                    <div style="text-align:right; margin-top:10px; border-top:1px solid #eee; padding-top:10px;">
-                        Paid: <b style="color:var(--main-color); font-size:16px;">${paidText}</b>
-                        ${balHtml}
-                        <br>${cancelBtn}
-                    </div>
+                <div class="list-card">
+                    <p style="margin:0 0 5px 0;"><b>Order ID:</b> ${o.id}</p>
+                    <p style="margin:0 0 5px 0;"><b>Date:</b> ${o.date}</p>
+                    <p style="margin:0 0 5px 0;"><b>Items:</b> ${iHtml}</p>
+                    <p style="margin:0 0 5px 0;"><b>Total Paid:</b> ₱${window.formatNum(o.totalPaid)}</p>
+                    <p style="margin:0; font-weight:bold; color:var(--main-color);">Status: ${o.status}</p>
                 </div>
             `;
         });
     }
 
-    window.cancelOrder = function(orderId) {
-        let o = orders.find(x => x.id === orderId);
-        if(o && o.status === 'Pending Payment') {
-            if(confirm("Are you sure you want to cancel this order? Stocks will be returned.")) {
-                o.status = "Cancelled";
-                o.items.forEach(orderItem => {
-                    let p = products.find(prod => prod.id === orderItem.id);
-                    if(p) p.stocks += (orderItem.qty || 1);
-                });
-                window.saveDatabase().then(() => window.renderBuyerOrders());
-            }
-        }
-    }
-
-    window.openVipModal = function() { document.getElementById('vip-modal').classList.remove('hidden'); }
-    window.confirmVipPurchase = function() {
-        users[currentUser].vipPending = true; window.saveDatabase();
-        window.closeModal('vip-modal'); alert("VIP Requested! Admin will verify payment.");
-        window.updateUserNavDisplay();
-    }
-
-    window.processImageAndAddProduct = function(source) {
-        const prefix = source === 'admin' ? 'admin' : 'vip';
-        const name = document.getElementById(`${prefix}-prod-name`).value.trim();
-        const category = document.getElementById(`${prefix}-prod-category`).value;
-        const rarity = document.getElementById(`${prefix}-prod-rarity`).value;
-        
-        let mVal = document.getElementById(`${prefix}-prod-money`).value;
-        const money = mVal ? parseFloat(mVal) : 0;
-        let sVal = document.getElementById(`${prefix}-prod-sheckles`).value;
-        const sheckles = sVal ? parseInt(sVal) : 0;
-        
-        let flashPct = parseInt(document.getElementById(`${prefix}-flash-pct`).value) || 0;
-        let flashEndTime = null;
-        if(flashPct > 0) {
-            let ft = document.getElementById(`${prefix}-flash-timer`).value;
-            if(ft) flashEndTime = new Date(ft).getTime();
-        }
-
-        const tradeInputs = document.querySelectorAll(`.${prefix}-trade-input`);
-        let trade = [];
-        tradeInputs.forEach(inp => { if(inp.value.trim()) trade.push(inp.value.trim()); });
-        
-        const info = document.getElementById(`${prefix}-prod-info`).value.trim();
-        const stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value);
-        const imageFile = document.getElementById(`${prefix}-prod-image`).files[0];
-
-        let limitedTime = null;
-        if(rarity === 'Limited') {
-            let t = document.getElementById(`${prefix}-prod-timer`).value;
-            if (t) limitedTime = new Date(t).getTime();
-        }
-
-        if (!name || (!money && !sheckles && trade.length===0) || !info || isNaN(stocks)) return alert("Fill out Name, at least one price/trade, Info, and Stocks!");
-
-        const finalizeSave = (imgUrl) => {
-            products.push({ 
-                id: Date.now(), name, category, rarity, limitedTime, 
-                money, sheckles, trade, price: money, flashPct, flashEndTime,
-                info, stocks, image: imgUrl, addedByEmail: currentUser, addedByName: users[currentUser].username 
+    // Feature: VIP Orders view
+    window.renderVipOrders = function() {
+        const list = document.getElementById('vip-my-orders-list');
+        list.innerHTML = '';
+        let myOrders = [];
+        orders.forEach(o => {
+            let myItems = o.items.filter(i => {
+                let p = products.find(prod => prod.id === i.id) || i;
+                return p.addedByEmail === currentUser;
             });
-            window.saveDatabase().then(() => {
-                alert("Product Published!");
-                document.getElementById(`${prefix}-prod-name`).value = '';
-                document.getElementById(`${prefix}-prod-rarity`).value = '';
-                document.getElementById(`${prefix}-prod-timer`).value = '';
-                document.getElementById(`${prefix}-timer-group`).classList.add('hidden');
-                document.getElementById(`${prefix}-prod-money`).value = '';
-                document.getElementById(`${prefix}-prod-sheckles`).value = '';
-                document.getElementById(`${prefix}-flash-pct`).value = '0';
-                document.getElementById(`${prefix}-flash-timer`).value = '';
-                document.getElementById(`${prefix}-flash-timer-group`).classList.add('hidden');
-                document.getElementById(`${prefix}-trade-container`).innerHTML = '';
-                document.getElementById(`${prefix}-prod-info`).value = '';
-                document.getElementById(`${prefix}-prod-stocks`).value = '';
-                if(document.getElementById(`${prefix}-prod-image`)) document.getElementById(`${prefix}-prod-image`).value = ''; 
-                if(source === 'vip') window.renderVipProducts();
-            });
-        };
-
-        if (imageFile) {
-            const reader = new FileReader();
-            reader.onload = e => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas'); const scale = 400 / img.width;
-                    canvas.width = 400; canvas.height = img.height * scale;
-                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                    finalizeSave(canvas.toDataURL('image/jpeg', 0.7)); 
-                }; img.src = e.target.result;
-            }; reader.readAsDataURL(imageFile);
-        } else finalizeSave(""); 
-    }
-
-    window.createVoucher = function(source) {
-        const prefix = source === 'admin' ? 'admin' : 'vip';
-        const code = document.getElementById(`${prefix}-voucher-name`).value.trim().toUpperCase();
-        const pct = parseInt(document.getElementById(`${prefix}-voucher-pct`).value);
-
-        if(!code || isNaN(pct) || pct <= 0 || pct >= 100) return alert("Invalid voucher details.");
-        if(vouchers.find(v => v.code === code)) return alert("Voucher code already exists.");
-
-        vouchers.push({ code, discount: pct, createdBy: currentUser, usedBy: [] });
-        window.saveDatabase().then(() => {
-            alert("Voucher Created!");
-            document.getElementById(`${prefix}-voucher-name`).value = '';
-            document.getElementById(`${prefix}-voucher-pct`).value = '';
-            if(isAdminView) window.renderAdminVouchers();
+            if(myItems.length > 0) {
+                myOrders.push({...o, items: myItems});
+            }
         });
-    }
 
-    window.renderBuyerMessages = function() {
-        const list = document.getElementById('buyer-inbox-list');
-        list.innerHTML = '';
-        if (!currentUser) return list.innerHTML = "<p style='text-align:center;'>Login to view messages.</p>";
-
-        let myInbox = users[currentUser].inbox || [];
-        if(myInbox.length === 0) return list.innerHTML = "<p style='text-align:center; color:gray; margin-top:20px;'>No direct messages yet.</p>";
-
-        myInbox.forEach(msg => {
-            list.innerHTML += `
-                <div class="chat-msg chat-admin">
-                    <b>Admin / System:</b><br>
-                    <span style="white-space: pre-wrap;">${msg.text}</span>
-                    <span class="chat-date">${msg.date}</span>
-                </div>
-            `;
-        });
-        list.scrollTop = list.scrollHeight;
-    }
-
-    window.openBotChat = function() {
-        if(!currentUser) return alert("Login to use Xdrg Service!");
-        document.getElementById('bot-chat-modal').classList.remove('hidden');
-        window.renderBotChat();
-    }
-
-    window.renderBotChat = function() {
-        let history = users[currentUser].botChat || [];
-        const box = document.getElementById('bot-chat-history');
-        box.innerHTML = '';
-        if(history.length === 0) {
-            box.innerHTML = `<div class="chat-msg chat-bot"><b>Xdrg Service:</b><br>Hello! I can help check item prices, info, stock, and proofs. Try asking:<br>- How much this cost {Item ID or Name}<br>- What information on this {Item ID or Name}<br>- How many stock left on this {Item ID or Name}<br>- Show proof on this {Item ID or Name}</div>`;
-        }
-        history.forEach(msg => {
-            let cl = msg.sender === 'user' ? 'chat-user' : 'chat-bot';
-            let name = msg.sender === 'user' ? 'You' : 'Xdrg Service';
-            box.innerHTML += `
-                <div class="chat-msg ${cl}">
-                    <b>${name}:</b><br>
-                    <span style="white-space: pre-wrap;">${msg.text}</span>
-                    <span class="chat-date">${msg.date}</span>
-                </div>
-            `;
-        });
-        box.scrollTop = box.scrollHeight;
-    }
-
-    window.sendBotMessage = function() {
-        let text = document.getElementById('bot-chat-input').value.trim();
-        if(!text) return;
-        let u = users[currentUser];
-        u.botChat.push({ sender: 'user', text, date: new Date().toLocaleString() });
-
-        let reply = "I'm Xdrg Service! I am an AI designed to assist with this app. Need help? Try asking:\n- How much this cost [Name/ID]\n- What information on this [Name/ID]\n- How many stock left on this [Name/ID]\n- Show proof on this [Name/ID]";
-        
-        let findProd = (q) => {
-            if(!q) return null;
-            let cleanQ = q.replace(/[\?\.!]/g, '').trim().toLowerCase();
-            let p = products.find(x => x.id.toString() === cleanQ);
-            if(!p) p = products.find(x => x.name.toLowerCase() === cleanQ);
-            return p;
-        };
-
-        let matchPrice = text.match(/how much.*?cost.*?(.+)/i);
-        let matchInfo = text.match(/what information.*?on this.*?(.+)/i);
-        let matchStock = text.match(/how many stock.*?on this.*?(.+)/i);
-        let matchProof = text.match(/show proof.*?on this.*?(.+)/i);
-        
-        if (matchPrice) {
-            let p = findProd(matchPrice[1]);
-            if(p) {
-                let costs = [];
-                let cMoney = p.money || p.price || 0;
-                if(p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now())) cMoney = cMoney * (1 - (p.flashPct/100));
-                
-                if(cMoney) costs.push(`₱${window.formatNum(cMoney)}`);
-                if(p.sheckles) costs.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
-                if(p.trade && p.trade.length > 0) costs.push(`Trade: ${p.trade.join(', ')}`);
-                reply = `Item: ${p.name} (ID: ${p.id})\nCosts: ${costs.join(' | ') || 'Free'}`;
-            } else reply = `Sorry, I couldn't find an item matching: ${matchPrice[1]}`;
-        } else if (matchInfo) {
-            let p = findProd(matchInfo[1]);
-            if(p) {
-                reply = `Information for ${p.name} (ID: ${p.id}):\nCategory: ${p.category || 'None'}\nRarity: ${p.rarity || 'None'}\nDetails: ${p.info}`;
-            } else reply = `Sorry, I couldn't find an item matching: ${matchInfo[1]}`;
-        } else if (matchStock) {
-            let p = findProd(matchStock[1]);
-            if(p) {
-                reply = `${p.name} (ID: ${p.id}) has ${p.stocks} stock(s) left.`;
-            } else reply = `Sorry, I couldn't find an item matching: ${matchStock[1]}`;
-        } else if (matchProof) {
-            let p = findProd(matchProof[1]);
-            if(p) {
-                let relatedVouches = vouches.filter(v => v.itemName && v.itemName.toLowerCase() === p.name.toLowerCase());
-                if(relatedVouches.length > 0) {
-                    let v = relatedVouches[0];
-                    reply = `Proof for ${p.name}:\nFrom: ${v.user}\n"${v.text}"\n<img src="${v.image}" style="width:100%; border-radius:4px; margin-top:5px; object-fit:cover;">`;
-                } else {
-                    reply = `There are no community vouches/proofs yet for ${p.name}.`;
-                }
-            } else reply = `Sorry, I couldn't find an item matching: ${matchProof[1]}`;
+        if(myOrders.length === 0) {
+            list.innerHTML = "<p>No orders yet for your products.</p>";
+            return;
         }
 
-        u.botChat.push({ sender: 'bot', text: reply, date: new Date().toLocaleString() });
-        window.saveDatabase().then(() => {
-            document.getElementById('bot-chat-input').value = '';
-            window.renderBotChat();
-        });
-    }
-
-    window.openAddVouchModal = function() {
-        if(!currentUser) return alert("Please Login to add a vouch.");
-        document.getElementById('vouch-item-name').value = '';
-        document.getElementById('vouch-buyer-name').value = '';
-        document.getElementById('vouch-caption').value = '';
-        document.getElementById('vouch-image').value = '';
-        document.getElementById('add-vouch-modal').classList.remove('hidden');
-    }
-
-    window.saveVouch = function() {
-        const itemName = document.getElementById('vouch-item-name').value.trim();
-        const buyerName = document.getElementById('vouch-buyer-name').value.trim();
-        const text = document.getElementById('vouch-caption').value.trim();
-        const file = document.getElementById('vouch-image').files[0];
-        if(!file) return alert("Please upload a proof image.");
-        if(!itemName) return alert("Please enter the Item Name.");
-        
-        const reader = new FileReader();
-        reader.onload = e => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas'); const scale = 400 / img.width;
-                canvas.width = 400; canvas.height = img.height * scale;
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                vouches.push({ id: Date.now(), user: users[currentUser].username, buyerName: buyerName, itemName: itemName, text: text, image: canvas.toDataURL('image/jpeg', 0.7), date: new Date().toLocaleString() });
-                window.saveDatabase().then(() => {
-                    alert("Vouch uploaded!");
-                    window.closeModal('add-vouch-modal');
-                    window.renderVouches();
-                });
-            }; img.src = e.target.result;
-        }; reader.readAsDataURL(file);
-    }
-
-    window.renderVouches = function() {
-        const list = document.getElementById('vouch-list');
-        list.innerHTML = '';
-        if(vouches.length === 0) return list.innerHTML = "<p style='grid-column: span 2; text-align:center;'>No vouches yet.</p>";
-        let rev = [...vouches].reverse();
-        rev.forEach(v => {
+        myOrders.reverse().forEach(o => {
+            let itemHtml = o.items.map(i => `<li>${i.name} (x${i.qty || 1})</li>`).join('');
             list.innerHTML += `
-                <div class="vouch-card">
-                    <img src="${v.image}" alt="Proof">
-                    <div style="padding:10px;">
-                        <div style="font-size:13px; margin-bottom:2px;"><b>Seller:</b> ${v.user}</div>
-                        <div style="font-size:13px; margin-bottom:2px; color:var(--main-color);"><b>Buyer:</b> ${v.buyerName || 'Unknown'}</div>
-                        <div style="font-size:11px; color:gray; margin-bottom:5px;">${v.date}</div>
-                        <div style="font-size:12px; font-weight:bold; margin-bottom:2px;">Item: ${v.itemName || 'N/A'}</div>
-                        <p style="font-size:12px; margin:2px 0 0 0;"><b>Proof:</b> ${v.text}</p>
-                    </div>
+                <div style="border:1px solid #ccc; padding:10px; border-radius:4px; margin-bottom:10px;">
+                    <b>Order ID:</b> ${o.id} <br>
+                    <b>Buyer:</b> ${o.buyerUsername} (${o.buyerEmail}) <br>
+                    <b>Date:</b> ${o.date} <br>
+                    <b>Status:</b> <span style="color:var(--main-color);">${o.status}</span> <br>
+                    <b>Items:</b><ul>${itemHtml}</ul>
                 </div>
             `;
         });
     }
 
-    window.showAdminTab = function(tab) {
-        currentActiveTab = tab;
-        ['admin-add-product', 'admin-manage-products', 'admin-manage-orders', 'admin-offers-tab', 'admin-manage-users', 'admin-vouchers-tab', 'admin-messages-tab'].forEach(t => {
-            document.getElementById(t).classList.add('hidden');
-        });
-        document.getElementById(tab).classList.remove('hidden');
+    // Feature: Apply Flash Deal to ALL seller products
+    window.applyFlashDealToAll = function() {
+        let pct = parseInt(document.getElementById('vip-flash-deal-pct').value);
+        let timer = document.getElementById('vip-flash-deal-timer').value;
         
-        if (tab === 'admin-manage-products') window.renderAdminProducts();
-        if (tab === 'admin-manage-orders') window.renderAdminOrders();
-        if (tab === 'admin-offers-tab') window.renderAdminOffers();
-        if (tab === 'admin-manage-users') window.renderAdminUsers();
-        if (tab === 'admin-vouchers-tab') window.renderAdminVouchers();
-        if (tab === 'admin-messages-tab') window.renderAdminChatList();
-    }
+        if(!pct || pct <= 0) return alert("Please select a valid discount percentage.");
+        if(!timer) return alert("Please select an expiration date.");
+        let endMs = new Date(timer).getTime();
+        if(endMs <= Date.now()) return alert("Expiration date must be in the future.");
 
-    window.renderAdminProducts = function() {
-        const list = document.getElementById('admin-product-list');
-        list.innerHTML = '';
-        if (products.length === 0) return list.innerHTML = "<p>No products.</p>";
+        let count = 0;
         products.forEach(p => {
-            let rarityHtml = p.rarity ? `<span class="rarity-badge rarity-${p.rarity.toLowerCase().replace(/ /g, '-')}">${p.rarity}</span>` : '';
-            let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
-            
-            let priceArr = [];
-            let pMoney = p.money || p.price || 0;
-            let flashStr = "";
-            if (p.flashPct && p.flashEndTime && p.flashEndTime > Date.now()) {
-                pMoney = pMoney * (1 - (p.flashPct/100));
-                flashStr = `<span class="flash-badge" style="margin-left:5px;">⚡ ${p.flashPct}% OFF</span>`;
+            if(p.addedByEmail === currentUser) {
+                p.flashPct = pct;
+                p.flashEndTime = endMs;
+                count++;
             }
-
-            if(p.money || p.price) priceArr.push(`₱${window.formatNum(pMoney)}`);
-            if(p.sheckles) priceArr.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
-            if(p.trade && p.trade.length) priceArr.push('Trade');
-
-            list.innerHTML += `
-                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <b>${p.name}</b> ${rarityHtml} ${flashStr}<br>
-                        <span style="font-size:11px; background:#eee; padding:2px 4px;">${p.category || 'None'}</span><br>
-                        <span style="color:var(--main-color); font-size:12px;">${priceArr.join(' • ')}</span> | Stocks: ${p.stocks} <br>
-                        <span style="font-size: 11px; color:gray;">Seller: ${p.addedByName} ${verifiedHtml} (ID: ${p.id})</span>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:5px;">
-                        <button class="btn-action" onclick="window.openEditProduct(${p.id})">Edit</button>
-                        <button class="btn-danger" onclick="window.deleteProduct(${p.id})">Del</button>
-                    </div>
-                </div>
-            `;
         });
+        
+        if(count === 0) return alert("You have no products to apply the flash deal to.");
+        window.saveDatabase();
+        alert(`Flash Deal of ${pct}% OFF applied to all ${count} of your products!`);
+        window.renderVipProducts();
     }
 
     window.renderVipProducts = function() {
         const list = document.getElementById('vip-my-products-list');
         list.innerHTML = '';
         let myProds = products.filter(p => p.addedByEmail === currentUser);
-        if(myProds.length === 0) return list.innerHTML = "<p>No products published yet.</p>";
-
+        if (myProds.length === 0) { list.innerHTML = "<p>No products published.</p>"; return; }
         myProds.forEach(p => {
-            let pMoney = p.money || p.price || 0;
-            let flashStr = "";
-            if (p.flashPct && p.flashEndTime && p.flashEndTime > Date.now()) {
-                pMoney = pMoney * (1 - (p.flashPct/100));
-                flashStr = `<span class="flash-badge" style="margin-left:5px;">⚡ ${p.flashPct}% OFF</span>`;
-            }
-
             list.innerHTML += `
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <b>${p.name}</b> ${flashStr}<br>
-                        <span style="color:var(--main-color); font-size:12px;">₱${window.formatNum(pMoney)}</span> | Stocks: ${p.stocks}
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:5px;">
-                        <button class="btn-action" onclick="window.openEditProduct(${p.id})">Edit</button>
-                        <button class="btn-danger" onclick="window.deleteProduct(${p.id})">Del</button>
-                    </div>
+                    <div><b>${p.name}</b> (Stocks: ${p.stocks})<br>₱${window.formatNum(p.money || p.price || 0)}</div>
+                    <button class="btn-danger" style="margin:0;" onclick="window.deleteProduct(${p.id})">Delete</button>
                 </div>
             `;
         });
     }
 
-    window.openEditProduct = function(id) {
-        let p = products.find(x => x.id === id);
-        if(!p) return;
-        document.getElementById('edit-prod-id').value = p.id;
-        document.getElementById('edit-prod-name').value = p.name;
-        document.getElementById('edit-prod-category').value = p.category || "Other";
-        document.getElementById('edit-prod-rarity').value = p.rarity || "";
-        
-        window.toggleTimer('edit');
-        if(p.rarity === 'Limited' && p.limitedTime) {
-            let d = new Date(p.limitedTime);
-            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-            document.getElementById('edit-prod-timer').value = d.toISOString().slice(0, 16);
-        } else {
-            document.getElementById('edit-prod-timer').value = "";
-        }
-
-        document.getElementById('edit-prod-money').value = p.money || p.price || '';
-        document.getElementById('edit-prod-sheckles').value = p.sheckles || '';
-        
-        document.getElementById('edit-flash-pct').value = p.flashPct || 0;
-        window.toggleFlashTimer('edit');
-        if(p.flashPct > 0 && p.flashEndTime) {
-            let fd = new Date(p.flashEndTime);
-            fd.setMinutes(fd.getMinutes() - fd.getTimezoneOffset());
-            document.getElementById('edit-flash-timer').value = fd.toISOString().slice(0, 16);
-        } else {
-            document.getElementById('edit-flash-timer').value = "";
-        }
-        
-        let tradeCont = document.getElementById('edit-trade-container');
-        tradeCont.innerHTML = '';
-        if(p.trade) {
-            p.trade.forEach(t => {
-                let div = document.createElement('div');
-                div.style.marginBottom = "5px";
-                div.innerHTML = `<input type="text" class="edit-trade-input" value="${t}" style="width:75%; display:inline-block; margin:0;"><button type="button" class="btn-danger" style="width:20%; display:inline-block; margin:0 0 0 5%;" onclick="this.parentElement.remove()">X</button>`;
-                tradeCont.appendChild(div);
-            });
-        }
-
-        document.getElementById('edit-prod-info').value = p.info;
-        document.getElementById('edit-prod-stocks').value = p.stocks;
-        document.getElementById('edit-product-modal').classList.remove('hidden');
-    }
-
-    window.saveEditedProduct = function() {
-        let id = parseInt(document.getElementById('edit-prod-id').value);
-        let pIndex = products.findIndex(x => x.id === id);
-        if(pIndex > -1) {
-            products[pIndex].name = document.getElementById('edit-prod-name').value;
-            products[pIndex].category = document.getElementById('edit-prod-category').value;
-            products[pIndex].rarity = document.getElementById('edit-prod-rarity').value;
-            
-            if(products[pIndex].rarity === 'Limited') {
-                let t = document.getElementById('edit-prod-timer').value;
-                products[pIndex].limitedTime = t ? new Date(t).getTime() : null;
-            } else {
-                products[pIndex].limitedTime = null;
-            }
-
-            let mVal = document.getElementById('edit-prod-money').value;
-            products[pIndex].money = mVal ? parseFloat(mVal) : 0;
-            products[pIndex].price = products[pIndex].money;
-            let sVal = document.getElementById('edit-prod-sheckles').value;
-            products[pIndex].sheckles = sVal ? parseInt(sVal) : 0;
-            
-            let fPct = parseInt(document.getElementById('edit-flash-pct').value) || 0;
-            products[pIndex].flashPct = fPct;
-            if (fPct > 0) {
-                let ft = document.getElementById('edit-flash-timer').value;
-                products[pIndex].flashEndTime = ft ? new Date(ft).getTime() : null;
-            } else {
-                products[pIndex].flashEndTime = null;
-            }
-            
-            let tInputs = document.querySelectorAll('.edit-trade-input');
-            products[pIndex].trade = [];
-            tInputs.forEach(inp => { if(inp.value.trim()) products[pIndex].trade.push(inp.value.trim()); });
-
-            products[pIndex].info = document.getElementById('edit-prod-info').value;
-            products[pIndex].stocks = parseInt(document.getElementById('edit-prod-stocks').value);
-            
-            window.saveDatabase(); window.closeModal('edit-product-modal');
-            if(isAdminView) window.renderAdminProducts();
-            if(users[currentUser] && users[currentUser].isVerifiedSeller) window.renderVipProducts();
-            window.searchProducts();
-        }
-    }
-
     window.deleteProduct = function(id) {
-        if(confirm("Delete this product?")) {
-            products = products.filter(x => x.id !== id); window.saveDatabase();
-            if(isAdminView) window.renderAdminProducts();
-            if(users[currentUser] && users[currentUser].isVerifiedSeller) window.renderVipProducts();
-            window.searchProducts();
+        if(!confirm("Delete this product?")) return;
+        products = products.filter(p => p.id !== id);
+        window.saveDatabase();
+        window.renderVipProducts();
+        if(isAdminView) window.renderAdminProducts();
+    }
+
+    window.processImageAndAddProduct = function(prefix) {
+        let name = document.getElementById(`${prefix}-prod-name`).value.trim();
+        let cat = document.getElementById(`${prefix}-prod-category`).value;
+        let rarity = document.getElementById(`${prefix}-prod-rarity`).value;
+        let money = parseFloat(document.getElementById(`${prefix}-prod-money`).value) || 0;
+        let sheckles = parseFloat(document.getElementById(`${prefix}-prod-sheckles`).value) || 0;
+        let info = document.getElementById(`${prefix}-prod-info`).value.trim();
+        let stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value) || 1;
+        let timer = document.getElementById(`${prefix}-prod-timer`).value;
+        let flashPct = parseInt(document.getElementById(`${prefix}-flash-pct`).value) || 0;
+        let flashTimer = document.getElementById(`${prefix}-flash-timer`).value;
+
+        if(!name) return alert("Product name is required.");
+
+        let tradeInputs = document.querySelectorAll(`.${prefix}-trade-input`);
+        let trades = [];
+        tradeInputs.forEach(i => { if(i.value.trim()) trades.push(i.value.trim()); });
+
+        let fileInput = document.getElementById(`${prefix}-prod-image`);
+        
+        let addData = (imgData) => {
+            products.push({
+                id: Date.now(),
+                name, category: cat, rarity, money, sheckles, info, stocks,
+                image: imgData,
+                limitedTime: timer ? new Date(timer).getTime() : null,
+                flashPct: flashPct,
+                flashEndTime: flashTimer ? new Date(flashTimer).getTime() : null,
+                trade: trades,
+                addedByEmail: currentUser,
+                addedByName: users[currentUser].username
+            });
+            window.saveDatabase();
+            alert("Product published!");
+            if(prefix === 'vip') window.renderVipProducts();
+            if(prefix === 'admin') window.renderAdminProducts();
+        };
+
+        if(fileInput && fileInput.files && fileInput.files[0]) {
+            let reader = new FileReader();
+            reader.onload = (e) => addData(e.target.result);
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            addData(null);
         }
+    }
+
+    // Code Creation feature updated with Discord and Expiry
+    window.createVoucher = function(prefix) {
+        let name = document.getElementById(`${prefix}-voucher-name`).value.trim();
+        let discord = document.getElementById(`${prefix}-voucher-discord`) ? document.getElementById(`${prefix}-voucher-discord`).value.trim() : "";
+        let pct = parseInt(document.getElementById(`${prefix}-voucher-pct`).value);
+        let expiryDate = document.getElementById(`${prefix}-voucher-expiry`) ? document.getElementById(`${prefix}-voucher-expiry`).value : "";
+
+        if(!name || !pct || pct < 1 || pct > 100) return alert("Name and valid % (1-100) are required.");
+        let expMs = expiryDate ? new Date(expiryDate).getTime() : null;
+
+        vouchers.push({
+            id: Date.now(),
+            code: name,
+            discord: discord,
+            discount: pct,
+            expiry: expMs,
+            usedBy: [],
+            addedBy: currentUser
+        });
+        window.saveDatabase();
+        alert(`Special Code [${name}] for ${pct}% OFF created successfully!`);
+        if(prefix === 'admin') window.renderAdminVouchers();
+    }
+
+    window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
+    window.openVipModal = function() { document.getElementById('vip-modal').classList.remove('hidden'); }
+    
+    window.confirmVipPurchase = function() {
+        users[currentUser].vipPending = true;
+        window.saveDatabase();
+        window.closeModal('vip-modal');
+        alert("VIP Requested! Please wait for Admin approval.");
+        window.updateUserNavDisplay();
+    }
+
+    window.showAdminTab = function(tab) {
+        ['admin-add-product','admin-manage-products','admin-manage-orders','admin-offers-tab','admin-manage-users','admin-vouchers-tab','admin-messages-tab'].forEach(t => document.getElementById(t).classList.add('hidden'));
+        document.getElementById(tab).classList.remove('hidden');
+        currentActiveTab = tab;
+        if(tab==='admin-manage-products') window.renderAdminProducts();
+        if(tab==='admin-manage-orders') window.renderAdminOrders();
+        if(tab==='admin-vouchers-tab') window.renderAdminVouchers();
+    }
+
+    window.renderAdminProducts = function() {
+        const list = document.getElementById('admin-product-list');
+        list.innerHTML = '';
+        products.forEach(p => {
+            list.innerHTML += `<div class="list-card"><b>${p.name}</b> (By: ${p.addedByName}) <br><button class="btn-danger" onclick="window.deleteProduct(${p.id})">Delete</button></div>`;
+        });
     }
 
     window.renderAdminOrders = function() {
         const list = document.getElementById('admin-order-list');
         list.innerHTML = '';
-        const reversed = [...orders].reverse();
-        if (reversed.length === 0) return list.innerHTML = "<p>No orders.</p>";
-
-        reversed.forEach((o) => {
-            let originalIndex = orders.findIndex(x => x.id === o.id); 
-            
-            let itemsHtml = o.items.map(item => {
-                let pVal = item.money || item.price || 0;
-                let cStrArr = [];
-                if (pVal > 0) cStrArr.push(`₱${window.formatNum(pVal * (item.qty||1))}`);
-                if (item.sheckles > 0) cStrArr.push(`¢${window.formatNum(item.sheckles * (item.qty||1))} Sheckles`);
-                let cStr = cStrArr.join(' + ') || 'Free';
-                if(o.isTradeOffer) cStr = 'Trade';
-                
-                return `<div style="font-size:13px; display:flex; justify-content:space-between;"><span>- ${item.name} <b style="color:var(--main-color)">x${item.qty || 1}</b></span> <span>${cStr}</span></div>`;
-            }).join('');
-
-            let paidArr = [];
-            paidArr.push(`₱${window.formatNum(o.totalPaid)}`);
-            let totalSheck = o.items.reduce((sum, i) => sum + (i.sheckles||0)*(i.qty||1), 0);
-            if (totalSheck > 0 && !o.isTradeOffer) paidArr.push(`¢${window.formatNum(totalSheck)} Sheckles`);
-            let paidText = o.isTradeOffer ? 'Trade' : paidArr.join(' + ');
-
-            let isSelectDisabled = (o.status === 'Cancelled' || o.status === 'Completed') ? 'disabled' : '';
-
-            list.innerHTML += `
-                <div class="list-card">
-                    <span style="font-size:12px; color:gray;">ID: ${o.id} | ${o.date}</span><br>
-                    <b>Buyer: ${o.buyerUsername}</b> (${o.buyerEmail})<br>
-                    <span style="font-size:13px;">Phone: <b>${o.buyerPhone}</b></span><br>
-                    <button class="btn-outline" style="padding:2px 5px; font-size:11px; width:auto; margin-top:5px;" onclick="window.openSendVoucherModal('${o.buyerEmail}')">Send Voucher</button>
-                    <hr>
-                    <b>Items:</b>
-                    ${itemsHtml}
-                    <hr>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <b style="color:var(--main-color); font-size:14px;">Paid: ${paidText}</b>
-                            ${o.balance > 0 ? `<br><b style="color:red; font-size:12px;">Balance: ₱${window.formatNum(o.balance)}</b>` : ''}
-                        </div>
-                        <div style="display:flex; flex-direction:column; gap:5px; align-items:flex-end;">
-                            <select id="status-${originalIndex}" style="padding:5px; margin:0;" ${isSelectDisabled}>
-                                <option value="Pending Payment" ${o.status === 'Pending Payment' ? 'selected' : ''}>Pending</option>
-                                <option value="To Ship" ${o.status === 'To Ship' ? 'selected' : ''}>To Ship</option>
-                                <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                                <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-                            </select>
-                            <button class="btn-main" style="margin:0; width:auto; padding:5px 10px;" onclick="window.updateOrderStatus(${originalIndex})" ${isSelectDisabled}>Update</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    window.updateOrderStatus = function(index) {
-        if (orders[index].status === "Cancelled" || orders[index].status === "Completed") {
-            alert("Cannot update an order that is already completed or cancelled.");
-            return;
-        }
-        
-        const newStatus = document.getElementById(`status-${index}`).value;
-        const oldStatus = orders[index].status;
-        
-        if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
-            if(!confirm("Changing to 'Cancelled' returns stock. Proceed?")) return;
-            orders[index].items.forEach(orderItem => {
-                let shopProduct = products.find(p => p.id === orderItem.id);
-                if (shopProduct) shopProduct.stocks += (orderItem.qty || 1);
-            });
-        }
-        orders[index].status = newStatus; window.saveDatabase(); 
-    }
-
-    window.renderAdminOffers = function() {
-        const list = document.getElementById('admin-offers-list');
-        list.innerHTML = '';
-        let pending = offers.filter(o => o.status === 'Pending');
-        if (pending.length === 0) return list.innerHTML = "<p>No pending offers.</p>";
-
-        pending.forEach(o => {
-            let p = products.find(x => x.id === o.productId);
-            let u = users[o.buyerEmail];
-            list.innerHTML += `
-                <div class="list-card">
-                    <span style="font-size:12px; color:gray;">${o.date}</span><br>
-                    <b>Buyer:</b> ${u ? u.username : o.buyerEmail} <br>
-                    <b>Item:</b> ${p ? p.name : 'Unknown'} (ID: ${o.productId})<br>
-                    <div style="margin:10px 0; padding:10px; background:#fdf2e9; border:1px solid #e67e22; border-radius:4px; white-space: pre-wrap;">
-                        <b>Offer Content:</b>\n${o.text}
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <button class="btn-verify" style="flex:1;" onclick="window.resolveOffer(${o.id}, true)">Agree</button>
-                        <button class="btn-danger" style="flex:1;" onclick="window.resolveOffer(${o.id}, false)">Disagree</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    window.resolveOffer = function(offerId, isAgree) {
-        let off = offers.find(x => x.id === offerId);
-        let p = products.find(x => x.id === off.productId);
-        if(!off || !p) return;
-        
-        if(isAgree) {
-            off.status = 'Accepted';
-            orders.push({
-                id: Date.now(), date: new Date().toLocaleString(),
-                buyerEmail: off.buyerEmail, buyerUsername: users[off.buyerEmail].username,
-                buyerPhone: users[off.buyerEmail].phone || "",
-                items: [{...p, qty: 1}], totalPaid: 0, balance: 0, status: "To Ship",
-                midman: false, isTradeOffer: true
-            });
-            p.stocks -= 1;
-            users[off.buyerEmail].inbox.push({ text: `Agreed: your offer for ${p.name} has been accepted by seller.`, date: new Date().toLocaleString() });
-            alert("Offer Accepted. Order created automatically.");
-        } else {
-            off.status = 'Declined';
-            users[off.buyerEmail].inbox.push({ text: `Disagree: your offer for ${p.name} has been declined by seller.`, date: new Date().toLocaleString() });
-            alert("Offer Declined.");
-        }
-        window.saveDatabase().then(() => window.renderAdminOffers());
-    }
-
-    window.renderAdminUsers = function() {
-        const list = document.getElementById('admin-user-list');
-        list.innerHTML = '';
-        for (const [email, data] of Object.entries(users)) {
-            if (email === ADMIN_EMAIL) continue; 
-            
-            let btnStr = '';
-            if (data.vipPending) btnStr += `<button class="btn-vip" style="margin-bottom:5px;" onclick="window.approveVIP('${email}')">Approve VIP</button><br>`;
-            
-            if (data.sellerRequested && !data.isVerifiedSeller) {
-                btnStr += `<button class="btn-verify" onclick="window.approveSellerRequest('${email}')">Approve Seller Request (Sends Code)</button>`;
-            } else if (data.isVerifiedSeller) {
-                btnStr += `<span class="badge badge-verify">Verified Seller</span> <span class="verified-icon">✓</span>`;
-            }
-
-            list.innerHTML += `
-                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <b>${data.username}</b> ${data.isVIP ? '<span class="badge badge-vip">VIP</span>' : ''}<br>
-                        <span style="font-size:12px; color:gray;">${email} | Ph: ${data.phone || 'N/A'}</span>
-                    </div>
-                    <div style="text-align:right;">${btnStr}</div>
-                </div>
-            `;
-        }
-    }
-
-    window.approveVIP = function(email) {
-        users[email].isVIP = true; users[email].vipPending = false; window.saveDatabase();
-        window.renderAdminUsers();
-    }
-
-    window.approveSellerRequest = function(email) {
-        let code = Math.floor(100000 + Math.random() * 900000).toString();
-        users[email].sellCode = code;
-        users[email].sellCodeExpiry = Date.now() + (5 * 60 * 1000); 
-        users[email].sellerRequested = false; 
-        
-        let msg = `Hello I'm Xdragon, I hear you want to sell an item? Please scan your IDs Xdrg Shop, delete that after 5 minutes!\n\nYour Verification code is: ${code}\n\n(Code expires in 5 minutes)`;
-        
-        users[email].inbox.push({ text: msg, date: new Date().toLocaleString() });
-        
-        window.saveDatabase().then(() => {
-            alert(`Code generated and sent to ${email}'s Messages!`);
-            window.renderAdminUsers();
+        orders.forEach(o => {
+            list.innerHTML += `<div class="list-card"><b>Order:</b> ${o.id} | <b>Buyer:</b> ${o.buyerEmail}<br><b>Total:</b> ₱${o.totalPaid} | <b>Status:</b> ${o.status}</div>`;
         });
     }
 
     window.renderAdminVouchers = function() {
         const list = document.getElementById('admin-voucher-list');
         list.innerHTML = '';
-        if(vouchers.length === 0) return list.innerHTML = "<p>No active vouchers.</p>";
-
         vouchers.forEach(v => {
-            list.innerHTML += `
-                <div class="list-card">
-                    <b>${v.code}</b> <span style="color:var(--main-color)">${v.discount}% OFF</span><br>
-                    <span style="font-size:12px; color:gray">Created by: ${v.createdBy} | Used by: ${v.usedBy ? v.usedBy.length : 0} users</span>
-                </div>
-            `;
+            list.innerHTML += `<div class="list-card"><b>Code:</b> ${v.code} (${v.discount}%)<br><b>Discord:</b> ${v.discord || 'None'}<br><b>Uses:</b> ${v.usedBy ? v.usedBy.length : 0}</div>`;
         });
     }
 
-    window.openSendVoucherModal = function(email) {
-        window.tempVoucherTarget = email;
-        const list = document.getElementById('send-voucher-list');
+    window.renderVouches = function() {
+        const list = document.getElementById('vouch-list');
         list.innerHTML = '';
-        if(vouchers.length === 0) {
-            list.innerHTML = "<p>No vouchers available. Create one first.</p>";
+        vouches.forEach(v => {
+            let imgHtml = v.image ? `<img src="${v.image}">` : `<div style="background:#eee; height:160px;"></div>`;
+            list.innerHTML += `<div class="vouch-card">${imgHtml}<div class="product-info"><b>Item:</b> ${v.item}<br><b>Buyer:</b> ${v.buyer}<br><i>"${v.caption}"</i></div></div>`;
+        });
+    }
+
+    window.openAddVouchModal = function() {
+        document.getElementById('add-vouch-modal').classList.remove('hidden');
+    }
+
+    window.saveVouch = function() {
+        let item = document.getElementById('vouch-item-name').value.trim();
+        let buyer = document.getElementById('vouch-buyer-name').value.trim();
+        let caption = document.getElementById('vouch-caption').value.trim();
+        let fileInput = document.getElementById('vouch-image');
+
+        if(!item || !buyer) return alert("Item and Buyer are required.");
+
+        let addV = (imgData) => {
+            vouches.push({ id: Date.now(), item, buyer, caption, image: imgData, addedBy: currentUser });
+            window.saveDatabase();
+            window.closeModal('add-vouch-modal');
+            window.renderVouches();
+            alert("Vouch submitted!");
+        };
+
+        if(fileInput && fileInput.files && fileInput.files[0]) {
+            let reader = new FileReader();
+            reader.onload = (e) => addV(e.target.result);
+            reader.readAsDataURL(fileInput.files[0]);
         } else {
-            vouchers.forEach(v => {
-                list.innerHTML += `
-                    <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
-                        <div><b>${v.code}</b> (${v.discount}% OFF)</div>
-                        <button class="btn-action" style="margin:0; width:auto;" onclick="window.sendVoucherToUser('${v.code}')">Send</button>
-                    </div>
-                `;
-            });
-        }
-        document.getElementById('send-voucher-modal').classList.remove('hidden');
-    }
-
-    window.sendVoucherToUser = function(code) {
-        if(!window.tempVoucherTarget || !users[window.tempVoucherTarget]) return;
-        let v = vouchers.find(x => x.code === code);
-        let msg = `Hello! Here is a special voucher code for you: ${code}\nEnjoy ${v.discount}% OFF on your next checkout!`;
-        users[window.tempVoucherTarget].inbox.push({ text: msg, date: new Date().toLocaleString() });
-        window.saveDatabase().then(() => {
-            alert("Voucher sent via Messages!");
-            window.closeModal('send-voucher-modal');
-        });
-    }
-
-    window.renderAdminChatList = function() {
-        const list = document.getElementById('admin-chat-user-list');
-        list.innerHTML = '';
-        for (const [email, data] of Object.entries(users)) {
-            if (email === ADMIN_EMAIL) continue;
-            let msgCount = data.inbox ? data.inbox.length : 0;
-            list.innerHTML += `
-                <div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; cursor:pointer;" onclick="window.openAdminChat('${email}')">
-                    <div><b>${data.username}</b><br><span style="font-size:12px; color:gray;">${email}</span></div>
-                    <div style="color:gray; font-size:12px;">${msgCount} msgs sent ></div>
-                </div>
-            `;
+            addV(null);
         }
     }
 
-    window.openAdminChat = function(email) {
-        chatTargetUser = email;
-        document.getElementById('chat-target-name').innerText = `Chatting with: ${users[email].username}`;
-        window.renderAdminChatHistory();
-        document.getElementById('admin-chat-modal').classList.remove('hidden');
+    window.openBotChat = function() { document.getElementById('bot-chat-modal').classList.remove('hidden'); window.renderBotChat(); }
+    
+    window.renderBotChat = function() {
+        if(!users[currentUser].botChat) users[currentUser].botChat = [];
+        const div = document.getElementById('bot-chat-history');
+        div.innerHTML = users[currentUser].botChat.map(m => `<div class="chat-msg chat-${m.sender}">${m.text}<span class="chat-date">${m.time}</span></div>`).join('');
+        div.scrollTop = div.scrollHeight;
     }
 
-    window.renderAdminChatHistory = function() {
-        if(!chatTargetUser || !users[chatTargetUser]) return;
-        let history = users[chatTargetUser].inbox || [];
-        const box = document.getElementById('chat-history');
-        box.innerHTML = '';
+    window.sendBotMessage = function() {
+        let input = document.getElementById('bot-chat-input');
+        let text = input.value.trim();
+        if(!text) return;
         
-        history.forEach(msg => {
-            box.innerHTML += `
-                <div class="chat-msg chat-admin" style="float:right; background:var(--main-color); color:white; border:none;">
-                    <span style="white-space: pre-wrap;">${msg.text}</span>
-                    <span class="chat-date" style="color:#ffd2cc;">${msg.date}</span>
-                </div>
-            `;
-        });
-        box.scrollTop = box.scrollHeight;
+        users[currentUser].botChat.push({ sender: 'user', text, time: new Date().toLocaleTimeString() });
+        users[currentUser].botChat.push({ sender: 'bot', text: "I'm XDRG AI! You said: " + text, time: new Date().toLocaleTimeString() });
+        
+        input.value = '';
+        window.saveDatabase();
+        window.renderBotChat();
     }
 
-    window.sendAdminMessage = function() {
-        let inputEl = document.getElementById('admin-chat-input');
-        let text = inputEl.value.trim();
-        if(!text || !chatTargetUser) return;
-
-        users[chatTargetUser].inbox.push({ text: text, date: new Date().toLocaleString() });
-        window.saveDatabase().then(() => {
-            inputEl.value = '';
-            window.renderAdminChatHistory();
+    window.renderBuyerMessages = function() {
+        const list = document.getElementById('buyer-inbox-list');
+        list.innerHTML = '';
+        let inbox = users[currentUser].inbox || [];
+        if(inbox.length === 0) return list.innerHTML = "<p>No messages yet.</p>";
+        inbox.forEach(m => {
+            list.innerHTML += `<div class="chat-msg chat-admin"><b>Admin:</b> ${m.text} <span class="chat-date">${m.time}</span></div>`;
         });
     }
-
-    window.closeModal = function(id) {
-        document.getElementById(id).classList.add('hidden');
-        if(id === 'admin-chat-modal') chatTargetUser = "";
-        if(id === 'send-voucher-modal') window.tempVoucherTarget = null;
-    }
-
 </script>
 </body>
 </html>
