@@ -1405,14 +1405,23 @@
             document.getElementById('buy-vip-btn').classList.add('hidden');
             document.getElementById('vip-discount-text').classList.remove('hidden');
             if(document.getElementById('vip-free-text')) document.getElementById('vip-free-text').classList.remove('hidden');
+            document.getElementById('vip-nav-btn').classList.remove('hidden');
         } else {
             document.getElementById('buy-vip-btn').classList.remove('hidden');
             document.getElementById('vip-discount-text').classList.add('hidden');
             if(document.getElementById('vip-free-text')) document.getElementById('vip-free-text').classList.add('hidden');
+            document.getElementById('vip-nav-btn').classList.add('hidden');
             if(u.vipPending) {
                 document.getElementById('buy-vip-btn').innerText = "VIP Requested (Pending)";
                 document.getElementById('buy-vip-btn').disabled = true;
             }
+        }
+
+        if(u.isVerifiedSeller) {
+            document.getElementById('seller-verification-section').classList.add('hidden');
+            document.getElementById('vip-nav-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('seller-verification-section').classList.remove('hidden');
         }
     }
 
@@ -1421,7 +1430,7 @@
         let msgCount = 0;
         if (currentUser && users[currentUser]) {
             cartCount = userCarts[currentUser] ? userCarts[currentUser].length : 0;
-            msgCount = users[currentUser].inbox ? users[currentUser].inbox.length : 0;
+            msgCount = users[currentUser].inbox ? users[currentUser].inbox.filter(m => !m.read).length : 0;
         }
 
         let cBadge = document.getElementById('cart-badge');
@@ -1566,593 +1575,398 @@
         
         let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
 
-        const detailDiv = document.getElementById('modal-product-details');
-        detailDiv.innerHTML = `
+        let detailHtml = `
             ${imgHtml}
-            <h3 style="margin: 10px 0 5px 0;">${p.name}</h3>
-            ${rarityHtml} ${flashBadge}
-            <br>
-            <span style="background:#eee; padding:3px 8px; border-radius:4px; font-size:12px; display:inline-block; margin:5px 0;">${p.category || 'Uncategorized'}</span>
-            ${timerHtml}
-            <h2 style="color:var(--main-color); margin: 10px 0 0 0;">${priceArr.join(' • ')}</h2>
-            ${tradeHtml}
-            
-            <div style="font-size:14px; background:#f9f9f9; padding:10px; border-radius:4px; margin-bottom:15px; margin-top:10px;">
-                <b>Seller:</b> ${p.addedByName} ${verifiedHtml} <br>
-                <b>Item ID:</b> ${p.id} <br>
-                <b>Stocks Left:</b> <span id="modal-stock-left">${p.stocks}</span>
+            <div style="padding: 10px 0;">
+                ${rarityHtml} ${flashBadge}
+                <h2 style="margin: 5px 0;">${p.name}</h2>
+                ${timerHtml}
+                <p style="font-size: 14px; color: gray; margin: 5px 0;">Category: ${p.category || 'N/A'}</p>
+                <p style="font-size: 14px; color: var(--main-color); margin: 5px 0;">Seller: ${p.addedByName} ${verifiedHtml}</p>
+                <p style="font-size: 14px; margin: 5px 0;">Stock: ${p.stocks}</p>
+                <h3 style="margin: 10px 0; color: var(--main-color);">${priceArr.length > 0 ? priceArr.join(' • ') : 'Trade Only'}</h3>
+                ${tradeHtml}
+                <p style="white-space: pre-wrap; font-size: 14px; margin-top: 10px;">${p.info || 'No description provided.'}</p>
             </div>
-            
-            <p style="font-size:14px; white-space: pre-wrap;">${p.info}</p>
-            
-            <div class="qty-control">
-                <button class="qty-btn" onclick="window.updateQty(-1)" ${btnDisabled}>-</button>
-                <span id="modal-qty-display" style="font-weight:bold; font-size:18px;">1</span>
-                <button class="qty-btn" onclick="window.updateQty(1)" ${btnDisabled}>+</button>
-            </div>
-            
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="btn-outline" style="flex:1;" onclick="window.addToCart(false)" ${btnDisabled}>Add to Cart</button>
-                <button class="btn-main" style="flex:1; margin:0;" onclick="window.addToCart(true)" ${btnDisabled}>Buy Now</button>
-            </div>
-            <button class="btn-verify" style="width:100%; margin-top:10px; background:#f39c12;" onclick="window.openOfferModal()" ${btnDisabled}>Make an Offer</button>
         `;
+
+        let actionHtml = '';
+        if (currentUser === p.addedByEmail) {
+            actionHtml = `<p style="color:red; text-align:center; font-weight:bold;">This is your product.</p>`;
+        } else {
+            actionHtml = `
+                <div class="qty-control">
+                    <button class="qty-btn" onclick="window.changeQty(-1, ${p.stocks})">-</button>
+                    <span id="modal-qty">1</span>
+                    <button class="qty-btn" onclick="window.changeQty(1, ${p.stocks})">+</button>
+                </div>
+                <button class="btn-main" ${btnDisabled} onclick="window.addToCart()">Add to Cart</button>
+                <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.openOfferModal()">Make Offer / Request Trade</button>
+            `;
+        }
+
+        document.getElementById('modal-product-details').innerHTML = detailHtml + actionHtml;
         document.getElementById('product-modal').classList.remove('hidden');
     }
 
-    window.updateQty = function(change) {
+    window.changeQty = function(change, max) {
+        let next = window.tempSelectedQty + change;
+        if(next >= 1 && next <= max) {
+            window.tempSelectedQty = next;
+            document.getElementById('modal-qty').innerText = next;
+        }
+    }
+
+    window.closeModal = function(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+
+    window.addToCart = function() {
+        if(!currentUser) { alert("Please login first!"); return window.toggleAuth(); }
         let p = products.find(prod => prod.id === window.currentViewProductId);
         if(!p) return;
-        let newQty = window.tempSelectedQty + change;
-        if (newQty < 1) newQty = 1;
-        if (newQty > p.stocks) newQty = p.stocks;
-        window.tempSelectedQty = newQty;
-        document.getElementById('modal-qty-display').innerText = window.tempSelectedQty;
+        
+        let existing = userCarts[currentUser].find(item => item.id === p.id);
+        if(existing) {
+            if (existing.qty + window.tempSelectedQty > p.stocks) return alert("Cannot add more than available stock!");
+            existing.qty += window.tempSelectedQty;
+        } else {
+            userCarts[currentUser].push({ id: p.id, qty: window.tempSelectedQty });
+        }
+        window.saveDatabase().then(() => {
+            window.updateBadges();
+            window.closeModal('product-modal');
+            alert("Added to cart successfully!");
+        });
     }
 
-    window.addToCart = function(buyNow) {
-        if (!currentUser) {
-            alert("Please Login or Register first to add items to your cart!");
-            window.closeModal('product-modal');
-            window.showBuyerTab('me');
+    window.renderCart = function() {
+        if(!currentUser || !userCarts[currentUser]) return;
+        let cList = document.getElementById('cart-list');
+        cList.innerHTML = '';
+        
+        let subtotal = 0;
+        let cartItems = userCarts[currentUser];
+        let hasMoneyItems = false;
+        let hasSellersMap = {};
+
+        if(cartItems.length === 0) {
+            cList.innerHTML = '<p>Your cart is empty.</p>';
+            document.getElementById('cart-checkout-card').classList.add('hidden');
             return;
         }
+        document.getElementById('cart-checkout-card').classList.remove('hidden');
 
-        let pIndex = products.findIndex(p => p.id === window.currentViewProductId);
-        if (pIndex > -1 && products[pIndex].stocks >= window.tempSelectedQty) {
-            let existingItem = userCarts[currentUser].find(i => i.id === window.currentViewProductId);
-            if (existingItem) {
-                existingItem.qty = (existingItem.qty || 1) + window.tempSelectedQty;
-            } else {
-                userCarts[currentUser].push({...products[pIndex], qty: window.tempSelectedQty}); 
+        cartItems.forEach((item, index) => {
+            let p = products.find(prod => prod.id === item.id);
+            if(!p) return;
+
+            hasSellersMap[p.addedByEmail] = true;
+            let itemPrice = p.money || p.price || 0;
+            let pVal = itemPrice;
+            
+            if (p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now())) {
+                pVal = itemPrice * (1 - (p.flashPct / 100));
             }
-            products[pIndex].stocks -= window.tempSelectedQty; 
-            window.saveDatabase(); 
-            window.closeModal('product-modal');
+            
+            if (pVal > 0) hasMoneyItems = true;
+            
+            let itemTotal = pVal * item.qty;
+            subtotal += itemTotal;
+
+            let priceStr = pVal > 0 ? `₱${window.formatNum(pVal)}` : (p.sheckles ? `¢${window.formatNum(p.sheckles)}` : 'Trade Only');
+
+            cList.innerHTML += `
+                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b style="font-size:14px;">${p.name}</b><br>
+                        <span style="font-size:12px; color:gray;">x${item.qty} @ ${priceStr}</span>
+                    </div>
+                    <button class="btn-danger" style="padding:5px;" onclick="window.removeFromCart(${index})">Remove</button>
+                </div>
+            `;
+        });
+
+        tempCheckoutTotal = subtotal;
+
+        let totalHtml = `Subtotal: ₱${window.formatNum(subtotal)}`;
+
+        let u = users[currentUser];
+        let useMidman = document.getElementById('midman-check').checked;
+        let isVip = u && u.isVIP;
+        
+        if (useMidman && !isVip && hasMoneyItems) {
+            tempCheckoutTotal += 5;
+            totalHtml += `<br>Midman Fee: ₱5.0`;
+        }
+
+        if (window.appliedVoucher && hasMoneyItems) {
+            let disc = tempCheckoutTotal * (window.appliedVoucher.discount / 100);
+            tempCheckoutTotal -= disc;
+            totalHtml += `<br><span style="color:green;">Voucher (${window.appliedVoucher.discount}% OFF): -₱${window.formatNum(disc)}</span>`;
+        } else if (u.registeredAt && (Date.now() - u.registeredAt < 12*60*60*1000) && hasMoneyItems) {
+            let disc = tempCheckoutTotal * 0.10;
+            tempCheckoutTotal -= disc;
+            totalHtml += `<br><span style="color:green;">New User (10% OFF): -₱${window.formatNum(disc)}</span>`;
+        } else if (isVip && hasMoneyItems) {
+            let disc = tempCheckoutTotal * 0.15;
+            tempCheckoutTotal -= disc;
+            totalHtml += `<br><span style="color:var(--vip-color);">VIP Discount (15% OFF): -₱${window.formatNum(disc)}</span>`;
+        }
+
+        let isDownpayment = document.getElementById('downpayment-check').checked;
+        tempBalance = 0;
+        if(isDownpayment && tempCheckoutTotal > 0) {
+            tempBalance = tempCheckoutTotal / 2;
+            tempCheckoutTotal = tempCheckoutTotal / 2;
+            totalHtml += `<br><span style="color:var(--main-color);">50% Downpayment: ₱${window.formatNum(tempCheckoutTotal)}</span>`;
+        }
+
+        totalHtml += `<br><b style="font-size:18px; color:var(--main-color);">Total: ₱${window.formatNum(tempCheckoutTotal)}</b>`;
+        document.getElementById('cart-total').innerHTML = totalHtml;
+    }
+
+    window.removeFromCart = function(idx) {
+        userCarts[currentUser].splice(idx, 1);
+        window.saveDatabase().then(() => {
             window.updateBadges();
-            if (buyNow) window.showBuyerTab('cart');
-            else alert("Added to cart!");
-        }
-    }
-
-    window.openOfferModal = function() {
-        if (!currentUser) {
-            alert("Please Login or Register to make an offer!");
-            return window.showBuyerTab('me');
-        }
-        document.getElementById('product-modal').classList.add('hidden');
-        document.getElementById('offer-items-container').innerHTML = '';
-        document.getElementById('offer-text-input').value = '';
-        window.addOfferItemInput();
-        document.getElementById('offer-modal').classList.remove('hidden');
-    }
-
-    window.submitOffer = function() {
-        let itemNames = document.querySelectorAll('.offer-item-name');
-        let itemQtys = document.querySelectorAll('.offer-item-qty');
-        let lines = [];
-        
-        for(let i = 0; i < itemNames.length; i++) {
-            let name = itemNames[i].value.trim();
-            let qty = itemQtys[i].value.trim();
-            if(name) {
-                lines.push(`${name} ${qty}`);
-            }
-        }
-        
-        let note = document.getElementById('offer-text-input').value.trim();
-        if(note) {
-            lines.push(`More/add: ${note}`);
-        }
-        
-        if(lines.length === 0) return alert("Please enter at least one item or note for your offer!");
-        
-        let fullOfferText = lines.join('\n');
-        let p = products.find(x => x.id === window.currentViewProductId);
-        if(p) {
-            offers.push({ id: Date.now(), productId: p.id, buyerEmail: currentUser, text: fullOfferText, status: 'Pending', date: new Date().toLocaleString() });
-            window.saveDatabase().then(() => {
-                alert("Offer submitted to the seller!");
-                window.closeModal('offer-modal');
-            });
-        }
+            window.renderCart();
+        });
     }
 
     window.applyVoucher = function() {
         let code = document.getElementById('voucher-input-code').value.trim();
-        if(!code) return;
-        
+        if(!code) return alert("Enter voucher code");
+
         let v = vouchers.find(x => x.code === code);
-        if (!v) return alert("Invalid Voucher Code.");
-        if (v.usedBy && v.usedBy.includes(currentUser)) return alert("You have already used this voucher.");
-        
+        if(!v) return alert("Invalid Voucher");
+
+        if (v.expiry && Date.now() > v.expiry) return alert("Voucher expired!");
+
         window.appliedVoucher = v;
-        alert(`Voucher ${v.code} Applied! (${v.discount}% OFF)`);
+        alert(`Voucher ${v.discount}% applied!`);
         window.renderCart();
-    }
-
-    window.renderCart = function() {
-        const list = document.getElementById('cart-list');
-        list.innerHTML = '';
-        
-        if (!currentUser) {
-            list.innerHTML = "<div class='list-card'><p style='text-align:center;'>Please login to view your cart.</p><button class='btn-main' onclick='window.showBuyerTab(\"me\")'>Login</button></div>";
-            document.getElementById('cart-checkout-card').classList.add('hidden');
-            return;
-        } else {
-            document.getElementById('cart-checkout-card').classList.remove('hidden');
-        }
-
-        let subtotal = 0;
-        let cart = userCarts[currentUser] || [];
-        let u = users[currentUser] || {};
-
-        if (cart.length === 0) {
-            list.innerHTML = "<div class='list-card'><p>Your shopping cart is empty.</p></div>";
-            document.getElementById('cart-total').innerText = `Total: ₱0`;
-            document.getElementById('cart-checkout-card').classList.add('hidden');
-            return;
-        }
-
-        cart.forEach((item, index) => {
-            let q = item.qty || 1;
-            let pObj = products.find(x => x.id === item.id) || item;
-            
-            let pVal = pObj.money || pObj.price || 0;
-            let isFlashActive = pObj.flashPct && pObj.flashEndTime && (pObj.flashEndTime > Date.now());
-            let origStr = '';
-            if (isFlashActive) {
-                pVal = pVal * (1 - (pObj.flashPct / 100));
-                origStr = `<span class="flash-badge" style="margin-left:5px;">⚡ ${pObj.flashPct}% OFF</span>`;
-            }
-
-            subtotal += (pVal * q);
-            let imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; object-fit:cover; margin-right:10px; border-radius:4px;">` : ``;
-            let rarityHtml = item.rarity ? `<span class="rarity-badge rarity-${item.rarity.toLowerCase().replace(/ /g, '-px')}" style="margin-left:5px;">${item.rarity}</span>` : '';
-            
-            let extraCostHtml = '';
-            if(item.sheckles) extraCostHtml += ` ¢${window.formatNum(item.sheckles * q)} Sheckles`;
-            
-            list.innerHTML += `
-                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center; padding:10px;">
-                    <div style="display:flex; align-items:center;">
-                        ${imgHtml}
-                        <div>
-                            <div style="font-size:14px; font-weight:bold;">${item.name} ${rarityHtml} ${origStr}</div>
-                            <div style="color:var(--main-color); font-size:14px;">₱${window.formatNum(pVal)} <span style="color:gray;">x${q}</span> ${extraCostHtml}</div>
-                        </div>
-                    </div>
-                    <button class="btn-danger" style="margin:0;" onclick="window.removeFromCart(${index}, ${item.id})">Del</button>
-                </div>
-            `;
-        });
-
-        let isMidmanChecked = document.getElementById('midman-check').checked;
-        let isDownpayment = document.getElementById('downpayment-check').checked;
-        let isVIP = u.isVIP;
-        let finalTotal = subtotal;
-        let detailsHtml = `Subtotal: ₱${window.formatNum(subtotal)}`;
-
-        if (window.appliedVoucher) {
-            let disc = window.appliedVoucher.discount;
-            finalTotal = finalTotal * ((100 - disc) / 100);
-            detailsHtml += ` <br><span style="color:#e67e22; font-size:12px;">- ${disc}% Voucher (${window.appliedVoucher.code})</span>`;
-        }
-
-        if (isVIP) { finalTotal = finalTotal * 0.85; detailsHtml += ` <br><span style="color:green; font-size:12px;">- 15% VIP Discount</span>`; }
-        if (u.registeredAt && (Date.now() - u.registeredAt < (12 * 60 * 60 * 1000))) {
-            finalTotal = finalTotal * 0.90; detailsHtml += ` <br><span style="color:#f39c12; font-size:12px;">- 10% New User Voucher</span>`;
-        }
-        if (isMidmanChecked && !isVIP) { finalTotal += 5; detailsHtml += ` <br><span style="color:gray; font-size:12px;">+ ₱5 Middleman Service</span>`; } 
-        else if (isMidmanChecked && isVIP) { detailsHtml += ` <br><span style="color:var(--vip-color); font-size:12px;">+ Middleman Service (Free)</span>`; }
-
-        if (isDownpayment) {
-            let half = finalTotal / 2;
-            tempCheckoutTotal = Math.round(half * 100) / 100;
-            tempBalance = Math.round(half * 100) / 100;
-            detailsHtml += ` <br><span style="color:var(--main-color); font-size:12px; font-weight:bold;">50% Downpayment Applied</span>`;
-        } else {
-            tempCheckoutTotal = Math.round(finalTotal * 100) / 100; 
-            tempBalance = 0;
-        }
-
-        let totalSheckles = cart.reduce((sum, i) => sum + (i.sheckles || 0) * (i.qty || 1), 0);
-        let sheckText = totalSheckles > 0 ? ` + ¢${window.formatNum(totalSheckles)} Sheckles` : '';
-
-        document.getElementById('cart-total').innerHTML = `${detailsHtml} <br> <span style="font-size:20px; color:var(--main-color);">Pay Now: ₱${window.formatNum(tempCheckoutTotal)}${sheckText}</span>`;
-    }
-
-    window.removeFromCart = function(index, productId) {
-        let removedItem = userCarts[currentUser].splice(index, 1)[0];
-        let pIndex = products.findIndex(p => p.id === productId);
-        if (pIndex > -1) products[pIndex].stocks += (removedItem.qty || 1); 
-        window.saveDatabase(); 
-        window.renderCart();
-        window.updateBadges();
     }
 
     window.openCheckoutModal = function() {
-        if (!userCarts[currentUser] || userCarts[currentUser].length === 0) return alert("Cart is empty!");
-        let myInfo = users[currentUser] || {};
-        if (!myInfo.phone) if(!confirm("Your Phone is missing in Profile. Checkout anyway?")) return window.showBuyerTab('me');
-        
-        let sellers = [...new Set(userCarts[currentUser].map(item => {
-            let origProd = products.find(p => p.id === item.id) || item;
-            return origProd.addedByEmail;
-        }))];
-        
-        let mayaHtml = "";
-        sellers.forEach(sEmail => {
-            let sUser = users[sEmail];
-            let mName = sUser?.mayaName || (sEmail === ADMIN_EMAIL ? "ANDREA CASTRENCE" : "Not Set");
-            let mNum = sUser?.mayaNumber || (sEmail === ADMIN_EMAIL ? "639519500345" : "Not Set");
-            mayaHtml += `
-            <div style="background:#f9f9f9; padding:10px; border-radius:5px; margin-bottom:10px; border: 1px solid #ddd;">
-                <p style="margin:0 0 5px 0;"><b>Payment to Seller: ${sUser?.username || sEmail}</b></p>
-                <p style="margin:0;">Method: <b>Maya</b></p>
-                <p style="margin:0;">Name: <b>${mName}</b></p>
-                <p style="margin:0;">Number: <b>${mNum}</b></p>
-            </div>`;
-        });
-        document.getElementById('checkout-maya-info').innerHTML = mayaHtml;
+        let u = users[currentUser];
+        if(!u.phone) return alert("Please setup your Phone Number in your Profile first.");
 
-        document.getElementById('checkout-final-amount').innerText = `₱${window.formatNum(tempCheckoutTotal)}`;
-        let balInfo = document.getElementById('checkout-balance-info');
-        
-        if (tempBalance > 0) {
-            balInfo.innerText = `Remaining Balance: ₱${window.formatNum(tempBalance)} (Must be paid in 3-7 days based on Seller terms)`;
-            balInfo.classList.remove('hidden');
-        } else {
-            balInfo.classList.add('hidden');
+        let hasSellersMap = {};
+        userCarts[currentUser].forEach(item => {
+            let p = products.find(prod => prod.id === item.id);
+            if(p) hasSellersMap[p.addedByEmail] = true;
+        });
+
+        let mayaHtml = '';
+        for(let sellerEmail in hasSellersMap) {
+            let su = users[sellerEmail];
+            if(su && su.mayaNumber) {
+                mayaHtml += `
+                    <div style="background:#f0f8ff; padding:10px; border:1px solid #b0c4de; margin-bottom:10px; border-radius:4px;">
+                        <b style="color:#2c3e50;">Payment Info for ${su.username}:</b><br>
+                        Maya Name: <b>${su.mayaName || 'N/A'}</b><br>
+                        Maya Number: <b>${su.mayaNumber}</b>
+                    </div>
+                `;
+            }
         }
+
+        if(mayaHtml === '') {
+            mayaHtml = '<p style="color:gray;">Selected sellers have not provided Maya details. (Trade-only or manual arrangement)</p>';
+        }
+
+        document.getElementById('checkout-maya-info').innerHTML = mayaHtml;
+        document.getElementById('checkout-final-amount').innerText = `₱${window.formatNum(tempCheckoutTotal)}`;
         
+        let balEl = document.getElementById('checkout-balance-info');
+        if(tempBalance > 0) {
+            balEl.innerText = `Remaining Balance to pay later: ₱${window.formatNum(tempBalance)}`;
+            balEl.classList.remove('hidden');
+        } else {
+            balEl.classList.add('hidden');
+        }
+
         document.getElementById('checkout-modal').classList.remove('hidden');
     }
 
     window.confirmCheckout = function() {
-        if (window.appliedVoucher) {
-            let vIndex = vouchers.findIndex(x => x.code === window.appliedVoucher.code);
-            if(vIndex > -1) {
-                if(!vouchers[vIndex].usedBy) vouchers[vIndex].usedBy = [];
-                vouchers[vIndex].usedBy.push(currentUser);
-            }
-        }
+        if(userCarts[currentUser].length === 0) return;
 
-        let actualItems = userCarts[currentUser].map(item => {
-            let pObj = products.find(x => x.id === item.id) || item;
-            let finalMoney = pObj.money || pObj.price || 0;
-            if (pObj.flashPct && pObj.flashEndTime && (pObj.flashEndTime > Date.now())) {
-                finalMoney = finalMoney * (1 - (pObj.flashPct / 100));
-            }
-            return {...item, money: finalMoney, price: finalMoney};
+        let outOfStock = false;
+        let cartToProcess = userCarts[currentUser].map(item => {
+            let p = products.find(prod => prod.id === item.id);
+            if(p.stocks < item.qty) outOfStock = true;
+            return { id: item.id, name: p.name, qty: item.qty, price: p.price, money: p.money, sheckles: p.sheckles, sellerEmail: p.addedByEmail };
         });
 
-        orders.push({
-            id: Date.now(), date: new Date().toLocaleString(),
-            buyerEmail: currentUser, buyerUsername: users[currentUser].username,
-            buyerPhone: users[currentUser].phone || "Not provided",
-            items: actualItems, 
+        if(outOfStock) return alert("Some items in your cart do not have enough stock. Please adjust.");
+
+        let u = users[currentUser];
+        let midman = document.getElementById('midman-check').checked;
+        let dp = document.getElementById('downpayment-check').checked;
+
+        let order = {
+            id: Date.now(),
+            buyerEmail: currentUser,
+            buyerUsername: u.username,
+            buyerPhone: u.phone,
+            items: cartToProcess,
             totalPaid: tempCheckoutTotal,
             balance: tempBalance,
-            midman: document.getElementById('midman-check').checked, 
-            status: "Pending Payment",
-            isTradeOffer: false
+            midmanRequested: midman,
+            isDownpayment: dp,
+            status: 'Pending',
+            date: new Date().toLocaleString()
+        };
+
+        orders.unshift(order);
+
+        // Deduct Stocks & Notify Sellers
+        cartToProcess.forEach(item => {
+            let p = products.find(prod => prod.id === item.id);
+            if(p) p.stocks -= item.qty;
+
+            // Notify Seller
+            let sellerMsg = {
+                id: Date.now() + Math.random(),
+                sender: 'SYSTEM',
+                text: `You have a new order from ${u.username}! Order ID: ${order.id}. Item: ${item.name} x${item.qty}. Please check your Seller Dashboard.`,
+                date: new Date().toLocaleString(),
+                read: false
+            };
+            if(users[item.sellerEmail] && users[item.sellerEmail].inbox) {
+                users[item.sellerEmail].inbox.push(sellerMsg);
+            }
         });
-        
-        userCarts[currentUser] = []; 
-        document.getElementById('midman-check').checked = false;
-        document.getElementById('downpayment-check').checked = false;
+
+        userCarts[currentUser] = [];
         window.appliedVoucher = null;
-        document.getElementById('voucher-input-code').value = '';
-        
-        window.saveDatabase(); 
-        window.closeModal('checkout-modal');
-        window.showBuyerTab('me');
-        window.showMeSubTab('orders');
+
+        window.saveDatabase().then(() => {
+            window.closeModal('checkout-modal');
+            alert("Order placed successfully! Please check 'My Orders' in Me tab.");
+            window.showBuyerTab('me');
+            window.showMeSubTab('orders');
+        });
+    }
+
+    window.openOfferModal = function() {
+        if(!currentUser) { alert("Please login first!"); return window.toggleAuth(); }
+        let p = products.find(prod => prod.id === window.currentViewProductId);
+        if(!p) return;
+        document.getElementById('offer-items-container').innerHTML = '';
+        document.getElementById('offer-text-input').value = '';
+        window.addOfferItemInput();
+        window.closeModal('product-modal');
+        document.getElementById('offer-modal').classList.remove('hidden');
+    }
+
+    window.submitOffer = function() {
+        let p = products.find(prod => prod.id === window.currentViewProductId);
+        if(!p) return;
+
+        let offerItems = [];
+        document.querySelectorAll('#offer-items-container > div').forEach(div => {
+            let name = div.querySelector('.offer-item-name').value.trim();
+            let qty = div.querySelector('.offer-item-qty').value.trim();
+            if(name) offerItems.push(`${name} (${qty || '1x'})`);
+        });
+
+        let notes = document.getElementById('offer-text-input').value.trim();
+        if(offerItems.length === 0 && !notes) return alert("Please add at least one item or note for your offer.");
+
+        let offer = {
+            id: Date.now(),
+            targetProductId: p.id,
+            targetProductName: p.name,
+            sellerEmail: p.addedByEmail,
+            buyerEmail: currentUser,
+            buyerUsername: users[currentUser].username,
+            offerItems: offerItems,
+            notes: notes,
+            status: 'Pending',
+            date: new Date().toLocaleString()
+        };
+
+        offers.unshift(offer);
+
+        let sellerMsg = {
+            id: Date.now() + Math.random(),
+            sender: 'SYSTEM',
+            text: `New trade offer received from ${users[currentUser].username} for ${p.name}.`,
+            date: new Date().toLocaleString(),
+            read: false
+        };
+        if(users[p.addedByEmail] && users[p.addedByEmail].inbox) {
+            users[p.addedByEmail].inbox.push(sellerMsg);
+        }
+
+        window.saveDatabase().then(() => {
+            window.closeModal('offer-modal');
+            alert("Offer sent to seller!");
+        });
     }
 
     window.loadProfile = function() {
-        if (!currentUser) return;
-        let u = users[currentUser] || {};
-        document.getElementById('profile-username').value = u.username || "";
-        document.getElementById('profile-phone').value = u.phone || "";
-        document.getElementById('profile-maya-name').value = u.mayaName || "";
-        document.getElementById('profile-maya-number').value = u.mayaNumber || "";
-        
-        if (u.isVerifiedSeller) {
-            document.getElementById('vip-nav-btn').classList.remove('hidden');
-            document.getElementById('seller-verification-section').innerHTML = '<h3 style="color:var(--verify-color);">Verification Status</h3><p>You are a verified seller.</p>';
-        } else {
-            document.getElementById('vip-nav-btn').classList.add('hidden');
-            if (u.sellerRequested) {
-                document.getElementById('btn-request-seller').innerText = "Request Sent (Pending Admin Approval)";
-                document.getElementById('btn-request-seller').disabled = true;
-            } else if (u.sellCode && Date.now() > u.sellCodeExpiry) {
-                document.getElementById('btn-request-seller').innerText = "Code Expired! Request Again";
-                document.getElementById('btn-request-seller').disabled = false;
-            } else {
-                document.getElementById('btn-request-seller').innerText = "1. Request Verification";
-                document.getElementById('btn-request-seller').disabled = false;
-            }
-        }
+        let u = users[currentUser];
+        if(!u) return;
+        document.getElementById('profile-username').value = u.username || '';
+        document.getElementById('profile-phone').value = u.phone || '';
+        document.getElementById('profile-maya-name').value = u.mayaName || '';
+        document.getElementById('profile-maya-number').value = u.mayaNumber || '';
     }
 
     window.saveProfile = function() {
-        let newName = document.getElementById('profile-username').value.trim();
-        let newPhone = document.getElementById('profile-phone').value.trim();
-        let newMName = document.getElementById('profile-maya-name').value.trim();
-        let newMNum = document.getElementById('profile-maya-number').value.trim();
+        let u = users[currentUser];
+        u.username = document.getElementById('profile-username').value.trim();
+        u.phone = document.getElementById('profile-phone').value.trim();
+        u.mayaName = document.getElementById('profile-maya-name').value.trim();
+        u.mayaNumber = document.getElementById('profile-maya-number').value.trim();
         
-        if(!newName) return alert("Username cannot be empty.");
-        users[currentUser].username = newName; 
-        users[currentUser].phone = newPhone;
-        users[currentUser].mayaName = newMName;
-        users[currentUser].mayaNumber = newMNum;
-        
-        window.saveDatabase();
-        alert("Profile saved!");
-        window.updateUserNavDisplay();
+        window.saveDatabase().then(() => {
+            alert("Profile saved!");
+            window.updateUserNavDisplay();
+        });
     }
-    
+
     window.requestSellerStatus = function() {
         if(!currentUser) return;
-        users[currentUser].sellerRequested = true;
-        window.saveDatabase();
-        alert("Verification requested! Admin will review your request.");
-        window.loadProfile();
+        let u = users[currentUser];
+        u.sellerRequested = true;
+        
+        let reqMsg = {
+            id: Date.now(),
+            sender: 'SYSTEM',
+            text: `${u.username} (${currentUser}) has requested Verified Seller status.`,
+            date: new Date().toLocaleString(),
+            read: false
+        };
+        users[ADMIN_EMAIL].inbox.push(reqMsg);
+
+        window.saveDatabase().then(() => {
+            alert("Verification requested! Admin will send a code to your Messages.");
+        });
     }
 
     window.verifySellerCode = function() {
         let code = document.getElementById('verify-code-input').value.trim();
+        if(!code) return alert("Enter code");
         let u = users[currentUser];
-        if(!u.sellCode) return alert("No active verification code requested.");
-        if(Date.now() > u.sellCodeExpiry) return alert("Code has expired. Request again.");
-        if(code === u.sellCode) {
+        if(u.sellCode && u.sellCode === code) {
+            if(u.sellCodeExpiry && Date.now() > u.sellCodeExpiry) {
+                return alert("Code expired! Request a new one.");
+            }
             u.isVerifiedSeller = true;
-            delete u.sellCode;
-            delete u.sellCodeExpiry;
-            delete u.sellerRequested;
-            window.saveDatabase();
-            alert("Congratulations! You are now a verified Seller!");
-            window.loadProfile();
-            window.updateUserNavDisplay();
-        } else {
-            alert("Invalid verification code!");
-        }
-    }
-
-    window.renderBuyerOrders = function() {
-        let container = document.getElementById('buyer-order-list');
-        container.innerHTML = '';
-        let myOrders = orders.filter(o => o.buyerEmail === currentUser);
-
-        if(myOrders.length === 0) return container.innerHTML = '<p>No purchases found.</p>';
-
-        myOrders.forEach(ord => {
-            let itemsHtml = ord.items.map(i => `- ${i.name} x${i.qty || 1} (₱${window.formatNum(i.money || i.price || 0)})`).join('<br>');
-            container.innerHTML += `
-                <div class="list-card">
-                    <b>Order ID:</b> ${ord.id} <br>
-                    <b>Date:</b> ${ord.date} <br>
-                    <b>Items:</b><br>${itemsHtml} <br>
-                    <b>Paid:</b> ₱${window.formatNum(ord.totalPaid)} <br>
-                    <b>Status:</b> <span style="color:var(--main-color); font-weight:bold;">${ord.status}</span>
-                </div>
-            `;
-        });
-    }
-
-    window.renderVipProducts = function() {
-        let container = document.getElementById('vip-my-products-list');
-        container.innerHTML = '';
-        let myProds = products.filter(p => p.addedByEmail === currentUser);
-
-        if(myProds.length === 0) return container.innerHTML = '<p style="color:gray;">No published products.</p>';
-
-        myProds.forEach(p => {
-            container.innerHTML += `
-                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <b>${p.name}</b> (ID: ${p.id}) <br>
-                        Stock: ${p.stocks} | ₱${window.formatNum(p.money || p.price || 0)}
-                    </div>
-                    <div>
-                        <button class="btn-action" onclick="window.openEditProductModal(${p.id})">Edit</button>
-                        <button class="btn-danger" onclick="window.deleteProduct(${p.id})">Delete</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    window.processImageAndAddProduct = function(role) {
-        let name = document.getElementById(`${role}-prod-name`).value.trim();
-        let cat = document.getElementById(`${role}-prod-category`).value;
-        let rarity = document.getElementById(`${role}-prod-rarity`).value;
-        let timer = document.getElementById(`${role}-prod-timer`).value;
-        let money = parseFloat(document.getElementById(`${role}-prod-money`).value) || 0;
-        let sheckles = parseFloat(document.getElementById(`${role}-prod-sheckles`).value) || 0;
-        let info = document.getElementById(`${role}-prod-info`).value.trim();
-        let stocks = parseInt(document.getElementById(`${role}-prod-stocks`).value) || 0;
-        let flashPct = parseInt(document.getElementById(`${role}-flash-pct`).value) || 0;
-        let flashTimer = document.getElementById(`${role}-flash-timer`).value;
-
-        if(!name || stocks <= 0) return alert("Please fill out Product Name and Stocks!");
-
-        let tradeInputs = document.querySelectorAll(`.${role}-trade-input`);
-        let trade = [];
-        tradeInputs.forEach(inp => {
-            if(inp.value.trim()) trade.push(inp.value.trim());
-        });
-
-        let fileInput = document.getElementById(`${role}-prod-image`);
-        let file = fileInput.files[0];
-
-        let finalizeAdd = (imgBase64) => {
-            let pObj = {
-                id: Math.floor(1000 + Math.random() * 9000),
-                name, category: cat, rarity, info, stocks,
-                money, price: money, sheckles, trade,
-                image: imgBase64 || '',
-                addedByEmail: currentUser,
-                addedByName: users[currentUser].username,
-                limitedTime: timer ? new Date(timer).getTime() : null,
-                flashPct: flashPct > 0 ? flashPct : null,
-                flashEndTime: flashTimer ? new Date(flashTimer).getTime() : null
-            };
-            products.push(pObj);
+            u.sellCode = null;
+            u.sellCodeExpiry = null;
             window.saveDatabase().then(() => {
-                alert("Product published successfully!");
-                if(role === 'vip') window.renderVipProducts();
-                else window.renderAdminProducts();
-                window.searchProducts();
+                alert("You are now a Verified Seller!");
+                window.updateUserNavDisplay();
             });
-        };
-
-        if (file) {
-            let reader = new FileReader();
-            reader.onloadend = function() { finalizeAdd(reader.result); };
-            reader.readAsDataURL(file);
         } else {
-            finalizeAdd('');
+            alert("Invalid code.");
         }
-    }
-
-    window.deleteProduct = function(id) {
-        if(!confirm("Are you sure you want to delete this product?")) return;
-        products = products.filter(p => p.id !== id);
-        window.saveDatabase().then(() => {
-            if(isAdminView) window.renderAdminProducts();
-            else window.renderVipProducts();
-            window.searchProducts();
-        });
-    }
-
-    window.openEditProductModal = function(id) {
-        let p = products.find(x => x.id === id);
-        if(!p) return;
-
-        document.getElementById('edit-prod-id').value = p.id;
-        document.getElementById('edit-prod-name').value = p.name;
-        document.getElementById('edit-prod-category').value = p.category || 'Grow A Garden';
-        document.getElementById('edit-prod-rarity').value = p.rarity || '';
-        document.getElementById('edit-prod-money').value = p.money || p.price || '';
-        document.getElementById('edit-prod-sheckles').value = p.sheckles || '';
-        document.getElementById('edit-prod-info').value = p.info || '';
-        document.getElementById('edit-prod-stocks').value = p.stocks || 0;
-
-        document.getElementById('edit-product-modal').classList.remove('hidden');
-    }
-
-    window.saveEditedProduct = function() {
-        let id = parseInt(document.getElementById('edit-prod-id').value);
-        let p = products.find(x => x.id === id);
-        if(!p) return;
-
-        p.name = document.getElementById('edit-prod-name').value.trim();
-        p.category = document.getElementById('edit-prod-category').value;
-        p.rarity = document.getElementById('edit-prod-rarity').value;
-        p.money = parseFloat(document.getElementById('edit-prod-money').value) || 0;
-        p.price = p.money;
-        p.sheckles = parseFloat(document.getElementById('edit-prod-sheckles').value) || 0;
-        p.info = document.getElementById('edit-prod-info').value.trim();
-        p.stocks = parseInt(document.getElementById('edit-prod-stocks').value) || 0;
-
-        window.saveDatabase().then(() => {
-            alert("Product updated!");
-            window.closeModal('edit-product-modal');
-            if(isAdminView) window.renderAdminProducts();
-            else window.renderVipProducts();
-            window.searchProducts();
-        });
-    }
-
-    window.createVoucher = function(role) {
-        let code = document.getElementById(`${role}-voucher-name`).value.trim();
-        let pct = parseInt(document.getElementById(`${role}-voucher-pct`).value);
-
-        if(!code || !pct) return alert("Please fill code and percentage!");
-        if(vouchers.some(v => v.code === code)) return alert("Voucher code already exists!");
-
-        vouchers.push({ code, discount: pct, createdBy: currentUser, usedBy: [] });
-        window.saveDatabase().then(() => {
-            alert(`Voucher ${code} created (${pct}% OFF)!`);
-            document.getElementById(`${role}-voucher-name`).value = '';
-            document.getElementById(`${role}-voucher-pct`).value = '';
-            if(role === 'admin') window.renderAdminVouchers();
-        });
-    }
-
-    window.renderVouches = function() {
-        let container = document.getElementById('vouch-list');
-        container.innerHTML = '';
-        if(vouches.length === 0) return container.innerHTML = '<p style="grid-column:span 2; text-align:center;">No vouches submitted yet.</p>';
-
-        vouches.forEach(v => {
-            let imgHtml = v.image ? `<img src="${v.image}" style="width:100%; height:160px; object-fit:cover;">` : '';
-            container.innerHTML += `
-                <div class="vouch-card">
-                    ${imgHtml}
-                    <div style="padding:10px;">
-                        <b>Item:</b> ${v.itemName} <br>
-                        <b>Buyer:</b> ${v.buyerName} <br>
-                        <p style="font-size:12px; margin:5px 0;">"${v.caption}"</p>
-                        <span style="font-size:10px; color:gray;">By: ${v.submittedByName}</span>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    window.openAddVouchModal = function() {
-        document.getElementById('add-vouch-modal').classList.remove('hidden');
-    }
-
-    window.saveVouch = function() {
-        let itemName = document.getElementById('vouch-item-name').value.trim();
-        let buyerName = document.getElementById('vouch-buyer-name').value.trim();
-        let caption = document.getElementById('vouch-caption').value.trim();
-        let file = document.getElementById('vouch-image').files[0];
-
-        if(!itemName || !buyerName) return alert("Please fill Item Name and Buyer Name!");
-
-        let finalize = (imgBase) => {
-            vouches.push({
-                id: Date.now(), itemName, buyerName, caption, image: imgBase || '',
-                submittedByEmail: currentUser, submittedByName: users[currentUser].username
-            });
-            window.saveDatabase().then(() => {
-                alert("Vouch proof posted!");
-                window.closeModal('add-vouch-modal');
-                window.renderVouches();
-            });
-        };
-
-        if(file) {
-            let reader = new FileReader();
-            reader.onloadend = () => finalize(reader.result);
-            reader.readAsDataURL(file);
-        } else finalize('');
     }
 
     window.openVipModal = function() {
@@ -2160,90 +1974,253 @@
     }
 
     window.confirmVipPurchase = function() {
-        users[currentUser].vipPending = true;
+        let u = users[currentUser];
+        u.vipPending = true;
+        
+        let msg = {
+            id: Date.now(),
+            sender: 'SYSTEM',
+            text: `${u.username} (${currentUser}) has requested VIP. Please verify Maya payment and grant.`,
+            date: new Date().toLocaleString(),
+            read: false
+        };
+        users[ADMIN_EMAIL].inbox.push(msg);
+
         window.saveDatabase().then(() => {
-            alert("VIP Upgrade requested! Admin will confirm payment.");
             window.closeModal('vip-modal');
+            alert("VIP Request sent to admin! Please wait for approval.");
             window.updateUserNavDisplay();
         });
     }
 
-    // Messages & Bot
-    window.renderBuyerMessages = function() {
-        let container = document.getElementById('buyer-inbox-list');
-        container.innerHTML = '';
-        let inbox = users[currentUser].inbox || [];
+    const getBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
 
-        if(inbox.length === 0) return container.innerHTML = '<p style="text-align:center; color:gray;">No messages yet.</p>';
+    window.processImageAndAddProduct = async function(prefix) {
+        let name = document.getElementById(`${prefix}-prod-name`).value.trim();
+        let cat = document.getElementById(`${prefix}-prod-category`).value;
+        let rarity = document.getElementById(`${prefix}-prod-rarity`).value;
+        let timer = document.getElementById(`${prefix}-prod-timer`).value;
+        let money = parseFloat(document.getElementById(`${prefix}-prod-money`).value) || 0;
+        let sheckles = parseFloat(document.getElementById(`${prefix}-prod-sheckles`).value) || 0;
+        let info = document.getElementById(`${prefix}-prod-info`).value.trim();
+        let stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value) || 1;
+        let fileInput = document.getElementById(`${prefix}-prod-image`);
+        
+        let flashPct = parseInt(document.getElementById(`${prefix}-flash-pct`).value) || 0;
+        let flashTimer = document.getElementById(`${prefix}-flash-timer`).value;
 
-        inbox.forEach(m => {
-            container.innerHTML += `
-                <div class="chat-msg chat-admin" style="float:none; max-width:100%;">
-                    <b>Admin:</b> ${m.text}
-                    <span class="chat-date">${m.date}</span>
-                </div>
-            `;
+        if(!name) return alert("Product name is required.");
+
+        let tradeVals = [];
+        document.querySelectorAll(`.${prefix}-trade-input`).forEach(el => {
+            if(el.value.trim()) tradeVals.push(el.value.trim());
+        });
+
+        let imgData = null;
+        if(fileInput.files.length > 0) {
+            imgData = await getBase64(fileInput.files[0]);
+        }
+
+        let p = {
+            id: Date.now(),
+            name: name,
+            category: cat,
+            rarity: rarity,
+            limitedTime: (rarity === 'Limited' && timer) ? new Date(timer).getTime() : null,
+            money: money,
+            price: money, // compat
+            sheckles: sheckles,
+            trade: tradeVals,
+            info: info,
+            stocks: stocks,
+            image: imgData,
+            addedByEmail: currentUser,
+            addedByName: users[currentUser].username,
+            flashPct: flashPct,
+            flashEndTime: (flashPct > 0 && flashTimer) ? new Date(flashTimer).getTime() : null
+        };
+
+        products.unshift(p);
+
+        window.saveDatabase().then(() => {
+            alert("Product published!");
+            document.getElementById(`${prefix}-prod-name`).value = '';
+            document.getElementById(`${prefix}-prod-money`).value = '';
+            document.getElementById(`${prefix}-prod-sheckles`).value = '';
+            document.getElementById(`${prefix}-prod-info`).value = '';
+            document.getElementById(`${prefix}-prod-stocks`).value = '';
+            document.getElementById(`${prefix}-trade-container`).innerHTML = '';
+            
+            if(prefix === 'admin') window.renderAdminProducts();
+            else if (prefix === 'vip') window.renderVipProducts();
         });
     }
 
+    // Chat Logic
     window.openBotChat = function() {
         document.getElementById('bot-chat-modal').classList.remove('hidden');
-        window.renderBotChatHistory();
+        window.renderBotChat();
     }
 
-    window.renderBotChatHistory = function() {
+    window.renderBotChat = function() {
         let container = document.getElementById('bot-chat-history');
+        if(!container) return;
+        let u = users[currentUser];
         container.innerHTML = '';
-        let history = users[currentUser].botChat || [];
-
-        if(history.length === 0) {
-            container.innerHTML = `
-                <div class="chat-msg chat-bot">
-                    <b>Xdrg Service AI:</b> Hello! Ask me about items, prices, or search by ID!
-                </div>
-            `;
-        } else {
-            history.forEach(h => {
-                container.innerHTML += `
-                    <div class="chat-msg ${h.role === 'user' ? 'chat-user' : 'chat-bot'}">
-                        <b>${h.role === 'user' ? 'You' : 'Xdrg AI'}:</b> ${h.text}
-                    </div>
-                `;
-            });
-        }
+        u.botChat.forEach(msg => {
+            let cClass = msg.sender === 'User' ? 'chat-user' : 'chat-bot';
+            container.innerHTML += `<div class="chat-msg ${cClass}"><b>${msg.sender === 'User' ? 'You' : 'AI'}:</b> ${msg.text}</div>`;
+        });
         container.scrollTop = container.scrollHeight;
     }
 
     window.sendBotMessage = function() {
         let text = document.getElementById('bot-chat-input').value.trim();
         if(!text) return;
-
         let u = users[currentUser];
-        if(!u.botChat) u.botChat = [];
-        u.botChat.push({ role: 'user', text });
+        
+        u.botChat.push({ sender: 'User', text: text });
+        document.getElementById('bot-chat-input').value = '';
+        window.renderBotChat();
 
-        let reply = "I couldn't find details on that item. Try entering a valid Product Name or ID!";
-        let query = text.toLowerCase();
-
-        let found = products.find(p => p.name.toLowerCase().includes(query) || p.id.toString() === query);
-        if(found) {
-            let pVal = found.money || found.price || 0;
-            reply = `Found: **${found.name}** (ID: ${found.id})\nCategory: ${found.category || 'N/A'}\nPrice: ₱${window.formatNum(pVal)}\nStocks Left: ${found.stocks}`;
+        // Bot AI Logic
+        let q = text.toLowerCase();
+        let reply = "I'm not sure about that. I can answer questions about item IDs, prices, rules, and global chat commands (like ~join entry).";
+        
+        if (q.includes('id') || q.includes('price')) {
+            let found = products.find(p => q.includes(p.name.toLowerCase()));
+            if(found) {
+                reply = `${found.name} is ID: ${found.id}. Price: ₱${found.money||0} / ¢${found.sheckles||0}. Stocks: ${found.stocks}.`;
+            } else {
+                reply = "Which item? Try being specific with the name.";
+            }
+        } else if (q.includes('admin') || q.includes('owner')) {
+            reply = "The owner is XDRG (Admin_xdrg).";
+        } else if (q.includes('giveaway')) {
+            reply = "Global giveaways appear in the Global Chat tab. Type ~join entry there to participate!";
         }
 
-        u.botChat.push({ role: 'bot', text: reply });
-        document.getElementById('bot-chat-input').value = '';
-        window.saveDatabase().then(() => {
-            window.renderBotChatHistory();
+        setTimeout(() => {
+            u.botChat.push({ sender: 'Bot', text: reply });
+            window.saveDatabase().then(() => window.renderBotChat());
+        }, 500);
+    }
+
+    window.renderBuyerMessages = function() {
+        let container = document.getElementById('buyer-inbox-list');
+        if(!container) return;
+        container.innerHTML = '';
+        
+        let u = users[currentUser];
+        let msgs = u.inbox.slice().reverse();
+
+        if(msgs.length === 0) {
+            container.innerHTML = '<p style="color:gray;">No messages.</p>';
+            return;
+        }
+
+        msgs.forEach(m => {
+            let bg = m.read ? '#fff' : '#f0f8ff';
+            container.innerHTML += `
+                <div style="background:${bg}; padding:10px; border-bottom:1px solid #ddd; margin-bottom:5px;">
+                    <b style="color:var(--main-color);">${m.sender}</b> <span style="font-size:10px; color:gray;">${m.date}</span>
+                    <p style="margin:5px 0 0 0; font-size:13px; white-space:pre-wrap;">${m.text}</p>
+                </div>
+            `;
+            m.read = true; // mark read
+        });
+        window.saveDatabase().then(() => window.updateBadges());
+    }
+
+    window.renderBuyerOrders = function() {
+        let container = document.getElementById('buyer-order-list');
+        if(!container) return;
+        container.innerHTML = '';
+
+        let myOrders = orders.filter(o => o.buyerEmail === currentUser);
+        if(myOrders.length === 0) {
+            container.innerHTML = '<p style="color:gray;">No orders found.</p>';
+            return;
+        }
+
+        myOrders.forEach(o => {
+            let itemsHtml = o.items.map(i => `- ${i.name} x${i.qty} (₱${i.money||i.price||0})`).join('<br>');
+            container.innerHTML += `
+                <div class="list-card">
+                    <b>Order ID:</b> ${o.id} <br>
+                    <b>Date:</b> ${o.date} <br>
+                    <b>Items:</b><br>${itemsHtml} <br>
+                    <b>Total:</b> ₱${window.formatNum(o.totalPaid)} <br>
+                    <b>Status:</b> <span style="color:var(--main-color); font-weight:bold;">${o.status}</span>
+                </div>
+            `;
         });
     }
 
-    // Admin UI Tab Control
+    window.renderVipProducts = function() {
+        let container = document.getElementById('vip-my-products-list');
+        if(!container) return;
+        container.innerHTML = '';
+
+        let myProds = products.filter(p => p.addedByEmail === currentUser);
+        if(myProds.length === 0) {
+            container.innerHTML = '<p style="color:gray;">You have not published any products.</p>';
+            return;
+        }
+
+        myProds.forEach(p => {
+            container.innerHTML += `
+                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b>${p.name}</b> (ID: ${p.id})<br>
+                        <span style="font-size:12px; color:gray;">Stocks: ${p.stocks} | Price: ₱${p.money||p.price||0}</span>
+                    </div>
+                    <div>
+                        <button class="btn-action" style="padding:5px;" onclick="window.deleteProduct(${p.id})">Del</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    window.createVoucher = function(prefix) {
+        let codeEl = document.getElementById(`${prefix}-voucher-name`);
+        let pctEl = document.getElementById(`${prefix}-voucher-pct`);
+        let code = codeEl.value.trim().toUpperCase();
+        let pct = parseInt(pctEl.value);
+
+        if(!code || !pct) return alert("Fill all fields");
+        if(vouchers.find(v => v.code === code)) return alert("Code already exists");
+
+        vouchers.push({ code: code, discount: pct, creator: currentUser });
+        
+        window.saveDatabase().then(() => {
+            alert("Voucher Created!");
+            codeEl.value = '';
+            pctEl.value = '';
+            if(prefix === 'admin') window.renderAdminVouchers();
+        });
+    }
+
+    window.deleteProduct = function(id) {
+        if(!confirm("Delete this product?")) return;
+        products = products.filter(p => p.id !== id);
+        window.saveDatabase().then(() => {
+            if(isAdminView) window.renderAdminProducts();
+            else window.renderVipProducts();
+        });
+    }
+
+    // Admin Specific functions
     window.showAdminTab = function(tab) {
         currentActiveTab = tab;
         ['admin-add-product', 'admin-manage-products', 'admin-manage-orders', 'admin-offers-tab', 'admin-manage-users', 'admin-vouchers-tab', 'admin-flashdeal-tab', 'admin-giveaway-tab', 'admin-messages-tab'].forEach(t => {
-            let el = document.getElementById(t);
-            if(el) el.classList.add('hidden');
+            document.getElementById(t).classList.add('hidden');
         });
         document.getElementById(tab).classList.remove('hidden');
 
@@ -2257,18 +2234,16 @@
 
     window.renderAdminProducts = function() {
         let container = document.getElementById('admin-product-list');
+        if(!container) return;
         container.innerHTML = '';
         products.forEach(p => {
             container.innerHTML += `
                 <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <b>${p.name}</b> (ID: ${p.id}) <br>
-                        Seller: ${p.addedByName} | Stock: ${p.stocks} | ₱${window.formatNum(p.money || p.price || 0)}
+                        <b>${p.name}</b> (ID: ${p.id})<br>
+                        <span style="font-size:12px; color:gray;">Seller: ${p.addedByName} | Stocks: ${p.stocks}</span>
                     </div>
-                    <div>
-                        <button class="btn-action" onclick="window.openEditProductModal(${p.id})">Edit</button>
-                        <button class="btn-danger" onclick="window.deleteProduct(${p.id})">Delete</button>
-                    </div>
+                    <button class="btn-danger" style="padding:5px;" onclick="window.deleteProduct(${p.id})">Delete</button>
                 </div>
             `;
         });
@@ -2276,44 +2251,36 @@
 
     window.renderAdminOrders = function() {
         let container = document.getElementById('admin-order-list');
+        if(!container) return;
         container.innerHTML = '';
-        orders.forEach((ord, index) => {
-            let itemsHtml = ord.items.map(i => `- ${i.name} x${i.qty || 1}`).join('<br>');
+        orders.forEach(o => {
             container.innerHTML += `
                 <div class="list-card">
-                    <b>Order ID:</b> ${ord.id} <br>
-                    <b>Buyer:</b> ${ord.buyerUsername} (${ord.buyerEmail}) <br>
-                    <b>Items:</b><br>${itemsHtml} <br>
-                    <b>Paid:</b> ₱${window.formatNum(ord.totalPaid)} <br>
-                    <b>Status:</b> ${ord.status} <br>
-                    <div style="margin-top:10px; display:flex; gap:5px;">
-                        <button class="btn-action" onclick="window.updateOrderStatus(${index}, 'Completed')">Mark Completed</button>
-                        <button class="btn-danger" onclick="window.updateOrderStatus(${index}, 'Cancelled')">Cancel</button>
-                    </div>
+                    <b>Order:</b> ${o.id} - ${o.buyerUsername}<br>
+                    <b>Status:</b> ${o.status}<br>
+                    <button class="btn-action" style="padding:5px; margin-top:5px;" onclick="window.updateOrderStatus(${o.id}, 'Completed')">Complete</button>
                 </div>
             `;
         });
     }
 
-    window.updateOrderStatus = function(index, newStatus) {
-        orders[index].status = newStatus;
-        window.saveDatabase().then(() => {
-            alert(`Order status updated to ${newStatus}`);
-            window.renderAdminOrders();
-        });
+    window.updateOrderStatus = function(id, status) {
+        let o = orders.find(x => x.id === id);
+        if(o) o.status = status;
+        window.saveDatabase().then(() => window.renderAdminOrders());
     }
 
     window.renderAdminOffers = function() {
         let container = document.getElementById('admin-offers-list');
+        if(!container) return;
         container.innerHTML = '';
         offers.forEach(o => {
-            let p = products.find(x => x.id === o.productId);
             container.innerHTML += `
                 <div class="list-card">
-                    <b>Offer for:</b> ${p ? p.name : 'Unknown Product'} <br>
-                    <b>From Buyer:</b> ${o.buyerEmail} <br>
-                    <b>Details:</b><br><pre style="font-family:inherit;">${o.text}</pre>
-                    <b>Date:</b> ${o.date}
+                    <b>Target:</b> ${o.targetProductName}<br>
+                    <b>From:</b> ${o.buyerUsername}<br>
+                    <b>Offer:</b> ${o.offerItems.join(', ')}<br>
+                    <b>Status:</b> ${o.status}<br>
                 </div>
             `;
         });
@@ -2321,68 +2288,65 @@
 
     window.renderAdminUsers = function() {
         let container = document.getElementById('admin-user-list');
+        if(!container) return;
         container.innerHTML = '';
         for(let email in users) {
+            if(email === ADMIN_EMAIL) continue;
             let u = users[email];
-            let reqBtn = u.sellerRequested ? `<button class="btn-verify" style="padding:5px;" onclick="window.sendSellerCode('${email}')">Send Verification Code</button>` : '';
-            let vipBtn = u.vipPending ? `<button class="btn-vip" style="padding:5px;" onclick="window.approveVip('${email}')">Approve VIP</button>` : '';
-
             container.innerHTML += `
                 <div class="list-card">
-                    <b>User:</b> ${u.username} (${email}) <br>
-                    <b>Roles:</b> ${u.isVIP ? 'VIP ' : ''}${u.isVerifiedSeller ? 'Verified Seller' : 'Buyer'} <br>
-                    <div style="margin-top:10px; display:flex; gap:5px;">
-                        ${reqBtn} ${vipBtn}
-                    </div>
+                    <b>${u.username}</b> (${email})<br>
+                    <span style="font-size:12px;">VIP: ${u.isVIP} | Seller: ${u.isVerifiedSeller}</span><br>
+                    <button class="btn-vip" style="padding:5px; margin-top:5px;" onclick="window.grantVIP('${email}')">Make VIP</button>
+                    <button class="btn-verify" style="padding:5px; margin-top:5px;" onclick="window.sendVerifyCode('${email}')">Send Seller Code</button>
                 </div>
             `;
         }
     }
 
-    window.sendSellerCode = function(email) {
-        let code = "VERIFY-" + Math.floor(1000 + Math.random() * 9000);
-        users[email].sellCode = code;
-        users[email].sellCodeExpiry = Date.now() + (10 * 60 * 1000); // 10 minutes
-        delete users[email].sellerRequested;
-
-        if(!users[email].inbox) users[email].inbox = [];
-        users[email].inbox.push({ text: `Your Seller Verification Code is: **${code}**. Valid for 10 minutes.`, date: new Date().toLocaleString() });
-
-        window.saveDatabase().then(() => {
-            alert(`Code ${code} sent to ${email}`);
-            window.renderAdminUsers();
-        });
+    window.grantVIP = function(email) {
+        users[email].isVIP = true;
+        users[email].vipPending = false;
+        users[email].inbox.push({ id: Date.now(), sender: 'Admin', text: 'You have been granted VIP status!', date: new Date().toLocaleString(), read: false });
+        window.saveDatabase().then(() => window.renderAdminUsers());
     }
 
-    window.approveVip = function(email) {
-        users[email].isVIP = true;
-        delete users[email].vipPending;
-        window.saveDatabase().then(() => {
-            alert(`VIP status approved for ${email}!`);
-            window.renderAdminUsers();
-        });
+    window.sendVerifyCode = function(email) {
+        let code = Math.floor(100000 + Math.random() * 900000).toString();
+        users[email].sellCode = code;
+        users[email].sellCodeExpiry = Date.now() + (15 * 60 * 1000); // 15 mins
+        users[email].inbox.push({ id: Date.now(), sender: 'Admin', text: `Your Seller Verification Code is: ${code}\nValid for 15 minutes.`, date: new Date().toLocaleString(), read: false });
+        window.saveDatabase().then(() => alert("Code sent to user inbox!"));
     }
 
     window.renderAdminVouchers = function() {
         let container = document.getElementById('admin-voucher-list');
+        if(!container) return;
         container.innerHTML = '';
         vouchers.forEach(v => {
             container.innerHTML += `
-                <div class="list-card">
-                    <b>Code:</b> ${v.code} | <b>Discount:</b> ${v.discount}% OFF
+                <div class="list-card" style="display:flex; justify-content:space-between;">
+                    <span><b>${v.code}</b> (${v.discount}%)</span>
+                    <button class="btn-danger" style="padding:5px;" onclick="window.deleteVoucher('${v.code}')">Del</button>
                 </div>
             `;
         });
     }
 
+    window.deleteVoucher = function(code) {
+        vouchers = vouchers.filter(v => v.code !== code);
+        window.saveDatabase().then(() => window.renderAdminVouchers());
+    }
+
     window.renderAdminChatList = function() {
         let container = document.getElementById('admin-chat-user-list');
+        if(!container) return;
         container.innerHTML = '';
         for(let email in users) {
             if(email === ADMIN_EMAIL) continue;
             container.innerHTML += `
-                <div class="list-card" style="cursor:pointer;" onclick="window.openAdminChat('${email}')">
-                    <b>${users[email].username}</b> (${email})
+                <div style="padding:10px; border-bottom:1px solid #eee; cursor:pointer;" onclick="window.openAdminChat('${email}')">
+                    <b>${users[email].username}</b>
                 </div>
             `;
         }
@@ -2397,34 +2361,89 @@
 
     window.renderAdminChatHistory = function() {
         let container = document.getElementById('chat-history');
+        if(!container || !chatTargetUser) return;
         container.innerHTML = '';
-        let inbox = users[chatTargetUser].inbox || [];
-
-        inbox.forEach(m => {
-            container.innerHTML += `
-                <div class="chat-msg chat-admin" style="float:none; max-width:100%;">
-                    <b>Message:</b> ${m.text}
-                    <span class="chat-date">${m.date}</span>
-                </div>
-            `;
+        
+        let msgs = users[chatTargetUser].inbox || [];
+        msgs.forEach(m => {
+            let cClass = m.sender === 'SYSTEM' || m.sender === 'Admin' ? 'chat-user' : 'chat-admin';
+            container.innerHTML += `<div class="chat-msg ${cClass}"><b>${m.sender}:</b> ${m.text}</div>`;
         });
+        container.scrollTop = container.scrollHeight;
     }
 
     window.sendAdminMessage = function() {
         let text = document.getElementById('admin-chat-input').value.trim();
         if(!text || !chatTargetUser) return;
 
-        if(!users[chatTargetUser].inbox) users[chatTargetUser].inbox = [];
-        users[chatTargetUser].inbox.push({ text, date: new Date().toLocaleString() });
-
+        users[chatTargetUser].inbox.push({
+            id: Date.now(),
+            sender: 'Admin',
+            text: text,
+            date: new Date().toLocaleString(),
+            read: false
+        });
+        
         document.getElementById('admin-chat-input').value = '';
+        window.saveDatabase().then(() => window.renderAdminChatHistory());
+    }
+
+    // Vouches logic
+    window.openAddVouchModal = function() {
+        document.getElementById('add-vouch-modal').classList.remove('hidden');
+    }
+
+    window.saveVouch = async function() {
+        let itemName = document.getElementById('vouch-item-name').value.trim();
+        let buyerName = document.getElementById('vouch-buyer-name').value.trim();
+        let caption = document.getElementById('vouch-caption').value.trim();
+        let fileInput = document.getElementById('vouch-image');
+
+        if(!itemName || !buyerName || fileInput.files.length === 0) return alert("Fill all fields and select an image.");
+
+        let imgData = await getBase64(fileInput.files[0]);
+        
+        vouches.unshift({
+            id: Date.now(),
+            sellerName: users[currentUser].username,
+            itemName: itemName,
+            buyerName: buyerName,
+            caption: caption,
+            image: imgData,
+            date: new Date().toLocaleDateString()
+        });
+
         window.saveDatabase().then(() => {
-            window.renderAdminChatHistory();
+            window.closeModal('add-vouch-modal');
+            window.renderVouches();
+            alert("Vouch posted successfully!");
         });
     }
 
-    window.closeModal = function(id) {
-        document.getElementById(id).classList.add('hidden');
+    window.renderVouches = function() {
+        let container = document.getElementById('vouch-list');
+        if(!container) return;
+        container.innerHTML = '';
+
+        if(vouches.length === 0) {
+            container.innerHTML = '<p style="grid-column: span 2; text-align:center;">No vouches yet.</p>';
+            return;
+        }
+
+        vouches.forEach(v => {
+            container.innerHTML += `
+                <div class="vouch-card">
+                    <img src="${v.image}" alt="Proof">
+                    <div style="padding:10px;">
+                        <b style="color:var(--main-color); font-size:14px;">${v.itemName}</b>
+                        <p style="margin:5px 0; font-size:12px;">Sold by: <b>${v.sellerName}</b> <span class="verified-icon">✓</span></p>
+                        <p style="margin:5px 0; font-size:12px;">Buyer: ${v.buyerName}</p>
+                        <p style="margin:5px 0; font-size:12px; color:gray; font-style:italic;">"${v.caption}"</p>
+                        <span style="font-size:10px; color:#aaa;">${v.date}</span>
+                    </div>
+                </div>
+            `;
+        });
     }
 </script>
 </body>
