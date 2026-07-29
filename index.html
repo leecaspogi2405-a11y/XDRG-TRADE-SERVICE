@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Notifier App</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -32,10 +31,7 @@
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        h2, h3 {
-            margin-top: 0;
-            color: #222;
-        }
+        h2, h3 { margin-top: 0; color: #222; }
         input, textarea, button {
             width: 100%;
             padding: 12px;
@@ -44,12 +40,6 @@
             border: 1px solid #ccc;
             box-sizing: border-box;
             font-size: 16px;
-            transition: all 0.2s;
-        }
-        input:focus, textarea:focus {
-            border-color: #007BFF;
-            outline: none;
-            box-shadow: 0 0 5px rgba(0,123,255,0.3);
         }
         button {
             background-color: #007BFF;
@@ -58,110 +48,39 @@
             cursor: pointer;
             font-weight: bold;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
-        button:disabled {
-            background-color: #999;
-            cursor: not-allowed;
-        }
+        button:hover { background-color: #0056b3; }
         .btn-danger { background-color: #DC3545; }
-        .btn-danger:hover { background-color: #c82333; }
         .btn-success { background-color: #28A745; }
-        .btn-success:hover { background-color: #218838; }
         .btn-secondary { background-color: #6C757D; }
-        .btn-secondary:hover { background-color: #5a6268; }
-        .btn-info {
-            background-color: #17A2B8;
-            padding: 15px;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        .btn-info:hover { background-color: #138496; }
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
-        .terms-box {
-            background: #f9f9f9;
-            padding: 15px;
-            border: 1px solid #ddd;
-            margin-bottom: 15px;
-            border-radius: 6px;
-        }
-        .error-msg {
-            color: #DC3545;
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .success-msg {
-            color: #28A745;
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
+        .btn-info { background-color: #17A2B8; padding: 15px; font-size: 18px; margin-bottom: 10px; }
+        .button-group { display: flex; gap: 10px; }
+        .terms-box { background: #f9f9f9; padding: 15px; border: 1px solid #ddd; margin-bottom: 15px; border-radius: 6px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
         .header h2 { margin: 0; }
         .header button { margin-bottom: 0; }
-        .error-box {
-            background: #F8D7DA;
-            color: #721C24;
-            padding: 20px;
-            border: 1px solid #F5C6CB;
-            border-radius: 6px;
-            text-align: center;
-        }
-        .content-box {
-            background: #E9ECEF;
-            padding: 20px;
-            border-radius: 6px;
-            min-height: 200px;
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            font-style: italic;
-        }
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .checkbox-container input {
-            width: 20px;
-            height: 20px;
-            margin: 0 10px 0 0;
-            cursor: pointer;
-        }
+        .error-box { background: #F8D7DA; color: #721C24; padding: 20px; border: 1px solid #F5C6CB; border-radius: 6px; text-align: center; }
+        .content-box { background: #E9ECEF; padding: 20px; border-radius: 6px; min-height: 200px; margin-top: 20px; display: flex; align-items: center; justify-content: center; color: #555; font-style: italic; }
+        .checkbox-container { display: flex; align-items: center; cursor: pointer; margin-bottom: 20px; font-size: 16px; font-weight: bold; }
+        .checkbox-container input { width: 20px; height: 20px; margin: 0 10px 0 0; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
 
+    <!-- AUTH VIEW -->
     <div id="authView" class="view active">
         <h2>Login / Sign-up</h2>
-        <div id="authMessage"></div>
-        <input type="email" id="email" placeholder="Email (e.g. user@gmail.com)" required>
-        <input type="password" id="password" placeholder="Password" required>
+        <div id="authMessage" style="margin-bottom: 10px;"></div>
+        <input type="email" id="email" placeholder="Email (e.g. xdrgmoderation@gmail.com)">
+        <input type="password" id="password" placeholder="Password">
         <div class="button-group">
-            <button id="loginBtn" onclick="handleLogin()">Log In</button>
-            <button id="signupBtn" onclick="handleSignUp()" class="btn-secondary">Sign Up</button>
+            <button type="button" onclick="handleAuth()">Log In</button>
+            <button type="button" onclick="handleAuth()" class="btn-secondary">Sign Up</button>
         </div>
     </div>
 
+    <!-- TERMS VIEW -->
     <div id="termsView" class="view">
         <h2>Terms and Conditions</h2>
         <div class="terms-box">
@@ -174,67 +93,59 @@
             <input type="checkbox" id="termsCheck" onchange="checkTerms()">
             <span>I agree to xdrg terms and conditions</span>
         </label>
-        <button class="btn-danger" onclick="handleLogout()">Cancel & Logout</button>
+        <button type="button" class="btn-danger" onclick="showView('authView')">Cancel & Logout</button>
     </div>
 
+    <!-- DASHBOARD VIEW -->
     <div id="dashboardView" class="view">
         <div class="header">
             <h2>Dashboard</h2>
-            <button onclick="handleLogout()" class="btn-danger" style="width: auto; padding: 8px 15px;">Logout</button>
+            <button type="button" onclick="showView('authView')" class="btn-danger" style="width: auto; padding: 8px 15px;">Logout</button>
         </div>
         <input type="text" id="searchInput" placeholder="Search a restocker game..." onkeyup="filterGames()">
         
         <div id="gameList">
-            <button class="btn-info game-btn" onclick="openGame('gag')">Grow A Garden (GAG)</button>
-            <button class="btn-info game-btn" onclick="openGame('gag2')">Grow A Garden 2 (GAG2)</button>
-            <button class="btn-info game-btn" onclick="openGame('gh')">Garden Horizon (GH)</button>
+            <button type="button" class="btn-info game-btn" onclick="openGame('gag', 'Grow A Garden')">Grow A Garden (GAG)</button>
+            <button type="button" class="btn-info game-btn" onclick="openGame('gag2', 'Grow A Garden 2')">Grow A Garden 2 (GAG2)</button>
+            <button type="button" class="btn-info game-btn" onclick="openGame('gh', 'Garden Horizon')">Garden Horizon (GH)</button>
         </div>
         
         <div class="button-group" style="margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px;">
-            <button onclick="showView('reportView')">Report Bug</button>
-            <button id="adminBtn" class="btn-success" style="display: none;" onclick="showView('adminView')">Admin Panel</button>
+            <button type="button" onclick="showView('reportView')">Report Bug</button>
+            <button type="button" id="adminBtn" class="btn-success" style="display: none;" onclick="showView('adminView')">Admin Panel</button>
         </div>
     </div>
 
+    <!-- ADMIN VIEW -->
     <div id="adminView" class="view">
         <div class="header">
             <h2>Admin Panel</h2>
-            <button class="btn-secondary" onclick="showView('dashboardView')" style="width: auto; padding: 8px 15px;">Back</button>
+            <button type="button" class="btn-secondary" onclick="showView('dashboardView')" style="width: auto; padding: 8px 15px;">Back</button>
         </div>
         
         <div class="terms-box">
             <h3>System Status Toggles</h3>
-            <button id="btnToggleGAG" onclick="toggleSystem('gag')">GAG: ON</button>
-            <button id="btnToggleGAG2" onclick="toggleSystem('gag2')">GAG2: ON</button>
-            <button id="btnToggleGH" onclick="toggleSystem('gh')">GH: ON</button>
-        </div>
-
-        <div class="terms-box">
-            <h3>User Management</h3>
-            <button class="btn-danger" onclick="alert('Feature coming soon')">Kick/Ban Users</button>
-        </div>
-
-        <div class="terms-box">
-            <h3>Inbox (Reports)</h3>
-            <div id="reportsContainer">
-                <p style="color: #666; font-style: italic;">No new reports.</p>
-            </div>
+            <button type="button" id="btnToggleGAG" onclick="toggleSystem('gag')">GAG: ON</button>
+            <button type="button" id="btnToggleGAG2" onclick="toggleSystem('gag2')">GAG2: ON</button>
+            <button type="button" id="btnToggleGH" onclick="toggleSystem('gh')">GH: ON</button>
         </div>
     </div>
 
+    <!-- REPORT VIEW -->
     <div id="reportView" class="view">
         <h2>Report Bug</h2>
         <textarea id="bugReportText" placeholder="Describe the issue clearly..." rows="5"></textarea>
         <div class="button-group">
-            <button onclick="submitReport()">Submit Report</button>
-            <button class="btn-secondary" onclick="showView('dashboardView')">Cancel</button>
+            <button type="button" onclick="submitReport()">Submit Report</button>
+            <button type="button" class="btn-secondary" onclick="showView('dashboardView')">Cancel</button>
         </div>
     </div>
 
+    <!-- GAME VIEW -->
     <div id="gameView" class="view">
         <div class="header">
             <h2 id="gameTitle">Game Stock Notifier</h2>
-            <button class="btn-secondary" onclick="showView('dashboardView')" style="width: auto; padding: 8px 15px;">Back</button>
+            <button type="button" class="btn-secondary" onclick="showView('dashboardView')" style="width: auto; padding: 8px 15px;">Back</button>
         </div>
 
         <div id="gameError" class="error-box" style="display: none;">
@@ -248,11 +159,10 @@
                 <span><strong>Time:</strong> <span id="gameTime"></span></span>
             </div>
             
-            <div id="gameButtons" class="button-group">
-            </div>
+            <div id="gameButtons" class="button-group"></div>
             
             <div class="content-box" id="dataContainer">
-                Fetching Telegram API data...
+                Select an option above to load data.
             </div>
         </div>
     </div>
@@ -260,110 +170,45 @@
 </div>
 
 <script>
-    const supabaseUrl = 'https://iisffbjgltxslkkkxlsd.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpc2ZmYmpnbHR4c2xra2t4bHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNDQ4OTcsImV4cCI6MjEwMDkyMDg5N30.1RLkoz6hUMbhCNMr4BWDEqtb4LOM-XnwtBRuK39-TEk';
-    
-    let supabase = null;
-    try {
-        if (typeof window.supabase !== 'undefined') {
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        }
-    } catch (e) {
-        console.warn("Supabase blocked by local file viewer. Running in offline bypass mode.");
-    }
-
-    const ADMIN_EMAIL = 'xdrgxdragon@gmail.com';
-    let currentUser = null;
-    let currentGame = null;
-    let timeInterval = null;
-
     const systemStatus = { gag: true, gag2: true, gh: true };
+    let timeInterval = null;
+    let currentGame = '';
 
     function showView(viewId) {
-        document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+        let views = document.querySelectorAll('.view');
+        for (let i = 0; i < views.length; i++) {
+            views[i].classList.remove('active');
+        }
         document.getElementById(viewId).classList.add('active');
         if (viewId !== 'gameView' && timeInterval) clearInterval(timeInterval);
     }
 
-    function showMessage(elementId, text, isError = true) {
-        const el = document.getElementById(elementId);
-        el.innerText = text;
-        el.className = isError ? 'error-msg' : 'success-msg';
-    }
+    function handleAuth() {
+        let emailInput = document.getElementById('email');
+        let passInput = document.getElementById('password');
+        let msgBox = document.getElementById('authMessage');
 
-    function toggleButtons(disabled) {
-        document.getElementById('loginBtn').disabled = disabled;
-        document.getElementById('signupBtn').disabled = disabled;
-    }
+        if (!emailInput || !passInput) return; // Safety check
 
-    // BYPASS LOGIC: Forces the app to open even if the database fails
-    function forceEnterApp(email) {
-        currentUser = { email: email };
-        document.getElementById('authMessage').innerText = '';
-        
-        if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-            document.getElementById('adminBtn').style.display = 'block';
+        let email = emailInput.value.trim();
+        let pass = passInput.value;
+
+        if (email === '' || pass === '') {
+            msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Kailangan may email at password!</span>';
+            return;
+        }
+
+        msgBox.innerHTML = ''; 
+
+        // Admin check
+        let adminButton = document.getElementById('adminBtn');
+        if (email.toLowerCase() === 'xdrgmoderation@gmail.com' || email.toLowerCase() === 'xdrgxdragon@gmail.com') {
+            if (adminButton) adminButton.style.display = 'block';
         } else {
-            document.getElementById('adminBtn').style.display = 'none';
+            if (adminButton) adminButton.style.display = 'none';
         }
-        
+
         showView('termsView');
-    }
-
-    async function handleSignUp() {
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        
-        if (!email || !password) {
-            showMessage('authMessage', 'Please fill in both email and password.');
-            return;
-        }
-        
-        toggleButtons(true);
-        showMessage('authMessage', 'Authenticating...', false);
-        
-        if (supabase) {
-            try { await supabase.auth.signUp({ email, password }); } 
-            catch (e) { console.warn(e); }
-        }
-        
-        setTimeout(() => {
-            toggleButtons(false);
-            forceEnterApp(email);
-        }, 500);
-    }
-
-    async function handleLogin() {
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        
-        if (!email || !password) {
-            showMessage('authMessage', 'Please fill in both email and password.');
-            return;
-        }
-        
-        toggleButtons(true);
-        showMessage('authMessage', 'Authenticating...', false);
-        
-        if (supabase) {
-            try { await supabase.auth.signInWithPassword({ email, password }); } 
-            catch (e) { console.warn(e); }
-        }
-
-        setTimeout(() => {
-            toggleButtons(false);
-            forceEnterApp(email);
-        }, 500);
-    }
-
-    async function handleLogout() {
-        if (supabase) { try { await supabase.auth.signOut(); } catch(e) {} }
-        currentUser = null;
-        document.getElementById('email').value = '';
-        document.getElementById('password').value = '';
-        document.getElementById('termsCheck').checked = false;
-        document.getElementById('authMessage').innerText = '';
-        showView('authView');
     }
 
     function checkTerms() {
@@ -371,41 +216,27 @@
     }
 
     function filterGames() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        document.querySelectorAll('.game-btn').forEach(btn => {
-            btn.style.display = btn.innerText.toLowerCase().includes(query) ? 'block' : 'none';
-        });
+        let query = document.getElementById('searchInput').value.toLowerCase();
+        let buttons = document.querySelectorAll('.game-btn');
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].style.display = buttons[i].innerText.toLowerCase().includes(query) ? 'block' : 'none';
+        }
     }
 
     function submitReport() {
-        const text = document.getElementById('bugReportText').value.trim();
-        if (!text) return alert('Please enter a description of the issue.');
-        
-        const reportsContainer = document.getElementById('reportsContainer');
-        if (reportsContainer.innerHTML.includes('No new reports')) reportsContainer.innerHTML = '';
-        
-        const reportEl = document.createElement('div');
-        reportEl.style.background = '#fff';
-        reportEl.style.padding = '10px';
-        reportEl.style.border = '1px solid #ddd';
-        reportEl.style.marginBottom = '10px';
-        reportEl.style.borderRadius = '5px';
-        reportEl.innerText = `${currentUser ? currentUser.email : 'User'}: ${text}`;
-        reportsContainer.prepend(reportEl);
-
-        alert('Report submitted successfully to admin.');
+        let text = document.getElementById('bugReportText').value;
+        if (text === '') return alert('Please enter a description!');
+        alert('Report submitted to admin.');
         document.getElementById('bugReportText').value = '';
         showView('dashboardView');
     }
 
-    function openGame(game) {
-        currentGame = game;
+    function openGame(gameCode, gameName) {
+        currentGame = gameCode;
         showView('gameView');
+        document.getElementById('gameTitle').innerText = gameName + ' Notifier';
         
-        const titles = { gag: 'Grow A Garden', gag2: 'Grow A Garden 2', gh: 'Garden Horizon' };
-        document.getElementById('gameTitle').innerText = (titles[game] || game) + ' Notifier';
-        
-        if (!systemStatus[game]) {
+        if (systemStatus[gameCode] === false) {
             document.getElementById('gameError').style.display = 'block';
             document.getElementById('gameContent').style.display = 'none';
         } else {
@@ -413,37 +244,35 @@
             document.getElementById('gameContent').style.display = 'block';
             
             updateTime();
-            if (timeInterval) clearInterval(timeInterval);
             timeInterval = setInterval(updateTime, 1000);
             
-            const btnContainer = document.getElementById('gameButtons');
-            btnContainer.innerHTML = `<button class="btn-secondary" onclick="fetchData('Stock')">Stock</button>`;
-            if (game !== 'gh') btnContainer.innerHTML += `<button class="btn-secondary" onclick="fetchData('Last Seen')">Last Seen</button>`;
-            if (game === 'gag') btnContainer.innerHTML += `<button class="btn-secondary" onclick="fetchData('Event Shop')">Event Shop</button>`;
+            let btnContainer = document.getElementById('gameButtons');
+            btnContainer.innerHTML = `<button type="button" class="btn-secondary" onclick="fetchData('Stock')">Stock</button>`;
+            if (gameCode !== 'gh') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Last Seen')">Last Seen</button>`;
+            if (gameCode === 'gag') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Event Shop')">Event Shop</button>`;
 
             document.getElementById('dataContainer').innerText = "Select an option above to load data.";
         }
     }
 
     function updateTime() {
-        const timeEl = document.getElementById('gameTime');
+        let timeEl = document.getElementById('gameTime');
         if (timeEl) timeEl.innerText = new Date().toLocaleTimeString();
     }
 
     function fetchData(type) {
-        const container = document.getElementById('dataContainer');
-        container.innerHTML = `<em>Loading ${type} data for ${currentGame.toUpperCase()}...</em>`;
-        setTimeout(() => {
-            container.innerHTML = `<strong>${type} Data Loaded:</strong><br><br>• Status: Active<br>• Last Updated: ${new Date().toLocaleTimeString()}<br>• System: Stable`;
-        }, 800);
+        document.getElementById('dataContainer').innerHTML = `<strong>${type} Loaded:</strong><br><br>System is stable.`;
     }
 
-    function toggleSystem(game) {
-        systemStatus[game] = !systemStatus[game];
-        const btn = document.getElementById('btnToggle' + game.toUpperCase());
-        if (btn) {
-            btn.innerText = `${game.toUpperCase()}: ${systemStatus[game] ? 'ON' : 'OFF'}`;
-            btn.className = systemStatus[game] ? '' : 'btn-danger';
+    function toggleSystem(gameCode) {
+        systemStatus[gameCode] = !systemStatus[gameCode]; 
+        let btn = document.getElementById('btnToggle' + gameCode.toUpperCase());
+        if (systemStatus[gameCode]) {
+            btn.innerText = gameCode.toUpperCase() + ': ON';
+            btn.className = '';
+        } else {
+            btn.innerText = gameCode.toUpperCase() + ': OFF';
+            btn.className = 'btn-danger';
         }
     }
 </script>
