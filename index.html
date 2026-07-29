@@ -2,2449 +2,451 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XDRG Shop 1.5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Notifier App</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --main-color: #ee4d2d;
-            --bg-color: #f5f5f5;
-            --text-dark: #2f3542;
-            --vip-color: #9c88ff;
-            --verify-color: #2ed573;
-            --ai-color: #3498db;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
         }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            background: var(--bg-color); 
-            color: var(--text-dark); 
-            padding-bottom: 70px; 
-            padding-top: 140px; 
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .hidden { display: none !important; }
-        
-        .top-bar {
-            position: fixed; top: 0; left: 0; width: 100%; background: white; z-index: 100;
-            padding: 10px 15px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
         }
-        .top-bar-title {
-            margin: 0; color: var(--main-color); text-align: center; font-size: 20px; font-weight: bold;
+        .active {
+            display: block;
         }
-        .top-bar input {
-            width: 100%; margin: 0; border: 2px solid var(--main-color); border-radius: 4px;
-            padding: 8px 12px; outline: none; box-sizing: border-box;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        #category-bar {
-            display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; padding-bottom: 5px;
+        h2, h3 {
+            margin-top: 0;
+            color: #222;
         }
-        #category-bar::-webkit-scrollbar { display: none; }
-        .cat-btn {
-            background: #f0f0f0; border: none; padding: 5px 12px; border-radius: 15px; font-size: 12px;
-            color: #333; cursor: pointer; transition: 0.2s;
+        input, textarea, button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.2s;
         }
-        .cat-btn.active { background: var(--main-color); color: white; }
-
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white; z-index: 100;
-            display: flex; justify-content: space-around; border-top: 1px solid #ddd;
-            padding: 10px 0; box-shadow: 0 -1px 5px rgba(0,0,0,0.05);
+        input:focus, textarea:focus {
+            border-color: #007BFF;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
         }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; font-size: 12px; 
-            color: gray; cursor: pointer; position: relative;
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
         }
-        .nav-item.active { color: var(--main-color); font-weight: bold; }
-        .nav-badge {
-            position: absolute; top: -5px; right: -10px; background: var(--main-color);
-            color: white; font-size: 10px; padding: 2px 5px; border-radius: 10px;
+        button:hover {
+            background-color: #0056b3;
         }
-
-        .container { max-width: 800px; margin: 0 auto; padding: 10px; }
-        
-        .product-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
         }
-        .product-card, .vouch-card { 
-            background: white; border-radius: 4px; overflow: hidden; cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: relative;
+        .btn-danger { background-color: #DC3545; }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-success { background-color: #28A745; }
+        .btn-success:hover { background-color: #218838; }
+        .btn-secondary { background-color: #6C757D; }
+        .btn-secondary:hover { background-color: #5a6268; }
+        .btn-info {
+            background-color: #17A2B8;
+            padding: 15px;
+            font-size: 18px;
+            margin-bottom: 10px;
         }
-        .product-card img, .vouch-card img { width: 100%; height: 160px; object-fit: cover; }
-        .product-info { padding: 10px; }
-        .product-title { font-size: 14px; margin: 0 0 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: bold;}
-        .product-price { color: var(--main-color); font-size: 14px; margin: 5px 0; font-weight: bold;}
-        .product-meta { font-size: 11px; color: gray; display: flex; justify-content: space-between; align-items: center;}
-        
-        .list-card { background: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 6px; }
-        
-        .admin-nav { display: flex; gap: 5px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
-        .admin-nav button { white-space: nowrap; }
-
-        button { cursor: pointer; padding: 10px; border-radius: 4px; border: none; font-weight: bold; }
-        .btn-main { background: var(--main-color); color: white; width: 100%; margin-top: 10px; }
-        .btn-outline { border: 1px solid var(--main-color); color: var(--main-color); background: transparent; }
-        .btn-action { background: #1e90ff; color: white; padding: 5px 10px; }
-        .btn-danger { background: #ff4757; color: white; padding: 5px 10px;}
-        .btn-vip { background: var(--vip-color); color: white; }
-        .btn-verify { background: var(--verify-color); color: white; }
-        
-        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
-        
-        .badge { color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
-        .badge-vip { background: var(--vip-color); }
-        .badge-verify { background: var(--verify-color); }
-        .flash-badge { background: #ff4757; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        .verified-icon { background: #1da1f2; color: white; border-radius: 50%; font-size: 9px; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; margin-left: 4px; vertical-align: middle; font-weight: bold; }
-
-        .rarity-badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; display: inline-block; margin-bottom: 5px; background: rgba(0,0,0,0.05); }
-        .rarity-1-of-1 { color: #ff0000; border: 1px solid #ff0000; }
-        .rarity-super { background: linear-gradient(90deg, red, orange, #e6c200, green, blue, indigo, violet); -webkit-background-clip: text; color: transparent; border: 1px solid #ccc; }
-        .rarity-mythical { color: #ff0000; border: 1px solid #ff0000; }
-        .rarity-legendary { color: #f1c40f; border: 1px solid #f1c40f; }
-        .rarity-rare { color: #0000ff; border: 1px solid #0000ff; }
-        .rarity-uncommon { color: #008000; border: 1px solid #008000; }
-        .rarity-common { color: #808080; border: 1px solid #808080; }
-        .rarity-limited { color: #000; border: 1px solid #000; }
-        .rarity-secret { color: #a9a9a9; background-color: #000000; border: 1px solid #a9a9a9; }
-        .rarity-divine { color: #ffd700; background-color: #000000; border: 1px solid #ffd700; }
-        .rarity-og { color: #ff0000; background-color: #000000; border: 1px solid #ff0000; }
-        .rarity-admin-abuse { background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); color: #ffd700; border: 1px solid #ffd700; text-shadow: 0px 0px 5px #ff0000, 0px 0px 10px #ff4500; }
-
-        .timer-text, .flash-timer-text { font-size: 11px; color: #ff4757; font-weight: bold; margin-top: 2px; }
-
-        #voucher-banner { background: #ffeb3b; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; margin-bottom: 15px; }
-
-        .chat-msg { margin-bottom: 15px; padding: 10px; border-radius: 8px; font-size: 14px; position: relative; clear: both;}
-        .chat-admin { background: #e3f2fd; float: left; border: 1px solid #bbdefb; max-width: 80%; }
-        .chat-user { background: #dcf8c6; float: right; border: 1px solid #c5e1a5; max-width: 80%; }
-        .chat-bot { background: #ebf5fb; float: left; border: 1px solid #a9cce3; max-width: 80%; border-left: 4px solid var(--ai-color); }
-        .chat-giveaway { background: #fff0f5; border: 2px solid #ff4757; width: 100%; box-sizing: border-box; float: none; clear: both; margin-bottom: 15px; border-radius: 8px; padding: 12px; }
-        .chat-date { font-size: 10px; color: gray; margin-top: 5px; display: block; text-align: right; }
-        
-        #buyer-inbox-list { max-height: 400px; overflow-y: auto; }
-        
-        .qty-control { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0; }
-        .qty-btn { background: #eee; border: 1px solid #ccc; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        
-        /* Code inserter style */
-        .code-inserter-box { display: flex; gap: 5px; margin: 10px 0; }
-        .code-inserter-box input { margin: 0; flex: 1; }
-        .code-inserter-box button { width: auto; margin: 0; padding: 10px 15px; }
+        .btn-info:hover { background-color: #138496; }
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        .terms-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+        .error-msg {
+            color: #DC3545;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .success-msg {
+            color: #28A745;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .header h2 { margin: 0; }
+        .header button { margin-bottom: 0; }
+        .error-box {
+            background: #F8D7DA;
+            color: #721C24;
+            padding: 20px;
+            border: 1px solid #F5C6CB;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .content-box {
+            background: #E9ECEF;
+            padding: 20px;
+            border-radius: 6px;
+            min-height: 200px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-style: italic;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .checkbox-container input {
+            width: 20px;
+            height: 20px;
+            margin: 0 10px 0 0;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="buyer-section" class="hidden">
-        
-        <div class="top-bar">
-            <h2 class="top-bar-title">XDRG Shop 1.5</h2>
-            <input type="text" id="buyer-search" placeholder="Search item name, seller, or ID..." onkeyup="window.searchProducts()">
-            <div id="category-bar">
-                <button class="cat-btn active" id="cat-All" onclick="window.setCategory('All')">All</button>
-                <button class="cat-btn" id="cat-Grow A Garden" onclick="window.setCategory('Grow A Garden')">Grow A Garden</button>
-                <button class="cat-btn" id="cat-Grow A Garden 2" onclick="window.setCategory('Grow A Garden 2')">Grow A Garden 2</button>
-                <button class="cat-btn" id="cat-Steal A Brainrot" onclick="window.setCategory('Steal A Brainrot')">Steal A Brainrot</button>
-                <button class="cat-btn" id="cat-Kick A Lucky Blocks" onclick="window.setCategory('Kick A Lucky Blocks')">Kick A Lucky Blocks</button>
-                <button class="cat-btn" id="cat-Don't Crash By Train For Brainrots" onclick="window.setCategory('Don\'t Crash By Train For Brainrots')">Don't Crash By Train For Brainrots</button>
-                <button class="cat-btn" id="cat-Other" onclick="window.setCategory('Other')">Other</button>
-            </div>
-        </div>
 
-        <div id="buyer-home">
-            <div id="voucher-banner" class="hidden">New User Voucher: 10% OFF! Ends in: <span id="voucher-timer"></span></div>
-            <div id="product-list" class="product-grid"></div>
-        </div>
-
-        <div id="buyer-vouches" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0;">
-                <h3 style="margin:0;">Community Vouches</h3>
-                <button class="btn-action" id="btn-add-vouch" style="margin:0; width:auto;" onclick="window.openAddVouchModal()">+ Add Proof</button>
-            </div>
-            <div id="vouch-list" class="product-grid" style="margin-top:15px;"></div>
-        </div>
-
-        <div id="buyer-cart" class="hidden">
-            <h3 style="margin-top:0;">My Cart</h3>
-            <div id="cart-list"></div>
-            
-            <div class="list-card" id="cart-checkout-card" style="margin-top:20px;">
-                <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                    <input type="text" id="voucher-input-code" placeholder="Enter Voucher Code" style="margin:0;">
-                    <button class="btn-action" style="margin:0; width:auto;" onclick="window.applyVoucher()">Apply</button>
-                </div>
-                
-                <div style="text-align: right; margin-bottom: 5px;">
-                    <label><input type="checkbox" id="midman-check" style="width:auto;" onchange="window.renderCart()"> Request Middleman (+₱5)</label>
-                    <p id="vip-free-text" class="hidden" style="color:var(--vip-color); font-size:12px; margin:0;">*Middleman is FREE for VIPs</p>
-                </div>
-                
-                <div style="text-align: right; margin-bottom: 10px; padding-top: 5px; border-top: 1px dashed #ccc;">
-                    <label style="font-weight: bold; color: var(--main-color);">
-                        <input type="checkbox" id="downpayment-check" style="width:auto;" onchange="window.renderCart()"> 50% Downpayment
-                    </label>
-                </div>
-
-                <div id="cart-total" style="text-align: right; font-weight: bold;"></div>
-                <button class="btn-main" onclick="window.openCheckoutModal()">Checkout</button>
-            </div>
-        </div>
-
-        <div id="buyer-messages" class="hidden">
-            <h3 style="margin-top:0;">Messages & Global Chat</h3>
-            
-            <div class="list-card" style="background:#ebf5fb; border-color:#a9cce3; cursor:pointer;" onclick="window.openBotChat()">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <div style="width:40px; height:40px; border-radius:50%; background:var(--ai-color); color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:18px;">AI</div>
-                    <div>
-                        <b style="color:var(--ai-color);">Xdrg Service</b>
-                        <p style="margin:0; font-size:12px; color:gray;">Check prices, info, stock & proofs...</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="list-card" style="background:#fff0f5; border-color:#ff4757; cursor:pointer;" onclick="window.openGlobalChatModal()">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <div style="width:40px; height:40px; border-radius:50%; background:#ff4757; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:18px;">🎁</div>
-                    <div>
-                        <b style="color:#ff4757;">Global Chat & Giveaways</b>
-                        <p style="margin:0; font-size:12px; color:gray;">Type ~join entry to join hot giveaways!</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="buyer-inbox-list" class="list-card"></div>
-        </div>
-
-        <div id="buyer-me" class="hidden">
-            
-            <div id="auth-section">
-                <div id="login-form" class="list-card">
-                    <h2 style="color:var(--main-color); text-align:center;">Login to XDRG Shop</h2>
-                    <input type="email" id="login-email" placeholder="Email">
-                    <input type="password" id="login-pass" placeholder="Password">
-                    <button class="btn-main" onclick="window.login()">Login</button>
-                    <p style="text-align: center; margin-top: 15px;">Need an account? <a href="#" style="color:var(--main-color);" onclick="window.toggleAuth()">Register here</a></p>
-                </div>
-
-                <div id="register-form" class="list-card hidden">
-                    <h2 style="color:var(--main-color); text-align:center;">Register</h2>
-                    <input type="text" id="reg-username" placeholder="Username">
-                    <input type="email" id="reg-email" placeholder="Email">
-                    <input type="password" id="reg-pass" placeholder="Password">
-                    <input type="password" id="reg-confirm" placeholder="Confirm Password">
-                    <button class="btn-main" onclick="window.register()">Register</button>
-                    <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="#" style="color:var(--main-color);" onclick="window.toggleAuth()">Login here</a></p>
-                </div>
-            </div>
-
-            <div id="logged-in-me" class="hidden">
-                <div class="list-card" style="display:flex; align-items:center; gap:15px; background:var(--main-color); color:white;">
-                    <div style="width:60px; height:60px; border-radius:50%; background:white; color:var(--main-color); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:bold;">Me</div>
-                    <div>
-                        <h2 style="margin:0;"><span id="buyer-email-display"></span></h2>
-                        <p style="margin:5px 0 0 0; font-size:12px;" id="buyer-email-sub"></p>
-                    </div>
-                </div>
-
-                <div class="list-card">
-                    <!-- Share & Profile Link Buttons -->
-                    <div style="display:flex; gap:10px; margin-bottom:10px;">
-                        <button class="btn-action" style="flex:1;" onclick="window.shareApp()">Share XDRG App 🚀</button>
-                        <button class="btn-action" style="flex:1; background:#2ed573;" onclick="window.shareProfileLink()">Profile Xdrg Check 🔍</button>
-                    </div>
-
-                    <!-- Code Inserter Box -->
-                    <label style="font-weight:bold; font-size:13px; color:var(--main-color);">Redeem Promo / Discount Code</label>
-                    <div class="code-inserter-box">
-                        <input type="text" id="profile-code-input" placeholder="{Code here}">
-                        <button class="btn-main" style="background:#20bf6b;" onclick="window.redeemProfileCode()">Insert</button>
-                    </div>
-
-                    <hr style="margin:15px 0;">
-
-                    <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('orders')">My Orders</button>
-                    <button class="btn-outline" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('profile-edit')">Edit Profile</button>
-                    <button id="vip-nav-btn" class="btn-verify hidden" style="width:100%; margin-bottom:10px;" onclick="window.showMeSubTab('vip-dashboard')">Seller Dashboard</button>
-                    <button id="buy-vip-btn" class="btn-vip" style="width:100%; margin-bottom:10px;" onclick="window.openVipModal()">Upgrade to VIP</button>
-                    <button class="btn-main" style="background:#555;" onclick="window.logout()">Logout</button>
-                </div>
-
-                <div id="me-orders" class="hidden list-card">
-                    <h3>My Purchases</h3>
-                    <div id="buyer-order-list"></div>
-                </div>
-
-                <div id="me-profile-edit" class="hidden list-card">
-                    <h3>Profile Settings</h3>
-                    <label>Username</label>
-                    <input type="text" id="profile-username">
-                    <label>Phone Number</label>
-                    <input type="text" id="profile-phone" placeholder="e.g. 09123456789">
-                    
-                    <h4 style="margin-bottom: 5px; color:var(--main-color);">Online Payment Info (For Sellers)</h4>
-                    <label>Maya Account Name</label>
-                    <input type="text" id="profile-maya-name" placeholder="e.g. JUAN DELA CRUZ">
-                    <label>Maya Number</label>
-                    <input type="text" id="profile-maya-number" placeholder="e.g. 09123456789">
-
-                    <p id="vip-discount-text" class="hidden" style="color:green; font-weight:bold;">15% Lifetime Discount Active (VIP)</p>
-                    <button class="btn-main" onclick="window.saveProfile()">Save Profile</button>
-                    
-                    <hr style="margin: 30px 0;">
-                    
-                    <div id="seller-verification-section">
-                        <h3 style="color:var(--verify-color);">Become a Seller</h3>
-                        <p style="font-size:14px; color:gray;">To sell, you must request verification. Admin will review and send a code to your Messages tab.</p>
-                        
-                        <div id="request-code-area">
-                            <button id="btn-request-seller" class="btn-outline" style="width:100%; margin-bottom:15px;" onclick="window.requestSellerStatus()">1. Request Verification</button>
-                        </div>
-
-                        <label>2. Input Verification Code (Check Messages)</label>
-                        <input type="text" id="verify-code-input" placeholder="Insert code here">
-                        <button class="btn-verify" style="width:100%;" onclick="window.verifySellerCode()">Verify Code</button>
-                        <p id="verify-timer" style="color:red; font-weight:bold; text-align:center;"></p>
-                    </div>
-                </div>
-
-                <div id="me-vip-dashboard" class="hidden list-card">
-                    <h3 style="color:var(--verify-color);">Seller Dashboard</h3>
-
-                    <!-- Seller Sub Navigation -->
-                    <div class="admin-nav" style="margin-bottom:15px;">
-                        <button class="btn-action" onclick="window.showSellerSub('publish')">Publish Item</button>
-                        <button class="btn-action" style="background:#2ed573;" onclick="window.showSellerSub('orders')">Seller Orders 🛒</button>
-                        <button class="btn-action" style="background:#ff4757;" onclick="window.showSellerSub('flashdeal')">Flash Deal Sale ⚡</button>
-                        <button class="btn-action" style="background:#9c88ff;" onclick="window.showSellerSub('giveaway')">Giveaway 🎁</button>
-                    </div>
-
-                    <!-- 1. Publish Tab -->
-                    <div id="seller-tab-publish">
-                        <div style="background:#f9f9f9; padding:15px; border-radius:5px; margin-bottom:15px;">
-                            <h4 style="margin-top:0;">Publish Item</h4>
-                            <input type="text" id="vip-prod-name" placeholder="Product Name">
-                            <select id="vip-prod-category">
-                                <option value="Grow A Garden">Grow A Garden</option>
-                                <option value="Grow A Garden 2">Grow A Garden 2</option>
-                                <option value="Steal A Brainrot">Steal A Brainrot</option>
-                                <option value="Kick A Lucky Blocks">Kick A Lucky Blocks</option>
-                                <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
-                                <option value="Other">Other</option>
-                            </select>
-                            <select id="vip-prod-rarity" onchange="window.toggleTimer('vip')">
-                                <option value="">Rarity (Optional)</option>
-                                <option value="Secret">Secret</option>
-                                <option value="Divine">Divine</option>
-                                <option value="OG">OG</option>
-                                <option value="Admin Abuse">Admin Abuse</option>
-                                <option value="1 of 1">1 of 1</option>
-                                <option value="Limited">Limited</option>
-                                <option value="Super">Super</option>
-                                <option value="Mythical">Mythical</option>
-                                <option value="Legendary">Legendary</option>
-                                <option value="Rare">Rare</option>
-                                <option value="Uncommon">Uncommon</option>
-                                <option value="Common">Common</option>
-                            </select>
-                            <div id="vip-timer-group" class="hidden">
-                                <label>Limited Timer (Optional End Date & Time)</label>
-                                <input type="datetime-local" id="vip-prod-timer">
-                            </div>
-                            
-                            <hr style="margin: 15px 0;">
-                            <label style="font-weight:bold; font-size:14px; color:var(--main-color);">Pricing & Trade</label>
-                            <input type="number" id="vip-prod-money" placeholder="Money (₱) - Optional">
-                            <input type="number" id="vip-prod-sheckles" placeholder="Sheckles (¢) - Optional">
-                            
-                            <div style="margin-bottom:10px;">
-                                <label style="color:#ff4757; font-weight:bold; font-size:13px;">Individual Flash Sale (Optional)</label>
-                                <select id="vip-flash-pct" class="flash-select" onchange="window.toggleFlashTimer('vip')"></select>
-                                <div id="vip-flash-timer-group" class="hidden" style="margin-top:5px;">
-                                    <label style="font-size:12px;">Flash Sale End Date & Time</label>
-                                    <input type="datetime-local" id="vip-flash-timer" style="margin-bottom:0;">
-                                </div>
-                            </div>
-
-                            <div id="vip-trade-container" style="margin-bottom:10px;"></div>
-                            <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('vip')">+ Add Trade</button>
-                            <hr style="margin: 15px 0;">
-
-                            <textarea id="vip-prod-info" placeholder="Product Description"></textarea>
-                            <input type="number" id="vip-prod-stocks" placeholder="Number of Stocks">
-                            <label>Product Image (Optional)</label>
-                            <input type="file" id="vip-prod-image" accept="image/*">
-                            <button class="btn-verify" style="width: 100%;" onclick="window.processImageAndAddProduct('vip')">Publish Product</button>
-                        </div>
-
-                        <div style="background:#f9f9f9; padding:15px; border-radius:5px; margin-bottom:15px;">
-                            <h4 style="margin-top:0;">My Published Items</h4>
-                            <div id="vip-my-products-list"></div>
-                        </div>
-
-                        <div style="background:#fff3cd; padding:15px; border-radius:5px;">
-                            <h4 style="margin-top:0;">Voucher Creator</h4>
-                            <input type="text" id="vip-voucher-name" placeholder="Voucher Name / Code (e.g. SAVE10)">
-                            <input type="number" id="vip-voucher-pct" placeholder="% Off (e.g. 1% to 90%)">
-                            <button class="btn-main" onclick="window.createVoucher('vip')">Create Voucher</button>
-                        </div>
-                    </div>
-
-                    <!-- 2. Seller Orders Tab -->
-                    <div id="seller-tab-orders" class="hidden">
-                        <h4>Orders for My Products</h4>
-                        <div id="seller-orders-list"></div>
-                    </div>
-
-                    <!-- 3. Flash Deal Sale (All Products) -->
-                    <div id="seller-tab-flashdeal" class="hidden">
-                        <div style="background:#ffeaa7; padding:15px; border-radius:5px; border:1px solid #fdcb6e;">
-                            <h4 style="margin-top:0; color:#d63031;">⚡ Global Flash Deal Sale (All My Products)</h4>
-                            <p style="font-size:12px; color:#636e72;">Set a store-wide discount percentage across ALL products in your catalog.</p>
-                            
-                            <label>Flash Deal Discount (% Off)</label>
-                            <input type="number" id="seller-global-flash-pct" placeholder="1 to 100" min="1" max="100">
-                            
-                            <label>Expiration Date & Time</label>
-                            <input type="datetime-local" id="seller-global-flash-expiry">
-
-                            <button class="btn-main" style="background:#ff4757;" onclick="window.applyGlobalFlashDeal('seller')">Apply Store Flash Deal</button>
-                            <button class="btn-outline" style="width:100%; margin-top:5px;" onclick="window.clearGlobalFlashDeal('seller')">Remove Store Flash Deal</button>
-                        </div>
-                    </div>
-
-                    <!-- 4. Giveaway Creator -->
-                    <div id="seller-tab-giveaway" class="hidden">
-                        <div style="background:#fce4ec; padding:15px; border-radius:5px; border:1px solid #f8bbd0;">
-                            <h4 style="margin-top:0; color:#c2185b;">🎁 Create Product Giveaway</h4>
-                            <label>Product Name</label>
-                            <input type="text" id="giveaway-prod-name" placeholder="e.g. Secret Dragon Fruit">
-                            
-                            <label>End Time & Date</label>
-                            <input type="datetime-local" id="giveaway-end-date">
-
-                            <button class="btn-main" style="background:#e91e63;" onclick="window.createGiveaway('seller')">Launch Giveaway</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bottom-nav">
-            <div class="nav-item active" id="nav-home" onclick="window.showBuyerTab('home')">
-                <b style="font-size:20px;">🏠</b><span>Home</span>
-            </div>
-            <div class="nav-item" id="nav-vouches" onclick="window.showBuyerTab('vouches')">
-                <b style="font-size:20px;">🌟</b><span>Vouches</span>
-            </div>
-            <div class="nav-item" id="nav-cart" onclick="window.showBuyerTab('cart')">
-                <b style="font-size:20px;">🛒</b><span>Cart</span>
-                <div class="nav-badge hidden" id="cart-badge">0</div>
-            </div>
-            <div class="nav-item" id="nav-messages" onclick="window.showBuyerTab('messages')">
-                <b style="font-size:20px;">💬</b><span>Messages</span>
-                <div class="nav-badge hidden" id="msg-badge">!</div>
-            </div>
-            <div class="nav-item" id="nav-me" onclick="window.showBuyerTab('me')">
-                <b style="font-size:20px;">👤</b><span>Me</span>
-            </div>
+    <div id="authView" class="view active">
+        <h2>Login / Sign-up</h2>
+        <div id="authMessage"></div>
+        <input type="email" id="email" placeholder="Email (e.g. user@gmail.com)" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <div class="button-group">
+            <button id="loginBtn" onclick="handleLogin()">Log In</button>
+            <button id="signupBtn" onclick="handleSignUp()" class="btn-secondary">Sign Up</button>
         </div>
     </div>
 
-    <div id="admin-section" class="hidden list-card" style="margin-top:20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div id="termsView" class="view">
+        <h2>Terms and Conditions</h2>
+        <div class="terms-box">
+            <p><strong>1.</strong> Don't copy-paste the system stock</p>
+            <p><strong>2.</strong> xdrg owns the system, give him credit</p>
+            <p><strong>3.</strong> Respect admins and members</p>
+            <p><strong>4.</strong> Report bug/issues if the app isn't working</p>
+        </div>
+        <label class="checkbox-container">
+            <input type="checkbox" id="termsCheck" onchange="checkTerms()">
+            <span>I agree to xdrg terms and conditions</span>
+        </label>
+        <button class="btn-danger" onclick="handleLogout()">Cancel & Logout</button>
+    </div>
+
+    <div id="dashboardView" class="view">
+        <div class="header">
+            <h2>Dashboard</h2>
+            <button onclick="handleLogout()" class="btn-danger" style="width: auto; padding: 8px 15px;">Logout</button>
+        </div>
+        <input type="text" id="searchInput" placeholder="Search a restocker game..." onkeyup="filterGames()">
+        
+        <div id="gameList">
+            <button class="btn-info game-btn" onclick="openGame('gag')">Grow A Garden (GAG)</button>
+            <button class="btn-info game-btn" onclick="openGame('gag2')">Grow A Garden 2 (GAG2)</button>
+            <button class="btn-info game-btn" onclick="openGame('gh')">Garden Horizon (GH)</button>
+        </div>
+        
+        <div class="button-group" style="margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px;">
+            <button onclick="showView('reportView')">Report Bug</button>
+            <button id="adminBtn" class="btn-success" style="display: none;" onclick="showView('adminView')">Admin Panel</button>
+        </div>
+    </div>
+
+    <div id="adminView" class="view">
+        <div class="header">
             <h2>Admin Panel</h2>
-            <button style="background:#555; color:white;" onclick="window.logout()">Logout</button>
+            <button class="btn-secondary" onclick="showView('dashboardView')" style="width: auto; padding: 8px 15px;">Back</button>
+        </div>
+        
+        <div class="terms-box">
+            <h3>System Status Toggles</h3>
+            <button id="btnToggleGAG" onclick="toggleSystem('gag')">GAG: ON</button>
+            <button id="btnToggleGAG2" onclick="toggleSystem('gag2')">GAG2: ON</button>
+            <button id="btnToggleGH" onclick="toggleSystem('gh')">GH: ON</button>
         </div>
 
-        <div class="admin-nav">
-            <button class="btn-outline" onclick="window.showAdminTab('admin-manage-products')">Products</button>
-            <button class="btn-outline" onclick="window.showAdminTab('admin-add-product')">Add Item</button>
-            <button class="btn-outline" onclick="window.showAdminTab('admin-manage-orders')">Orders</button>
-            <button class="btn-outline" onclick="window.showAdminTab('admin-offers-tab')">Offers</button>
-            <button class="btn-outline" onclick="window.showAdminTab('admin-manage-users')">Users</button>
-            <button class="btn-outline" onclick="window.showAdminTab('admin-vouchers-tab')">Vouchers</button>
-            <button class="btn-outline" style="background:#ff4757; color:white;" onclick="window.showAdminTab('admin-flashdeal-tab')">Flash Deal Sale ⚡</button>
-            <button class="btn-outline" style="background:#e91e63; color:white;" onclick="window.showAdminTab('admin-giveaway-tab')">Giveaway 🎁</button>
-            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.showAdminTab('admin-messages-tab')">Chats</button>
-        </div>
-
-        <div id="admin-add-product" class="hidden">
-            <h3>Add Product to Shop</h3>
-            <input type="text" id="admin-prod-name" placeholder="Product Name">
-            <select id="admin-prod-category">
-                <option value="Grow A Garden">Grow A Garden</option>
-                <option value="Grow A Garden 2">Grow A Garden 2</option>
-                <option value="Steal A Brainrot">Steal A Brainrot</option>
-                <option value="Kick A Lucky Blocks">Kick A Lucky Blocks</option>
-                <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
-                <option value="Other">Other</option>
-            </select>
-            <select id="admin-prod-rarity" onchange="window.toggleTimer('admin')">
-                <option value="">Rarity (Optional)</option>
-                <option value="Secret">Secret</option>
-                <option value="Divine">Divine</option>
-                <option value="OG">OG</option>
-                <option value="Admin Abuse">Admin Abuse</option>
-                <option value="1 of 1">1 of 1</option>
-                <option value="Limited">Limited</option>
-                <option value="Super">Super</option>
-                <option value="Mythical">Mythical</option>
-                <option value="Legendary">Legendary</option>
-                <option value="Rare">Rare</option>
-                <option value="Uncommon">Uncommon</option>
-                <option value="Common">Common</option>
-            </select>
-            <div id="admin-timer-group" class="hidden">
-                <label>Limited Timer (Optional End Date & Time)</label>
-                <input type="datetime-local" id="admin-prod-timer">
-            </div>
-            
-            <hr style="margin: 15px 0;">
-            <label style="font-weight:bold; font-size:14px; color:var(--main-color);">Pricing & Trade</label>
-            <input type="number" id="admin-prod-money" placeholder="Money (₱) - Optional">
-            <input type="number" id="admin-prod-sheckles" placeholder="Sheckles (¢) - Optional">
-            
-            <div style="margin-bottom:10px;">
-                <label style="color:#ff4757; font-weight:bold; font-size:13px;">Flash Sale (Optional)</label>
-                <select id="admin-flash-pct" class="flash-select" onchange="window.toggleFlashTimer('admin')"></select>
-                <div id="admin-flash-timer-group" class="hidden" style="margin-top:5px;">
-                    <label style="font-size:12px;">Flash Sale End Date & Time</label>
-                    <input type="datetime-local" id="admin-flash-timer" style="margin-bottom:0;">
-                </div>
-            </div>
-
-            <div id="admin-trade-container" style="margin-bottom:10px;"></div>
-            <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('admin')">+ Add Trade</button>
-            <hr style="margin: 15px 0;">
-
-            <textarea id="admin-prod-info" placeholder="Product Description"></textarea>
-            <input type="number" id="admin-prod-stocks" placeholder="Number of Stocks">
-            <label>Product Image</label>
-            <input type="file" id="admin-prod-image" accept="image/*">
-            <button class="btn-main" onclick="window.processImageAndAddProduct('admin')">Add Product</button>
-        </div>
-
-        <div id="admin-manage-products" class="hidden">
-            <h3>All Products</h3>
-            <div id="admin-product-list"></div>
-        </div>
-
-        <div id="admin-manage-orders" class="hidden">
-            <h3>Customer Orders</h3>
-            <div id="admin-order-list"></div>
-        </div>
-
-        <div id="admin-offers-tab" class="hidden">
-            <h3>Trade Offers</h3>
-            <div id="admin-offers-list"></div>
-        </div>
-
-        <div id="admin-manage-users" class="hidden">
+        <div class="terms-box">
             <h3>User Management</h3>
-            <div id="admin-user-list"></div>
+            <button class="btn-danger" onclick="alert('Feature coming soon')">Kick/Ban Users</button>
         </div>
 
-        <div id="admin-vouchers-tab" class="hidden">
-            <h3>Voucher Creator</h3>
-            <div class="list-card">
-                <input type="text" id="admin-voucher-name" placeholder="Voucher Name / Code (e.g. SAVE10)">
-                <input type="number" id="admin-voucher-pct" placeholder="% Off (e.g. 1% to 90%)">
-                <button class="btn-main" onclick="window.createVoucher('admin')">Create Voucher</button>
-            </div>
-            <h4>Active Vouchers</h4>
-            <div id="admin-voucher-list"></div>
-        </div>
-
-        <div id="admin-flashdeal-tab" class="hidden">
-            <h3>Admin Flash Deal Sale (All Store Products)</h3>
-            <div class="list-card" style="background:#ffeaa7;">
-                <label>Flash Deal Discount (% Off)</label>
-                <input type="number" id="admin-global-flash-pct" placeholder="1 to 100" min="1" max="100">
-                <label>Expiration Date & Time</label>
-                <input type="datetime-local" id="admin-global-flash-expiry">
-                <button class="btn-main" style="background:#ff4757;" onclick="window.applyGlobalFlashDeal('admin')">Apply Global Admin Flash Deal</button>
-                <button class="btn-outline" style="width:100%; margin-top:5px;" onclick="window.clearGlobalFlashDeal('admin')">Remove Global Flash Deal</button>
+        <div class="terms-box">
+            <h3>Inbox (Reports)</h3>
+            <div id="reportsContainer">
+                <p style="color: #666; font-style: italic;">No new reports.</p>
             </div>
         </div>
+    </div>
 
-        <div id="admin-giveaway-tab" class="hidden">
-            <h3>Admin Giveaway Manager</h3>
-            <div class="list-card" style="background:#fce4ec;">
-                <label>Product Name</label>
-                <input type="text" id="admin-giveaway-prod-name" placeholder="e.g. Super Secret Brainrot Item">
-                <label>End Time & Date</label>
-                <input type="datetime-local" id="admin-giveaway-end-date">
-                <button class="btn-main" style="background:#e91e63;" onclick="window.createGiveaway('admin')">Launch Admin Giveaway</button>
+    <div id="reportView" class="view">
+        <h2>Report Bug</h2>
+        <textarea id="bugReportText" placeholder="Describe the issue clearly..." rows="5"></textarea>
+        <div class="button-group">
+            <button onclick="submitReport()">Submit Report</button>
+            <button class="btn-secondary" onclick="showView('dashboardView')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="gameView" class="view">
+        <div class="header">
+            <h2 id="gameTitle">Game Stock Notifier</h2>
+            <button class="btn-secondary" onclick="showView('dashboardView')" style="width: auto; padding: 8px 15px;">Back</button>
+        </div>
+
+        <div id="gameError" class="error-box" style="display: none;">
+            <h3>System Offline</h3>
+            <p>Sorry, this notifier is currently unavailable. Please wait for the admin to enable it.</p>
+        </div>
+
+        <div id="gameContent">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; background: #eee; padding: 10px; border-radius: 5px;">
+                <span><strong>Credit:</strong> xdrg</span>
+                <span><strong>Time:</strong> <span id="gameTime"></span></span>
+            </div>
+            
+            <div id="gameButtons" class="button-group">
+            </div>
+            
+            <div class="content-box" id="dataContainer">
+                Fetching Telegram API data...
             </div>
         </div>
-
-        <div id="admin-messages-tab" class="hidden">
-            <h3>Chats</h3>
-            <div id="admin-chat-user-list" class="list-card"></div>
-        </div>
     </div>
+
 </div>
 
-<!-- MODALS -->
-<div id="product-modal" class="modal hidden">
-    <div class="modal-content">
-        <div id="modal-product-details"></div>
-        <button onclick="window.closeModal('product-modal')" class="btn-outline" style="margin-top:20px; width:100%;">Close</button>
-    </div>
-</div>
-
-<div id="offer-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2 style="color:var(--main-color); margin-top:0;">Make an Offer</h2>
-        <p style="font-size:14px;">Propose a trade for this item.</p>
-        
-        <div id="offer-items-container" style="margin-bottom:10px;"></div>
-        <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:15px;" onclick="window.addOfferItemInput()">+ Add Item</button>
-        
-        <label style="display:block; margin-top:10px; font-weight:bold;">More / Add Notes</label>
-        <textarea id="offer-text-input" placeholder="E.g. Adding extra items..." rows="2"></textarea>
-        <button class="btn-main" onclick="window.submitOffer()">Submit Offer</button>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('offer-modal')">Cancel</button>
-    </div>
-</div>
-
-<div id="add-vouch-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2 style="margin-top:0; color:var(--main-color);">Add Proof / Vouch</h2>
-        <label>Item Name or Item ID</label>
-        <input type="text" id="vouch-item-name" placeholder="Item Name or ID (e.g. Dragon Breath)">
-        <label>Buyer Name</label>
-        <input type="text" id="vouch-buyer-name" placeholder="Name of Buyer (e.g. John Doe)">
-        <label>Upload Proof Image</label>
-        <input type="file" id="vouch-image" accept="image/*">
-        <label>Caption</label>
-        <textarea id="vouch-caption" placeholder="E.g. Fast transaction, trusted buyer!"></textarea>
-        <button class="btn-main" onclick="window.saveVouch()">Submit Vouch</button>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('add-vouch-modal')">Cancel</button>
-    </div>
-</div>
-
-<div id="checkout-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2 style="color:var(--main-color); margin-top:0;">Confirm Checkout</h2>
-        
-        <div id="checkout-maya-info"></div>
-
-        <p>Total to Pay Now: <b id="checkout-final-amount" style="color:var(--main-color); font-size:24px;"></b></p>
-        <p id="checkout-balance-info" class="hidden" style="color:red; font-size:14px; font-weight:bold;"></p>
-        
-        <p style="font-size:14px;">Please ensure your phone number in your profile is correct.</p>
-        <button class="btn-main" onclick="window.confirmCheckout()">Place Order</button>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('checkout-modal')">Cancel</button>
-    </div>
-</div>
-
-<div id="vip-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2 style="color:var(--vip-color); margin-top:0;">Upgrade to VIP</h2>
-        <p><b>Benefits:</b></p>
-        <ul>
-            <li>15% Lifetime Discount</li>
-            <li>Free Middleman Services</li>
-        </ul>
-        <p><b>Instructions:</b> Send <b>₱159</b> to Maya: <b>639519500345</b></p>
-        <button class="btn-vip" style="width:100%;" onclick="window.confirmVipPurchase()">I have paid, Request VIP</button>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('vip-modal')">Cancel</button>
-    </div>
-</div>
-
-<div id="edit-product-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2>Edit Product</h2>
-        <input type="hidden" id="edit-prod-id">
-        <label>Name</label><input type="text" id="edit-prod-name">
-        <label>Category</label>
-        <select id="edit-prod-category">
-            <option value="Grow A Garden">Grow A Garden</option>
-            <option value="Grow A Garden 2">Grow A Garden 2</option>
-            <option value="Steal A Brainrot">Steal A Brainrot</option>
-            <option value="Kick A Lucky Blocks">Kick A Lucky Blocks</option>
-            <option value="Don't Crash By Train For Brainrots">Don't Crash By Train For Brainrots</option>
-            <option value="Other">Other</option>
-        </select>
-        <label>Rarity</label>
-        <select id="edit-prod-rarity" onchange="window.toggleTimer('edit')">
-            <option value="">Rarity (Optional)</option>
-            <option value="Secret">Secret</option>
-            <option value="Divine">Divine</option>
-            <option value="OG">OG</option>
-            <option value="Admin Abuse">Admin Abuse</option>
-            <option value="1 of 1">1 of 1</option>
-            <option value="Limited">Limited</option>
-            <option value="Super">Super</option>
-            <option value="Mythical">Mythical</option>
-            <option value="Legendary">Legendary</option>
-            <option value="Rare">Rare</option>
-            <option value="Uncommon">Uncommon</option>
-            <option value="Common">Common</option>
-        </select>
-        <div id="edit-timer-group" class="hidden">
-            <label>Limited Timer (Optional End Date & Time)</label>
-            <input type="datetime-local" id="edit-prod-timer">
-        </div>
-        
-        <hr style="margin: 15px 0;">
-        <label>Money (₱)</label><input type="number" id="edit-prod-money">
-        <label>Sheckles (¢)</label><input type="number" id="edit-prod-sheckles">
-        
-        <div style="margin-bottom:10px;">
-            <label style="color:#ff4757; font-weight:bold; font-size:13px;">Flash Sale (Optional)</label>
-            <select id="edit-flash-pct" class="flash-select" onchange="window.toggleFlashTimer('edit')"></select>
-            <div id="edit-flash-timer-group" class="hidden" style="margin-top:5px;">
-                <label style="font-size:12px;">Flash Sale End Date & Time</label>
-                <input type="datetime-local" id="edit-flash-timer" style="margin-bottom:0;">
-            </div>
-        </div>
-
-        <div id="edit-trade-container" style="margin-bottom:10px;"></div>
-        <button class="btn-outline" style="font-size:12px; padding:5px; margin-bottom:10px;" onclick="window.addTradeInput('edit')">+ Add Trade</button>
-        <hr style="margin: 15px 0;">
-
-        <label>Description</label><textarea id="edit-prod-info"></textarea>
-        <label>Stocks</label><input type="number" id="edit-prod-stocks">
-        <button class="btn-main" onclick="window.saveEditedProduct()">Save Changes</button>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('edit-product-modal')">Cancel</button>
-    </div>
-</div>
-
-<div id="bot-chat-modal" class="modal hidden">
-    <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
-        <h3 style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px; color:var(--ai-color);">Xdrg Service (AI)</h3>
-        <div id="bot-chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;"></div>
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <input type="text" id="bot-chat-input" placeholder="Ask about item IDs, prices..." style="margin:0; flex:1;">
-            <button class="btn-action" style="margin:0; width:auto; padding:10px 20px;" onclick="window.sendBotMessage()">Send</button>
-        </div>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('bot-chat-modal')">Close</button>
-    </div>
-</div>
-
-<div id="global-chat-modal" class="modal hidden">
-    <div class="modal-content" style="height: 85vh; display: flex; flex-direction: column;">
-        <h3 style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px; color:#ff4757;">Global Chat & Giveaways</h3>
-        <div id="global-chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;"></div>
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <input type="text" id="global-chat-input" placeholder="Type a msg or ~join entry" style="margin:0; flex:1;">
-            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px; background:#ff4757;" onclick="window.sendGlobalMessage()">Send</button>
-        </div>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('global-chat-modal')">Close</button>
-    </div>
-</div>
-
-<div id="admin-chat-modal" class="modal hidden">
-    <div class="modal-content" style="height: 80vh; display: flex; flex-direction: column;">
-        <h3 id="chat-target-name" style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px;">Chat</h3>
-        
-        <div id="chat-history" style="flex:1; overflow-y:auto; padding:10px 0; border-bottom:1px solid #ddd;"></div>
-        
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <input type="text" id="admin-chat-input" placeholder="Type a message..." style="margin:0; flex:1;">
-            <button class="btn-main" style="margin:0; width:auto; padding:10px 20px;" onclick="window.sendAdminMessage()">Send</button>
-        </div>
-        <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.closeModal('admin-chat-modal')">Close Chat</button>
-    </div>
-</div>
-
-<div id="send-voucher-modal" class="modal hidden">
-    <div class="modal-content">
-        <h3 style="margin-top:0;">Send Voucher to Buyer</h3>
-        <div id="send-voucher-list"></div>
-        <button class="btn-outline" style="width:100%; margin-top:15px;" onclick="window.closeModal('send-voucher-modal')">Cancel</button>
-    </div>
-</div>
-
-<script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-    const supabaseUrl = "https://dctktojorwznvclkpoiu.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjdGt0b2pvcnd6bnZjbGtwb2l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4MzAwMDAsImV4cCI6MjA5OTQwNjAwMH0.4vd9ci4vJHGRiMkcdKWDteasfL8IRQXS9smHwUa5H8s";
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const ADMIN_EMAIL = "xdrgxdragon@gmail.com";
-    const MEDIAFIRE_APK_URL = "https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file";
+<script>
+    const supabaseUrl = 'https://iisffbjgltxslkkkxlsd.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpc2ZmYmpnbHR4c2xra2t4bHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNDQ4OTcsImV4cCI6MjEwMDkyMDg5N30.1RLkoz6hUMbhCNMr4BWDEqtb4LOM-XnwtBRuK39-TEk';
     
-    let users = { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox: [], botChat: [], mayaName: "ANDREA CASTRENCE", mayaNumber: "639519500345", redeemedCodes: [] } }; 
-    let products = []; 
-    let userCarts = {};
-    let orders = [];
-    let vouchers = [];
-    let vouches = [];
-    let offers = [];
-    let giveaways = [];
-    let globalChatMessages = [];
-    
-    let currentUser = localStorage.getItem('xdrg_logged_in_user');
-    let tempCheckoutTotal = 0;
-    let tempBalance = 0;
-    let currentActiveTab = 'home';
-    let isAdminView = false;
-    let chatTargetUser = "";
-    let currentCategory = "All";
-    
-    window.tempSelectedQty = 1;
-    window.currentViewProductId = null;
-    window.appliedVoucher = null;
-    window.tempVoucherTarget = null;
-
-    window.formatNum = function(num) {
-        if (!num && num !== 0) return 0;
-        if (num >= 1e12) return (num / 1e12).toFixed(1).replace(/\.0$/, '') + 'T';
-        if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
-        if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
-        if (num >= 1e3) return (num / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
-        return num.toString();
-    }
-
-    function populateFlash() {
-        let html = '<option value="0">No Flash Sale</option>';
-        [1,5,10,15,20,25,30,40,50,60,70,80,90,99].forEach(v => {
-            html += `<option value="${v}">${v}% OFF</option>`;
-        });
-        document.querySelectorAll('.flash-select').forEach(el => el.innerHTML = html);
-    }
-    populateFlash();
-
-    function syncStateFromDB(data) {
-        if (!data) return;
-        users = data.users || { [ADMIN_EMAIL]: { pass: "5587", username: "Admin_xdrg", phone: "", isVIP: true, isVerifiedSeller: true, inbox:[], botChat:[], mayaName: "ANDREA CASTRENCE", mayaNumber: "639519500345", redeemedCodes: [] } };
-        products = data.products || [];
-        userCarts = data.userCarts || {};
-        orders = data.orders || [];
-        vouchers = data.vouchers || [];
-        vouches = data.vouches || [];
-        offers = data.offers || [];
-        giveaways = data.giveaways || [];
-        globalChatMessages = data.globalChatMessages || [];
-        
-        for(let k in users) { 
-            if(!users[k].inbox) users[k].inbox = []; 
-            if(!users[k].botChat) users[k].botChat = [];
-            if(!users[k].redeemedCodes) users[k].redeemedCodes = [];
+    let supabase = null;
+    try {
+        if (typeof window.supabase !== 'undefined') {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         }
+    } catch (e) {
+        console.warn("Supabase blocked by local file viewer. Running in offline bypass mode.");
+    }
 
-        if (currentUser && users[currentUser]) {
-            if(isAdminView) {
-                if(currentActiveTab === 'admin-manage-products') window.renderAdminProducts();
-                if(currentActiveTab === 'admin-manage-orders') window.renderAdminOrders();
-                if(currentActiveTab === 'admin-offers-tab') window.renderAdminOffers();
-                if(currentActiveTab === 'admin-manage-users') window.renderAdminUsers();
-                if(currentActiveTab === 'admin-vouchers-tab') window.renderAdminVouchers();
-                if(currentActiveTab === 'admin-messages-tab') window.renderAdminChatList();
-                if(chatTargetUser) window.renderAdminChatHistory(); 
-            } else {
-                window.updateUserNavDisplay();
-                window.updateBadges();
-                if(currentActiveTab === 'home') window.searchProducts();
-                if(currentActiveTab === 'vouches') window.renderVouches();
-                if(currentActiveTab === 'cart') window.renderCart();
-                if(currentActiveTab === 'me') window.loadProfile();
-                if(currentActiveTab === 'messages') window.renderBuyerMessages();
-            }
+    const ADMIN_EMAIL = 'xdrgxdragon@gmail.com';
+    let currentUser = null;
+    let currentGame = null;
+    let timeInterval = null;
+
+    const systemStatus = { gag: true, gag2: true, gh: true };
+
+    function showView(viewId) {
+        document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        if (viewId !== 'gameView' && timeInterval) clearInterval(timeInterval);
+    }
+
+    function showMessage(elementId, text, isError = true) {
+        const el = document.getElementById(elementId);
+        el.innerText = text;
+        el.className = isError ? 'error-msg' : 'success-msg';
+    }
+
+    function toggleButtons(disabled) {
+        document.getElementById('loginBtn').disabled = disabled;
+        document.getElementById('signupBtn').disabled = disabled;
+    }
+
+    // BYPASS LOGIC: Forces the app to open even if the database fails
+    function forceEnterApp(email) {
+        currentUser = { email: email };
+        document.getElementById('authMessage').innerText = '';
+        
+        if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+            document.getElementById('adminBtn').style.display = 'block';
         } else {
-            if(currentActiveTab === 'home') window.searchProducts();
-            if(currentActiveTab === 'vouches') window.renderVouches();
+            document.getElementById('adminBtn').style.display = 'none';
         }
         
-        window.renderGlobalChat();
+        showView('termsView');
     }
 
-    async function initDB() {
-        const { data, error } = await supabase.from('shop_data').select('data').eq('id', 1).single();
-        if (data && data.data) {
-            syncStateFromDB(data.data);
-        }
+    async function handleSignUp() {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
         
-        if (currentUser && users[currentUser]) {
-            routeUser(currentUser);
-        } else {
-            document.getElementById('admin-section').classList.add('hidden');
-            document.getElementById('buyer-section').classList.remove('hidden');
-            window.showBuyerTab('home');
-        }
-        
-        supabase.channel('public:shop_data')
-            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'shop_data', filter: 'id=eq.1' }, payload => {
-                syncStateFromDB(payload.new.data);
-            }).subscribe();
-    }
-    initDB();
-
-    window.saveDatabase = function() {
-        return supabase.from('shop_data').upsert({ id: 1, data: { users, products, userCarts, orders, vouchers, vouches, offers, giveaways, globalChatMessages } }).then(({ error }) => { if (error) throw error; });
-    }
-
-    window.toggleTimer = function(prefix) {
-        let val = document.getElementById(`${prefix}-prod-rarity`).value;
-        let group = document.getElementById(`${prefix}-timer-group`);
-        if(val === 'Limited') { group.classList.remove('hidden'); }
-        else { group.classList.add('hidden'); }
-    }
-
-    window.toggleFlashTimer = function(prefix) {
-        let val = parseInt(document.getElementById(`${prefix}-flash-pct`).value);
-        let group = document.getElementById(`${prefix}-flash-timer-group`);
-        if(val > 0) { group.classList.remove('hidden'); }
-        else { group.classList.add('hidden'); }
-    }
-
-    window.addTradeInput = function(prefix) {
-        let container = document.getElementById(`${prefix}-trade-container`);
-        let div = document.createElement('div');
-        div.style.marginBottom = "5px";
-        div.innerHTML = `<input type="text" class="${prefix}-trade-input" placeholder="e.g. Dragon Breath 1x" style="width:75%; display:inline-block; margin:0;"><button type="button" class="btn-danger" style="width:20%; display:inline-block; margin:0 0 0 5%;" onclick="this.parentElement.remove()">X</button>`;
-        container.appendChild(div);
-    }
-
-    window.addOfferItemInput = function() {
-        let container = document.getElementById('offer-items-container');
-        let div = document.createElement('div');
-        div.style.marginBottom = "5px";
-        div.style.display = "flex";
-        div.style.gap = "5px";
-        div.innerHTML = `
-            <input type="text" class="offer-item-name" placeholder="e.g. Dragon Breath" style="width:60%; margin:0;">
-            <input type="text" class="offer-item-qty" placeholder="e.g. 1x" style="width:20%; margin:0;">
-            <button type="button" class="btn-danger" style="width:15%; margin:0;" onclick="this.parentElement.remove()">X</button>
-        `;
-        container.appendChild(div);
-    }
-
-    // Share XDRG App logic
-    window.shareApp = function() {
-        const text = `Check out XDRG Shop App: ${MEDIAFIRE_APK_URL}`;
-        if (navigator.share) {
-            navigator.share({
-                title: 'XDRG Shop APK',
-                text: 'Download XDRG Shop Android App',
-                url: MEDIAFIRE_APK_URL
-            }).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(MEDIAFIRE_APK_URL);
-            alert("App link copied to clipboard!\nShare link: " + MEDIAFIRE_APK_URL);
-        }
-    }
-
-    // Profile XDRG Check
-    window.shareProfileLink = function() {
-        if(!currentUser) return alert("Please login first!");
-        let link = `https://xdrgshop.app/profile?user=${encodeURIComponent(currentUser)}`;
-        if (navigator.share) {
-            navigator.share({
-                title: 'XDRG Profile Check',
-                text: `Check ${users[currentUser].username}'s profile on XDRG Shop!`,
-                url: link
-            }).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(link);
-            alert("Profile check link copied to clipboard!\n" + link);
-        }
-    }
-
-    // Redeem Profile Code
-    window.redeemProfileCode = function() {
-        if(!currentUser) return alert("Please login first!");
-        let code = document.getElementById('profile-code-input').value.trim();
-        if(!code) return alert("Please enter a code!");
-
-        let v = vouchers.find(x => x.code === code);
-        if(!v) return alert("Invalid Code!");
-
-        if (v.expiry && Date.now() > v.expiry) return alert("This code has expired!");
-
-        let u = users[currentUser];
-        if(!u.redeemedCodes) u.redeemedCodes = [];
-        if(u.redeemedCodes.includes(code)) return alert("You have already used this promo code!");
-
-        u.redeemedCodes.push(code);
-        window.appliedVoucher = v;
-        window.saveDatabase();
-        alert(`Success! Code applied: ${v.discount}% OFF on your next purchase!`);
-        document.getElementById('profile-code-input').value = '';
-    }
-
-    // Seller Subtabs
-    window.showSellerSub = function(tab) {
-        ['publish', 'orders', 'flashdeal', 'giveaway'].forEach(t => {
-            let el = document.getElementById(`seller-tab-${t}`);
-            if(el) el.classList.add('hidden');
-        });
-        document.getElementById(`seller-tab-${tab}`).classList.remove('hidden');
-        if(tab === 'orders') window.renderSellerOrders();
-    }
-
-    // Render Seller Orders
-    window.renderSellerOrders = function() {
-        let container = document.getElementById('seller-orders-list');
-        if(!container) return;
-        container.innerHTML = '';
-
-        let sellerOrders = [];
-        orders.forEach(ord => {
-            let myItems = ord.items.filter(item => {
-                let orig = products.find(p => p.id === item.id) || item;
-                return orig.addedByEmail === currentUser;
-            });
-            if(myItems.length > 0) {
-                sellerOrders.push({ ...ord, myItems });
-            }
-        });
-
-        if(sellerOrders.length === 0) {
-            return container.innerHTML = '<p style="color:gray;">No orders found for your products yet.</p>';
-        }
-
-        sellerOrders.forEach(ord => {
-            let itemsHtml = ord.myItems.map(i => `- ${i.name} x${i.qty || 1} (₱${window.formatNum(i.money || i.price || 0)})`).join('<br>');
-            container.innerHTML += `
-                <div class="list-card" style="border-left:4px solid var(--verify-color);">
-                    <b>Order ID:</b> ${ord.id} <br>
-                    <b>Buyer Name:</b> ${ord.buyerUsername} (${ord.buyerEmail}) <br>
-                    <b>Buyer Phone:</b> ${ord.buyerPhone} <br>
-                    <b>Date:</b> ${ord.date} <br>
-                    <div style="background:#f9f9f9; padding:8px; border-radius:4px; margin:8px 0;">
-                        <b>Ordered Items:</b><br>${itemsHtml}
-                    </div>
-                    <b>Status:</b> <span style="color:var(--main-color); font-weight:bold;">${ord.status}</span>
-                </div>
-            `;
-        });
-    }
-
-    // Apply Store-wide Flash Deal Sale
-    window.applyGlobalFlashDeal = function(role) {
-        let pct = parseInt(document.getElementById(`${role}-global-flash-pct`).value);
-        let expiry = new Date(document.getElementById(`${role}-global-flash-expiry`).value).getTime();
-
-        if(!pct || pct < 1 || pct > 100) return alert("Percentage must be between 1% and 100%");
-        if(!expiry || expiry <= Date.now()) return alert("Please select a valid future date & time!");
-
-        let targetEmail = role === 'admin' ? ADMIN_EMAIL : currentUser;
-
-        products.forEach(p => {
-            if(role === 'admin' || p.addedByEmail === targetEmail) {
-                p.flashPct = pct;
-                p.flashEndTime = expiry;
-            }
-        });
-
-        window.saveDatabase().then(() => {
-            alert(`Store Flash Deal of ${pct}% OFF active until ${new Date(expiry).toLocaleString()}!`);
-            window.searchProducts();
-        });
-    }
-
-    window.clearGlobalFlashDeal = function(role) {
-        let targetEmail = role === 'admin' ? ADMIN_EMAIL : currentUser;
-        products.forEach(p => {
-            if(role === 'admin' || p.addedByEmail === targetEmail) {
-                delete p.flashPct;
-                delete p.flashEndTime;
-            }
-        });
-        window.saveDatabase().then(() => {
-            alert("Flash deal removed!");
-            window.searchProducts();
-        });
-    }
-
-    // Giveaway System
-    window.createGiveaway = function(role) {
-        let nameEl = document.getElementById(role === 'admin' ? 'admin-giveaway-prod-name' : 'giveaway-prod-name');
-        let dateEl = document.getElementById(role === 'admin' ? 'admin-giveaway-end-date' : 'giveaway-end-date');
-
-        let prodName = nameEl.value.trim();
-        let endTime = new Date(dateEl.value).getTime();
-
-        if(!prodName) return alert("Product Name is required!");
-        if(!endTime || endTime <= Date.now()) return alert("Invalid end time!");
-
-        let gId = Date.now();
-        let gObj = {
-            id: gId,
-            productName: prodName,
-            creatorEmail: currentUser,
-            creatorName: users[currentUser].username,
-            endTime: endTime,
-            entries: [], // { email, username }
-            winner: null,
-            ended: false
-        };
-
-        giveaways.push(gObj);
-
-        // Add to global chat
-        globalChatMessages.push({
-            id: Date.now(),
-            sender: "SYSTEM",
-            giveawayId: gId,
-            text: `🎁 **GIVEAWAY LAUNCHED!** 🎁\nItem: ${prodName}\nEnded: ${new Date(endTime).toLocaleString()}\nType ~join entry to join!`,
-            date: new Date().toLocaleString(),
-            isGiveaway: true
-        });
-
-        window.saveDatabase().then(() => {
-            alert("Giveaway launched into Global Chat!");
-            nameEl.value = '';
-            dateEl.value = '';
-            window.renderGlobalChat();
-        });
-    }
-
-    // Global Chat logic
-    window.openGlobalChatModal = function() {
-        document.getElementById('global-chat-modal').classList.remove('hidden');
-        window.renderGlobalChat();
-    }
-
-    window.renderGlobalChat = function() {
-        let container = document.getElementById('global-chat-history');
-        if(!container) return;
-        container.innerHTML = '';
-
-        globalChatMessages.forEach(msg => {
-            if(msg.isGiveaway) {
-                let g = giveaways.find(x => x.id === msg.giveawayId);
-                let winnerStr = g && g.winner ? `<p style="color:green; font-weight:bold; margin:5px 0 0 0;">🎉 Winner: ${g.winner.username}!</p>` : `<p style="color:#ff4757; font-weight:bold; margin:5px 0 0 0;">Active Giveaway! Entries: ${g ? g.entries.length : 0}</p>`;
-                
-                container.innerHTML += `
-                    <div class="chat-giveaway">
-                        <b style="color:#e91e63;">{${g ? g.productName : 'Item'}}</b> 
-                        <span style="font-size:11px; color:gray;">(Ends: ${g ? new Date(g.endTime).toLocaleString() : ''})</span>
-                        <div style="font-size:13px; margin-top:5px;">${msg.text}</div>
-                        ${winnerStr}
-                        <span class="chat-date">${msg.date}</span>
-                    </div>
-                `;
-            } else {
-                let isMe = msg.senderEmail === currentUser;
-                let cClass = isMe ? 'chat-user' : 'chat-admin';
-                container.innerHTML += `
-                    <div class="chat-msg ${cClass}">
-                        <b>${msg.sender}:</b> ${msg.text}
-                        <span class="chat-date">${msg.date}</span>
-                    </div>
-                `;
-            }
-        });
-        container.scrollTop = container.scrollHeight;
-    }
-
-    window.sendGlobalMessage = function() {
-        if(!currentUser) return alert("Please login first!");
-        let text = document.getElementById('global-chat-input').value.trim();
-        if(!text) return;
-
-        if(text.toLowerCase() === '~join entry') {
-            // Find active giveaways
-            let active = giveaways.filter(g => !g.ended && g.endTime > Date.now());
-            if(active.length === 0) {
-                alert("No active giveaway right now!");
-            } else {
-                let u = users[currentUser];
-                let joinedCount = 0;
-                active.forEach(g => {
-                    let exists = g.entries.some(e => e.email === currentUser);
-                    if(!exists) {
-                        g.entries.push({ email: currentUser, username: u.username });
-                        joinedCount++;
-                    }
-                });
-                if(joinedCount > 0) alert("Successfully joined giveaway!");
-                else alert("You have already entered the active giveaway!");
-            }
-        } else {
-            globalChatMessages.push({
-                id: Date.now(),
-                sender: users[currentUser].username,
-                senderEmail: currentUser,
-                text: text,
-                date: new Date().toLocaleString()
-            });
-        }
-
-        document.getElementById('global-chat-input').value = '';
-        window.saveDatabase().then(() => {
-            window.renderGlobalChat();
-        });
-    }
-
-    setInterval(() => {
-        // Giveaway timer inspector
-        let changed = false;
-        let now = Date.now();
-        giveaways.forEach(g => {
-            if(!g.ended && now >= g.endTime) {
-                g.ended = true;
-                changed = true;
-                if(g.entries.length > 0) {
-                    let randIndex = Math.floor(Math.random() * g.entries.length);
-                    g.winner = g.entries[randIndex];
-                    globalChatMessages.push({
-                        id: Date.now(),
-                        sender: "SYSTEM",
-                        giveawayId: g.id,
-                        text: `🎉 **GIVEAWAY ENDED!** 🎉\nWinner of ${g.productName} is: @${g.winner.username}!`,
-                        date: new Date().toLocaleString(),
-                        isGiveaway: true
-                    });
-                } else {
-                    globalChatMessages.push({
-                        id: Date.now(),
-                        sender: "SYSTEM",
-                        giveawayId: g.id,
-                        text: `🎉 **GIVEAWAY ENDED!** 🎉\nNo participants entered for ${g.productName}.`,
-                        date: new Date().toLocaleString(),
-                        isGiveaway: true
-                    });
-                }
-            }
-        });
-
-        if(changed) {
-            window.saveDatabase().then(() => {
-                window.renderGlobalChat();
-            });
-        }
-
-        document.querySelectorAll('.timer-text').forEach(el => {
-            let end = parseInt(el.getAttribute('data-endtime'));
-            if (end) {
-                let left = end - Date.now();
-                if (left > 0) {
-                    let h = Math.floor(left / (1000 * 60 * 60));
-                    let m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
-                    let s = Math.floor((left % (1000 * 60)) / 1000);
-                    el.innerText = `Ends in: ${h}h ${m}m ${s}s`;
-                } else {
-                    el.innerText = "Expired";
-                }
-            }
-        });
-
-        document.querySelectorAll('.flash-timer-text').forEach(el => {
-            let end = parseInt(el.getAttribute('data-flashend'));
-            if (end) {
-                let left = end - Date.now();
-                if (left > 0) {
-                    let h = Math.floor(left / (1000 * 60 * 60));
-                    let m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
-                    let s = Math.floor((left % (1000 * 60)) / 1000);
-                    el.innerText = `Flash Deal Ends in: ${h}h ${m}m ${s}s`;
-                } else {
-                    el.innerText = "";
-                }
-            }
-        });
-
-        if(!currentUser || !users[currentUser] || isAdminView) return;
-        let u = users[currentUser];
-        
-        if (u.registeredAt) {
-            let timeLeft = (u.registeredAt + (12 * 60 * 60 * 1000)) - now;
-            let banner = document.getElementById('voucher-banner');
-            if (timeLeft > 0) {
-                banner.classList.remove('hidden');
-                let h = Math.floor(timeLeft / (1000 * 60 * 60));
-                let m = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                let s = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                document.getElementById('voucher-timer').innerText = `${h}h ${m}m ${s}s`;
-            } else { banner.classList.add('hidden'); }
-        }
-
-        if (u.sellCodeExpiry) {
-            let codeTimeLeft = u.sellCodeExpiry - now;
-            let timerEl = document.getElementById('verify-timer');
-            if(codeTimeLeft > 0) {
-                let m = Math.floor(codeTimeLeft / (1000 * 60));
-                let s = Math.floor((codeTimeLeft % (1000 * 60)) / 1000);
-                timerEl.innerText = `Code expires in: ${m}m ${s}s`;
-            } else if (u.sellCode) {
-                timerEl.innerText = "Code expired. Request again.";
-            } else { timerEl.innerText = ""; }
-        }
-    }, 1000);
-
-    function routeUser(email) {
-        currentUser = email;
-        window.appliedVoucher = null; 
-        
-        if (email === ADMIN_EMAIL) {
-            isAdminView = true;
-            document.getElementById('buyer-section').classList.add('hidden');
-            document.getElementById('admin-section').classList.remove('hidden');
-            window.showAdminTab('admin-manage-products'); 
-        } else {
-            isAdminView = false;
-            if (!userCarts[currentUser]) userCarts[currentUser] = [];
-            if (!users[currentUser].inbox) users[currentUser].inbox = [];
-            if (!users[currentUser].botChat) users[currentUser].botChat = [];
-            
-            document.getElementById('admin-section').classList.add('hidden');
-            document.getElementById('buyer-section').classList.remove('hidden');
-            
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('logged-in-me').classList.remove('hidden');
-            
-            window.updateUserNavDisplay();
-            
-            if (currentActiveTab === 'me') {
-                window.showBuyerTab('me'); 
-            } else {
-                window.showBuyerTab('home');
-            }
-        }
-    }
-
-    window.toggleAuth = function() {
-        document.getElementById('login-form').classList.toggle('hidden');
-        document.getElementById('register-form').classList.toggle('hidden');
-    }
-
-    window.register = function() {
-        const username = document.getElementById('reg-username').value.trim();
-        const email = document.getElementById('reg-email').value.trim();
-        const pass = document.getElementById('reg-pass').value;
-        const confirm = document.getElementById('reg-confirm').value;
-
-        if (!username || !email || !pass) return alert("Please fill out all fields.");
-        if (pass !== confirm) return alert("Passwords do not match.");
-        if (users[email]) return alert("Email already exists.");
-
-        users[email] = { pass, username, phone: "", mayaName: "", mayaNumber: "", isVIP: false, vipPending: false, isVerifiedSeller: false, sellerRequested: false, registeredAt: Date.now(), inbox: [], botChat: [], redeemedCodes: [] };
-        userCarts[email] = [];
-        window.saveDatabase(); 
-        localStorage.setItem('xdrg_logged_in_user', email);
-        routeUser(email);
-    }
-
-    window.login = function() {
-        const email = document.getElementById('login-email').value.trim();
-        const pass = document.getElementById('login-pass').value;
-        if (users[email] && users[email].pass === pass) {
-            localStorage.setItem('xdrg_logged_in_user', email);
-            routeUser(email);
-        } else alert("Invalid email or password.");
-    }
-
-    window.logout = function() {
-        currentUser = null;
-        window.appliedVoucher = null;
-        localStorage.removeItem('xdrg_logged_in_user');
-        
-        document.getElementById('admin-section').classList.add('hidden');
-        document.getElementById('buyer-section').classList.remove('hidden');
-        
-        window.updateBadges();
-        window.showBuyerTab('me');
-    }
-
-    window.showBuyerTab = function(tab) {
-        currentActiveTab = tab;
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        document.getElementById(`nav-${tab}`).classList.add('active');
-        
-        ['home', 'vouches', 'cart', 'messages', 'me'].forEach(t => {
-            document.getElementById(`buyer-${t}`).classList.add('hidden');
-        });
-        document.getElementById(`buyer-${tab}`).classList.remove('hidden');
-
-        if (tab === 'home') window.searchProducts();
-        if (tab === 'vouches') {
-            let u = users[currentUser];
-            let canVouch = (currentUser === ADMIN_EMAIL) || (u && u.isVerifiedSeller);
-            document.getElementById('btn-add-vouch').classList.toggle('hidden', !canVouch);
-            window.renderVouches();
-        }
-        if (tab === 'cart') window.renderCart();
-        if (tab === 'messages') window.renderBuyerMessages();
-        
-        if (tab === 'me') {
-            if (currentUser) {
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('logged-in-me').classList.remove('hidden');
-                window.loadProfile();
-                window.showMeSubTab('orders'); 
-            } else {
-                document.getElementById('auth-section').classList.remove('hidden');
-                document.getElementById('logged-in-me').classList.add('hidden');
-            }
-        }
-        window.updateBadges();
-    }
-    
-    window.showMeSubTab = function(subtab) {
-        ['orders', 'profile-edit', 'vip-dashboard'].forEach(t => document.getElementById(`me-${t}`).classList.add('hidden'));
-        document.getElementById(`me-${subtab}`).classList.remove('hidden');
-        if(subtab === 'orders') window.renderBuyerOrders();
-        if(subtab === 'vip-dashboard') window.renderVipProducts();
-    }
-
-    window.updateUserNavDisplay = function() {
-        if(!currentUser || !users[currentUser]) return;
-        let u = users[currentUser];
-        let displayHtml = `${u.username}`;
-        if(u.isVIP) displayHtml += ` <span class="badge badge-vip">VIP</span>`;
-        if(u.isVerifiedSeller) displayHtml += ` <span class="badge badge-verify">Seller</span>`;
-        document.getElementById('buyer-email-display').innerHTML = displayHtml;
-        document.getElementById('buyer-email-sub').innerText = currentUser;
-        
-        if(u.isVIP) {
-            document.getElementById('buy-vip-btn').classList.add('hidden');
-            document.getElementById('vip-discount-text').classList.remove('hidden');
-            if(document.getElementById('vip-free-text')) document.getElementById('vip-free-text').classList.remove('hidden');
-            document.getElementById('vip-nav-btn').classList.remove('hidden');
-        } else {
-            document.getElementById('buy-vip-btn').classList.remove('hidden');
-            document.getElementById('vip-discount-text').classList.add('hidden');
-            if(document.getElementById('vip-free-text')) document.getElementById('vip-free-text').classList.add('hidden');
-            document.getElementById('vip-nav-btn').classList.add('hidden');
-            if(u.vipPending) {
-                document.getElementById('buy-vip-btn').innerText = "VIP Requested (Pending)";
-                document.getElementById('buy-vip-btn').disabled = true;
-            }
-        }
-
-        if(u.isVerifiedSeller) {
-            document.getElementById('seller-verification-section').classList.add('hidden');
-            document.getElementById('vip-nav-btn').classList.remove('hidden');
-        } else {
-            document.getElementById('seller-verification-section').classList.remove('hidden');
-        }
-    }
-
-    window.updateBadges = function() {
-        let cartCount = 0;
-        let msgCount = 0;
-        if (currentUser && users[currentUser]) {
-            cartCount = userCarts[currentUser] ? userCarts[currentUser].length : 0;
-            msgCount = users[currentUser].inbox ? users[currentUser].inbox.filter(m => !m.read).length : 0;
-        }
-
-        let cBadge = document.getElementById('cart-badge');
-        if(cartCount > 0) { cBadge.innerText = cartCount; cBadge.classList.remove('hidden'); } 
-        else { cBadge.classList.add('hidden'); }
-        
-        let mBadge = document.getElementById('msg-badge');
-        if(msgCount > 0) { mBadge.innerText = msgCount; mBadge.classList.remove('hidden'); }
-        else { mBadge.classList.add('hidden'); }
-    }
-
-    window.setCategory = function(cat) {
-        currentCategory = cat;
-        document.querySelectorAll('.cat-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(`cat-${cat}`).classList.add('active');
-        window.searchProducts();
-    }
-
-    window.searchProducts = function() {
-        let q = (document.getElementById('buyer-search').value || '').toLowerCase();
-        let available = products.filter(p => p.stocks > 0);
-        
-        if (currentCategory !== "All") {
-            available = available.filter(p => p.category === currentCategory);
-        }
-
-        let filtered = available;
-        if(q) {
-            filtered = available.filter(p => 
-                p.name.toLowerCase().includes(q) || 
-                p.addedByName.toLowerCase().includes(q) || 
-                p.id.toString().includes(q) ||
-                (p.category && p.category.toLowerCase().includes(q)) ||
-                (p.rarity && p.rarity.toLowerCase().includes(q))
-            );
-        }
-        window.renderProducts(filtered);
-    }
-
-    window.renderProducts = function(listToRender) {
-        const list = document.getElementById('product-list');
-        list.innerHTML = '';
-        if (listToRender.length === 0) return list.innerHTML = "<p style='grid-column: span 2; text-align:center;'>No products found.</p>";
-
-        listToRender.forEach(p => {
-            let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="background:#eee; height:160px; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>`;
-            let catLabel = p.category ? `<span style="background:#ddd; padding:2px 5px; border-radius:3px; font-size:10px;">${p.category}</span>` : '';
-            
-            let rarityHtml = '';
-            let timerHtml = '';
-            if (p.rarity) {
-                let rClass = p.rarity.toLowerCase().replace(/ /g, '-');
-                rarityHtml = `<div class="rarity-badge rarity-${rClass}">${p.rarity}</div>`;
-                if (p.rarity === 'Limited' && p.limitedTime) {
-                    timerHtml = `<div class="timer-text" data-endtime="${p.limitedTime}"></div>`;
-                }
-            }
-
-            let pVal = p.money || p.price || 0;
-            let isFlashActive = p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now());
-            let origPriceHtml = '';
-            let flashBadge = '';
-            
-            if (isFlashActive) {
-                origPriceHtml = `<span style="text-decoration:line-through; color:gray; font-size:11px;">₱${window.formatNum(pVal)}</span> `;
-                pVal = pVal * (1 - (p.flashPct / 100));
-                flashBadge = `<span class="flash-badge">⚡ ${p.flashPct}% OFF</span>`;
-                timerHtml += `<div class="flash-timer-text" data-flashend="${p.flashEndTime}"></div>`;
-            }
-
-            let priceArr = [];
-            if(p.money || p.price) priceArr.push(`${origPriceHtml}₱${window.formatNum(pVal)}`);
-            if(p.sheckles) priceArr.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
-            let displayPrice = priceArr.length > 0 ? priceArr.join(' • ') : 'Trade Only';
-            let tradePreview = (p.trade && p.trade.length > 0) ? `<div style="font-size:11px; color:#e67e22; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Trade: ${p.trade.join(', ')}</div>` : '';
-
-            let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
-
-            list.innerHTML += `
-                <div class="product-card" onclick="window.viewProduct(${p.id})">
-                    ${imgHtml}
-                    <div class="product-info">
-                        ${rarityHtml} ${flashBadge}
-                        <div class="product-title" style="margin-top:5px;">${p.name}</div>
-                        ${catLabel}
-                        ${timerHtml}
-                        <div class="product-price">${displayPrice}</div>
-                        ${tradePreview}
-                        <div class="product-meta" style="margin-top:5px;">
-                            <span>ID: ${p.id}</span>
-                            <span>${p.stocks} left</span>
-                        </div>
-                        <div class="product-meta" style="margin-top:5px; color:var(--main-color);">
-                            Seller: ${p.addedByName} ${verifiedHtml}
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    window.viewProduct = function(id) {
-        const p = products.find(prod => prod.id === id);
-        if(!p) return;
-        
-        window.currentViewProductId = id;
-        window.tempSelectedQty = 1;
-        
-        let imgHtml = p.image ? `<img src="${p.image}" style="width:100%; height:250px; object-fit:contain; background:#fff; border-radius:4px;">` : ``;
-        let btnDisabled = p.stocks <= 0 ? 'disabled' : '';
-
-        let rarityHtml = '';
-        let timerHtml = '';
-        if (p.rarity) {
-            let rClass = p.rarity.toLowerCase().replace(/ /g, '-');
-            rarityHtml = `<div class="rarity-badge rarity-${rClass}">${p.rarity}</div>`;
-            if (p.rarity === 'Limited' && p.limitedTime) {
-                timerHtml = `<div class="timer-text" data-endtime="${p.limitedTime}" style="font-size:13px; margin-bottom:10px;"></div>`;
-            }
-        }
-        
-        let pVal = p.money || p.price || 0;
-        let isFlashActive = p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now());
-        let origPriceHtml = '';
-        let flashBadge = '';
-        
-        if (isFlashActive) {
-            origPriceHtml = `<span style="text-decoration:line-through; color:gray; font-size:14px;">₱${window.formatNum(pVal)}</span> `;
-            pVal = pVal * (1 - (p.flashPct / 100));
-            flashBadge = `<span class="flash-badge" style="font-size:12px;">⚡ ${p.flashPct}% OFF FLASH SALE</span>`;
-            timerHtml += `<div class="flash-timer-text" data-flashend="${p.flashEndTime}" style="font-size:13px; margin-bottom:10px;"></div>`;
-        }
-
-        let priceArr = [];
-        if(p.money || p.price) priceArr.push(`${origPriceHtml}₱${window.formatNum(pVal)}`);
-        if(p.sheckles) priceArr.push(`¢${window.formatNum(p.sheckles)} Sheckles`);
-        
-        let tradeHtml = '';
-        if(p.trade && p.trade.length > 0) {
-            tradeHtml = `<div style="margin:10px 0; padding:10px; background:#fdf2e9; border:1px solid #e67e22; border-radius:4px; font-size:14px;"><b>Trade Request:</b><br>${p.trade.map(t=>`- ${t}`).join('<br>')}</div>`;
-        }
-        
-        let verifiedHtml = (users[p.addedByEmail] && users[p.addedByEmail].isVerifiedSeller) ? '<span class="verified-icon" title="Verified Seller">✓</span>' : '';
-
-        let detailHtml = `
-            ${imgHtml}
-            <div style="padding: 10px 0;">
-                ${rarityHtml} ${flashBadge}
-                <h2 style="margin: 5px 0;">${p.name}</h2>
-                ${timerHtml}
-                <p style="font-size: 14px; color: gray; margin: 5px 0;">Category: ${p.category || 'N/A'}</p>
-                <p style="font-size: 14px; color: var(--main-color); margin: 5px 0;">Seller: ${p.addedByName} ${verifiedHtml}</p>
-                <p style="font-size: 14px; margin: 5px 0;">Stock: ${p.stocks}</p>
-                <h3 style="margin: 10px 0; color: var(--main-color);">${priceArr.length > 0 ? priceArr.join(' • ') : 'Trade Only'}</h3>
-                ${tradeHtml}
-                <p style="white-space: pre-wrap; font-size: 14px; margin-top: 10px;">${p.info || 'No description provided.'}</p>
-            </div>
-        `;
-
-        let actionHtml = '';
-        if (currentUser === p.addedByEmail) {
-            actionHtml = `<p style="color:red; text-align:center; font-weight:bold;">This is your product.</p>`;
-        } else {
-            actionHtml = `
-                <div class="qty-control">
-                    <button class="qty-btn" onclick="window.changeQty(-1, ${p.stocks})">-</button>
-                    <span id="modal-qty">1</span>
-                    <button class="qty-btn" onclick="window.changeQty(1, ${p.stocks})">+</button>
-                </div>
-                <button class="btn-main" ${btnDisabled} onclick="window.addToCart()">Add to Cart</button>
-                <button class="btn-outline" style="width:100%; margin-top:10px;" onclick="window.openOfferModal()">Make Offer / Request Trade</button>
-            `;
-        }
-
-        document.getElementById('modal-product-details').innerHTML = detailHtml + actionHtml;
-        document.getElementById('product-modal').classList.remove('hidden');
-    }
-
-    window.changeQty = function(change, max) {
-        let next = window.tempSelectedQty + change;
-        if(next >= 1 && next <= max) {
-            window.tempSelectedQty = next;
-            document.getElementById('modal-qty').innerText = next;
-        }
-    }
-
-    window.closeModal = function(id) {
-        document.getElementById(id).classList.add('hidden');
-    }
-
-    window.addToCart = function() {
-        if(!currentUser) { alert("Please login first!"); return window.toggleAuth(); }
-        let p = products.find(prod => prod.id === window.currentViewProductId);
-        if(!p) return;
-        
-        let existing = userCarts[currentUser].find(item => item.id === p.id);
-        if(existing) {
-            if (existing.qty + window.tempSelectedQty > p.stocks) return alert("Cannot add more than available stock!");
-            existing.qty += window.tempSelectedQty;
-        } else {
-            userCarts[currentUser].push({ id: p.id, qty: window.tempSelectedQty });
-        }
-        window.saveDatabase().then(() => {
-            window.updateBadges();
-            window.closeModal('product-modal');
-            alert("Added to cart successfully!");
-        });
-    }
-
-    window.renderCart = function() {
-        if(!currentUser || !userCarts[currentUser]) return;
-        let cList = document.getElementById('cart-list');
-        cList.innerHTML = '';
-        
-        let subtotal = 0;
-        let cartItems = userCarts[currentUser];
-        let hasMoneyItems = false;
-        let hasSellersMap = {};
-
-        if(cartItems.length === 0) {
-            cList.innerHTML = '<p>Your cart is empty.</p>';
-            document.getElementById('cart-checkout-card').classList.add('hidden');
+        if (!email || !password) {
+            showMessage('authMessage', 'Please fill in both email and password.');
             return;
         }
-        document.getElementById('cart-checkout-card').classList.remove('hidden');
-
-        cartItems.forEach((item, index) => {
-            let p = products.find(prod => prod.id === item.id);
-            if(!p) return;
-
-            hasSellersMap[p.addedByEmail] = true;
-            let itemPrice = p.money || p.price || 0;
-            let pVal = itemPrice;
-            
-            if (p.flashPct && p.flashEndTime && (p.flashEndTime > Date.now())) {
-                pVal = itemPrice * (1 - (p.flashPct / 100));
-            }
-            
-            if (pVal > 0) hasMoneyItems = true;
-            
-            let itemTotal = pVal * item.qty;
-            subtotal += itemTotal;
-
-            let priceStr = pVal > 0 ? `₱${window.formatNum(pVal)}` : (p.sheckles ? `¢${window.formatNum(p.sheckles)}` : 'Trade Only');
-
-            cList.innerHTML += `
-                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <b style="font-size:14px;">${p.name}</b><br>
-                        <span style="font-size:12px; color:gray;">x${item.qty} @ ${priceStr}</span>
-                    </div>
-                    <button class="btn-danger" style="padding:5px;" onclick="window.removeFromCart(${index})">Remove</button>
-                </div>
-            `;
-        });
-
-        tempCheckoutTotal = subtotal;
-
-        let totalHtml = `Subtotal: ₱${window.formatNum(subtotal)}`;
-
-        let u = users[currentUser];
-        let useMidman = document.getElementById('midman-check').checked;
-        let isVip = u && u.isVIP;
         
-        if (useMidman && !isVip && hasMoneyItems) {
-            tempCheckoutTotal += 5;
-            totalHtml += `<br>Midman Fee: ₱5.0`;
-        }
-
-        if (window.appliedVoucher && hasMoneyItems) {
-            let disc = tempCheckoutTotal * (window.appliedVoucher.discount / 100);
-            tempCheckoutTotal -= disc;
-            totalHtml += `<br><span style="color:green;">Voucher (${window.appliedVoucher.discount}% OFF): -₱${window.formatNum(disc)}</span>`;
-        } else if (u.registeredAt && (Date.now() - u.registeredAt < 12*60*60*1000) && hasMoneyItems) {
-            let disc = tempCheckoutTotal * 0.10;
-            tempCheckoutTotal -= disc;
-            totalHtml += `<br><span style="color:green;">New User (10% OFF): -₱${window.formatNum(disc)}</span>`;
-        } else if (isVip && hasMoneyItems) {
-            let disc = tempCheckoutTotal * 0.15;
-            tempCheckoutTotal -= disc;
-            totalHtml += `<br><span style="color:var(--vip-color);">VIP Discount (15% OFF): -₱${window.formatNum(disc)}</span>`;
-        }
-
-        let isDownpayment = document.getElementById('downpayment-check').checked;
-        tempBalance = 0;
-        if(isDownpayment && tempCheckoutTotal > 0) {
-            tempBalance = tempCheckoutTotal / 2;
-            tempCheckoutTotal = tempCheckoutTotal / 2;
-            totalHtml += `<br><span style="color:var(--main-color);">50% Downpayment: ₱${window.formatNum(tempCheckoutTotal)}</span>`;
-        }
-
-        totalHtml += `<br><b style="font-size:18px; color:var(--main-color);">Total: ₱${window.formatNum(tempCheckoutTotal)}</b>`;
-        document.getElementById('cart-total').innerHTML = totalHtml;
-    }
-
-    window.removeFromCart = function(idx) {
-        userCarts[currentUser].splice(idx, 1);
-        window.saveDatabase().then(() => {
-            window.updateBadges();
-            window.renderCart();
-        });
-    }
-
-    window.applyVoucher = function() {
-        let code = document.getElementById('voucher-input-code').value.trim();
-        if(!code) return alert("Enter voucher code");
-
-        let v = vouchers.find(x => x.code === code);
-        if(!v) return alert("Invalid Voucher");
-
-        if (v.expiry && Date.now() > v.expiry) return alert("Voucher expired!");
-
-        window.appliedVoucher = v;
-        alert(`Voucher ${v.discount}% applied!`);
-        window.renderCart();
-    }
-
-    window.openCheckoutModal = function() {
-        let u = users[currentUser];
-        if(!u.phone) return alert("Please setup your Phone Number in your Profile first.");
-
-        let hasSellersMap = {};
-        userCarts[currentUser].forEach(item => {
-            let p = products.find(prod => prod.id === item.id);
-            if(p) hasSellersMap[p.addedByEmail] = true;
-        });
-
-        let mayaHtml = '';
-        for(let sellerEmail in hasSellersMap) {
-            let su = users[sellerEmail];
-            if(su && su.mayaNumber) {
-                mayaHtml += `
-                    <div style="background:#f0f8ff; padding:10px; border:1px solid #b0c4de; margin-bottom:10px; border-radius:4px;">
-                        <b style="color:#2c3e50;">Payment Info for ${su.username}:</b><br>
-                        Maya Name: <b>${su.mayaName || 'N/A'}</b><br>
-                        Maya Number: <b>${su.mayaNumber}</b>
-                    </div>
-                `;
-            }
-        }
-
-        if(mayaHtml === '') {
-            mayaHtml = '<p style="color:gray;">Selected sellers have not provided Maya details. (Trade-only or manual arrangement)</p>';
-        }
-
-        document.getElementById('checkout-maya-info').innerHTML = mayaHtml;
-        document.getElementById('checkout-final-amount').innerText = `₱${window.formatNum(tempCheckoutTotal)}`;
+        toggleButtons(true);
+        showMessage('authMessage', 'Authenticating...', false);
         
-        let balEl = document.getElementById('checkout-balance-info');
-        if(tempBalance > 0) {
-            balEl.innerText = `Remaining Balance to pay later: ₱${window.formatNum(tempBalance)}`;
-            balEl.classList.remove('hidden');
-        } else {
-            balEl.classList.add('hidden');
+        if (supabase) {
+            try { await supabase.auth.signUp({ email, password }); } 
+            catch (e) { console.warn(e); }
         }
-
-        document.getElementById('checkout-modal').classList.remove('hidden');
-    }
-
-    window.confirmCheckout = function() {
-        if(userCarts[currentUser].length === 0) return;
-
-        let outOfStock = false;
-        let cartToProcess = userCarts[currentUser].map(item => {
-            let p = products.find(prod => prod.id === item.id);
-            if(p.stocks < item.qty) outOfStock = true;
-            return { id: item.id, name: p.name, qty: item.qty, price: p.price, money: p.money, sheckles: p.sheckles, sellerEmail: p.addedByEmail };
-        });
-
-        if(outOfStock) return alert("Some items in your cart do not have enough stock. Please adjust.");
-
-        let u = users[currentUser];
-        let midman = document.getElementById('midman-check').checked;
-        let dp = document.getElementById('downpayment-check').checked;
-
-        let order = {
-            id: Date.now(),
-            buyerEmail: currentUser,
-            buyerUsername: u.username,
-            buyerPhone: u.phone,
-            items: cartToProcess,
-            totalPaid: tempCheckoutTotal,
-            balance: tempBalance,
-            midmanRequested: midman,
-            isDownpayment: dp,
-            status: 'Pending',
-            date: new Date().toLocaleString()
-        };
-
-        orders.unshift(order);
-
-        // Deduct Stocks & Notify Sellers
-        cartToProcess.forEach(item => {
-            let p = products.find(prod => prod.id === item.id);
-            if(p) p.stocks -= item.qty;
-
-            // Notify Seller
-            let sellerMsg = {
-                id: Date.now() + Math.random(),
-                sender: 'SYSTEM',
-                text: `You have a new order from ${u.username}! Order ID: ${order.id}. Item: ${item.name} x${item.qty}. Please check your Seller Dashboard.`,
-                date: new Date().toLocaleString(),
-                read: false
-            };
-            if(users[item.sellerEmail] && users[item.sellerEmail].inbox) {
-                users[item.sellerEmail].inbox.push(sellerMsg);
-            }
-        });
-
-        userCarts[currentUser] = [];
-        window.appliedVoucher = null;
-
-        window.saveDatabase().then(() => {
-            window.closeModal('checkout-modal');
-            alert("Order placed successfully! Please check 'My Orders' in Me tab.");
-            window.showBuyerTab('me');
-            window.showMeSubTab('orders');
-        });
-    }
-
-    window.openOfferModal = function() {
-        if(!currentUser) { alert("Please login first!"); return window.toggleAuth(); }
-        let p = products.find(prod => prod.id === window.currentViewProductId);
-        if(!p) return;
-        document.getElementById('offer-items-container').innerHTML = '';
-        document.getElementById('offer-text-input').value = '';
-        window.addOfferItemInput();
-        window.closeModal('product-modal');
-        document.getElementById('offer-modal').classList.remove('hidden');
-    }
-
-    window.submitOffer = function() {
-        let p = products.find(prod => prod.id === window.currentViewProductId);
-        if(!p) return;
-
-        let offerItems = [];
-        document.querySelectorAll('#offer-items-container > div').forEach(div => {
-            let name = div.querySelector('.offer-item-name').value.trim();
-            let qty = div.querySelector('.offer-item-qty').value.trim();
-            if(name) offerItems.push(`${name} (${qty || '1x'})`);
-        });
-
-        let notes = document.getElementById('offer-text-input').value.trim();
-        if(offerItems.length === 0 && !notes) return alert("Please add at least one item or note for your offer.");
-
-        let offer = {
-            id: Date.now(),
-            targetProductId: p.id,
-            targetProductName: p.name,
-            sellerEmail: p.addedByEmail,
-            buyerEmail: currentUser,
-            buyerUsername: users[currentUser].username,
-            offerItems: offerItems,
-            notes: notes,
-            status: 'Pending',
-            date: new Date().toLocaleString()
-        };
-
-        offers.unshift(offer);
-
-        let sellerMsg = {
-            id: Date.now() + Math.random(),
-            sender: 'SYSTEM',
-            text: `New trade offer received from ${users[currentUser].username} for ${p.name}.`,
-            date: new Date().toLocaleString(),
-            read: false
-        };
-        if(users[p.addedByEmail] && users[p.addedByEmail].inbox) {
-            users[p.addedByEmail].inbox.push(sellerMsg);
-        }
-
-        window.saveDatabase().then(() => {
-            window.closeModal('offer-modal');
-            alert("Offer sent to seller!");
-        });
-    }
-
-    window.loadProfile = function() {
-        let u = users[currentUser];
-        if(!u) return;
-        document.getElementById('profile-username').value = u.username || '';
-        document.getElementById('profile-phone').value = u.phone || '';
-        document.getElementById('profile-maya-name').value = u.mayaName || '';
-        document.getElementById('profile-maya-number').value = u.mayaNumber || '';
-    }
-
-    window.saveProfile = function() {
-        let u = users[currentUser];
-        u.username = document.getElementById('profile-username').value.trim();
-        u.phone = document.getElementById('profile-phone').value.trim();
-        u.mayaName = document.getElementById('profile-maya-name').value.trim();
-        u.mayaNumber = document.getElementById('profile-maya-number').value.trim();
         
-        window.saveDatabase().then(() => {
-            alert("Profile saved!");
-            window.updateUserNavDisplay();
-        });
-    }
-
-    window.requestSellerStatus = function() {
-        if(!currentUser) return;
-        let u = users[currentUser];
-        u.sellerRequested = true;
-        
-        let reqMsg = {
-            id: Date.now(),
-            sender: 'SYSTEM',
-            text: `${u.username} (${currentUser}) has requested Verified Seller status.`,
-            date: new Date().toLocaleString(),
-            read: false
-        };
-        users[ADMIN_EMAIL].inbox.push(reqMsg);
-
-        window.saveDatabase().then(() => {
-            alert("Verification requested! Admin will send a code to your Messages.");
-        });
-    }
-
-    window.verifySellerCode = function() {
-        let code = document.getElementById('verify-code-input').value.trim();
-        if(!code) return alert("Enter code");
-        let u = users[currentUser];
-        if(u.sellCode && u.sellCode === code) {
-            if(u.sellCodeExpiry && Date.now() > u.sellCodeExpiry) {
-                return alert("Code expired! Request a new one.");
-            }
-            u.isVerifiedSeller = true;
-            u.sellCode = null;
-            u.sellCodeExpiry = null;
-            window.saveDatabase().then(() => {
-                alert("You are now a Verified Seller!");
-                window.updateUserNavDisplay();
-            });
-        } else {
-            alert("Invalid code.");
-        }
-    }
-
-    window.openVipModal = function() {
-        document.getElementById('vip-modal').classList.remove('hidden');
-    }
-
-    window.confirmVipPurchase = function() {
-        let u = users[currentUser];
-        u.vipPending = true;
-        
-        let msg = {
-            id: Date.now(),
-            sender: 'SYSTEM',
-            text: `${u.username} (${currentUser}) has requested VIP. Please verify Maya payment and grant.`,
-            date: new Date().toLocaleString(),
-            read: false
-        };
-        users[ADMIN_EMAIL].inbox.push(msg);
-
-        window.saveDatabase().then(() => {
-            window.closeModal('vip-modal');
-            alert("VIP Request sent to admin! Please wait for approval.");
-            window.updateUserNavDisplay();
-        });
-    }
-
-    const getBase64 = file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
-
-    window.processImageAndAddProduct = async function(prefix) {
-        let name = document.getElementById(`${prefix}-prod-name`).value.trim();
-        let cat = document.getElementById(`${prefix}-prod-category`).value;
-        let rarity = document.getElementById(`${prefix}-prod-rarity`).value;
-        let timer = document.getElementById(`${prefix}-prod-timer`).value;
-        let money = parseFloat(document.getElementById(`${prefix}-prod-money`).value) || 0;
-        let sheckles = parseFloat(document.getElementById(`${prefix}-prod-sheckles`).value) || 0;
-        let info = document.getElementById(`${prefix}-prod-info`).value.trim();
-        let stocks = parseInt(document.getElementById(`${prefix}-prod-stocks`).value) || 1;
-        let fileInput = document.getElementById(`${prefix}-prod-image`);
-        
-        let flashPct = parseInt(document.getElementById(`${prefix}-flash-pct`).value) || 0;
-        let flashTimer = document.getElementById(`${prefix}-flash-timer`).value;
-
-        if(!name) return alert("Product name is required.");
-
-        let tradeVals = [];
-        document.querySelectorAll(`.${prefix}-trade-input`).forEach(el => {
-            if(el.value.trim()) tradeVals.push(el.value.trim());
-        });
-
-        let imgData = null;
-        if(fileInput.files.length > 0) {
-            imgData = await getBase64(fileInput.files[0]);
-        }
-
-        let p = {
-            id: Date.now(),
-            name: name,
-            category: cat,
-            rarity: rarity,
-            limitedTime: (rarity === 'Limited' && timer) ? new Date(timer).getTime() : null,
-            money: money,
-            price: money, // compat
-            sheckles: sheckles,
-            trade: tradeVals,
-            info: info,
-            stocks: stocks,
-            image: imgData,
-            addedByEmail: currentUser,
-            addedByName: users[currentUser].username,
-            flashPct: flashPct,
-            flashEndTime: (flashPct > 0 && flashTimer) ? new Date(flashTimer).getTime() : null
-        };
-
-        products.unshift(p);
-
-        window.saveDatabase().then(() => {
-            alert("Product published!");
-            document.getElementById(`${prefix}-prod-name`).value = '';
-            document.getElementById(`${prefix}-prod-money`).value = '';
-            document.getElementById(`${prefix}-prod-sheckles`).value = '';
-            document.getElementById(`${prefix}-prod-info`).value = '';
-            document.getElementById(`${prefix}-prod-stocks`).value = '';
-            document.getElementById(`${prefix}-trade-container`).innerHTML = '';
-            
-            if(prefix === 'admin') window.renderAdminProducts();
-            else if (prefix === 'vip') window.renderVipProducts();
-        });
-    }
-
-    // Chat Logic
-    window.openBotChat = function() {
-        document.getElementById('bot-chat-modal').classList.remove('hidden');
-        window.renderBotChat();
-    }
-
-    window.renderBotChat = function() {
-        let container = document.getElementById('bot-chat-history');
-        if(!container) return;
-        let u = users[currentUser];
-        container.innerHTML = '';
-        u.botChat.forEach(msg => {
-            let cClass = msg.sender === 'User' ? 'chat-user' : 'chat-bot';
-            container.innerHTML += `<div class="chat-msg ${cClass}"><b>${msg.sender === 'User' ? 'You' : 'AI'}:</b> ${msg.text}</div>`;
-        });
-        container.scrollTop = container.scrollHeight;
-    }
-
-    window.sendBotMessage = function() {
-        let text = document.getElementById('bot-chat-input').value.trim();
-        if(!text) return;
-        let u = users[currentUser];
-        
-        u.botChat.push({ sender: 'User', text: text });
-        document.getElementById('bot-chat-input').value = '';
-        window.renderBotChat();
-
-        // Bot AI Logic
-        let q = text.toLowerCase();
-        let reply = "I'm not sure about that. I can answer questions about item IDs, prices, rules, and global chat commands (like ~join entry).";
-        
-        if (q.includes('id') || q.includes('price')) {
-            let found = products.find(p => q.includes(p.name.toLowerCase()));
-            if(found) {
-                reply = `${found.name} is ID: ${found.id}. Price: ₱${found.money||0} / ¢${found.sheckles||0}. Stocks: ${found.stocks}.`;
-            } else {
-                reply = "Which item? Try being specific with the name.";
-            }
-        } else if (q.includes('admin') || q.includes('owner')) {
-            reply = "The owner is XDRG (Admin_xdrg).";
-        } else if (q.includes('giveaway')) {
-            reply = "Global giveaways appear in the Global Chat tab. Type ~join entry there to participate!";
-        }
-
         setTimeout(() => {
-            u.botChat.push({ sender: 'Bot', text: reply });
-            window.saveDatabase().then(() => window.renderBotChat());
+            toggleButtons(false);
+            forceEnterApp(email);
         }, 500);
     }
 
-    window.renderBuyerMessages = function() {
-        let container = document.getElementById('buyer-inbox-list');
-        if(!container) return;
-        container.innerHTML = '';
+    async function handleLogin() {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
         
-        let u = users[currentUser];
-        let msgs = u.inbox.slice().reverse();
-
-        if(msgs.length === 0) {
-            container.innerHTML = '<p style="color:gray;">No messages.</p>';
+        if (!email || !password) {
+            showMessage('authMessage', 'Please fill in both email and password.');
             return;
         }
-
-        msgs.forEach(m => {
-            let bg = m.read ? '#fff' : '#f0f8ff';
-            container.innerHTML += `
-                <div style="background:${bg}; padding:10px; border-bottom:1px solid #ddd; margin-bottom:5px;">
-                    <b style="color:var(--main-color);">${m.sender}</b> <span style="font-size:10px; color:gray;">${m.date}</span>
-                    <p style="margin:5px 0 0 0; font-size:13px; white-space:pre-wrap;">${m.text}</p>
-                </div>
-            `;
-            m.read = true; // mark read
-        });
-        window.saveDatabase().then(() => window.updateBadges());
-    }
-
-    window.renderBuyerOrders = function() {
-        let container = document.getElementById('buyer-order-list');
-        if(!container) return;
-        container.innerHTML = '';
-
-        let myOrders = orders.filter(o => o.buyerEmail === currentUser);
-        if(myOrders.length === 0) {
-            container.innerHTML = '<p style="color:gray;">No orders found.</p>';
-            return;
-        }
-
-        myOrders.forEach(o => {
-            let itemsHtml = o.items.map(i => `- ${i.name} x${i.qty} (₱${i.money||i.price||0})`).join('<br>');
-            container.innerHTML += `
-                <div class="list-card">
-                    <b>Order ID:</b> ${o.id} <br>
-                    <b>Date:</b> ${o.date} <br>
-                    <b>Items:</b><br>${itemsHtml} <br>
-                    <b>Total:</b> ₱${window.formatNum(o.totalPaid)} <br>
-                    <b>Status:</b> <span style="color:var(--main-color); font-weight:bold;">${o.status}</span>
-                </div>
-            `;
-        });
-    }
-
-    window.renderVipProducts = function() {
-        let container = document.getElementById('vip-my-products-list');
-        if(!container) return;
-        container.innerHTML = '';
-
-        let myProds = products.filter(p => p.addedByEmail === currentUser);
-        if(myProds.length === 0) {
-            container.innerHTML = '<p style="color:gray;">You have not published any products.</p>';
-            return;
-        }
-
-        myProds.forEach(p => {
-            container.innerHTML += `
-                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <b>${p.name}</b> (ID: ${p.id})<br>
-                        <span style="font-size:12px; color:gray;">Stocks: ${p.stocks} | Price: ₱${p.money||p.price||0}</span>
-                    </div>
-                    <div>
-                        <button class="btn-action" style="padding:5px;" onclick="window.deleteProduct(${p.id})">Del</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    window.createVoucher = function(prefix) {
-        let codeEl = document.getElementById(`${prefix}-voucher-name`);
-        let pctEl = document.getElementById(`${prefix}-voucher-pct`);
-        let code = codeEl.value.trim().toUpperCase();
-        let pct = parseInt(pctEl.value);
-
-        if(!code || !pct) return alert("Fill all fields");
-        if(vouchers.find(v => v.code === code)) return alert("Code already exists");
-
-        vouchers.push({ code: code, discount: pct, creator: currentUser });
         
-        window.saveDatabase().then(() => {
-            alert("Voucher Created!");
-            codeEl.value = '';
-            pctEl.value = '';
-            if(prefix === 'admin') window.renderAdminVouchers();
+        toggleButtons(true);
+        showMessage('authMessage', 'Authenticating...', false);
+        
+        if (supabase) {
+            try { await supabase.auth.signInWithPassword({ email, password }); } 
+            catch (e) { console.warn(e); }
+        }
+
+        setTimeout(() => {
+            toggleButtons(false);
+            forceEnterApp(email);
+        }, 500);
+    }
+
+    async function handleLogout() {
+        if (supabase) { try { await supabase.auth.signOut(); } catch(e) {} }
+        currentUser = null;
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('termsCheck').checked = false;
+        document.getElementById('authMessage').innerText = '';
+        showView('authView');
+    }
+
+    function checkTerms() {
+        if (document.getElementById('termsCheck').checked) showView('dashboardView');
+    }
+
+    function filterGames() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll('.game-btn').forEach(btn => {
+            btn.style.display = btn.innerText.toLowerCase().includes(query) ? 'block' : 'none';
         });
     }
 
-    window.deleteProduct = function(id) {
-        if(!confirm("Delete this product?")) return;
-        products = products.filter(p => p.id !== id);
-        window.saveDatabase().then(() => {
-            if(isAdminView) window.renderAdminProducts();
-            else window.renderVipProducts();
-        });
+    function submitReport() {
+        const text = document.getElementById('bugReportText').value.trim();
+        if (!text) return alert('Please enter a description of the issue.');
+        
+        const reportsContainer = document.getElementById('reportsContainer');
+        if (reportsContainer.innerHTML.includes('No new reports')) reportsContainer.innerHTML = '';
+        
+        const reportEl = document.createElement('div');
+        reportEl.style.background = '#fff';
+        reportEl.style.padding = '10px';
+        reportEl.style.border = '1px solid #ddd';
+        reportEl.style.marginBottom = '10px';
+        reportEl.style.borderRadius = '5px';
+        reportEl.innerText = `${currentUser ? currentUser.email : 'User'}: ${text}`;
+        reportsContainer.prepend(reportEl);
+
+        alert('Report submitted successfully to admin.');
+        document.getElementById('bugReportText').value = '';
+        showView('dashboardView');
     }
 
-    // Admin Specific functions
-    window.showAdminTab = function(tab) {
-        currentActiveTab = tab;
-        ['admin-add-product', 'admin-manage-products', 'admin-manage-orders', 'admin-offers-tab', 'admin-manage-users', 'admin-vouchers-tab', 'admin-flashdeal-tab', 'admin-giveaway-tab', 'admin-messages-tab'].forEach(t => {
-            document.getElementById(t).classList.add('hidden');
-        });
-        document.getElementById(tab).classList.remove('hidden');
+    function openGame(game) {
+        currentGame = game;
+        showView('gameView');
+        
+        const titles = { gag: 'Grow A Garden', gag2: 'Grow A Garden 2', gh: 'Garden Horizon' };
+        document.getElementById('gameTitle').innerText = (titles[game] || game) + ' Notifier';
+        
+        if (!systemStatus[game]) {
+            document.getElementById('gameError').style.display = 'block';
+            document.getElementById('gameContent').style.display = 'none';
+        } else {
+            document.getElementById('gameError').style.display = 'none';
+            document.getElementById('gameContent').style.display = 'block';
+            
+            updateTime();
+            if (timeInterval) clearInterval(timeInterval);
+            timeInterval = setInterval(updateTime, 1000);
+            
+            const btnContainer = document.getElementById('gameButtons');
+            btnContainer.innerHTML = `<button class="btn-secondary" onclick="fetchData('Stock')">Stock</button>`;
+            if (game !== 'gh') btnContainer.innerHTML += `<button class="btn-secondary" onclick="fetchData('Last Seen')">Last Seen</button>`;
+            if (game === 'gag') btnContainer.innerHTML += `<button class="btn-secondary" onclick="fetchData('Event Shop')">Event Shop</button>`;
 
-        if(tab === 'admin-manage-products') window.renderAdminProducts();
-        if(tab === 'admin-manage-orders') window.renderAdminOrders();
-        if(tab === 'admin-offers-tab') window.renderAdminOffers();
-        if(tab === 'admin-manage-users') window.renderAdminUsers();
-        if(tab === 'admin-vouchers-tab') window.renderAdminVouchers();
-        if(tab === 'admin-messages-tab') window.renderAdminChatList();
-    }
-
-    window.renderAdminProducts = function() {
-        let container = document.getElementById('admin-product-list');
-        if(!container) return;
-        container.innerHTML = '';
-        products.forEach(p => {
-            container.innerHTML += `
-                <div class="list-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <b>${p.name}</b> (ID: ${p.id})<br>
-                        <span style="font-size:12px; color:gray;">Seller: ${p.addedByName} | Stocks: ${p.stocks}</span>
-                    </div>
-                    <button class="btn-danger" style="padding:5px;" onclick="window.deleteProduct(${p.id})">Delete</button>
-                </div>
-            `;
-        });
-    }
-
-    window.renderAdminOrders = function() {
-        let container = document.getElementById('admin-order-list');
-        if(!container) return;
-        container.innerHTML = '';
-        orders.forEach(o => {
-            container.innerHTML += `
-                <div class="list-card">
-                    <b>Order:</b> ${o.id} - ${o.buyerUsername}<br>
-                    <b>Status:</b> ${o.status}<br>
-                    <button class="btn-action" style="padding:5px; margin-top:5px;" onclick="window.updateOrderStatus(${o.id}, 'Completed')">Complete</button>
-                </div>
-            `;
-        });
-    }
-
-    window.updateOrderStatus = function(id, status) {
-        let o = orders.find(x => x.id === id);
-        if(o) o.status = status;
-        window.saveDatabase().then(() => window.renderAdminOrders());
-    }
-
-    window.renderAdminOffers = function() {
-        let container = document.getElementById('admin-offers-list');
-        if(!container) return;
-        container.innerHTML = '';
-        offers.forEach(o => {
-            container.innerHTML += `
-                <div class="list-card">
-                    <b>Target:</b> ${o.targetProductName}<br>
-                    <b>From:</b> ${o.buyerUsername}<br>
-                    <b>Offer:</b> ${o.offerItems.join(', ')}<br>
-                    <b>Status:</b> ${o.status}<br>
-                </div>
-            `;
-        });
-    }
-
-    window.renderAdminUsers = function() {
-        let container = document.getElementById('admin-user-list');
-        if(!container) return;
-        container.innerHTML = '';
-        for(let email in users) {
-            if(email === ADMIN_EMAIL) continue;
-            let u = users[email];
-            container.innerHTML += `
-                <div class="list-card">
-                    <b>${u.username}</b> (${email})<br>
-                    <span style="font-size:12px;">VIP: ${u.isVIP} | Seller: ${u.isVerifiedSeller}</span><br>
-                    <button class="btn-vip" style="padding:5px; margin-top:5px;" onclick="window.grantVIP('${email}')">Make VIP</button>
-                    <button class="btn-verify" style="padding:5px; margin-top:5px;" onclick="window.sendVerifyCode('${email}')">Send Seller Code</button>
-                </div>
-            `;
+            document.getElementById('dataContainer').innerText = "Select an option above to load data.";
         }
     }
 
-    window.grantVIP = function(email) {
-        users[email].isVIP = true;
-        users[email].vipPending = false;
-        users[email].inbox.push({ id: Date.now(), sender: 'Admin', text: 'You have been granted VIP status!', date: new Date().toLocaleString(), read: false });
-        window.saveDatabase().then(() => window.renderAdminUsers());
+    function updateTime() {
+        const timeEl = document.getElementById('gameTime');
+        if (timeEl) timeEl.innerText = new Date().toLocaleTimeString();
     }
 
-    window.sendVerifyCode = function(email) {
-        let code = Math.floor(100000 + Math.random() * 900000).toString();
-        users[email].sellCode = code;
-        users[email].sellCodeExpiry = Date.now() + (15 * 60 * 1000); // 15 mins
-        users[email].inbox.push({ id: Date.now(), sender: 'Admin', text: `Your Seller Verification Code is: ${code}\nValid for 15 minutes.`, date: new Date().toLocaleString(), read: false });
-        window.saveDatabase().then(() => alert("Code sent to user inbox!"));
+    function fetchData(type) {
+        const container = document.getElementById('dataContainer');
+        container.innerHTML = `<em>Loading ${type} data for ${currentGame.toUpperCase()}...</em>`;
+        setTimeout(() => {
+            container.innerHTML = `<strong>${type} Data Loaded:</strong><br><br>• Status: Active<br>• Last Updated: ${new Date().toLocaleTimeString()}<br>• System: Stable`;
+        }, 800);
     }
 
-    window.renderAdminVouchers = function() {
-        let container = document.getElementById('admin-voucher-list');
-        if(!container) return;
-        container.innerHTML = '';
-        vouchers.forEach(v => {
-            container.innerHTML += `
-                <div class="list-card" style="display:flex; justify-content:space-between;">
-                    <span><b>${v.code}</b> (${v.discount}%)</span>
-                    <button class="btn-danger" style="padding:5px;" onclick="window.deleteVoucher('${v.code}')">Del</button>
-                </div>
-            `;
-        });
-    }
-
-    window.deleteVoucher = function(code) {
-        vouchers = vouchers.filter(v => v.code !== code);
-        window.saveDatabase().then(() => window.renderAdminVouchers());
-    }
-
-    window.renderAdminChatList = function() {
-        let container = document.getElementById('admin-chat-user-list');
-        if(!container) return;
-        container.innerHTML = '';
-        for(let email in users) {
-            if(email === ADMIN_EMAIL) continue;
-            container.innerHTML += `
-                <div style="padding:10px; border-bottom:1px solid #eee; cursor:pointer;" onclick="window.openAdminChat('${email}')">
-                    <b>${users[email].username}</b>
-                </div>
-            `;
+    function toggleSystem(game) {
+        systemStatus[game] = !systemStatus[game];
+        const btn = document.getElementById('btnToggle' + game.toUpperCase());
+        if (btn) {
+            btn.innerText = `${game.toUpperCase()}: ${systemStatus[game] ? 'ON' : 'OFF'}`;
+            btn.className = systemStatus[game] ? '' : 'btn-danger';
         }
-    }
-
-    window.openAdminChat = function(email) {
-        chatTargetUser = email;
-        document.getElementById('chat-target-name').innerText = `Chat with ${users[email].username}`;
-        document.getElementById('admin-chat-modal').classList.remove('hidden');
-        window.renderAdminChatHistory();
-    }
-
-    window.renderAdminChatHistory = function() {
-        let container = document.getElementById('chat-history');
-        if(!container || !chatTargetUser) return;
-        container.innerHTML = '';
-        
-        let msgs = users[chatTargetUser].inbox || [];
-        msgs.forEach(m => {
-            let cClass = m.sender === 'SYSTEM' || m.sender === 'Admin' ? 'chat-user' : 'chat-admin';
-            container.innerHTML += `<div class="chat-msg ${cClass}"><b>${m.sender}:</b> ${m.text}</div>`;
-        });
-        container.scrollTop = container.scrollHeight;
-    }
-
-    window.sendAdminMessage = function() {
-        let text = document.getElementById('admin-chat-input').value.trim();
-        if(!text || !chatTargetUser) return;
-
-        users[chatTargetUser].inbox.push({
-            id: Date.now(),
-            sender: 'Admin',
-            text: text,
-            date: new Date().toLocaleString(),
-            read: false
-        });
-        
-        document.getElementById('admin-chat-input').value = '';
-        window.saveDatabase().then(() => window.renderAdminChatHistory());
-    }
-
-    // Vouches logic
-    window.openAddVouchModal = function() {
-        document.getElementById('add-vouch-modal').classList.remove('hidden');
-    }
-
-    window.saveVouch = async function() {
-        let itemName = document.getElementById('vouch-item-name').value.trim();
-        let buyerName = document.getElementById('vouch-buyer-name').value.trim();
-        let caption = document.getElementById('vouch-caption').value.trim();
-        let fileInput = document.getElementById('vouch-image');
-
-        if(!itemName || !buyerName || fileInput.files.length === 0) return alert("Fill all fields and select an image.");
-
-        let imgData = await getBase64(fileInput.files[0]);
-        
-        vouches.unshift({
-            id: Date.now(),
-            sellerName: users[currentUser].username,
-            itemName: itemName,
-            buyerName: buyerName,
-            caption: caption,
-            image: imgData,
-            date: new Date().toLocaleDateString()
-        });
-
-        window.saveDatabase().then(() => {
-            window.closeModal('add-vouch-modal');
-            window.renderVouches();
-            alert("Vouch posted successfully!");
-        });
-    }
-
-    window.renderVouches = function() {
-        let container = document.getElementById('vouch-list');
-        if(!container) return;
-        container.innerHTML = '';
-
-        if(vouches.length === 0) {
-            container.innerHTML = '<p style="grid-column: span 2; text-align:center;">No vouches yet.</p>';
-            return;
-        }
-
-        vouches.forEach(v => {
-            container.innerHTML += `
-                <div class="vouch-card">
-                    <img src="${v.image}" alt="Proof">
-                    <div style="padding:10px;">
-                        <b style="color:var(--main-color); font-size:14px;">${v.itemName}</b>
-                        <p style="margin:5px 0; font-size:12px;">Sold by: <b>${v.sellerName}</b> <span class="verified-icon">✓</span></p>
-                        <p style="margin:5px 0; font-size:12px;">Buyer: ${v.buyerName}</p>
-                        <p style="margin:5px 0; font-size:12px; color:gray; font-style:italic;">"${v.caption}"</p>
-                        <span style="font-size:10px; color:#aaa;">${v.date}</span>
-                    </div>
-                </div>
-            `;
-        });
     }
 </script>
+
 </body>
 </html>
