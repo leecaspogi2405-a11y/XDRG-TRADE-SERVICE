@@ -59,9 +59,10 @@
         .header h2 { margin: 0; }
         .header button { margin-bottom: 0; }
         .error-box { background: #F8D7DA; color: #721C24; padding: 20px; border: 1px solid #F5C6CB; border-radius: 6px; text-align: center; }
-        .content-box { background: #E9ECEF; padding: 20px; border-radius: 6px; min-height: 200px; margin-top: 20px; display: flex; align-items: center; justify-content: center; color: #555; font-style: italic; }
+        .content-box { background: #E9ECEF; padding: 20px; border-radius: 6px; min-height: 200px; margin-top: 20px; color: #333; font-size: 15px; overflow-wrap: break-word; }
         .checkbox-container { display: flex; align-items: center; cursor: pointer; margin-bottom: 20px; font-size: 16px; font-weight: bold; }
         .checkbox-container input { width: 20px; height: 20px; margin: 0 10px 0 0; cursor: pointer; }
+        pre { white-space: pre-wrap; font-family: inherit; margin: 0; }
     </style>
 </head>
 <body>
@@ -162,7 +163,7 @@
             <div id="gameButtons" class="button-group"></div>
             
             <div class="content-box" id="dataContainer">
-                Select an option above to load data.
+                <i style="color: #555;">Select an option above to load data.</i>
             </div>
         </div>
     </div>
@@ -171,6 +172,7 @@
 
 <script>
     const systemStatus = { gag: true, gag2: true, gh: true };
+    const TELEGRAM_CHANNEL = "growagardenlivestock";
     let timeInterval = null;
     let currentGame = '';
 
@@ -188,19 +190,18 @@
         let passInput = document.getElementById('password');
         let msgBox = document.getElementById('authMessage');
 
-        if (!emailInput || !passInput) return; // Safety check
+        if (!emailInput || !passInput) return; 
 
         let email = emailInput.value.trim();
         let pass = passInput.value;
 
         if (email === '' || pass === '') {
-            msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Kailangan may email at password!</span>';
+            msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Email and password are required!</span>';
             return;
         }
 
         msgBox.innerHTML = ''; 
 
-        // Admin check
         let adminButton = document.getElementById('adminBtn');
         if (email.toLowerCase() === 'xdrgmoderation@gmail.com' || email.toLowerCase() === 'xdrgxdragon@gmail.com') {
             if (adminButton) adminButton.style.display = 'block';
@@ -251,7 +252,7 @@
             if (gameCode !== 'gh') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Last Seen')">Last Seen</button>`;
             if (gameCode === 'gag') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Event Shop')">Event Shop</button>`;
 
-            document.getElementById('dataContainer').innerText = "Select an option above to load data.";
+            document.getElementById('dataContainer').innerHTML = "<i style='color: #555;'>Select an option above to load data.</i>";
         }
     }
 
@@ -260,8 +261,70 @@
         if (timeEl) timeEl.innerText = new Date().toLocaleTimeString();
     }
 
-    function fetchData(type) {
-        document.getElementById('dataContainer').innerHTML = `<strong>${type} Loaded:</strong><br><br>System is stable.`;
+    async function fetchData(type) {
+        let container = document.getElementById('dataContainer');
+        
+        if (currentGame === 'gag2') {
+            container.innerHTML = '<i>Fetching live data from Telegram API...</i>';
+            try {
+                // Using a free proxy to bypass CORS restrictions on the browser
+                let proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://t.me/s/' + TELEGRAM_CHANNEL)}`;
+                let response = await fetch(proxyUrl);
+                let data = await response.json();
+                
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(data.contents, "text/html");
+                let messages = doc.querySelectorAll('.tgme_widget_message_text');
+
+                let latestStock = null;
+                let latestWeather = null;
+
+                for (let i = messages.length - 1; i >= 0; i--) {
+                    let rawHtml = messages[i].innerHTML;
+                    
+                    // Parse text similarly to the bot's logic
+                    let text = rawHtml
+                        .replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/`Copyright[\s\S]*?`/g, '')
+                        .replace(/@\w+/g, '').replace(/&nbsp;/gi, ' ').replace(/&gt;/gi, '>') 
+                        .replace(/&lt;/gi, '<').replace(/&#39;/gi, "'").replace(/&#34;/gi, '"')
+                        .replace(/&amp;/gi, '&').replace(/\u00A0/g, ' ').replace(/\n{2,}/g, '\n').trim();
+
+                    if (!latestStock && text.toUpperCase().includes('SHOP STOCK')) {
+                        latestStock = text;
+                    }
+                    if (!latestWeather && (text.toUpperCase().includes('WEATHER') || text.toUpperCase().includes('MOON:'))) {
+                        latestWeather = text;
+                    }
+                }
+
+                if (type === 'Stock') {
+                    if (latestStock) {
+                        container.innerHTML = `<strong>🟢 LIVE GAG2 STOCK 🟢</strong><br><br><pre>${formatOutput(latestStock)}</pre>`;
+                    } else {
+                        container.innerHTML = '<i style="color:red;">No recent stock found in the channel.</i>';
+                    }
+                } else if (type === 'Last Seen') {
+                    let output = "";
+                    if (latestStock) output += `<strong>🛒 LATEST STOCK / ITEMS:</strong><br><pre>${formatOutput(latestStock)}</pre><br><br>`;
+                    if (latestWeather) output += `<strong>🌦️ LATEST WEATHER / MOON:</strong><br><pre>${formatOutput(latestWeather)}</pre>`;
+                    
+                    if(output === "") {
+                        container.innerHTML = '<i style="color:red;">No recent data found.</i>';
+                    } else {
+                        container.innerHTML = output;
+                    }
+                }
+
+            } catch (err) {
+                container.innerHTML = `<span style="color:red;">Failed to fetch from Telegram: ${err.message}</span>`;
+            }
+        } else {
+            container.innerHTML = `<strong>${type} Loaded:</strong><br><br><i style="color: #555;">(Live API sync is currently configured only for GAG2.)</i>`;
+        }
+    }
+
+    function formatOutput(text) {
+        return text.replace(/Copyright ©️.*/gi, '').trim();
     }
 
     function toggleSystem(gameCode) {
