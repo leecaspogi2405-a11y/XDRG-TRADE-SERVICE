@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Notifier App</title>
-    <!-- Supabase CDN Added Back for Global Stock Sync -->
+    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
@@ -206,69 +206,54 @@
 </div>
 
 <script>
-    // SUPABASE INITIALIZATION FOR GLOBAL STOCK SYNC (Shared Screen logic)
-    const SUPABASE_URL = 'https://iisffbjgltxslkkkxlsd.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpc2ZmYmpnbHR4c2xra2t4bHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNDQ4OTcsImV4cCI6MjEwMDkyMDg5N30.1RLkoz6hUMbhCNMr4BWDEqtb4LOM-XnwtBRuK39-TEk';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+    // ==========================================
+    // 1. ISOLATED LOCAL STORAGE (Login / Reports)
+    // Walang kinalaman ang Supabase dito para di masira ang Login
+    // ==========================================
     const ADMIN_EMAILS = ['xdrgmoderation@gmail.com', 'xdrgxdragon@gmail.com'];
-    const ENCODED_STREAM_PATH = 'aHR0cHM6Ly90Lm1lL3MvZ3Jvd2FnYXJkZW5saXZlc3RvY2s='; 
-
     let systemStatus = JSON.parse(localStorage.getItem('app_system_status')) || { gag: true, gag2: true, gh: true };
-    let timeInterval = null;
-    let autoSyncInterval = null;
-    let currentGame = '';
-    let currentType = 'Stock';
     let currentUser = null;
-    
-    // Last Seen Data tracking dictionary
-    let globalLastSeenDB = {};
-    let activeStockList = [];
 
-    // All Items defined strictly for the template
-    const GAME_ITEMS = {
-        "Seed 🌱": ["Carrot", "Strawberry", "Blueberry", "Tulip", "Tomato", "Bamboo", "Corn", "Banana", "Apple", "Grape", "Pineapple", "Sun Bloom", "Poison Apple", "Coconut", "Mango", "Cactus", "Cherry", "Green Bean", "Acorn", "Venom Spitter", "Mushroom", "Dragon's Breath", "Star Fruit", "Moon Bloom", "Hypno Bloom", "Fire Fern", "Sunflower"],
-        "Gear ⚙️": ["Common Watering Can", "Common Sprinkler", "Uncommon Sprinkler", "Jump Mushroom", "Trowel", "Invisibility Mushroom", "Rare Sprinkler", "Shrink Mushroom", "Speed Mushroom", "Gnome", "Super Watering Can", "Super Sprinkler", "Legendary Sprinkler", "Basic Pot"],
-        "Crate 📦": ["Bench Crate", "Ladder Crate", "Light Crate", "Arch Crate", "Sign Crate", "Owner Door Crate", "Spring Crate", "Bridge Crate", "Roleplay Crate", "Picture Frame Crate", "Seesaw Crate", "Conveyor Crate", "Boombox Crate", "Teleporter Pad Crate", "Fence Crate", "Bear Trap Crate"],
-        "Moon & Weather 🌙": ["Rainbowmoon", "Mega Moon", "Bloodmoon", "Goldmoon", "Sunburst", "Snowfall", "Rainbow", "Meteor", "Aurora", "Rain", "Snow", "Lightning", "Blizzard"]
-    };
-
-    // LOCAL STORAGE AUTHENTICATION (Fast, No Supabase Blockers)
     function handleAuth(mode) {
-        let email = document.getElementById('email').value.trim();
-        let pass = document.getElementById('password').value;
-        let msgBox = document.getElementById('authMessage');
+        try {
+            let email = document.getElementById('email').value.trim();
+            let pass = document.getElementById('password').value;
+            let msgBox = document.getElementById('authMessage');
 
-        if (!email || !pass) {
-            msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Email and password are required!</span>';
-            return;
-        }
-
-        let usersDB = JSON.parse(localStorage.getItem('app_users_db')) || {};
-
-        if (mode === 'signup') {
-            if (usersDB[email]) {
-                msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Email is already registered! Please Log In.</span>';
+            if (!email || !pass) {
+                msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Email and password are required!</span>';
                 return;
             }
-            usersDB[email] = pass;
-            localStorage.setItem('app_users_db', JSON.stringify(usersDB));
-            msgBox.innerHTML = '<span style="color:green; font-weight:bold;">Sign up successful! Logging in...</span>';
-        } else if (mode === 'login') {
-            if (ADMIN_EMAILS.includes(email.toLowerCase()) && !usersDB[email]) {
+
+            let usersDB = JSON.parse(localStorage.getItem('app_users_db')) || {};
+
+            if (mode === 'signup') {
+                if (usersDB[email]) {
+                    msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Email is already registered! Please Log In.</span>';
+                    return;
+                }
                 usersDB[email] = pass;
                 localStorage.setItem('app_users_db', JSON.stringify(usersDB));
-            } else if (!usersDB[email] || usersDB[email] !== pass) {
-                msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Invalid email or password!</span>';
-                return;
+                msgBox.innerHTML = '<span style="color:green; font-weight:bold;">Sign up successful! Logging in...</span>';
+            } else if (mode === 'login') {
+                if (ADMIN_EMAILS.includes(email.toLowerCase()) && !usersDB[email]) {
+                    usersDB[email] = pass;
+                    localStorage.setItem('app_users_db', JSON.stringify(usersDB));
+                } else if (!usersDB[email] || usersDB[email] !== pass) {
+                    msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Invalid email or password!</span>';
+                    return;
+                }
             }
-        }
 
-        currentUser = email;
-        localStorage.setItem('app_active_user', email);
-        msgBox.innerHTML = '';
-        toggleAdminAccess(email);
-        showView('termsView');
+            currentUser = email;
+            localStorage.setItem('app_active_user', email);
+            msgBox.innerHTML = '';
+            toggleAdminAccess(email);
+            showView('termsView');
+        } catch (error) {
+            console.error("Local Storage Auth Error:", error);
+            alert("Something went wrong with login. Please try again.");
+        }
     }
 
     function checkSession() {
@@ -282,8 +267,8 @@
         }
         updateAdminToggleUI();
         
-        // Initial load of global database
-        loadGlobalSyncDB();
+        // Call Supabase quietly without blocking UI
+        setTimeout(() => loadGlobalSyncDB(), 1000); 
     }
 
     function logout() {
@@ -305,33 +290,6 @@
         }
     }
 
-    // VIEW NAVIGATION
-    function showView(viewId) {
-        let views = document.querySelectorAll('.view');
-        for (let i = 0; i < views.length; i++) {
-            views[i].classList.remove('active');
-        }
-        document.getElementById(viewId).classList.add('active');
-        
-        if (viewId !== 'gameView') {
-            if (timeInterval) clearInterval(timeInterval);
-            if (autoSyncInterval) clearInterval(autoSyncInterval);
-        }
-    }
-
-    function checkTerms() {
-        if (document.getElementById('termsCheck').checked) showView('dashboardView');
-    }
-
-    function filterGames() {
-        let query = document.getElementById('searchInput').value.toLowerCase();
-        let buttons = document.querySelectorAll('.game-btn');
-        for (let i = 0; i < buttons.length; i++) {
-            buttons[i].style.display = buttons[i].innerText.toLowerCase().includes(query) ? 'block' : 'none';
-        }
-    }
-
-    // LOCAL BUG REPORTS
     function submitReport() {
         let text = document.getElementById('bugReportText').value.trim();
         if (!text) return alert('Please enter a description!');
@@ -369,35 +327,54 @@
         }
     }
 
-    // GLOBAL STOCK ENGINE (Telegram + Supabase)
-    function openGame(gameCode, gameName) {
-        currentGame = gameCode;
-        currentType = 'Stock';
-        showView('gameView');
-        document.getElementById('gameTitle').innerText = gameName + ' Notifier';
-        
-        if (systemStatus[gameCode] === false) {
-            document.getElementById('gameError').style.display = 'block';
-            document.getElementById('gameContent').style.display = 'none';
-        } else {
-            document.getElementById('gameError').style.display = 'none';
-            document.getElementById('gameContent').style.display = 'block';
-            
-            updateTime();
-            timeInterval = setInterval(updateTime, 1000);
-            
-            let btnContainer = document.getElementById('gameButtons');
-            btnContainer.innerHTML = `<button type="button" class="btn-secondary" onclick="fetchData('Stock')">Stock</button>`;
-            if (gameCode !== 'gh') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Last Seen')">Last Seen</button>`;
-            if (gameCode === 'gag') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Event Shop')">Event Shop</button>`;
 
-            fetchData(currentType);
+    // ==========================================
+    // 2. VIEW CONTROLS & UI 
+    // ==========================================
+    let timeInterval = null;
+    let autoSyncInterval = null;
+    let currentGame = '';
+    let currentType = 'Stock';
 
-            if (autoSyncInterval) clearInterval(autoSyncInterval);
-            autoSyncInterval = setInterval(() => {
-                if (currentGame === 'gag2') fetchData(currentType, true); 
-            }, 8000);
+    function showView(viewId) {
+        let views = document.querySelectorAll('.view');
+        for (let i = 0; i < views.length; i++) {
+            views[i].classList.remove('active');
         }
+        document.getElementById(viewId).classList.add('active');
+        
+        if (viewId !== 'gameView') {
+            if (timeInterval) clearInterval(timeInterval);
+            if (autoSyncInterval) clearInterval(autoSyncInterval);
+        }
+    }
+
+    function checkTerms() {
+        if (document.getElementById('termsCheck').checked) showView('dashboardView');
+    }
+
+    function filterGames() {
+        let query = document.getElementById('searchInput').value.toLowerCase();
+        let buttons = document.querySelectorAll('.game-btn');
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].style.display = buttons[i].innerText.toLowerCase().includes(query) ? 'block' : 'none';
+        }
+    }
+
+    function toggleSystem(gameCode) {
+        systemStatus[gameCode] = !systemStatus[gameCode]; 
+        localStorage.setItem('app_system_status', JSON.stringify(systemStatus));
+        updateAdminToggleUI();
+    }
+
+    function updateAdminToggleUI() {
+        ['gag', 'gag2', 'gh'].forEach(game => {
+            let btn = document.getElementById('btnToggle' + game.toUpperCase());
+            if (btn) {
+                btn.innerText = `${game.toUpperCase()}: ${systemStatus[game] ? 'ON' : 'OFF'}`;
+                btn.className = systemStatus[game] ? '' : 'btn-danger';
+            }
+        });
     }
 
     function updateTime() {
@@ -405,21 +382,48 @@
         if (timeEl) timeEl.innerText = new Date().toLocaleTimeString();
     }
 
-    // Sync to Supabase so EVERYONE sees the same DB screen
+
+    // ==========================================
+    // 3. SEPARATE SUPABASE & GLOBAL SYNC ENGINE
+    // ==========================================
+    const SUPABASE_URL = 'https://iisffbjgltxslkkkxlsd.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpc2ZmYmpnbHR4c2xra2t4bHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNDQ4OTcsImV4cCI6MjEwMDkyMDg5N30.1RLkoz6hUMbhCNMr4BWDEqtb4LOM-XnwtBRuK39-TEk';
+    
+    // Safely initialize Supabase without breaking the script if it fails
+    let sbClient = null;
+    try {
+        if (window.supabase) {
+            sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
+    } catch(err) {
+        console.warn("Supabase initialization skipped. Will use local buffer.");
+    }
+
+    const ENCODED_STREAM_PATH = 'aHR0cHM6Ly90Lm1lL3MvZ3Jvd2FnYXJkZW5saXZlc3RvY2s='; 
+    let globalLastSeenDB = {};
+    let activeStockList = [];
+
+    const GAME_ITEMS = {
+        "Seed 🌱": ["Carrot", "Strawberry", "Blueberry", "Tulip", "Tomato", "Bamboo", "Corn", "Banana", "Apple", "Grape", "Pineapple", "Sun Bloom", "Poison Apple", "Coconut", "Mango", "Cactus", "Cherry", "Green Bean", "Acorn", "Venom Spitter", "Mushroom", "Dragon's Breath", "Star Fruit", "Moon Bloom", "Hypno Bloom", "Fire Fern", "Sunflower"],
+        "Gear ⚙️": ["Common Watering Can", "Common Sprinkler", "Uncommon Sprinkler", "Jump Mushroom", "Trowel", "Invisibility Mushroom", "Rare Sprinkler", "Shrink Mushroom", "Speed Mushroom", "Gnome", "Super Watering Can", "Super Sprinkler", "Legendary Sprinkler", "Basic Pot"],
+        "Crate 📦": ["Bench Crate", "Ladder Crate", "Light Crate", "Arch Crate", "Sign Crate", "Owner Door Crate", "Spring Crate", "Bridge Crate", "Roleplay Crate", "Picture Frame Crate", "Seesaw Crate", "Conveyor Crate", "Boombox Crate", "Teleporter Pad Crate", "Fence Crate", "Bear Trap Crate"],
+        "Moon & Weather 🌙": ["Rainbowmoon", "Mega Moon", "Bloodmoon", "Goldmoon", "Sunburst", "Snowfall", "Rainbow", "Meteor", "Aurora", "Rain", "Snow", "Lightning", "Blizzard"]
+    };
+
     async function loadGlobalSyncDB() {
+        if (!sbClient) return;
         try {
-            let { data } = await supabase.from('system_status').select('status').eq('id', 99).single();
-            if (data && data.status) {
-                globalLastSeenDB = data.status;
-            }
+            let { data } = await sbClient.from('system_status').select('status').eq('id', 99).single();
+            if (data && data.status) globalLastSeenDB = data.status;
         } catch (e) {
             console.log("Using local last seen buffer.");
         }
     }
     
     async function saveGlobalSyncDB() {
+        if (!sbClient) return;
         try {
-            await supabase.from('system_status').upsert({ id: 99, status: globalLastSeenDB, updated_at: new Date() });
+            await sbClient.from('system_status').upsert({ id: 99, status: globalLastSeenDB, updated_at: new Date() });
         } catch (e) { }
     }
 
@@ -462,6 +466,36 @@
         return `${timeStr} (${dateStr})`;
     }
 
+    function openGame(gameCode, gameName) {
+        currentGame = gameCode;
+        currentType = 'Stock';
+        showView('gameView');
+        document.getElementById('gameTitle').innerText = gameName + ' Notifier';
+        
+        if (systemStatus[gameCode] === false) {
+            document.getElementById('gameError').style.display = 'block';
+            document.getElementById('gameContent').style.display = 'none';
+        } else {
+            document.getElementById('gameError').style.display = 'none';
+            document.getElementById('gameContent').style.display = 'block';
+            
+            updateTime();
+            timeInterval = setInterval(updateTime, 1000);
+            
+            let btnContainer = document.getElementById('gameButtons');
+            btnContainer.innerHTML = `<button type="button" class="btn-secondary" onclick="fetchData('Stock')">Stock</button>`;
+            if (gameCode !== 'gh') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Last Seen')">Last Seen</button>`;
+            if (gameCode === 'gag') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Event Shop')">Event Shop</button>`;
+
+            fetchData(currentType);
+
+            if (autoSyncInterval) clearInterval(autoSyncInterval);
+            autoSyncInterval = setInterval(() => {
+                if (currentGame === 'gag2') fetchData(currentType, true); 
+            }, 8000);
+        }
+    }
+
     async function fetchData(type, isSilent = false) {
         currentType = type;
         let container = document.getElementById('dataContainer');
@@ -481,7 +515,7 @@
                 let latestStockRaw = null;
                 activeStockList = [];
 
-                // Parse history to update globalLastSeenDB
+                // Parse history
                 for (let i = 0; i < messages.length; i++) {
                     let text = messages[i].innerText.toUpperCase();
                     let msgTime = times[i] ? new Date(times[i].getAttribute('datetime')).getTime() : Date.now();
@@ -494,7 +528,6 @@
                         }
                     });
 
-                    // Grab the absolute latest stock message for the Active list
                     if (!latestStockRaw && (text.includes('STOCK') || text.includes('SHOP'))) {
                         latestStockRaw = messages[i].innerText;
                         Object.values(GAME_ITEMS).flat().forEach(item => {
@@ -505,7 +538,7 @@
                     }
                 }
 
-                // Sync with everyone (Supabase)
+                // Sync to global if client loaded correctly
                 if(!isSilent) saveGlobalSyncDB(); 
 
                 let currentDateTime = new Date().toLocaleString('en-US');
@@ -551,23 +584,7 @@
         }
     }
 
-    // ADMIN SYSTEM CONTROL
-    function toggleSystem(gameCode) {
-        systemStatus[gameCode] = !systemStatus[gameCode]; 
-        localStorage.setItem('app_system_status', JSON.stringify(systemStatus));
-        updateAdminToggleUI();
-    }
-
-    function updateAdminToggleUI() {
-        ['gag', 'gag2', 'gh'].forEach(game => {
-            let btn = document.getElementById('btnToggle' + game.toUpperCase());
-            if (btn) {
-                btn.innerText = `${game.toUpperCase()}: ${systemStatus[game] ? 'ON' : 'OFF'}`;
-                btn.className = systemStatus[game] ? '' : 'btn-danger';
-            }
-        });
-    }
-
+    // FIRE APP START
     checkSession();
 </script>
 
