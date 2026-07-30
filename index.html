@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Notifier App</title>
+    <!-- Supabase CDN Added Back for Global Stock Sync -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -65,13 +67,14 @@
             background: #E9ECEF; 
             padding: 15px; 
             border-radius: 6px; 
-            height: 280px; 
+            height: 350px; 
             overflow-y: auto; 
             margin-top: 20px; 
             color: #222; 
             font-size: 14px; 
             scroll-behavior: smooth;
             border: 1px solid #ced4da;
+            line-height: 1.6;
         }
         
         .checkbox-container { display: flex; align-items: center; cursor: pointer; margin-bottom: 20px; font-size: 16px; font-weight: bold; }
@@ -109,13 +112,13 @@
         <h2>Terms and Conditions</h2>
         <div class="terms-box">
             <p><strong>1.</strong> Don't copy-paste the system stock</p>
-            <p><strong>2.</strong> xdrg owns the system, give him credit</p>
+            <p><strong>2.</strong> Dev Xdragon owns the system, give him credit</p>
             <p><strong>3.</strong> Respect admins and members</p>
             <p><strong>4.</strong> Report bug/issues if the app isn't working</p>
         </div>
         <label class="checkbox-container">
             <input type="checkbox" id="termsCheck" onchange="checkTerms()">
-            <span>I agree to xdrg terms and conditions</span>
+            <span>I agree to Dev Xdragon terms and conditions</span>
         </label>
         <button type="button" class="btn-danger" onclick="logout()">Cancel & Logout</button>
     </div>
@@ -187,7 +190,7 @@
 
         <div id="gameContent">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 14px; background: #eee; padding: 10px; border-radius: 5px;">
-                <span><strong>Credit:</strong> xdrg <span id="liveStatusBadge" class="live-badge">AUTO</span></span>
+                <span><strong>Credit:</strong> Dev Xdragon <span id="liveStatusBadge" class="live-badge">AUTO</span></span>
                 <span><strong>Time:</strong> <span id="gameTime"></span></span>
             </div>
             
@@ -203,9 +206,12 @@
 </div>
 
 <script>
+    // SUPABASE INITIALIZATION FOR GLOBAL STOCK SYNC (Shared Screen logic)
+    const SUPABASE_URL = 'https://iisffbjgltxslkkkxlsd.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpc2ZmYmpnbHR4c2xra2t4bHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNDQ4OTcsImV4cCI6MjEwMDkyMDg5N30.1RLkoz6hUMbhCNMr4BWDEqtb4LOM-XnwtBRuK39-TEk';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     const ADMIN_EMAILS = ['xdrgmoderation@gmail.com', 'xdrgxdragon@gmail.com'];
-    
-    // Encoded source to avoid copyright hits
     const ENCODED_STREAM_PATH = 'aHR0cHM6Ly90Lm1lL3MvZ3Jvd2FnYXJkZW5saXZlc3RvY2s='; 
 
     let systemStatus = JSON.parse(localStorage.getItem('app_system_status')) || { gag: true, gag2: true, gh: true };
@@ -214,8 +220,20 @@
     let currentGame = '';
     let currentType = 'Stock';
     let currentUser = null;
+    
+    // Last Seen Data tracking dictionary
+    let globalLastSeenDB = {};
+    let activeStockList = [];
 
-    // LOCAL STORAGE AUTHENTICATION (Working Login/Signup without Supabase keys)
+    // All Items defined strictly for the template
+    const GAME_ITEMS = {
+        "Seed 🌱": ["Carrot", "Strawberry", "Blueberry", "Tulip", "Tomato", "Bamboo", "Corn", "Banana", "Apple", "Grape", "Pineapple", "Sun Bloom", "Poison Apple", "Coconut", "Mango", "Cactus", "Cherry", "Green Bean", "Acorn", "Venom Spitter", "Mushroom", "Dragon's Breath", "Star Fruit", "Moon Bloom", "Hypno Bloom", "Fire Fern", "Sunflower"],
+        "Gear ⚙️": ["Common Watering Can", "Common Sprinkler", "Uncommon Sprinkler", "Jump Mushroom", "Trowel", "Invisibility Mushroom", "Rare Sprinkler", "Shrink Mushroom", "Speed Mushroom", "Gnome", "Super Watering Can", "Super Sprinkler", "Legendary Sprinkler", "Basic Pot"],
+        "Crate 📦": ["Bench Crate", "Ladder Crate", "Light Crate", "Arch Crate", "Sign Crate", "Owner Door Crate", "Spring Crate", "Bridge Crate", "Roleplay Crate", "Picture Frame Crate", "Seesaw Crate", "Conveyor Crate", "Boombox Crate", "Teleporter Pad Crate", "Fence Crate", "Bear Trap Crate"],
+        "Moon & Weather 🌙": ["Rainbowmoon", "Mega Moon", "Bloodmoon", "Goldmoon", "Sunburst", "Snowfall", "Rainbow", "Meteor", "Aurora", "Rain", "Snow", "Lightning", "Blizzard"]
+    };
+
+    // LOCAL STORAGE AUTHENTICATION (Fast, No Supabase Blockers)
     function handleAuth(mode) {
         let email = document.getElementById('email').value.trim();
         let pass = document.getElementById('password').value;
@@ -237,7 +255,6 @@
             localStorage.setItem('app_users_db', JSON.stringify(usersDB));
             msgBox.innerHTML = '<span style="color:green; font-weight:bold;">Sign up successful! Logging in...</span>';
         } else if (mode === 'login') {
-            // Auto-register admin emails if they login for the first time
             if (ADMIN_EMAILS.includes(email.toLowerCase()) && !usersDB[email]) {
                 usersDB[email] = pass;
                 localStorage.setItem('app_users_db', JSON.stringify(usersDB));
@@ -264,6 +281,9 @@
             showView('authView');
         }
         updateAdminToggleUI();
+        
+        // Initial load of global database
+        loadGlobalSyncDB();
     }
 
     function logout() {
@@ -311,32 +331,25 @@
         }
     }
 
-    // BUG REPORTS
+    // LOCAL BUG REPORTS
     function submitReport() {
         let text = document.getElementById('bugReportText').value.trim();
         if (!text) return alert('Please enter a description!');
 
         let userEmail = currentUser || 'Anonymous';
         let localReports = JSON.parse(localStorage.getItem('app_reports') || '[]');
-        
-        localReports.push({ 
-            user_email: userEmail, 
-            issue: text, 
-            date: new Date().toLocaleString() 
-        });
-        
+        localReports.push({ user_email: userEmail, issue: text, date: new Date().toLocaleString() });
         localStorage.setItem('app_reports', JSON.stringify(localReports));
         
         alert('Report submitted successfully to admin!');
         document.getElementById('bugReportText').value = '';
         showView('dashboardView');
-        loadAdminReports(); // update admin panel
+        loadAdminReports(); 
     }
 
     function loadAdminReports() {
         let reportsContainer = document.getElementById('reportsList');
         let local = JSON.parse(localStorage.getItem('app_reports') || '[]');
-        
         if (local.length > 0) {
             reportsContainer.innerHTML = local.reverse().map(r => 
                 `<div style="padding:8px; border-bottom:1px solid #ccc; background:#fff; margin-bottom:5px; border-radius:4px;">
@@ -356,7 +369,7 @@
         }
     }
 
-    // GAME & API ENGINE
+    // GLOBAL STOCK ENGINE (Telegram + Supabase)
     function openGame(gameCode, gameName) {
         currentGame = gameCode;
         currentType = 'Stock';
@@ -378,14 +391,11 @@
             if (gameCode !== 'gh') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Last Seen')">Last Seen</button>`;
             if (gameCode === 'gag') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Event Shop')">Event Shop</button>`;
 
-            fetchData('Stock');
+            fetchData(currentType);
 
-            // Auto-Sync interval (8 seconds)
             if (autoSyncInterval) clearInterval(autoSyncInterval);
             autoSyncInterval = setInterval(() => {
-                if (currentGame === 'gag2') {
-                    fetchData(currentType, true); 
-                }
+                if (currentGame === 'gag2') fetchData(currentType, true); 
             }, 8000);
         }
     }
@@ -395,13 +405,30 @@
         if (timeEl) timeEl.innerText = new Date().toLocaleTimeString();
     }
 
+    // Sync to Supabase so EVERYONE sees the same DB screen
+    async function loadGlobalSyncDB() {
+        try {
+            let { data } = await supabase.from('system_status').select('status').eq('id', 99).single();
+            if (data && data.status) {
+                globalLastSeenDB = data.status;
+            }
+        } catch (e) {
+            console.log("Using local last seen buffer.");
+        }
+    }
+    
+    async function saveGlobalSyncDB() {
+        try {
+            await supabase.from('system_status').upsert({ id: 99, status: globalLastSeenDB, updated_at: new Date() });
+        } catch (e) { }
+    }
+
     async function fetchWithProxyFallback(targetUrl) {
         const proxyList = [
             `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
             `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
             `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
         ];
-
         for (let proxy of proxyList) {
             try {
                 let res = await fetch(proxy, { cache: 'no-cache' });
@@ -409,20 +436,37 @@
                     let text = await res.text();
                     if (text && text.length > 100) return text;
                 }
-            } catch (e) {
-                // Try next proxy
-            }
+            } catch (e) {}
         }
-        throw new Error("All connections failed.");
+        throw new Error("Connections failed.");
+    }
+
+    function formatTimeDiff(timestamp) {
+        let diffMs = Date.now() - timestamp;
+        let diffMins = Math.floor(diffMs / 60000);
+        let diffHours = Math.floor(diffMins / 60);
+        let diffDays = Math.floor(diffHours / 24);
+        
+        let timeStr = "";
+        if (diffDays > 0) {
+            timeStr = diffDays + (diffDays === 1 ? " day ago" : " days ago");
+        } else if (diffHours > 0) {
+            timeStr = diffHours + " hour" + (diffHours > 1 ? "s " : " ") + (diffMins % 60) + " minutes ago";
+        } else {
+            timeStr = diffMins + " minutes ago";
+        }
+        if (diffMins <= 0) timeStr = "Just now";
+
+        let d = new Date(timestamp);
+        let dateStr = d.toLocaleString('en-US', { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+        return `${timeStr} (${dateStr})`;
     }
 
     async function fetchData(type, isSilent = false) {
         currentType = type;
         let container = document.getElementById('dataContainer');
         
-        if (!isSilent) {
-            container.innerHTML = '<i>Connecting to live stream...</i>';
-        }
+        if (!isSilent) container.innerHTML = '<i>Connecting to live stream & syncing database...</i>';
 
         if (currentGame === 'gag2') {
             try {
@@ -432,55 +476,66 @@
                 let parser = new DOMParser();
                 let doc = parser.parseFromString(rawHtml, "text/html");
                 let messages = doc.querySelectorAll('.tgme_widget_message_text');
+                let times = doc.querySelectorAll('.tgme_widget_message_date time');
 
-                let stockLogs = [];
-                let weatherLogs = [];
+                let latestStockRaw = null;
+                activeStockList = [];
 
-                for (let i = messages.length - 1; i >= 0; i--) {
-                    let text = messages[i].innerHTML
-                        .replace(/<br\s*\/?>/gi, '\n')
-                        .replace(/<[^>]+>/g, '')
-                        .replace(/&nbsp;/gi, ' ')
-                        .replace(/&gt;/gi, '>') 
-                        .replace(/&lt;/gi, '<')
-                        .replace(/&#39;/gi, "'")
-                        .replace(/&#34;/gi, '"')
-                        .replace(/&amp;/gi, '&')
-                        .trim();
+                // Parse history to update globalLastSeenDB
+                for (let i = 0; i < messages.length; i++) {
+                    let text = messages[i].innerText.toUpperCase();
+                    let msgTime = times[i] ? new Date(times[i].getAttribute('datetime')).getTime() : Date.now();
+                    
+                    Object.values(GAME_ITEMS).flat().forEach(item => {
+                        if (text.includes(item.toUpperCase())) {
+                            if (!globalLastSeenDB[item] || msgTime > globalLastSeenDB[item]) {
+                                globalLastSeenDB[item] = msgTime;
+                            }
+                        }
+                    });
 
-                    if (text.toUpperCase().includes('STOCK') || text.toUpperCase().includes('SHOP')) {
-                        stockLogs.push(text);
-                    }
-                    if (text.toUpperCase().includes('WEATHER') || text.toUpperCase().includes('MOON')) {
-                        weatherLogs.push(text);
+                    // Grab the absolute latest stock message for the Active list
+                    if (!latestStockRaw && (text.includes('STOCK') || text.includes('SHOP'))) {
+                        latestStockRaw = messages[i].innerText;
+                        Object.values(GAME_ITEMS).flat().forEach(item => {
+                            if (latestStockRaw.toUpperCase().includes(item.toUpperCase())) {
+                                activeStockList.push(item);
+                            }
+                        });
                     }
                 }
 
+                // Sync with everyone (Supabase)
+                if(!isSilent) saveGlobalSyncDB(); 
+
+                let currentDateTime = new Date().toLocaleString('en-US');
+                let copyrightFoot = `<br><br>⏰ Last Updated: ${currentDateTime}<br><br>Copyright ©️ Gag2 ~ Dev Xdragon`;
+
                 if (type === 'Stock') {
-                    if (stockLogs.length > 0) {
-                        let htmlOutput = `<strong>🟢 LIVE GAG2 STOCK LOGS (${stockLogs.length})</strong><br><br>`;
-                        stockLogs.forEach((log) => {
-                            htmlOutput += `<div style="background:#fff; padding:10px; margin-bottom:10px; border-radius:5px; border-left:4px solid #28a745;">
-                                            <pre>${cleanText(log)}</pre>
-                                           </div>`;
-                        });
-                        container.innerHTML = htmlOutput;
+                    if (latestStockRaw) {
+                        let formattedText = latestStockRaw.replace(/Copyright ©️.*/gi, '').replace(/@\w+/g, '').trim();
+                        container.innerHTML = `<strong>🟢 LIVE GAG2 STOCK 🟢</strong><br><br><pre>${formattedText}</pre>${copyrightFoot}`;
                     } else {
-                        container.innerHTML = '<i style="color:red;">No recent stock entries found.</i>';
+                        container.innerHTML = `<i style="color:red;">No recent stock entries found.</i>${copyrightFoot}`;
                     }
                 } else if (type === 'Last Seen') {
-                    let combined = [...stockLogs, ...weatherLogs];
-                    if (combined.length > 0) {
-                        let htmlOutput = `<strong>🕒 RECENT ACTIVITY LOGS</strong><br><br>`;
-                        combined.forEach(log => {
-                            htmlOutput += `<div style="background:#fff; padding:10px; margin-bottom:10px; border-radius:5px; border-left:4px solid #007bff;">
-                                            <pre>${cleanText(log)}</pre>
-                                           </div>`;
+                    let htmlOutput = `<strong>🟢 LIVE STOCK & LAST SEEN 🟢</strong><br><br>`;
+                    
+                    for (let [category, items] of Object.entries(GAME_ITEMS)) {
+                        htmlOutput += `<strong>【 ${category} 】</strong><br><br>`;
+                        items.forEach(item => {
+                            if (activeStockList.includes(item)) {
+                                htmlOutput += `✅ ${item}: On Stock<br><br>`;
+                            } else if (globalLastSeenDB[item]) {
+                                htmlOutput += `🕒 ${item}: ${formatTimeDiff(globalLastSeenDB[item])}<br><br>`;
+                            } else {
+                                htmlOutput += `❌ ${item}: Never Seen<br><br>`;
+                            }
                         });
-                        container.innerHTML = htmlOutput;
-                    } else {
-                        container.innerHTML = '<i style="color:red;">No recent logs available.</i>';
+                        htmlOutput += `<br>`;
                     }
+                    
+                    container.innerHTML = htmlOutput + copyrightFoot;
                 }
 
             } catch (err) {
@@ -494,10 +549,6 @@
         } else {
             container.innerHTML = `<strong>${type} View</strong><br><br><i>Live stream updates currently enabled for GAG2.</i>`;
         }
-    }
-
-    function cleanText(txt) {
-        return txt.replace(/Copyright ©️.*/gi, '').replace(/@\w+/g, '').trim();
     }
 
     // ADMIN SYSTEM CONTROL
@@ -517,7 +568,6 @@
         });
     }
 
-    // Init App
     checkSession();
 </script>
 
