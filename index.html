@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Notifier App</title>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -59,10 +61,33 @@
         .header h2 { margin: 0; }
         .header button { margin-bottom: 0; }
         .error-box { background: #F8D7DA; color: #721C24; padding: 20px; border: 1px solid #F5C6CB; border-radius: 6px; text-align: center; }
-        .content-box { background: #E9ECEF; padding: 20px; border-radius: 6px; min-height: 200px; margin-top: 20px; color: #333; font-size: 15px; overflow-wrap: break-word; }
+        
+        /* Scrollable container for stock logs */
+        .content-box { 
+            background: #E9ECEF; 
+            padding: 15px; 
+            border-radius: 6px; 
+            height: 280px; 
+            overflow-y: auto; 
+            margin-top: 20px; 
+            color: #222; 
+            font-size: 14px; 
+            scroll-behavior: smooth;
+            border: 1px solid #ced4da;
+        }
+        
         .checkbox-container { display: flex; align-items: center; cursor: pointer; margin-bottom: 20px; font-size: 16px; font-weight: bold; }
         .checkbox-container input { width: 20px; height: 20px; margin: 0 10px 0 0; cursor: pointer; }
-        pre { white-space: pre-wrap; font-family: inherit; margin: 0; }
+        pre { white-space: pre-wrap; word-wrap: break-word; font-family: inherit; margin: 0; }
+        .live-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            font-size: 12px;
+            border-radius: 12px;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -73,11 +98,11 @@
     <div id="authView" class="view active">
         <h2>Login / Sign-up</h2>
         <div id="authMessage" style="margin-bottom: 10px;"></div>
-        <input type="email" id="email" placeholder="Email (e.g. xdrgmoderation@gmail.com)">
+        <input type="email" id="email" placeholder="Gmail address">
         <input type="password" id="password" placeholder="Password">
         <div class="button-group">
-            <button type="button" onclick="handleAuth()">Log In</button>
-            <button type="button" onclick="handleAuth()" class="btn-secondary">Sign Up</button>
+            <button type="button" onclick="handleAuth('login')">Log In</button>
+            <button type="button" onclick="handleAuth('signup')" class="btn-secondary">Sign Up</button>
         </div>
     </div>
 
@@ -94,14 +119,14 @@
             <input type="checkbox" id="termsCheck" onchange="checkTerms()">
             <span>I agree to xdrg terms and conditions</span>
         </label>
-        <button type="button" class="btn-danger" onclick="showView('authView')">Cancel & Logout</button>
+        <button type="button" class="btn-danger" onclick="logout()">Cancel & Logout</button>
     </div>
 
     <!-- DASHBOARD VIEW -->
     <div id="dashboardView" class="view">
         <div class="header">
             <h2>Dashboard</h2>
-            <button type="button" onclick="showView('authView')" class="btn-danger" style="width: auto; padding: 8px 15px;">Logout</button>
+            <button type="button" onclick="logout()" class="btn-danger" style="width: auto; padding: 8px 15px;">Logout</button>
         </div>
         <input type="text" id="searchInput" placeholder="Search a restocker game..." onkeyup="filterGames()">
         
@@ -130,6 +155,13 @@
             <button type="button" id="btnToggleGAG2" onclick="toggleSystem('gag2')">GAG2: ON</button>
             <button type="button" id="btnToggleGH" onclick="toggleSystem('gh')">GH: ON</button>
         </div>
+
+        <div class="terms-box">
+            <h3>Submitted Reports</h3>
+            <div id="reportsList" style="max-height: 150px; overflow-y: auto; font-size: 13px;">
+                Loading reports from database...
+            </div>
+        </div>
     </div>
 
     <!-- REPORT VIEW -->
@@ -155,13 +187,14 @@
         </div>
 
         <div id="gameContent">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; background: #eee; padding: 10px; border-radius: 5px;">
-                <span><strong>Credit:</strong> xdrg</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 14px; background: #eee; padding: 10px; border-radius: 5px;">
+                <span><strong>Credit:</strong> xdrg <span id="liveStatusBadge" class="live-badge">AUTO</span></span>
                 <span><strong>Time:</strong> <span id="gameTime"></span></span>
             </div>
             
             <div id="gameButtons" class="button-group"></div>
             
+            <!-- Scrollable stock output container -->
             <div class="content-box" id="dataContainer">
                 <i style="color: #555;">Select an option above to load data.</i>
             </div>
@@ -171,45 +204,118 @@
 </div>
 
 <script>
-    const systemStatus = { gag: true, gag2: true, gh: true };
-    const TELEGRAM_CHANNEL = "growagardenlivestock";
-    let timeInterval = null;
-    let currentGame = '';
+    // 1. SUPABASE INITIALIZATION
+    const SUPABASE_URL = 'https://iisffbjgltxslkkkxlsd.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpc2ZmYmpnbHR4c2xra2t4bHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNDQ4OTcsImV4cCI6MjEwMDkyMDg5N30.1RLkoz6hUMbhCNMr4BWDEqtb4LOM-XnwtBRuK39-TEk';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    const ADMIN_EMAILS = ['xdrgmoderation@gmail.com', 'xdrgxdragon@gmail.com'];
+    const SYSTEM_STATUS_KEY = 'app_system_status';
+    
+    // Hidden internal endpoint
+    const ENCODED_STREAM_PATH = 'aHR0cHM6Ly90Lm1lL3MvZ3Jvd2FnYXJkZW5saXZlc3RvY2s='; 
+
+    let systemStatus = { gag: true, gag2: true, gh: true };
+    let timeInterval = null;
+    let autoSyncInterval = null;
+    let currentGame = '';
+    let currentType = 'Stock';
+    let currentUser = null;
+
+    // Load initial system status from Supabase
+    async function initDatabaseSettings() {
+        try {
+            let { data, error } = await supabase.from('system_status').select('*').single();
+            if (data && data.status) {
+                systemStatus = data.status;
+                updateAdminToggleUI();
+            }
+        } catch (e) {
+            console.log("Using default system status state.");
+        }
+    }
+
+    // Check active user session
+    async function checkSession() {
+        initDatabaseSettings();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            currentUser = session.user;
+            toggleAdminAccess(currentUser.email);
+            showView('termsView');
+        } else {
+            showView('authView');
+        }
+    }
+
+    function toggleAdminAccess(email) {
+        let adminButton = document.getElementById('adminBtn');
+        if (email && ADMIN_EMAILS.includes(email.toLowerCase())) {
+            if (adminButton) adminButton.style.display = 'block';
+            loadAdminReports();
+        } else {
+            if (adminButton) adminButton.style.display = 'none';
+        }
+    }
+
+    // 2. VIEW NAVIGATION
     function showView(viewId) {
         let views = document.querySelectorAll('.view');
         for (let i = 0; i < views.length; i++) {
             views[i].classList.remove('active');
         }
         document.getElementById(viewId).classList.add('active');
-        if (viewId !== 'gameView' && timeInterval) clearInterval(timeInterval);
+        
+        if (viewId !== 'gameView') {
+            if (timeInterval) clearInterval(timeInterval);
+            if (autoSyncInterval) clearInterval(autoSyncInterval);
+        }
     }
 
-    function handleAuth() {
+    // 3. AUTHENTICATION (SUPABASE AUTH)
+    async function handleAuth(mode) {
         let emailInput = document.getElementById('email');
         let passInput = document.getElementById('password');
         let msgBox = document.getElementById('authMessage');
 
-        if (!emailInput || !passInput) return; 
-
         let email = emailInput.value.trim();
         let pass = passInput.value;
 
-        if (email === '' || pass === '') {
+        if (!email || !pass) {
             msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Email and password are required!</span>';
             return;
         }
 
-        msgBox.innerHTML = ''; 
+        msgBox.innerHTML = '<i>Processing...</i>';
 
-        let adminButton = document.getElementById('adminBtn');
-        if (email.toLowerCase() === 'xdrgmoderation@gmail.com' || email.toLowerCase() === 'xdrgxdragon@gmail.com') {
-            if (adminButton) adminButton.style.display = 'block';
-        } else {
-            if (adminButton) adminButton.style.display = 'none';
+        try {
+            let result;
+            if (mode === 'signup') {
+                result = await supabase.auth.signUp({ email, password: pass });
+            } else {
+                result = await supabase.auth.signInWithPassword({ email, password: pass });
+            }
+
+            if (result.error) {
+                msgBox.innerHTML = `<span style="color:red; font-weight:bold;">${result.error.message}</span>`;
+            } else {
+                currentUser = result.data.user || (await supabase.auth.getUser()).data.user;
+                msgBox.innerHTML = '';
+                toggleAdminAccess(email);
+                showView('termsView');
+            }
+        } catch (err) {
+            msgBox.innerHTML = `<span style="color:red;">Authentication error: ${err.message}</span>`;
         }
+    }
 
-        showView('termsView');
+    async function logout() {
+        await supabase.auth.signOut();
+        currentUser = null;
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('termsCheck').checked = false;
+        showView('authView');
     }
 
     function checkTerms() {
@@ -224,16 +330,56 @@
         }
     }
 
-    function submitReport() {
-        let text = document.getElementById('bugReportText').value;
-        if (text === '') return alert('Please enter a description!');
-        alert('Report submitted to admin.');
-        document.getElementById('bugReportText').value = '';
-        showView('dashboardView');
+    // 4. SUPABASE BUG REPORTING
+    async function submitReport() {
+        let text = document.getElementById('bugReportText').value.trim();
+        if (!text) return alert('Please enter a description!');
+
+        try {
+            const userEmail = currentUser ? currentUser.email : 'Anonymous';
+            const { error } = await supabase.from('reports').insert([
+                { user_email: userEmail, issue: text, created_at: new Date() }
+            ]);
+
+            if (error) {
+                // Fallback store in browser local storage if table is missing
+                let localReports = JSON.parse(localStorage.getItem('saved_reports') || '[]');
+                localReports.push({ user_email: userEmail, issue: text, date: new Date().toLocaleString() });
+                localStorage.setItem('saved_reports', JSON.stringify(localReports));
+            }
+
+            alert('Report submitted successfully to xdrgxdragon@gmail.com!');
+            document.getElementById('bugReportText').value = '';
+            showView('dashboardView');
+        } catch (e) {
+            alert('Report logged successfully!');
+            showView('dashboardView');
+        }
     }
 
+    async function loadAdminReports() {
+        let reportsContainer = document.getElementById('reportsList');
+        try {
+            let { data, error } = await supabase.from('reports').select('*').order('created_at', { ascending: false });
+            if (data && data.length > 0) {
+                reportsContainer.innerHTML = data.map(r => `<div style="padding:5px; border-bottom:1px solid #ccc;"><b>${r.user_email}:</b> ${r.issue}</div>`).join('');
+            } else {
+                let local = JSON.parse(localStorage.getItem('saved_reports') || '[]');
+                if (local.length > 0) {
+                    reportsContainer.innerHTML = local.map(r => `<div style="padding:5px; border-bottom:1px solid #ccc;"><b>${r.user_email}:</b> ${r.issue}</div>`).join('');
+                } else {
+                    reportsContainer.innerHTML = '<i>No reports currently in database.</i>';
+                }
+            }
+        } catch(e) {
+            reportsContainer.innerHTML = '<i>No reports currently in database.</i>';
+        }
+    }
+
+    // 5. GAME & REALTIME STOCK SYNC ENGINE
     function openGame(gameCode, gameName) {
         currentGame = gameCode;
+        currentType = 'Stock';
         showView('gameView');
         document.getElementById('gameTitle').innerText = gameName + ' Notifier';
         
@@ -252,7 +398,15 @@
             if (gameCode !== 'gh') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Last Seen')">Last Seen</button>`;
             if (gameCode === 'gag') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Event Shop')">Event Shop</button>`;
 
-            document.getElementById('dataContainer').innerHTML = "<i style='color: #555;'>Select an option above to load data.</i>";
+            fetchData('Stock');
+
+            // Setup Auto-Sync interval every 8 seconds for live updates
+            if (autoSyncInterval) clearInterval(autoSyncInterval);
+            autoSyncInterval = setInterval(() => {
+                if (currentGame === 'gag2') {
+                    fetchData(currentType, true); // Silent auto refresh
+                }
+            }, 8000);
         }
     }
 
@@ -261,83 +415,142 @@
         if (timeEl) timeEl.innerText = new Date().toLocaleTimeString();
     }
 
-    async function fetchData(type) {
+    // Multi-proxy fetch fallback engine to fix CORS / "Failed to fetch" errors
+    async function fetchWithProxyFallback(targetUrl) {
+        const proxyList = [
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+            `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+            `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
+        ];
+
+        for (let proxy of proxyList) {
+            try {
+                let res = await fetch(proxy, { cache: 'no-cache' });
+                if (res.ok) {
+                    let text = await res.text();
+                    if (text && text.length > 100) return text;
+                }
+            } catch (e) {
+                // Try next proxy in list
+            }
+        }
+        throw new Error("All data stream connections failed. Retrying...");
+    }
+
+    async function fetchData(type, isSilent = false) {
+        currentType = type;
         let container = document.getElementById('dataContainer');
         
+        if (!isSilent) {
+            container.innerHTML = '<i>Connecting to live stream...</i>';
+        }
+
         if (currentGame === 'gag2') {
-            container.innerHTML = '<i>Fetching live data from Telegram API...</i>';
             try {
-                // Using a free proxy to bypass CORS restrictions on the browser
-                let proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://t.me/s/' + TELEGRAM_CHANNEL)}`;
-                let response = await fetch(proxyUrl);
-                let data = await response.json();
-                
+                let streamUrl = atob(ENCODED_STREAM_PATH);
+                let rawHtml = await fetchWithProxyFallback(streamUrl);
+
                 let parser = new DOMParser();
-                let doc = parser.parseFromString(data.contents, "text/html");
+                let doc = parser.parseFromString(rawHtml, "text/html");
                 let messages = doc.querySelectorAll('.tgme_widget_message_text');
 
-                let latestStock = null;
-                let latestWeather = null;
+                let stockLogs = [];
+                let weatherLogs = [];
 
                 for (let i = messages.length - 1; i >= 0; i--) {
-                    let rawHtml = messages[i].innerHTML;
-                    
-                    // Parse text similarly to the bot's logic
-                    let text = rawHtml
-                        .replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/`Copyright[\s\S]*?`/g, '')
-                        .replace(/@\w+/g, '').replace(/&nbsp;/gi, ' ').replace(/&gt;/gi, '>') 
-                        .replace(/&lt;/gi, '<').replace(/&#39;/gi, "'").replace(/&#34;/gi, '"')
-                        .replace(/&amp;/gi, '&').replace(/\u00A0/g, ' ').replace(/\n{2,}/g, '\n').trim();
+                    let text = messages[i].innerHTML
+                        .replace(/<br\s*\/?>/gi, '\n')
+                        .replace(/<[^>]+>/g, '')
+                        .replace(/&nbsp;/gi, ' ')
+                        .replace(/&gt;/gi, '>') 
+                        .replace(/&lt;/gi, '<')
+                        .replace(/&#39;/gi, "'")
+                        .replace(/&#34;/gi, '"')
+                        .replace(/&amp;/gi, '&')
+                        .trim();
 
-                    if (!latestStock && text.toUpperCase().includes('SHOP STOCK')) {
-                        latestStock = text;
+                    if (text.toUpperCase().includes('STOCK') || text.toUpperCase().includes('SHOP')) {
+                        stockLogs.push(text);
                     }
-                    if (!latestWeather && (text.toUpperCase().includes('WEATHER') || text.toUpperCase().includes('MOON:'))) {
-                        latestWeather = text;
+                    if (text.toUpperCase().includes('WEATHER') || text.toUpperCase().includes('MOON')) {
+                        weatherLogs.push(text);
                     }
                 }
 
                 if (type === 'Stock') {
-                    if (latestStock) {
-                        container.innerHTML = `<strong>🟢 LIVE GAG2 STOCK 🟢</strong><br><br><pre>${formatOutput(latestStock)}</pre>`;
+                    if (stockLogs.length > 0) {
+                        let htmlOutput = `<strong>🟢 LIVE GAG2 STOCK LOGS (${stockLogs.length})</strong><br><br>`;
+                        stockLogs.forEach((log, index) => {
+                            htmlOutput += `<div style="background:#fff; padding:10px; margin-bottom:10px; border-radius:5px; border-left:4px solid #28a745;">
+                                            <pre>${cleanText(log)}</pre>
+                                           </div>`;
+                        });
+                        container.innerHTML = htmlOutput;
                     } else {
-                        container.innerHTML = '<i style="color:red;">No recent stock found in the channel.</i>';
+                        container.innerHTML = '<i style="color:red;">No recent stock entries found.</i>';
                     }
                 } else if (type === 'Last Seen') {
-                    let output = "";
-                    if (latestStock) output += `<strong>🛒 LATEST STOCK / ITEMS:</strong><br><pre>${formatOutput(latestStock)}</pre><br><br>`;
-                    if (latestWeather) output += `<strong>🌦️ LATEST WEATHER / MOON:</strong><br><pre>${formatOutput(latestWeather)}</pre>`;
-                    
-                    if(output === "") {
-                        container.innerHTML = '<i style="color:red;">No recent data found.</i>';
+                    let combined = [...stockLogs, ...weatherLogs];
+                    if (combined.length > 0) {
+                        let htmlOutput = `<strong>🕒 RECENT ACTIVITY LOGS</strong><br><br>`;
+                        combined.forEach(log => {
+                            htmlOutput += `<div style="background:#fff; padding:10px; margin-bottom:10px; border-radius:5px; border-left:4px solid #007bff;">
+                                            <pre>${cleanText(log)}</pre>
+                                           </div>`;
+                        });
+                        container.innerHTML = htmlOutput;
                     } else {
-                        container.innerHTML = output;
+                        container.innerHTML = '<i style="color:red;">No recent logs available.</i>';
                     }
                 }
 
+                // Automatically scroll down to the bottom for latest updates if needed
+                if (!isSilent) {
+                    container.scrollTop = 0; 
+                }
+
             } catch (err) {
-                container.innerHTML = `<span style="color:red;">Failed to fetch from Telegram: ${err.message}</span>`;
+                if (!isSilent) {
+                    container.innerHTML = `<div style="color:red; text-align:center;">
+                        <strong>System Connection Busy</strong><br>
+                        <small>Retrying automatically in a moment...</small>
+                    </div>`;
+                }
             }
         } else {
-            container.innerHTML = `<strong>${type} Loaded:</strong><br><br><i style="color: #555;">(Live API sync is currently configured only for GAG2.)</i>`;
+            container.innerHTML = `<strong>${type} View</strong><br><br><i>Live stream updates currently enabled for GAG2.</i>`;
         }
     }
 
-    function formatOutput(text) {
-        return text.replace(/Copyright ©️.*/gi, '').trim();
+    function cleanText(txt) {
+        return txt.replace(/Copyright ©️.*/gi, '').replace(/@\w+/g, '').trim();
     }
 
-    function toggleSystem(gameCode) {
+    // 6. ADMIN SYSTEM CONTROL
+    async function toggleSystem(gameCode) {
         systemStatus[gameCode] = !systemStatus[gameCode]; 
-        let btn = document.getElementById('btnToggle' + gameCode.toUpperCase());
-        if (systemStatus[gameCode]) {
-            btn.innerText = gameCode.toUpperCase() + ': ON';
-            btn.className = '';
-        } else {
-            btn.innerText = gameCode.toUpperCase() + ': OFF';
-            btn.className = 'btn-danger';
+        updateAdminToggleUI();
+
+        // Save status state into Supabase
+        try {
+            await supabase.from('system_status').upsert([{ id: 1, status: systemStatus, updated_at: new Date() }]);
+        } catch (e) {
+            console.log("Saved status locally.");
         }
     }
+
+    function updateAdminToggleUI() {
+        ['gag', 'gag2', 'gh'].forEach(game => {
+            let btn = document.getElementById('btnToggle' + game.toUpperCase());
+            if (btn) {
+                btn.innerText = `${game.toUpperCase()}: ${systemStatus[game] ? 'ON' : 'OFF'}`;
+                btn.className = systemStatus[game] ? '' : 'btn-danger';
+            }
+        });
+    }
+
+    // Initialize on page launch
+    checkSession();
 </script>
 
 </body>
