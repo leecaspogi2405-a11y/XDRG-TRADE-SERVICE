@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xdragon Data Cloud App</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen font-sans">
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <!-- Main Navigation Bar -->
+    <!-- Navigation Bar -->
     <nav id="nav-bar" class="hidden bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
         <div class="text-xl font-bold text-indigo-400 cursor-pointer" onclick="showDashboard()">Xdragon Cloud</div>
         <div class="flex items-center space-x-4">
@@ -109,7 +109,7 @@
                         </tr>
                     </thead>
                     <tbody id="names-table-body">
-                        <!-- Name records loaded dynamically -->
+                        <!-- Dynamic items -->
                     </tbody>
                 </table>
             </div>
@@ -120,10 +120,15 @@
     <div id="qr-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
         <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 max-w-sm w-full text-center space-y-4">
             <h3 id="qr-modal-title" class="text-xl font-bold"></h3>
-            <div class="flex justify-center bg-white p-4 rounded-lg">
-                <canvas id="qr-canvas"></canvas>
+            
+            <div class="flex flex-col items-center justify-center bg-white p-4 rounded-lg">
+                <canvas id="qr-canvas" class="max-w-full h-auto"></canvas>
             </div>
-            <button onclick="closeQrModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 py-2 rounded-lg font-semibold">Close</button>
+
+            <div class="flex space-x-2">
+                <button onclick="downloadQrCode()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 py-2 rounded-lg font-semibold text-sm">Download QR</button>
+                <button onclick="closeQrModal()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 py-2 rounded-lg font-semibold text-sm">Close</button>
+            </div>
         </div>
     </div>
 
@@ -134,10 +139,17 @@
             <div>
                 <label class="block text-sm font-medium mb-1">Select Name:</label>
                 <select id="scanner-name-select" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none">
-                    <!-- Dynamic choices -->
+                    <!-- Dynamic select -->
                 </select>
             </div>
-            <div id="reader" class="bg-black rounded-lg overflow-hidden min-h-[250px]"></div>
+            
+            <div id="reader" class="bg-black rounded-lg overflow-hidden min-h-[220px]"></div>
+
+            <div class="text-center pt-2">
+                <p class="text-xs text-gray-400 mb-2">Upload QR Image / Screenshot:</p>
+                <input type="file" id="qr-input-file" accept="image/*" class="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
+            </div>
+
             <div id="scan-result" class="text-center font-semibold min-h-[24px]"></div>
             <button onclick="closeScannerModal()" class="w-full bg-gray-600 hover:bg-gray-700 py-2 rounded-lg font-semibold">Cancel</button>
         </div>
@@ -153,11 +165,26 @@
         window.onload = function() {
             loadCloudData();
             checkSession();
+
+            document.getElementById('qr-input-file').addEventListener('change', e => {
+                if (e.target.files.length === 0) return;
+                const imageFile = e.target.files[0];
+                if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
+                html5QrCode.scanFile(imageFile, true)
+                    .then(decodedText => onScanSuccess(decodedText))
+                    .catch(err => {
+                        const resultDiv = document.getElementById('scan-result');
+                        resultDiv.className = "text-center font-semibold text-red-400";
+                        resultDiv.innerText = "Error reading QR code image. Ensure QR pixels are clear.";
+                    });
+            });
         };
 
         function saveCloudData() {
             localStorage.setItem('xdragon_files_cloud', JSON.stringify(filesData));
-            localStorage.setItem('xdragon_session', currentUser);
+            if (currentUser) {
+                localStorage.setItem('xdragon_session', currentUser);
+            }
         }
 
         function loadCloudData() {
@@ -337,44 +364,64 @@
 
         function showQrModal(personId) {
             const file = filesData.find(f => f.id === activeFileId);
+            if (!file) return;
             const person = file.names.find(p => p.id === personId);
             if (!person) return;
 
             document.getElementById('qr-modal-title').innerText = person.name;
-            document.getElementById('qr-modal').classList.remove('hidden');
 
             const canvas = document.getElementById('qr-canvas');
-            const tempDiv = document.createElement('div');
+            const ctx = canvas.getContext('2d');
 
-            new QRCode(tempDiv, {
-                text: person.qrToken,
-                width: 200,
-                height: 200,
-                correctLevel: QRCode.CorrectLevel.H
+            // Canvas Dimensions (Width 280, Height 320 para kasya ang name sa ibaba)
+            canvas.width = 280;
+            canvas.height = 320;
+
+            // Background Fill
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Temporary Canvas for QR Generation
+            const tempCanvas = document.createElement('canvas');
+            new QRious({
+                element: tempCanvas,
+                value: person.qrToken,
+                size: 260,
+                level: 'H'
             });
 
-            setTimeout(() => {
-                const qrImg = tempDiv.querySelector('img') || tempDiv.querySelector('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = 220;
-                canvas.height = 220;
+            // Draw QR onto main Canvas
+            ctx.drawImage(tempCanvas, 10, 10);
 
-                const img = new Image();
-                img.crossOrigin = 'Anonymous';
-                img.onload = () => {
-                    ctx.drawImage(qrImg, 0, 0, 220, 220);
-                    const logoSize = 50;
-                    const x = (220 - logoSize) / 2;
-                    const y = (220 - logoSize) / 2;
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(x - 2, y - 2, logoSize + 4, logoSize + 4);
-                    ctx.drawImage(img, x, y, logoSize, logoSize);
-                };
-                img.onerror = () => {
-                    ctx.drawImage(qrImg, 0, 0, 220, 220);
-                };
-                img.src = LOGO_URL;
-            }, 100);
+            // Draw Center Logo
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = function() {
+                const logoSize = 52;
+                const x = 10 + (260 - logoSize) / 2;
+                const y = 10 + (260 - logoSize) / 2;
+                
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(x - 3, y - 3, logoSize + 6, logoSize + 6);
+                ctx.drawImage(img, x, y, logoSize, logoSize);
+
+                // Draw Person Name Below QR Code on Canvas
+                ctx.fillStyle = '#0F172A';
+                ctx.font = 'bold 18px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(person.name, canvas.width / 2, 295);
+            };
+            img.src = LOGO_URL;
+
+            document.getElementById('qr-modal').classList.remove('hidden');
+        }
+
+        function downloadQrCode() {
+            const canvas = document.getElementById('qr-canvas');
+            const link = document.createElement('a');
+            link.download = `${document.getElementById('qr-modal-title').innerText}_QR.png`;
+            link.href = canvas.toDataURL();
+            link.click();
         }
 
         function closeQrModal() {
@@ -415,7 +462,7 @@
                 { fps: 10, qrbox: { width: 200, height: 200 } },
                 onScanSuccess
             ).catch(err => {
-                document.getElementById('scan-result').innerText = 'Camera access error.';
+                document.getElementById('scan-result').innerText = 'Camera unavailable. Upload QR image instead.';
             });
         }
 
@@ -447,16 +494,19 @@
             }
         }
 
-        function closeScannerModal() {
+        async function closeScannerModal() {
+            // Agad na i-hide ang modal para guaranteed ang pagsasara
+            document.getElementById('scanner-modal').classList.add('hidden');
+            
             if (html5QrCode) {
-                html5QrCode.stop().then(() => {
+                try {
+                    if (html5QrCode.isScanning) {
+                        await html5QrCode.stop();
+                    }
                     html5QrCode.clear();
-                    document.getElementById('scanner-modal').classList.add('hidden');
-                }).catch(() => {
-                    document.getElementById('scanner-modal').classList.add('hidden');
-                });
-            } else {
-                document.getElementById('scanner-modal').classList.add('hidden');
+                } catch (err) {
+                    console.log("Scanner cleanup handled");
+                }
             }
         }
     </script>
