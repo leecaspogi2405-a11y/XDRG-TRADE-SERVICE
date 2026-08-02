@@ -3,590 +3,462 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Notifier App</title>
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .view {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        .active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        h2, h3 { margin-top: 0; color: #222; }
-        input, textarea, button {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-        button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover { background-color: #0056b3; }
-        .btn-danger { background-color: #DC3545; }
-        .btn-success { background-color: #28A745; }
-        .btn-secondary { background-color: #6C757D; }
-        .btn-info { background-color: #17A2B8; padding: 15px; font-size: 18px; margin-bottom: 10px; }
-        .button-group { display: flex; gap: 10px; }
-        .terms-box { background: #f9f9f9; padding: 15px; border: 1px solid #ddd; margin-bottom: 15px; border-radius: 6px; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        .header h2 { margin: 0; }
-        .header button { margin-bottom: 0; }
-        .error-box { background: #F8D7DA; color: #721C24; padding: 20px; border: 1px solid #F5C6CB; border-radius: 6px; text-align: center; }
-        
-        /* Scrollable container for stock logs */
-        .content-box { 
-            background: #E9ECEF; 
-            padding: 15px; 
-            border-radius: 6px; 
-            height: 350px; 
-            overflow-y: auto; 
-            margin-top: 20px; 
-            color: #222; 
-            font-size: 14px; 
-            scroll-behavior: smooth;
-            border: 1px solid #ced4da;
-            line-height: 1.6;
-        }
-        
-        .checkbox-container { display: flex; align-items: center; cursor: pointer; margin-bottom: 20px; font-size: 16px; font-weight: bold; }
-        .checkbox-container input { width: 20px; height: 20px; margin: 0 10px 0 0; cursor: pointer; }
-        pre { white-space: pre-wrap; word-wrap: break-word; font-family: inherit; margin: 0; }
-        .live-badge {
-            display: inline-block;
-            background: #28a745;
-            color: white;
-            padding: 2px 8px;
-            font-size: 12px;
-            border-radius: 12px;
-            margin-left: 5px;
-        }
-    </style>
+    <title>Xdragon Data Cloud App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
-<body>
+<body class="bg-gray-900 text-white min-h-screen font-sans">
 
-<div class="container">
-
-    <!-- AUTH VIEW -->
-    <div id="authView" class="view active">
-        <h2>Login / Sign-up</h2>
-        <div id="authMessage" style="margin-bottom: 10px;"></div>
-        <input type="email" id="email" placeholder="Gmail address">
-        <input type="password" id="password" placeholder="Password">
-        <div class="button-group">
-            <button type="button" onclick="handleAuth('login')">Log In</button>
-            <button type="button" onclick="handleAuth('signup')" class="btn-secondary">Sign Up</button>
+    <!-- Auth View -->
+    <div id="auth-screen" class="flex flex-col items-center justify-center min-h-screen p-4">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-gray-700">
+            <h1 class="text-3xl font-bold text-center text-indigo-500 mb-6">Xdragon Cloud Sign In</h1>
+            <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Gmail Address</label>
+                    <input type="email" id="auth-email" required placeholder="user@gmail.com" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Password</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-indigo-500">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 py-3 rounded-lg font-semibold transition">Sign Up / Sign In</button>
+            </form>
         </div>
     </div>
 
-    <!-- TERMS VIEW -->
-    <div id="termsView" class="view">
-        <h2>Terms and Conditions</h2>
-        <div class="terms-box">
-            <p><strong>1.</strong> Don't copy-paste the system stock</p>
-            <p><strong>2.</strong> Dev Xdragon owns the system, give him credit</p>
-            <p><strong>3.</strong> Respect admins and members</p>
-            <p><strong>4.</strong> Report bug/issues if the app isn't working</p>
+    <!-- Main Navigation Bar -->
+    <nav id="nav-bar" class="hidden bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
+        <div class="text-xl font-bold text-indigo-400 cursor-pointer" onclick="showDashboard()">Xdragon Cloud</div>
+        <div class="flex items-center space-x-4">
+            <span id="user-display" class="text-sm text-gray-400"></span>
+            <button onclick="handleSignOut()" class="text-sm bg-red-600 hover:bg-red-700 px-3 py-1 rounded">Sign Out</button>
         </div>
-        <label class="checkbox-container">
-            <input type="checkbox" id="termsCheck" onchange="checkTerms()">
-            <span>I agree to Dev Xdragon terms and conditions</span>
-        </label>
-        <button type="button" class="btn-danger" onclick="logout()">Cancel & Logout</button>
-    </div>
+    </nav>
 
-    <!-- DASHBOARD VIEW -->
-    <div id="dashboardView" class="view">
-        <div class="header">
-            <h2>Dashboard</h2>
-            <button type="button" onclick="logout()" class="btn-danger" style="width: auto; padding: 8px 15px;">Logout</button>
-        </div>
-        <input type="text" id="searchInput" placeholder="Search a restocker game..." onkeyup="filterGames()">
-        
-        <div id="gameList">
-            <button type="button" class="btn-info game-btn" onclick="openGame('gag', 'Grow A Garden')">Grow A Garden (GAG)</button>
-            <button type="button" class="btn-info game-btn" onclick="openGame('gag2', 'Grow A Garden 2')">Grow A Garden 2 (GAG2)</button>
-            <button type="button" class="btn-info game-btn" onclick="openGame('gh', 'Garden Horizon')">Garden Horizon (GH)</button>
-        </div>
-        
-        <div class="button-group" style="margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px;">
-            <button type="button" onclick="showView('reportView')">Report Bug</button>
-            <button type="button" id="adminBtn" class="btn-success" style="display: none;" onclick="showView('adminView')">Admin Panel</button>
-        </div>
-    </div>
-
-    <!-- ADMIN VIEW -->
-    <div id="adminView" class="view">
-        <div class="header">
-            <h2>Admin Panel</h2>
-            <button type="button" class="btn-secondary" onclick="showView('dashboardView')" style="width: auto; padding: 8px 15px;">Back</button>
-        </div>
-        
-        <div class="terms-box">
-            <h3>System Status Toggles</h3>
-            <button type="button" id="btnToggleGAG" onclick="toggleSystem('gag')">GAG: ON</button>
-            <button type="button" id="btnToggleGAG2" onclick="toggleSystem('gag2')">GAG2: ON</button>
-            <button type="button" id="btnToggleGH" onclick="toggleSystem('gh')">GH: ON</button>
-        </div>
-
-        <div class="terms-box">
-            <h3>Submitted Reports</h3>
-            <div id="reportsList" style="max-height: 150px; overflow-y: auto; font-size: 13px;">
-                Loading reports...
+    <!-- Dashboard View -->
+    <div id="dashboard-screen" class="hidden max-w-4xl mx-auto p-6 space-y-6">
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Cloud Files</h2>
+            <div class="space-x-2">
+                <button onclick="openScannerModal()" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg font-semibold transition">📷 Xdragon Scanner</button>
+                <button onclick="showCreateFileScreen()" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg font-semibold transition">Create File 🗃️</button>
             </div>
-            <button type="button" class="btn-danger" onclick="clearReports()" style="margin-top: 10px; padding: 8px;">Clear Reports</button>
+        </div>
+
+        <div id="files-list" class="grid gap-4 md:grid-cols-2">
+            <!-- Files loaded dynamically -->
         </div>
     </div>
 
-    <!-- REPORT VIEW -->
-    <div id="reportView" class="view">
-        <h2>Report Bug</h2>
-        <textarea id="bugReportText" placeholder="Describe the issue clearly..." rows="5"></textarea>
-        <div class="button-group">
-            <button type="button" onclick="submitReport()">Submit Report</button>
-            <button type="button" class="btn-secondary" onclick="showView('dashboardView')">Cancel</button>
-        </div>
-    </div>
-
-    <!-- GAME VIEW -->
-    <div id="gameView" class="view">
-        <div class="header">
-            <h2 id="gameTitle">Game Stock Notifier</h2>
-            <button type="button" class="btn-secondary" onclick="showView('dashboardView')" style="width: auto; padding: 8px 15px;">Back</button>
-        </div>
-
-        <div id="gameError" class="error-box" style="display: none;">
-            <h3>System Offline</h3>
-            <p>Sorry, this notifier is currently unavailable. Please wait for the admin to enable it.</p>
-        </div>
-
-        <div id="gameContent">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 14px; background: #eee; padding: 10px; border-radius: 5px;">
-                <span><strong>Credit:</strong> Dev Xdragon <span id="liveStatusBadge" class="live-badge">AUTO</span></span>
-                <span><strong>Time:</strong> <span id="gameTime"></span></span>
+    <!-- Create File View -->
+    <div id="create-file-screen" class="hidden max-w-md mx-auto p-6 mt-10">
+        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 space-y-4">
+            <h2 class="text-2xl font-bold text-center">Create New File</h2>
+            <div>
+                <label class="block text-sm font-medium mb-1">File name:</label>
+                <input type="text" id="new-file-name" placeholder="Enter file name" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-indigo-500">
             </div>
-            
-            <div id="gameButtons" class="button-group"></div>
-            
-            <!-- Scrollable stock output container -->
-            <div class="content-box" id="dataContainer">
-                <i style="color: #555;">Select an option above to load data.</i>
+            <div>
+                <label class="block text-sm font-medium mb-1">Privacy:</label>
+                <select id="new-file-privacy" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-indigo-500">
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                </select>
+            </div>
+            <div class="flex items-center space-x-3 pt-2">
+                <input type="checkbox" id="new-file-powered" class="w-5 h-5 text-indigo-600 rounded focus:ring-0 cursor-pointer">
+                <label for="new-file-powered" class="text-sm cursor-pointer select-none">Powered by Xdragon/Leecastrence</label>
+            </div>
+            <div class="flex justify-end space-x-2 pt-4">
+                <button onclick="showDashboard()" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg font-semibold">Cancel</button>
+                <button onclick="handleCreateFileDone()" class="bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg font-semibold">Done</button>
             </div>
         </div>
     </div>
 
-</div>
+    <!-- File Details View -->
+    <div id="file-detail-screen" class="hidden max-w-4xl mx-auto p-6 space-y-6">
+        <div class="flex justify-between items-center bg-gray-800 p-4 rounded-xl border border-gray-700">
+            <div>
+                <h2 id="detail-file-title" class="text-2xl font-bold"></h2>
+                <span id="detail-file-badge" class="text-xs px-2 py-1 rounded"></span>
+                <p id="detail-file-powered" class="text-xs text-indigo-400 mt-1"></p>
+            </div>
+            <div class="flex space-x-2">
+                <button onclick="openScannerModal()" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg font-semibold transition">Xdragon Scanner</button>
+                <button onclick="showDashboard()" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg font-semibold">Back</button>
+            </div>
+        </div>
 
-<script>
-    // ==========================================
-    // 1. ISOLATED LOCAL STORAGE (Login / Reports)
-    // Walang kinalaman ang Supabase dito para di masira ang Login
-    // ==========================================
-    const ADMIN_EMAILS = ['xdrgmoderation@gmail.com', 'xdrgxdragon@gmail.com'];
-    let systemStatus = JSON.parse(localStorage.getItem('app_system_status')) || { gag: true, gag2: true, gh: true };
-    let currentUser = null;
+        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex space-x-2">
+            <input type="text" id="new-person-name" placeholder="Enter person's name" class="flex-1 p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none">
+            <button onclick="handleAddName()" class="bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg font-semibold">+Name</button>
+        </div>
 
-    function handleAuth(mode) {
-        try {
-            let email = document.getElementById('email').value.trim();
-            let pass = document.getElementById('password').value;
-            let msgBox = document.getElementById('authMessage');
+        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+            <h3 class="text-lg font-bold mb-4">See files</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-700 text-gray-400">
+                            <th class="p-3">Name</th>
+                            <th class="p-3">status</th>
+                            <th class="p-3">show qr</th>
+                        </tr>
+                    </thead>
+                    <tbody id="names-table-body">
+                        <!-- Name records loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-            if (!email || !pass) {
-                msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Email and password are required!</span>';
+    <!-- QR Code Display Modal -->
+    <div id="qr-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 max-w-sm w-full text-center space-y-4">
+            <h3 id="qr-modal-title" class="text-xl font-bold"></h3>
+            <div class="flex justify-center bg-white p-4 rounded-lg">
+                <canvas id="qr-canvas"></canvas>
+            </div>
+            <button onclick="closeQrModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 py-2 rounded-lg font-semibold">Close</button>
+        </div>
+    </div>
+
+    <!-- Xdragon QR Scanner Modal -->
+    <div id="scanner-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 max-w-md w-full space-y-4">
+            <h3 class="text-xl font-bold text-center">Xdragon Scanner</h3>
+            <div>
+                <label class="block text-sm font-medium mb-1">Select Name:</label>
+                <select id="scanner-name-select" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none">
+                    <!-- Dynamic choices -->
+                </select>
+            </div>
+            <div id="reader" class="bg-black rounded-lg overflow-hidden min-h-[250px]"></div>
+            <div id="scan-result" class="text-center font-semibold min-h-[24px]"></div>
+            <button onclick="closeScannerModal()" class="w-full bg-gray-600 hover:bg-gray-700 py-2 rounded-lg font-semibold">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const LOGO_URL = "https://cdn.discordapp.com/attachments/1515213930870472724/1533378787927003176/FB_IMG_1785656304433.jpg?ex=6a7045c7&is=6a6ef447&hm=3e078452ab8ed3b506a57b309fba0e9ba044708e59cc8aba14771f51c9413a88&";
+        let currentUser = null;
+        let filesData = [];
+        let activeFileId = null;
+        let html5QrCode = null;
+
+        window.onload = function() {
+            loadCloudData();
+            checkSession();
+        };
+
+        function saveCloudData() {
+            localStorage.setItem('xdragon_files_cloud', JSON.stringify(filesData));
+            localStorage.setItem('xdragon_session', currentUser);
+        }
+
+        function loadCloudData() {
+            const data = localStorage.getItem('xdragon_files_cloud');
+            filesData = data ? JSON.parse(data) : [];
+        }
+
+        function checkSession() {
+            const savedUser = localStorage.getItem('xdragon_session');
+            if (savedUser) {
+                currentUser = savedUser;
+                showMainLayout();
+                showDashboard();
+            } else {
+                hideAllScreens();
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('nav-bar').classList.add('hidden');
+            }
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            if (email) {
+                currentUser = email;
+                saveCloudData();
+                showMainLayout();
+                showDashboard();
+            }
+        }
+
+        function handleSignOut() {
+            currentUser = null;
+            localStorage.removeItem('xdragon_session');
+            checkSession();
+        }
+
+        function showMainLayout() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('nav-bar').classList.remove('hidden');
+            document.getElementById('user-display').innerText = currentUser;
+        }
+
+        function hideAllScreens() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-screen').classList.add('hidden');
+            document.getElementById('create-file-screen').classList.add('hidden');
+            document.getElementById('file-detail-screen').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            hideAllScreens();
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            const container = document.getElementById('files-list');
+            container.innerHTML = '';
+
+            const visibleFiles = filesData.filter(file => file.privacy === 'public' || file.owner === currentUser);
+
+            if (visibleFiles.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No files available. Create one!</div>';
                 return;
             }
 
-            let usersDB = JSON.parse(localStorage.getItem('app_users_db')) || {};
+            visibleFiles.forEach(file => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-800 p-5 rounded-xl border border-gray-700 hover:border-indigo-500 transition cursor-pointer flex flex-col justify-between';
+                card.onclick = () => openFileDetails(file.id);
 
-            if (mode === 'signup') {
-                if (usersDB[email]) {
-                    msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Email is already registered! Please Log In.</span>';
-                    return;
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-white">${file.name}</h3>
+                            <span class="text-xs px-2 py-1 rounded ${file.privacy === 'public' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}">
+                                ${file.privacy.toUpperCase()}
+                            </span>
+                        </div>
+                        ${file.poweredBy ? '<p class="text-xs text-indigo-400 font-medium">Powered by Xdragon/Leecastrence</p>' : ''}
+                    </div>
+                    <div class="mt-4 text-sm text-gray-400 flex justify-between items-center">
+                        <span>Items: ${file.names.length}</span>
+                        <span class="text-indigo-400 font-semibold">View File →</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function showCreateFileScreen() {
+            hideAllScreens();
+            document.getElementById('new-file-name').value = '';
+            document.getElementById('new-file-privacy').value = 'public';
+            document.getElementById('new-file-powered').checked = false;
+            document.getElementById('create-file-screen').classList.remove('hidden');
+        }
+
+        function handleCreateFileDone() {
+            const name = document.getElementById('new-file-name').value.trim();
+            const privacy = document.getElementById('new-file-privacy').value;
+            const poweredBy = document.getElementById('new-file-powered').checked;
+
+            if (!name) return;
+
+            const newFile = {
+                id: 'file_' + Date.now(),
+                name: name,
+                privacy: privacy,
+                poweredBy: poweredBy,
+                owner: currentUser,
+                names: []
+            };
+
+            filesData.push(newFile);
+            saveCloudData();
+            openFileDetails(newFile.id);
+        }
+
+        function openFileDetails(fileId) {
+            activeFileId = fileId;
+            const file = filesData.find(f => f.id === fileId);
+            if (!file) return;
+
+            hideAllScreens();
+            document.getElementById('file-detail-screen').classList.remove('hidden');
+
+            document.getElementById('detail-file-title').innerText = file.name;
+            const badge = document.getElementById('detail-file-badge');
+            badge.innerText = file.privacy.toUpperCase();
+            badge.className = `text-xs px-2 py-1 rounded ${file.privacy === 'public' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`;
+            document.getElementById('detail-file-powered').innerText = file.poweredBy ? 'Powered by Xdragon/Leecastrence' : '';
+
+            renderNamesTable();
+        }
+
+        function handleAddName() {
+            const nameInput = document.getElementById('new-person-name');
+            const name = nameInput.value.trim();
+            if (!name || !activeFileId) return;
+
+            const file = filesData.find(f => f.id === activeFileId);
+            if (file) {
+                const uniqueToken = `XDRAGON_${file.id}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+                file.names.push({
+                    id: 'person_' + Date.now(),
+                    name: name,
+                    status: false,
+                    qrToken: uniqueToken
+                });
+                saveCloudData();
+                nameInput.value = '';
+                renderNamesTable();
+            }
+        }
+
+        function renderNamesTable() {
+            const tbody = document.getElementById('names-table-body');
+            tbody.innerHTML = '';
+            const file = filesData.find(f => f.id === activeFileId);
+            if (!file) return;
+
+            file.names.forEach(person => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-gray-700 hover:bg-gray-750';
+                tr.innerHTML = `
+                    <td class="p-3 font-medium">${person.name}</td>
+                    <td class="p-3 text-lg">${person.status ? '✅' : '❎'}</td>
+                    <td class="p-3">
+                        <button onclick="showQrModal('${person.id}')" class="bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded text-sm">custom qr</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function showQrModal(personId) {
+            const file = filesData.find(f => f.id === activeFileId);
+            const person = file.names.find(p => p.id === personId);
+            if (!person) return;
+
+            document.getElementById('qr-modal-title').innerText = person.name;
+            document.getElementById('qr-modal').classList.remove('hidden');
+
+            const canvas = document.getElementById('qr-canvas');
+            const tempDiv = document.createElement('div');
+
+            new QRCode(tempDiv, {
+                text: person.qrToken,
+                width: 200,
+                height: 200,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            setTimeout(() => {
+                const qrImg = tempDiv.querySelector('img') || tempDiv.querySelector('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 220;
+                canvas.height = 220;
+
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.onload = () => {
+                    ctx.drawImage(qrImg, 0, 0, 220, 220);
+                    const logoSize = 50;
+                    const x = (220 - logoSize) / 2;
+                    const y = (220 - logoSize) / 2;
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(x - 2, y - 2, logoSize + 4, logoSize + 4);
+                    ctx.drawImage(img, x, y, logoSize, logoSize);
+                };
+                img.onerror = () => {
+                    ctx.drawImage(qrImg, 0, 0, 220, 220);
+                };
+                img.src = LOGO_URL;
+            }, 100);
+        }
+
+        function closeQrModal() {
+            document.getElementById('qr-modal').classList.add('hidden');
+        }
+
+        function openScannerModal() {
+            const select = document.getElementById('scanner-name-select');
+            select.innerHTML = '';
+
+            let availableNames = [];
+            filesData.forEach(file => {
+                if (file.privacy === 'public' || file.owner === currentUser) {
+                    file.names.forEach(p => {
+                        availableNames.push({ fileId: file.id, personId: p.id, name: p.name, fileName: file.name, qrToken: p.qrToken });
+                    });
                 }
-                usersDB[email] = pass;
-                localStorage.setItem('app_users_db', JSON.stringify(usersDB));
-                msgBox.innerHTML = '<span style="color:green; font-weight:bold;">Sign up successful! Logging in...</span>';
-            } else if (mode === 'login') {
-                if (ADMIN_EMAILS.includes(email.toLowerCase()) && !usersDB[email]) {
-                    usersDB[email] = pass;
-                    localStorage.setItem('app_users_db', JSON.stringify(usersDB));
-                } else if (!usersDB[email] || usersDB[email] !== pass) {
-                    msgBox.innerHTML = '<span style="color:red; font-weight:bold;">Invalid email or password!</span>';
-                    return;
-                }
+            });
+
+            if (availableNames.length === 0) {
+                alert('No names available to scan.');
+                return;
             }
 
-            currentUser = email;
-            localStorage.setItem('app_active_user', email);
-            msgBox.innerHTML = '';
-            toggleAdminAccess(email);
-            showView('termsView');
-        } catch (error) {
-            console.error("Local Storage Auth Error:", error);
-            alert("Something went wrong with login. Please try again.");
+            availableNames.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.qrToken;
+                opt.innerText = `${item.name} (${item.fileName})`;
+                select.appendChild(opt);
+            });
+
+            document.getElementById('scan-result').innerText = '';
+            document.getElementById('scanner-modal').classList.remove('hidden');
+
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 200, height: 200 } },
+                onScanSuccess
+            ).catch(err => {
+                document.getElementById('scan-result').innerText = 'Camera access error.';
+            });
         }
-    }
 
-    function checkSession() {
-        let savedUser = localStorage.getItem('app_active_user');
-        if (savedUser) {
-            currentUser = savedUser;
-            toggleAdminAccess(savedUser);
-            showView('termsView');
-        } else {
-            showView('authView');
-        }
-        updateAdminToggleUI();
-        
-        // Call Supabase quietly without blocking UI
-        setTimeout(() => loadGlobalSyncDB(), 1000); 
-    }
+        function onScanSuccess(decodedText) {
+            const selectedToken = document.getElementById('scanner-name-select').value;
+            const resultDiv = document.getElementById('scan-result');
 
-    function logout() {
-        currentUser = null;
-        localStorage.removeItem('app_active_user');
-        document.getElementById('email').value = '';
-        document.getElementById('password').value = '';
-        document.getElementById('termsCheck').checked = false;
-        showView('authView');
-    }
+            if (decodedText === selectedToken) {
+                resultDiv.className = "text-center font-semibold text-green-400";
+                resultDiv.innerText = "Scan Successful! Status updated ✅";
 
-    function toggleAdminAccess(email) {
-        let adminButton = document.getElementById('adminBtn');
-        if (email && ADMIN_EMAILS.includes(email.toLowerCase())) {
-            if (adminButton) adminButton.style.display = 'block';
-            loadAdminReports();
-        } else {
-            if (adminButton) adminButton.style.display = 'none';
-        }
-    }
-
-    function submitReport() {
-        let text = document.getElementById('bugReportText').value.trim();
-        if (!text) return alert('Please enter a description!');
-
-        let userEmail = currentUser || 'Anonymous';
-        let localReports = JSON.parse(localStorage.getItem('app_reports') || '[]');
-        localReports.push({ user_email: userEmail, issue: text, date: new Date().toLocaleString() });
-        localStorage.setItem('app_reports', JSON.stringify(localReports));
-        
-        alert('Report submitted successfully to admin!');
-        document.getElementById('bugReportText').value = '';
-        showView('dashboardView');
-        loadAdminReports(); 
-    }
-
-    function loadAdminReports() {
-        let reportsContainer = document.getElementById('reportsList');
-        let local = JSON.parse(localStorage.getItem('app_reports') || '[]');
-        if (local.length > 0) {
-            reportsContainer.innerHTML = local.reverse().map(r => 
-                `<div style="padding:8px; border-bottom:1px solid #ccc; background:#fff; margin-bottom:5px; border-radius:4px;">
-                    <div style="font-size:11px; color:#888;">${r.date}</div>
-                    <b>${r.user_email}:</b> ${r.issue}
-                </div>`
-            ).join('');
-        } else {
-            reportsContainer.innerHTML = '<i>No reports available.</i>';
-        }
-    }
-
-    function clearReports() {
-        if (confirm("Are you sure you want to delete all reports?")) {
-            localStorage.removeItem('app_reports');
-            loadAdminReports();
-        }
-    }
-
-
-    // ==========================================
-    // 2. VIEW CONTROLS & UI 
-    // ==========================================
-    let timeInterval = null;
-    let autoSyncInterval = null;
-    let currentGame = '';
-    let currentType = 'Stock';
-
-    function showView(viewId) {
-        let views = document.querySelectorAll('.view');
-        for (let i = 0; i < views.length; i++) {
-            views[i].classList.remove('active');
-        }
-        document.getElementById(viewId).classList.add('active');
-        
-        if (viewId !== 'gameView') {
-            if (timeInterval) clearInterval(timeInterval);
-            if (autoSyncInterval) clearInterval(autoSyncInterval);
-        }
-    }
-
-    function checkTerms() {
-        if (document.getElementById('termsCheck').checked) showView('dashboardView');
-    }
-
-    function filterGames() {
-        let query = document.getElementById('searchInput').value.toLowerCase();
-        let buttons = document.querySelectorAll('.game-btn');
-        for (let i = 0; i < buttons.length; i++) {
-            buttons[i].style.display = buttons[i].innerText.toLowerCase().includes(query) ? 'block' : 'none';
-        }
-    }
-
-    function toggleSystem(gameCode) {
-        systemStatus[gameCode] = !systemStatus[gameCode]; 
-        localStorage.setItem('app_system_status', JSON.stringify(systemStatus));
-        updateAdminToggleUI();
-    }
-
-    function updateAdminToggleUI() {
-        ['gag', 'gag2', 'gh'].forEach(game => {
-            let btn = document.getElementById('btnToggle' + game.toUpperCase());
-            if (btn) {
-                btn.innerText = `${game.toUpperCase()}: ${systemStatus[game] ? 'ON' : 'OFF'}`;
-                btn.className = systemStatus[game] ? '' : 'btn-danger';
-            }
-        });
-    }
-
-    function updateTime() {
-        let timeEl = document.getElementById('gameTime');
-        if (timeEl) timeEl.innerText = new Date().toLocaleTimeString();
-    }
-
-
-    // ==========================================
-    // 3. SEPARATE SUPABASE & GLOBAL SYNC ENGINE
-    // ==========================================
-    const SUPABASE_URL = 'https://iisffbjgltxslkkkxlsd.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpc2ZmYmpnbHR4c2xra2t4bHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNDQ4OTcsImV4cCI6MjEwMDkyMDg5N30.1RLkoz6hUMbhCNMr4BWDEqtb4LOM-XnwtBRuK39-TEk';
-    
-    // Safely initialize Supabase without breaking the script if it fails
-    let sbClient = null;
-    try {
-        if (window.supabase) {
-            sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        }
-    } catch(err) {
-        console.warn("Supabase initialization skipped. Will use local buffer.");
-    }
-
-    const ENCODED_STREAM_PATH = 'aHR0cHM6Ly90Lm1lL3MvZ3Jvd2FnYXJkZW5saXZlc3RvY2s='; 
-    let globalLastSeenDB = {};
-    let activeStockList = [];
-
-    const GAME_ITEMS = {
-        "Seed 🌱": ["Carrot", "Strawberry", "Blueberry", "Tulip", "Tomato", "Bamboo", "Corn", "Banana", "Apple", "Grape", "Pineapple", "Sun Bloom", "Poison Apple", "Coconut", "Mango", "Cactus", "Cherry", "Green Bean", "Acorn", "Venom Spitter", "Mushroom", "Dragon's Breath", "Star Fruit", "Moon Bloom", "Hypno Bloom", "Fire Fern", "Sunflower"],
-        "Gear ⚙️": ["Common Watering Can", "Common Sprinkler", "Uncommon Sprinkler", "Jump Mushroom", "Trowel", "Invisibility Mushroom", "Rare Sprinkler", "Shrink Mushroom", "Speed Mushroom", "Gnome", "Super Watering Can", "Super Sprinkler", "Legendary Sprinkler", "Basic Pot"],
-        "Crate 📦": ["Bench Crate", "Ladder Crate", "Light Crate", "Arch Crate", "Sign Crate", "Owner Door Crate", "Spring Crate", "Bridge Crate", "Roleplay Crate", "Picture Frame Crate", "Seesaw Crate", "Conveyor Crate", "Boombox Crate", "Teleporter Pad Crate", "Fence Crate", "Bear Trap Crate"],
-        "Moon & Weather 🌙": ["Rainbowmoon", "Mega Moon", "Bloodmoon", "Goldmoon", "Sunburst", "Snowfall", "Rainbow", "Meteor", "Aurora", "Rain", "Snow", "Lightning", "Blizzard"]
-    };
-
-    async function loadGlobalSyncDB() {
-        if (!sbClient) return;
-        try {
-            let { data } = await sbClient.from('system_status').select('status').eq('id', 99).single();
-            if (data && data.status) globalLastSeenDB = data.status;
-        } catch (e) {
-            console.log("Using local last seen buffer.");
-        }
-    }
-    
-    async function saveGlobalSyncDB() {
-        if (!sbClient) return;
-        try {
-            await sbClient.from('system_status').upsert({ id: 99, status: globalLastSeenDB, updated_at: new Date() });
-        } catch (e) { }
-    }
-
-    async function fetchWithProxyFallback(targetUrl) {
-        const proxyList = [
-            `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
-            `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
-            `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
-        ];
-        for (let proxy of proxyList) {
-            try {
-                let res = await fetch(proxy, { cache: 'no-cache' });
-                if (res.ok) {
-                    let text = await res.text();
-                    if (text && text.length > 100) return text;
-                }
-            } catch (e) {}
-        }
-        throw new Error("Connections failed.");
-    }
-
-    function formatTimeDiff(timestamp) {
-        let diffMs = Date.now() - timestamp;
-        let diffMins = Math.floor(diffMs / 60000);
-        let diffHours = Math.floor(diffMins / 60);
-        let diffDays = Math.floor(diffHours / 24);
-        
-        let timeStr = "";
-        if (diffDays > 0) {
-            timeStr = diffDays + (diffDays === 1 ? " day ago" : " days ago");
-        } else if (diffHours > 0) {
-            timeStr = diffHours + " hour" + (diffHours > 1 ? "s " : " ") + (diffMins % 60) + " minutes ago";
-        } else {
-            timeStr = diffMins + " minutes ago";
-        }
-        if (diffMins <= 0) timeStr = "Just now";
-
-        let d = new Date(timestamp);
-        let dateStr = d.toLocaleString('en-US', { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
-        return `${timeStr} (${dateStr})`;
-    }
-
-    function openGame(gameCode, gameName) {
-        currentGame = gameCode;
-        currentType = 'Stock';
-        showView('gameView');
-        document.getElementById('gameTitle').innerText = gameName + ' Notifier';
-        
-        if (systemStatus[gameCode] === false) {
-            document.getElementById('gameError').style.display = 'block';
-            document.getElementById('gameContent').style.display = 'none';
-        } else {
-            document.getElementById('gameError').style.display = 'none';
-            document.getElementById('gameContent').style.display = 'block';
-            
-            updateTime();
-            timeInterval = setInterval(updateTime, 1000);
-            
-            let btnContainer = document.getElementById('gameButtons');
-            btnContainer.innerHTML = `<button type="button" class="btn-secondary" onclick="fetchData('Stock')">Stock</button>`;
-            if (gameCode !== 'gh') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Last Seen')">Last Seen</button>`;
-            if (gameCode === 'gag') btnContainer.innerHTML += `<button type="button" class="btn-secondary" onclick="fetchData('Event Shop')">Event Shop</button>`;
-
-            fetchData(currentType);
-
-            if (autoSyncInterval) clearInterval(autoSyncInterval);
-            autoSyncInterval = setInterval(() => {
-                if (currentGame === 'gag2') fetchData(currentType, true); 
-            }, 8000);
-        }
-    }
-
-    async function fetchData(type, isSilent = false) {
-        currentType = type;
-        let container = document.getElementById('dataContainer');
-        
-        if (!isSilent) container.innerHTML = '<i>Connecting to live stream & syncing database...</i>';
-
-        if (currentGame === 'gag2') {
-            try {
-                let streamUrl = atob(ENCODED_STREAM_PATH);
-                let rawHtml = await fetchWithProxyFallback(streamUrl);
-
-                let parser = new DOMParser();
-                let doc = parser.parseFromString(rawHtml, "text/html");
-                let messages = doc.querySelectorAll('.tgme_widget_message_text');
-                let times = doc.querySelectorAll('.tgme_widget_message_date time');
-
-                let latestStockRaw = null;
-                activeStockList = [];
-
-                // Parse history
-                for (let i = 0; i < messages.length; i++) {
-                    let text = messages[i].innerText.toUpperCase();
-                    let msgTime = times[i] ? new Date(times[i].getAttribute('datetime')).getTime() : Date.now();
-                    
-                    Object.values(GAME_ITEMS).flat().forEach(item => {
-                        if (text.includes(item.toUpperCase())) {
-                            if (!globalLastSeenDB[item] || msgTime > globalLastSeenDB[item]) {
-                                globalLastSeenDB[item] = msgTime;
-                            }
+                filesData.forEach(file => {
+                    file.names.forEach(person => {
+                        if (person.qrToken === decodedText) {
+                            person.status = true;
                         }
                     });
+                });
 
-                    if (!latestStockRaw && (text.includes('STOCK') || text.includes('SHOP'))) {
-                        latestStockRaw = messages[i].innerText;
-                        Object.values(GAME_ITEMS).flat().forEach(item => {
-                            if (latestStockRaw.toUpperCase().includes(item.toUpperCase())) {
-                                activeStockList.push(item);
-                            }
-                        });
-                    }
-                }
+                saveCloudData();
+                if (activeFileId) renderNamesTable();
 
-                // Sync to global if client loaded correctly
-                if(!isSilent) saveGlobalSyncDB(); 
-
-                let currentDateTime = new Date().toLocaleString('en-US');
-                let copyrightFoot = `<br><br>⏰ Last Updated: ${currentDateTime}<br><br>Copyright ©️ Gag2 ~ Dev Xdragon`;
-
-                if (type === 'Stock') {
-                    if (latestStockRaw) {
-                        let formattedText = latestStockRaw.replace(/Copyright ©️.*/gi, '').replace(/@\w+/g, '').trim();
-                        container.innerHTML = `<strong>🟢 LIVE GAG2 STOCK 🟢</strong><br><br><pre>${formattedText}</pre>${copyrightFoot}`;
-                    } else {
-                        container.innerHTML = `<i style="color:red;">No recent stock entries found.</i>${copyrightFoot}`;
-                    }
-                } else if (type === 'Last Seen') {
-                    let htmlOutput = `<strong>🟢 LIVE STOCK & LAST SEEN 🟢</strong><br><br>`;
-                    
-                    for (let [category, items] of Object.entries(GAME_ITEMS)) {
-                        htmlOutput += `<strong>【 ${category} 】</strong><br><br>`;
-                        items.forEach(item => {
-                            if (activeStockList.includes(item)) {
-                                htmlOutput += `✅ ${item}: On Stock<br><br>`;
-                            } else if (globalLastSeenDB[item]) {
-                                htmlOutput += `🕒 ${item}: ${formatTimeDiff(globalLastSeenDB[item])}<br><br>`;
-                            } else {
-                                htmlOutput += `❌ ${item}: Never Seen<br><br>`;
-                            }
-                        });
-                        htmlOutput += `<br>`;
-                    }
-                    
-                    container.innerHTML = htmlOutput + copyrightFoot;
-                }
-
-            } catch (err) {
-                if (!isSilent) {
-                    container.innerHTML = `<div style="color:red; text-align:center;">
-                        <strong>System Connection Busy</strong><br>
-                        <small>Retrying automatically in a moment...</small>
-                    </div>`;
-                }
+                setTimeout(() => {
+                    closeScannerModal();
+                }, 1500);
+            } else {
+                resultDiv.className = "text-center font-semibold text-red-400";
+                resultDiv.innerText = "QR mismatch! Please scan correct QR.";
             }
-        } else {
-            container.innerHTML = `<strong>${type} View</strong><br><br><i>Live stream updates currently enabled for GAG2.</i>`;
         }
-    }
 
-    // FIRE APP START
-    checkSession();
-</script>
-
+        function closeScannerModal() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                    document.getElementById('scanner-modal').classList.add('hidden');
+                }).catch(() => {
+                    document.getElementById('scanner-modal').classList.add('hidden');
+                });
+            } else {
+                document.getElementById('scanner-modal').classList.add('hidden');
+            }
+        }
+    </script>
 </body>
 </html>
