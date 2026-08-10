@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scripts Hub - Your Source for Roblox Scripts</title>
+    <title>Scripts Hub - Roblox Scripts</title>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-color: #0c0f24;
@@ -18,6 +20,7 @@
             --input-bg: #1a1e42;
             --input-text: #ffffff;
             --tag-bg: rgba(255, 255, 255, 0.1);
+            --success-green: #4cd964;
         }
 
         [data-theme="light"] {
@@ -25,9 +28,6 @@
             --container-bg: #ffffff;
             --text-color: #1c1e21;
             --sub-text: #606770;
-            --primary-purple: #7a5dfa;
-            --accent-yellow: #fdb927;
-            --warning-red: #ea2637;
             --border-color: #dddfe2;
             --input-bg: #f5f6f7;
             --input-text: #1c1e21;
@@ -67,7 +67,6 @@
         .site-title {
             font-size: 1.5em;
             font-weight: bold;
-            color: var(--text-color);
         }
 
         .header-actions {
@@ -88,7 +87,6 @@
             border: none;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.2s;
         }
 
         button.login-btn {
@@ -96,24 +94,10 @@
             color: var(--sub-text);
             border: 1px solid var(--border-color);
         }
-        button.login-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
 
-        button.signup-btn {
+        button.signup-btn, button.upload-btn {
             background-color: var(--primary-purple);
             color: white;
-        }
-        button.signup-btn:hover {
-            background-color: var(--hover-purple);
-        }
-
-        button.upload-btn {
-            background-color: var(--primary-purple);
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .user-stats {
@@ -121,7 +105,6 @@
             font-size: 0.9em;
             color: var(--sub-text);
             display: flex;
-            align-items: center;
             gap: 20px;
         }
 
@@ -131,19 +114,8 @@
             gap: 8px;
         }
 
-        .dot-green {
-            width: 10px;
-            height: 10px;
-            background-color: #4cd964;
-            border-radius: 50%;
-        }
-
-        .dot-blue {
-            width: 10px;
-            height: 10px;
-            background-color: #38a1f3;
-            border-radius: 50%;
-        }
+        .dot-green { width: 10px; height: 10px; background-color: var(--success-green); border-radius: 50%; }
+        .dot-blue { width: 10px; height: 10px; background-color: #38a1f3; border-radius: 50%; }
 
         .main-container {
             max-width: 1200px;
@@ -171,45 +143,11 @@
             color: var(--input-text);
         }
 
-        .search-btn {
-            padding: 12px 25px;
-            background-color: #272c4e;
-            color: var(--text-color);
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .search-btn:hover {
-            background-color: #2e345c;
-        }
-
-        .filter-options {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--sub-text);
-            font-size: 0.9em;
-        }
-
-        .filter-options input[type="checkbox"] {
-            transform: scale(1.2);
-            accent-color: var(--primary-purple);
-        }
-
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 1.8em;
-            font-weight: bold;
         }
 
         .scripts-grid {
@@ -223,57 +161,39 @@
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--border-color);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .script-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
         }
 
         .script-card-header {
             position: relative;
             height: 180px;
-            background-color: black;
+            background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
-        
-        .script-card-header img.script-preview {
+
+        .script-card-header img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.8;
         }
 
         .script-card-header-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 10px;
+            left: 10px;
+            right: 10px;
             display: flex;
             justify-content: space-between;
-            padding: 10px;
             font-size: 0.8em;
-            color: white;
-            box-sizing: border-box;
         }
-        
-        .script-view-tag, .script-date-tag {
+
+        .script-tag {
             background-color: var(--tag-bg);
             padding: 4px 10px;
             border-radius: 4px;
-        }
-
-        .script-title-large {
-            position: absolute;
-            font-size: 1.6em;
-            font-weight: bold;
-            color: white;
-            text-align: center;
         }
 
         .key-system-tag {
@@ -281,223 +201,99 @@
             bottom: 10px;
             left: 10px;
             background-color: var(--accent-yellow);
-            color: #1a1e42;
-            padding: 5px 15px;
-            border-radius: 15px;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 12px;
             font-weight: bold;
             font-size: 0.8em;
+            text-decoration: none;
         }
-        
+
         .price-tag {
             position: absolute;
             bottom: 10px;
             right: 10px;
             background-color: var(--primary-purple);
             color: white;
-            padding: 5px 15px;
-            border-radius: 15px;
+            padding: 4px 12px;
+            border-radius: 12px;
             font-weight: bold;
             font-size: 0.8em;
         }
 
         .script-card-content {
             padding: 15px;
-        }
-
-        .owner-name {
-            font-size: 0.9em;
-            color: var(--sub-text);
-            margin-bottom: 5px;
-        }
-
-        .script-title {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            word-wrap: break-word;
-        }
-
-        .card-footer {
+            flex-grow: 1;
             display: flex;
-            gap: 15px;
-            color: var(--sub-text);
-            font-size: 0.9em;
-            margin-top: 10px;
+            flex-direction: column;
+        }
+
+        .owner-name { font-size: 0.85em; color: var(--sub-text); }
+        .script-title { font-weight: bold; font-size: 1.1em; margin: 5px 0 15px 0; }
+
+        .copy-btn {
+            margin-top: auto;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-purple);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         /* Modals */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s;
         }
 
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
 
         .modal {
             background-color: var(--container-bg);
-            padding: 30px;
-            border-radius: 15px;
+            padding: 25px;
+            border-radius: 12px;
             width: 450px;
             max-width: 90%;
             border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             position: relative;
         }
-        
+
         .modal-back-btn {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            cursor: pointer;
-            color: var(--sub-text);
-            font-size: 1.2em;
-            background: none;
-            border: none;
+            position: absolute; top: 15px; left: 15px;
+            background: none; border: none; color: var(--sub-text);
+            font-size: 1.2em; cursor: pointer;
         }
 
-        .modal-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 0.9em; }
 
-        .modal-title {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .modal-sub-title {
-            color: var(--sub-text);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .required {
-            color: var(--warning-red);
-        }
-
-        .modal input[type="text"], .modal input[type="email"], .modal input[type="password"], .modal select, .modal input[type="number"], .modal input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
+        .modal input, .modal select, .modal textarea {
+            width: 100%; padding: 10px; border-radius: 6px;
             border: 1px solid var(--border-color);
-            background-color: var(--input-bg);
-            color: var(--input-text);
+            background-color: var(--input-bg); color: var(--input-text);
             box-sizing: border-box;
         }
-        
-        .modal select {
-            appearance: none;
-        }
-        
-        .modal input[type="checkbox"] {
-            accent-color: var(--primary-purple);
-        }
 
-        .error-message {
-            color: var(--warning-red);
-            font-size: 0.85em;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .status-box {
-            background-color: #272c4e;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9em;
-            color: var(--sub-text);
-            margin-top: 15px;
-        }
-        
-        .status-loader {
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--sub-text);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .modal textarea { height: 90px; resize: vertical; font-family: monospace; }
+
+        .modal-submit-btn {
+            width: 100%; padding: 12px; background-color: var(--primary-purple);
+            color: white; border: none; border-radius: 6px; font-weight: bold;
+            cursor: pointer; margin-top: 10px;
         }
 
         .danger-tag {
             background-color: var(--warning-red);
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-weight: bold;
-            text-align: center;
-            font-size: 0.9em;
-        }
-
-        .modal-submit-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-purple);
-            color: white;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-top: 15px;
-        }
-
-        .modal-submit-btn:hover {
-            background-color: var(--hover-purple);
-        }
-
-        .modal-links {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9em;
-            color: var(--sub-text);
-        }
-
-        .modal-links a {
-            color: var(--primary-purple);
-            text-decoration: none;
-        }
-
-        .success-checkmark {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: #4cd964;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            color: white; padding: 8px; border-radius: 6px;
+            font-size: 0.8em; text-align: center; margin-top: 10px;
         }
     </style>
 </head>
@@ -505,368 +301,321 @@
 
     <header>
         <div class="logo-container">
-            <img src="https://cdn.discordapp.com/attachments/1501879351292067950/1511976415632031754/orca-image-746284181.jpeg.jpg?ex=6a7abdc4&is=6a796c44&hm=68d1c46079e6a19e7f864afd18260281ae94fe0d6b45f8b2b693a654d59b2abe&" alt="Hub Logo" class="logo">
+            <img src="https://cdn.discordapp.com/attachments/1501879351292067950/1511976415632031754/orca-image-746284181.jpeg.jpg?ex=6a7abdc4&is=6a796c44&hm=68d1c46079e6a19e7f864afd18260281ae94fe0d6b45f8b2b693a654d59b2abe&" alt="Logo" class="logo">
             <div class="site-title">Hub</div>
         </div>
         <div class="header-actions">
             <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
-            <button class="login-btn" onclick="openModal('loginModal')">Login</button>
-            <button class="signup-btn" onclick="openModal('signupModal')">Sign Up</button>
-            <button class="toggle-menu">☰</button>
+            <span id="userDisplay" style="display:none; color: var(--success-green); font-weight:bold;"></span>
+            <button class="login-btn" id="loginBtn" onclick="openModal('loginModal')">Login</button>
+            <button class="signup-btn" id="signupBtn" onclick="openModal('signupModal')">Sign Up</button>
         </div>
     </header>
 
     <div class="user-stats">
-        <div class="stat"><span class="dot-green"></span> 1,234 Registered users online</div>
+        <div class="stat"><span class="dot-green"></span> Live Database Connected</div>
         <div class="stat"><span class="dot-blue"></span> 897 Guests online</div>
     </div>
 
     <div class="main-container">
         <div class="search-container">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Try &quot;jailbreak&quot;">
-            <div class="filter-options">
-                <span class="filter-icon">⚙️</span>
-                <button class="search-btn">Search</button>
-            </div>
-        </div>
-        <div class="filter-options" style="margin-left: 15px; margin-bottom: 30px;">
-            <label class="switch">
-                <input type="checkbox" id="strictSearch">
-                <span class="slider round"></span>
-            </label>
-            Strict search (match exact input)
+            🔍 <input type="text" id="searchInput" placeholder="Try &quot;jailbreak&quot;" onkeyup="searchScripts()">
         </div>
 
         <div class="section-header">
-            <div class="section-title">Recent Scripts</div>
+            <div style="font-size: 1.5em; font-weight: bold;">Recent Scripts</div>
             <button class="upload-btn" onclick="openModal('uploadModal')">⊕ Upload</button>
         </div>
 
         <div class="scripts-grid" id="scriptsGrid">
-            <!-- JavaScript will populate script cards here -->
+            <!-- Dynamic scripts from Supabase will load here -->
         </div>
     </div>
 
     <!-- Login Modal -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Login</div>
-                <div class="modal-sub-title">Log in and explore thousands of amazing Roblox scripts.</div>
-            </div>
-            <form>
+            <h2>Login</h2>
+            <form id="loginForm">
                 <div class="form-group">
-                    <label>Email address <span class="required">*</span></label>
-                    <input type="email" placeholder="Enter email address" required>
+                    <label>Email *</label>
+                    <input type="email" id="loginEmail" required>
                 </div>
                 <div class="form-group">
-                    <label>Password <span class="required">*</span></label>
-                    <input type="password" placeholder="Password" required>
+                    <label>Password *</label>
+                    <input type="password" id="loginPassword" required>
                 </div>
-                
-                <div style="display: flex; justify-content: space-between;">
-                    <div class="status-box" style="margin-top: 0; width: 48%; padding: 10px;">
-                        <div class="status-loader"></div>
-                        <span>Verifying...</span>
-                    </div>
-                    <div class="danger-tag" style="margin-top: 0; width: 48%; padding: 10px;">
-                        If You agree that's you own risk
-                    </div>
-                </div>
-
                 <button type="submit" class="modal-submit-btn">Login</button>
             </form>
-            <div class="modal-links">
-                Don't have an account? <a href="#" onclick="switchModal('loginModal', 'signupModal')">Sign Up</a><br>
-                <a href="#">Forgot password?</a>
-            </div>
         </div>
     </div>
 
     <!-- Sign Up Modal -->
     <div class="modal-overlay" id="signupModal">
         <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Sign Up</div>
-                <div class="modal-sub-title">Sign up and explore thousands of amazing Roblox scripts.</div>
-            </div>
-            <form>
+            <h2>Sign Up</h2>
+            <form id="signupForm">
                 <div class="form-group">
-                    <label>Email address <span class="required">*</span></label>
-                    <input type="email" placeholder="Enter email address" required>
-                    <div class="error-message" id="emailError">Email is required!</div>
+                    <label>Email *</label>
+                    <input type="email" id="signupEmail" required>
                 </div>
                 <div class="form-group">
                     <label>Username (optional)</label>
-                    <input type="text" placeholder="Enter custom username">
+                    <input type="text" id="signupUsername">
                 </div>
                 <div class="form-group">
-                    <label>New Password <span class="required">*</span></label>
-                    <input type="password" placeholder="Password" required>
+                    <label>Password *</label>
+                    <input type="password" id="signupPassword" required>
                 </div>
-                <div class="form-group">
-                    <label>Repeat Password <span class="required">*</span></label>
-                    <input type="password" placeholder="Repeat Password" required>
-                </div>
-                
-                <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
-                    <input type="checkbox" id="termsCheck" required>
-                    <label for="termsCheck" style="margin-bottom: 0;">I agree to terms & conditions</label>
-                </div>
-                
-                <div style="display: flex; justify-content: space-between;">
-                    <div class="status-box" style="margin-top: 0; width: 48%; padding: 10px; color: #4cd964; background-color: #1a1e42;">
-                        <div class="success-checkmark">✓</div>
-                        <span>Success!</span>
-                    </div>
-                    <div class="danger-tag" style="margin-top: 0; width: 48%; padding: 10px;">
-                        If You agree that's you own risk
-                    </div>
-                </div>
-
+                <div class="danger-tag">If You agree that's your own risk</div>
                 <button type="submit" class="modal-submit-btn">Sign Up</button>
             </form>
-            <div class="modal-links">
-                Already have an account? <a href="#" onclick="switchModal('signupModal', 'loginModal')">Login</a>
-            </div>
         </div>
     </div>
 
     <!-- Upload Modal -->
     <div class="modal-overlay" id="uploadModal">
         <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Upload Script</div>
-            </div>
+            <h2>Upload Script</h2>
             <form id="uploadForm">
                 <div class="form-group">
-                    <label>Image/File <span class="required">*</span></label>
-                    <input type="file" id="scriptFile" accept="image/*" required>
+                    <label>Image (URL or File Upload) *</label>
+                    <input type="file" id="scriptFile" accept="image/*">
                 </div>
                 <div class="form-group">
-                    <label>Title <span class="required">*</span></label>
-                    <input type="text" id="scriptTitleInput" placeholder="My Awesome Script" required>
+                    <label>Title *</label>
+                    <input type="text" id="scriptTitleInput" required>
                 </div>
                 <div class="form-group">
-                    <label>Key System (Optional)</label>
-                    <input type="text" id="keySystemInput" placeholder="Add link if you have one">
+                    <label>Code Script *</label>
+                    <textarea id="scriptCodeInput" placeholder="loadstring(game:HttpGet('...'))()" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Price ($) <span class="required">*</span></label>
-                    <input type="number" id="scriptPriceInput" placeholder="Enter price, 0 for Free" min="0" required>
+                    <label>Key System (Optional Link)</label>
+                    <input type="text" id="keySystemInput" placeholder="https://keysystem.com">
                 </div>
-
-                <button type="submit" class="modal-submit-btn">Post Script</button>
+                <div class="form-group">
+                    <label>Price ($) - 0 for Free *</label>
+                    <input type="number" id="scriptPriceInput" value="0" min="0" required>
+                </div>
+                <button type="submit" class="modal-submit-btn">Next / Submit</button>
             </form>
         </div>
     </div>
 
-    <!-- Payment Prompt Modal -->
+    <!-- Payment Modal -->
     <div class="modal-overlay" id="paymentModal">
         <div class="modal">
             <button class="modal-back-btn" onclick="goBackToUpload()">← Back</button>
-            <div class="modal-header" style="margin-top: 20px;">
-                <div class="modal-title">Payment Info</div>
-                <div class="modal-sub-title">To post this premium script, please enter your payment details.</div>
-            </div>
+            <h2 style="margin-top:20px;">Payment Details</h2>
             <form id="paymentForm">
                 <div class="form-group">
-                    <label>Select Method <span class="required">*</span></label>
-                    <select required>
-                        <option value="">-- Choose GCash or Maya --</option>
-                        <option value="gcash">GCash</option>
-                        <option value="maya">Maya</option>
+                    <label>Payment Method *</label>
+                    <select id="paymentMethod" required>
+                        <option value="GCash">GCash</option>
+                        <option value="Maya">Maya</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Number <span class="required">*</span></label>
-                    <input type="text" placeholder="Your GCash/Maya number" required>
+                    <label>Number *</label>
+                    <input type="text" id="paymentNumber" placeholder="09123456789" required>
                 </div>
                 <div class="form-group">
-                    <label>Name <span class="required">*</span></label>
-                    <input type="text" placeholder="Account Name" required>
+                    <label>Account Name *</label>
+                    <input type="text" id="paymentName" placeholder="Juan Dela Cruz" required>
                 </div>
-
-                <button type="submit" class="modal-submit-btn">Verify & Post</button>
+                <button type="submit" class="modal-submit-btn">Verify & Post Script</button>
             </form>
         </div>
     </div>
 
     <script>
-        // Theme Management
+        // Initialize Supabase Client
+        const SUPABASE_URL = "https://qwfdxojphubvpalargbe.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3ZmR4b2pwaHVidnBhbGFyZ2JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNzk2NjEsImV4cCI6MjEwMTk1NTY2MX0.t6Vb4xpPfatVAimvrT5OoNxcd9eyInilxRxmTIW2siU";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let pendingUploadData = null;
+
+        // Theme Toggle
         function toggleTheme() {
             const body = document.body;
-            const themeToggle = document.querySelector('.theme-toggle');
-            if (body.getAttribute('data-theme') === 'light') {
-                body.removeAttribute('data-theme');
-                themeToggle.innerText = '🌙';
-            } else {
-                body.setAttribute('data-theme', 'light');
-                themeToggle.innerText = '☀️';
+            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+        }
+
+        // Modals
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target === m) m.classList.remove('active'); }));
+
+        // Auth Logic
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const username = document.getElementById('signupUsername').value || email.split('@')[0];
+
+            const { data, error } = await supabase.auth.signUp({
+                email, password,
+                options: { data: { username: username } }
+            });
+
+            if (error) alert("Signup Error: " + error.message);
+            else {
+                alert("Account created successfully!");
+                closeModal('signupModal');
+                checkUser();
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) alert("Login Error: " + error.message);
+            else {
+                alert("Logged in successfully!");
+                closeModal('loginModal');
+                checkUser();
+            }
+        });
+
+        async function checkUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                currentUser = user;
+                document.getElementById('userDisplay').innerText = user.user_metadata.username || user.email;
+                document.getElementById('userDisplay').style.display = 'inline';
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('signupBtn').style.display = 'none';
             }
         }
 
-        // Modal Management
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
+        // Upload Workflow
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('scriptFile');
+            const file = fileInput.files[0];
+            let imageUrl = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=500&q=80";
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
+            if (file) {
+                imageUrl = await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = e => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            }
 
-        function switchModal(closeId, openId) {
-            closeModal(closeId);
-            setTimeout(() => openModal(openId), 300);
-        }
+            pendingUploadData = {
+                title: document.getElementById('scriptTitleInput').value,
+                script_code: document.getElementById('scriptCodeInput').value,
+                key_link: document.getElementById('keySystemInput').value,
+                price: parseFloat(document.getElementById('scriptPriceInput').value),
+                image_url: imageUrl,
+                owner_name: currentUser ? (currentUser.user_metadata.username || currentUser.email) : 'Guest'
+            };
 
-        // Close modal if clicking outside the modal content
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                }
-            });
+            if (pendingUploadData.price > 0) {
+                closeModal('uploadModal');
+                openModal('paymentModal');
+            } else {
+                saveScriptToSupabase(pendingUploadData);
+            }
         });
 
-        // Script Data Mock & Rendering
-        const defaultLogo = "https://cdn.discordapp.com/attachments/1501879351292067950/1511976415632031754/orca-image-746284181.jpeg.jpg?ex=6a7abdc4&is=6a796c44&hm=68d1c46079e6a19e7f864afd18260281ae94fe0d6b45f8b2b693a654d59b2abe&";
-        
-        let scripts = [
-            { id: 1, title: 'Jailbreak Autoskill', owner: 'ScriptLord', views: '3.4M', date: '1 year ago', keyLink: 'https://mysite.com/key', price: 0, image: null },
-            { id: 2, title: 'Adopt Me Pets Farm', owner: 'Robloxianpro', views: '1.2M', date: '8 months ago', keyLink: '', price: 5, image: null },
-            { id: 3, title: 'Tower Defense Simulator God Mode', owner: 'CoderX', views: '800K', date: '2 months ago', keyLink: 'https://key.io/tdsgod', price: 0, image: null }
-        ];
+        document.getElementById('paymentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveScriptToSupabase(pendingUploadData);
+            closeModal('paymentModal');
+        });
 
-        function renderScripts() {
+        function goBackToUpload() {
+            closeModal('paymentModal');
+            openModal('uploadModal');
+        }
+
+        async function saveScriptToSupabase(data) {
+            const { error } = await supabase.from('scripts').insert([data]);
+            if (error) {
+                alert("Failed to save script: " + error.message);
+            } else {
+                alert("Script posted successfully!");
+                closeModal('uploadModal');
+                document.getElementById('uploadForm').reset();
+                fetchScripts();
+            }
+        }
+
+        // Fetch Scripts from Supabase Real-time Database
+        async function fetchScripts() {
+            const { data, error } = await supabase
+                .from('scripts')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Fetch Error:", error);
+                return;
+            }
+
+            renderScripts(data);
+        }
+
+        function renderScripts(scripts) {
             const grid = document.getElementById('scriptsGrid');
             grid.innerHTML = '';
-            scripts.forEach(script => {
+
+            scripts.forEach(s => {
                 const card = document.createElement('div');
                 card.className = 'script-card';
-                
-                const hasImage = script.image;
-                const headerContent = hasImage 
-                    ? `<img src="${script.image}" class="script-preview" alt="Preview">`
-                    : `<div class="script-title-large">{${script.title.split(' ')[0]}}</div>`;
-                
-                const keyTag = script.keyLink 
-                    ? `<a href="${script.keyLink}" target="_blank" class="key-system-tag">Key System</a>`
-                    : '';
-                    
-                const priceTag = script.price > 0 
-                    ? `<div class="price-tag">$${script.price.toFixed(2)}</div>`
-                    : `<div class="price-tag">Free</div>`;
+
+                const keyTag = s.key_link ? `<a href="${s.key_link}" target="_blank" class="key-system-tag">Key System</a>` : '';
+                const priceTag = s.price > 0 ? `<div class="price-tag">$${s.price}</div>` : `<div class="price-tag">Free</div>`;
 
                 card.innerHTML = `
                     <div class="script-card-header">
-                        ${headerContent}
+                        <img src="${s.image_url}" alt="Script Banner">
                         <div class="script-card-header-overlay">
-                            <div class="script-view-tag">👁 ${script.views}</div>
-                            <div class="script-date-tag">${script.date}</div>
+                            <div class="script-tag">👁 ${s.views || 1}</div>
+                            <div class="script-tag">Recent</div>
                         </div>
                         ${keyTag}
                         ${priceTag}
                     </div>
                     <div class="script-card-content">
-                        <div class="owner-name">{${script.owner}}</div>
-                        <div class="script-title">{${script.title}}</div>
-                        <div class="card-footer">
-                            <span>🎮 Game</span>
-                            <span>#roblox</span>
-                        </div>
+                        <div class="owner-name">Owner: ${s.owner_name}</div>
+                        <div class="script-title">${s.title}</div>
+                        <button class="copy-btn" onclick="copyCode(\`${escapeQuotes(s.script_code)}\`)">📋 Copy Script</button>
                     </div>
                 `;
-                grid.prepend(card); // Add new scripts to the beginning
+                grid.appendChild(card);
             });
         }
 
-        // Upload & Payment Flow
-        let pendingScriptData = null;
-
-        const uploadForm = document.getElementById('uploadForm');
-        uploadForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const title = document.getElementById('scriptTitleInput').value;
-            const keyLink = document.getElementById('keySystemInput').value;
-            const price = parseFloat(document.getElementById('scriptPriceInput').value);
-            const fileInput = document.getElementById('scriptFile');
-            const file = fileInput.files[0];
-
-            pendingScriptData = {
-                title: title,
-                owner: 'You', // In a real app, this would be the logged-in user
-                views: '1',
-                date: 'Just now',
-                keyLink: keyLink,
-                price: price,
-                image: null // We'll set this if a file is uploaded
-            };
-
-            // Convert image to base64 for display in mock
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    pendingScriptData.image = event.target.result;
-                    handlePostWorkflow(price);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                handlePostWorkflow(price);
-            }
-        });
-        
-        function handlePostWorkflow(price) {
-            if (price > 0) {
-                // Paid script: show payment modal
-                closeModal('uploadModal');
-                setTimeout(() => openModal('paymentModal'), 300);
-            } else {
-                // Free script: post immediately
-                finalizePost();
-            }
+        function escapeQuotes(str) {
+            return str ? str.replace(/`/g, '\\`').replace(/\$/g, '\\$') : '';
         }
 
-        const paymentForm = document.getElementById('paymentForm');
-        paymentForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            // In a real app, you would send payment details for verification
-            alert('Payment submitted for verification. Your script will be posted upon approval.');
-            closeModal('paymentModal');
-            finalizePost();
-        });
-
-        function finalizePost() {
-            if (pendingScriptData) {
-                scripts.push(pendingScriptData);
-                renderScripts();
-                pendingScriptData = null;
-                closeModal('uploadModal');
-                uploadForm.reset(); // Clear the form
-            }
+        function copyCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Script copied to clipboard!");
+            }).catch(err => {
+                alert("Failed to copy code: " + err);
+            });
         }
 
-        function goBackToUpload() {
-            closeModal('paymentModal');
-            // Re-open upload modal. We could re-populate data if needed, 
-            // but for simplicity, we keep it as a fresh state. 
-            // The user wanted "babalik Sila sa upload para maayus na" which means keeping data.
-            // Let's not clear the form.
-            setTimeout(() => openModal('uploadModal'), 300);
+        async function searchScripts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const { data } = await supabase.from('scripts').select('*').ilike('title', `%${query}%`);
+            if (data) renderScripts(data);
         }
 
-        // Sign Up Specific Interaction from image
-        const emailInput = document.querySelector('#signupModal input[type="email"]');
-        const emailError = document.getElementById('emailError');
-        
-        // Simulating the error based on image. In real life, it's on submit.
-        emailInput.style.borderColor = 'var(--warning-red)';
-        emailError.style.display = 'block';
-
-        // Initial render
-        renderScripts();
+        // On Load
+        checkUser();
+        fetchScripts();
     </script>
 </body>
 </html>
