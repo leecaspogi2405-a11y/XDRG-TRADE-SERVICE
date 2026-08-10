@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scripts Hub - Roblox Scripts</title>
-    <!-- Supabase JS Library -->
+    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -61,7 +61,9 @@
 
         .logo {
             height: 40px;
+            width: 40px;
             border-radius: 50%;
+            object-fit: cover;
         }
 
         .site-title {
@@ -72,17 +74,16 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .theme-toggle {
             cursor: pointer;
             font-size: 1.2em;
-            color: var(--sub-text);
         }
 
-        button.login-btn, button.signup-btn, button.upload-btn {
-            padding: 10px 20px;
+        button.login-btn, button.signup-btn, button.upload-btn, button.logout-btn {
+            padding: 10px 18px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
@@ -97,6 +98,11 @@
 
         button.signup-btn, button.upload-btn {
             background-color: var(--primary-purple);
+            color: white;
+        }
+
+        button.logout-btn {
+            background-color: var(--warning-red);
             color: white;
         }
 
@@ -229,7 +235,7 @@
         }
 
         .owner-name { font-size: 0.85em; color: var(--sub-text); }
-        .script-title { font-weight: bold; font-size: 1.1em; margin: 5px 0 15px 0; }
+        .script-title { font-weight: bold; font-size: 1.1em; margin: 5px 0 15px 0; word-break: break-word; }
 
         .copy-btn {
             margin-top: auto;
@@ -241,6 +247,10 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--hover-purple);
         }
 
         /* Modals */
@@ -309,17 +319,18 @@
             <span id="userDisplay" style="display:none; color: var(--success-green); font-weight:bold;"></span>
             <button class="login-btn" id="loginBtn" onclick="openModal('loginModal')">Login</button>
             <button class="signup-btn" id="signupBtn" onclick="openModal('signupModal')">Sign Up</button>
+            <button class="logout-btn" id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
         </div>
     </header>
 
     <div class="user-stats">
-        <div class="stat"><span class="dot-green"></span> Live Database Connected</div>
+        <div class="stat"><span class="dot-green"></span> Supabase Shared Cloud</div>
         <div class="stat"><span class="dot-blue"></span> 897 Guests online</div>
     </div>
 
     <div class="main-container">
         <div class="search-container">
-            🔍 <input type="text" id="searchInput" placeholder="Try &quot;jailbreak&quot;" onkeyup="searchScripts()">
+            🔍 <input type="text" id="searchInput" placeholder="Search scripts..." onkeyup="searchScripts()">
         </div>
 
         <div class="section-header">
@@ -328,7 +339,7 @@
         </div>
 
         <div class="scripts-grid" id="scriptsGrid">
-            <!-- Dynamic scripts from Supabase will load here -->
+            <!-- Dynamic scripts loaded from Supabase -->
         </div>
     </div>
 
@@ -379,12 +390,12 @@
             <h2>Upload Script</h2>
             <form id="uploadForm">
                 <div class="form-group">
-                    <label>Image (URL or File Upload) *</label>
+                    <label>Image (File Upload or Image URL)</label>
                     <input type="file" id="scriptFile" accept="image/*">
                 </div>
                 <div class="form-group">
                     <label>Title *</label>
-                    <input type="text" id="scriptTitleInput" required>
+                    <input type="text" id="scriptTitleInput" placeholder="e.g. Jailbreak Auto Farm" required>
                 </div>
                 <div class="form-group">
                     <label>Code Script *</label>
@@ -395,7 +406,7 @@
                     <input type="text" id="keySystemInput" placeholder="https://keysystem.com">
                 </div>
                 <div class="form-group">
-                    <label>Price ($) - 0 for Free *</label>
+                    <label>Price ($) - Enter 0 for Free *</label>
                     <input type="number" id="scriptPriceInput" value="0" min="0" required>
                 </div>
                 <button type="submit" class="modal-submit-btn">Next / Submit</button>
@@ -410,7 +421,7 @@
             <h2 style="margin-top:20px;">Payment Details</h2>
             <form id="paymentForm">
                 <div class="form-group">
-                    <label>Payment Method *</label>
+                    <label>Select Payment Method *</label>
                     <select id="paymentMethod" required>
                         <option value="GCash">GCash</option>
                         <option value="Maya">Maya</option>
@@ -422,7 +433,7 @@
                 </div>
                 <div class="form-group">
                     <label>Account Name *</label>
-                    <input type="text" id="paymentName" placeholder="Juan Dela Cruz" required>
+                    <input type="text" id="paymentName" placeholder="Account Holder Name" required>
                 </div>
                 <button type="submit" class="modal-submit-btn">Verify & Post Script</button>
             </form>
@@ -430,12 +441,12 @@
     </div>
 
     <script>
-        // Initialize Supabase Client
+        // Supabase Initialization
         const SUPABASE_URL = "https://qwfdxojphubvpalargbe.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3ZmR4b2pwaHVidnBhbGFyZ2JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNzk2NjEsImV4cCI6MjEwMTk1NTY2MX0.t6Vb4xpPfatVAimvrT5OoNxcd9eyInilxRxmTIW2siU";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let currentUser = null;
+        let loadedScripts = [];
         let pendingUploadData = null;
 
         // Theme Toggle
@@ -444,70 +455,90 @@
             body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
         }
 
-        // Modals
+        // Modal Controls
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target === m) m.classList.remove('active'); }));
 
-        // Auth Logic
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        // Local Storage Saved Login System
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('app_user')) || null;
+        }
+
+        function checkUserUI() {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('userDisplay').innerText = "👤 " + (user.username || user.email);
+                document.getElementById('userDisplay').style.display = 'inline';
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('signupBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('userDisplay').style.display = 'none';
+                document.getElementById('loginBtn').style.display = 'inline-block';
+                document.getElementById('signupBtn').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'none';
+            }
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
             const username = document.getElementById('signupUsername').value || email.split('@')[0];
 
-            const { data, error } = await supabase.auth.signUp({
-                email, password,
-                options: { data: { username: username } }
-            });
+            let users = JSON.parse(localStorage.getItem('registered_users')) || [];
+            users.push({ email, password, username });
+            localStorage.setItem('registered_users', JSON.stringify(users));
 
-            if (error) alert("Signup Error: " + error.message);
-            else {
-                alert("Account created successfully!");
-                closeModal('signupModal');
-                checkUser();
-            }
+            localStorage.setItem('app_user', JSON.stringify({ email, username }));
+            alert("Account created successfully!");
+            closeModal('signupModal');
+            checkUserUI();
         });
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) alert("Login Error: " + error.message);
-            else {
+            let users = JSON.parse(localStorage.getItem('registered_users')) || [];
+            let foundUser = users.find(u => u.email === email && u.password === password);
+
+            if (foundUser) {
+                localStorage.setItem('app_user', JSON.stringify({ email: foundUser.email, username: foundUser.username }));
                 alert("Logged in successfully!");
                 closeModal('loginModal');
-                checkUser();
+                checkUserUI();
+            } else {
+                alert("Invalid email or password!");
             }
         });
 
-        async function checkUser() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                currentUser = user;
-                document.getElementById('userDisplay').innerText = user.user_metadata.username || user.email;
-                document.getElementById('userDisplay').style.display = 'inline';
-                document.getElementById('loginBtn').style.display = 'none';
-                document.getElementById('signupBtn').style.display = 'none';
-            }
+        function logout() {
+            localStorage.removeItem('app_user');
+            checkUserUI();
         }
 
-        // Upload Workflow
+        // Upload Workflow & Payment
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const fileInput = document.getElementById('scriptFile');
             const file = fileInput.files[0];
+            
+            // Default placeholder image if no file selected
             let imageUrl = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=500&q=80";
 
             if (file) {
+                // Resize / read file to prevent exceeding payload limits
                 imageUrl = await new Promise(resolve => {
                     const reader = new FileReader();
-                    reader.onload = e => resolve(e.target.result);
+                    reader.onload = event => resolve(event.target.result);
                     reader.readAsDataURL(file);
                 });
             }
+
+            const activeUser = getCurrentUser();
 
             pendingUploadData = {
                 title: document.getElementById('scriptTitleInput').value,
@@ -515,7 +546,7 @@
                 key_link: document.getElementById('keySystemInput').value,
                 price: parseFloat(document.getElementById('scriptPriceInput').value),
                 image_url: imageUrl,
-                owner_name: currentUser ? (currentUser.user_metadata.username || currentUser.email) : 'Guest'
+                owner_name: activeUser ? activeUser.username : 'Guest'
             };
 
             if (pendingUploadData.price > 0) {
@@ -540,16 +571,16 @@
         async function saveScriptToSupabase(data) {
             const { error } = await supabase.from('scripts').insert([data]);
             if (error) {
-                alert("Failed to save script: " + error.message);
+                alert("Failed to post script: " + error.message);
             } else {
-                alert("Script posted successfully!");
+                alert("Script posted successfully to global cloud!");
                 closeModal('uploadModal');
                 document.getElementById('uploadForm').reset();
                 fetchScripts();
             }
         }
 
-        // Fetch Scripts from Supabase Real-time Database
+        // Fetch & Render Scripts from Supabase
         async function fetchScripts() {
             const { data, error } = await supabase
                 .from('scripts')
@@ -561,14 +592,20 @@
                 return;
             }
 
-            renderScripts(data);
+            loadedScripts = data || [];
+            renderScripts(loadedScripts);
         }
 
         function renderScripts(scripts) {
             const grid = document.getElementById('scriptsGrid');
             grid.innerHTML = '';
 
-            scripts.forEach(s => {
+            if (scripts.length === 0) {
+                grid.innerHTML = '<div style="color:var(--sub-text);">No scripts posted yet. Be the first to upload!</div>';
+                return;
+            }
+
+            scripts.forEach((s, index) => {
                 const card = document.createElement('div');
                 card.className = 'script-card';
 
@@ -577,7 +614,7 @@
 
                 card.innerHTML = `
                     <div class="script-card-header">
-                        <img src="${s.image_url}" alt="Script Banner">
+                        <img src="${s.image_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=500&q=80'}" alt="Script Banner">
                         <div class="script-card-header-overlay">
                             <div class="script-tag">👁 ${s.views || 1}</div>
                             <div class="script-tag">Recent</div>
@@ -587,34 +624,37 @@
                     </div>
                     <div class="script-card-content">
                         <div class="owner-name">Owner: ${s.owner_name}</div>
-                        <div class="script-title">${s.title}</div>
-                        <button class="copy-btn" onclick="copyCode(\`${escapeQuotes(s.script_code)}\`)">📋 Copy Script</button>
+                        <div class="script-title">${escapeHTML(s.title)}</div>
+                        <button class="copy-btn" onclick="copyCodeByIndex(${index})">📋 Copy Script</button>
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        function escapeQuotes(str) {
-            return str ? str.replace(/`/g, '\\`').replace(/\$/g, '\\$') : '';
+        function escapeHTML(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        function copyCode(code) {
-            navigator.clipboard.writeText(code).then(() => {
-                alert("Script copied to clipboard!");
-            }).catch(err => {
-                alert("Failed to copy code: " + err);
-            });
+        function copyCodeByIndex(index) {
+            const script = loadedScripts[index];
+            if (script && script.script_code) {
+                navigator.clipboard.writeText(script.script_code).then(() => {
+                    alert("Script copied to clipboard!");
+                }).catch(err => {
+                    alert("Failed to copy code: " + err);
+                });
+            }
         }
 
         async function searchScripts() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const { data } = await supabase.from('scripts').select('*').ilike('title', `%${query}%`);
-            if (data) renderScripts(data);
+            const filtered = loadedScripts.filter(s => s.title.toLowerCase().includes(query));
+            renderScripts(filtered);
         }
 
-        // On Load
-        checkUser();
+        // On Page Load
+        checkUserUI();
         fetchScripts();
     </script>
 </body>
