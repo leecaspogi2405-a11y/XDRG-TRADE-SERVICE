@@ -2,660 +2,707 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scripts Hub - Roblox Scripts</title>
-    <!-- Supabase JS SDK -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Xdrg Pilot Service • TikTok style</title>
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --bg-color: #0c0f24;
-            --container-bg: #131631;
-            --text-color: #ffffff;
-            --sub-text: #b1b5c6;
-            --primary-purple: #7a5dfa;
-            --hover-purple: #9078fc;
-            --accent-yellow: #fdb927;
-            --warning-red: #ea2637;
-            --border-color: #1a1e42;
-            --input-bg: #1a1e42;
-            --input-text: #ffffff;
-            --tag-bg: rgba(255, 255, 255, 0.1);
-            --success-green: #4cd964;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
-        [data-theme="light"] {
-            --bg-color: #f0f2f5;
-            --container-bg: #ffffff;
-            --text-color: #1c1e21;
-            --sub-text: #606770;
-            --border-color: #dddfe2;
-            --input-bg: #f5f6f7;
-            --input-text: #1c1e21;
+        :root {
+            --bg: #121212;
+            --card: #1e1e1e;
+            --card-hover: #2a2a2a;
+            --text: #f1f1f1;
+            --text-secondary: #b0b0b0;
+            --accent: #ff2a6d;
+            --accent2: #00e5ff;
+            --green: #00c853;
+            --red: #ff1744;
+            --gold: #ffb300;
+            --border: #333;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            background-color: var(--container-bg);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo {
-            height: 40px;
-            width: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .site-title {
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .theme-toggle {
-            cursor: pointer;
-            font-size: 1.2em;
-        }
-
-        button.login-btn, button.signup-btn, button.upload-btn, button.logout-btn {
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button.login-btn {
-            background-color: transparent;
-            color: var(--sub-text);
-            border: 1px solid var(--border-color);
-        }
-
-        button.signup-btn, button.upload-btn {
-            background-color: var(--primary-purple);
-            color: white;
-        }
-
-        button.logout-btn {
-            background-color: var(--warning-red);
-            color: white;
-        }
-
-        .user-stats {
-            padding: 15px 30px;
-            font-size: 0.9em;
-            color: var(--sub-text);
-            display: flex;
-            gap: 20px;
-        }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .dot-green { width: 10px; height: 10px; background-color: var(--success-green); border-radius: 50%; }
-        .dot-blue { width: 10px; height: 10px; background-color: #38a1f3; border-radius: 50%; }
-
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px 30px;
-        }
-
-        .search-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background-color: var(--container-bg);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        .search-container input {
-            flex-grow: 1;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: var(--input-bg);
-            color: var(--input-text);
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .scripts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .script-card {
-            background-color: var(--container-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .script-card-header {
-            position: relative;
-            height: 180px;
-            background-color: #000;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 12px;
+            transition: all 0.2s;
         }
 
-        .script-card-header img {
+        #app {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 480px;
+            background: #0d0d0d;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #2a2a2a;
+            padding-bottom: 20px;
         }
 
-        .script-card-header-overlay {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
+        /* header / inbox top */
+        .top-bar {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8em;
+            align-items: center;
+            padding: 18px 20px 10px;
         }
-
-        .script-tag {
-            background-color: var(--tag-bg);
-            padding: 4px 10px;
-            border-radius: 4px;
-        }
-
-        .key-system-tag {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background-color: var(--accent-yellow);
-            color: #000;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 0.8em;
-            text-decoration: none;
-        }
-
-        .price-tag {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background-color: var(--primary-purple);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 0.8em;
-        }
-
-        .script-card-content {
-            padding: 15px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .owner-name { font-size: 0.85em; color: var(--sub-text); }
-        .script-title { font-weight: bold; font-size: 1.1em; margin: 5px 0 15px 0; word-break: break-word; }
-
-        .copy-btn {
-            margin-top: auto;
-            width: 100%;
-            padding: 10px;
-            background-color: var(--primary-purple);
-            color: white;
+        .inbox-btn, .settings-btn {
+            background: #222;
             border: none;
-            border-radius: 6px;
+            color: white;
+            font-size: 1.5rem;
+            padding: 10px 14px;
+            border-radius: 50%;
             cursor: pointer;
-            font-weight: bold;
-        }
-
-        .copy-btn:hover {
-            background-color: var(--hover-purple);
-        }
-
-        /* Modals */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 1000;
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.3s;
-        }
-
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-
-        .modal {
-            background-color: var(--container-bg);
-            padding: 25px;
-            border-radius: 12px;
-            width: 450px;
-            max-width: 90%;
-            border: 1px solid var(--border-color);
+            transition: 0.2s;
             position: relative;
         }
-
-        .modal-back-btn {
-            position: absolute; top: 15px; left: 15px;
-            background: none; border: none; color: var(--sub-text);
-            font-size: 1.2em; cursor: pointer;
+        .inbox-btn:hover, .settings-btn:hover {
+            background: #333;
+        }
+        .badge-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid #0d0d0d;
         }
 
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 0.9em; }
-
-        .modal input, .modal select, .modal textarea {
-            width: 100%; padding: 10px; border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: var(--input-bg); color: var(--input-text);
-            box-sizing: border-box;
+        /* language selector */
+        .lang-selector {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 12px;
+            justify-content: flex-end;
+        }
+        .lang-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #aaa;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .lang-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            font-weight: 600;
         }
 
-        .modal textarea { height: 90px; resize: vertical; font-family: monospace; }
-
-        .modal-submit-btn {
-            width: 100%; padding: 12px; background-color: var(--primary-purple);
-            color: white; border: none; border-radius: 6px; font-weight: bold;
-            cursor: pointer; margin-top: 10px;
+        /* screens */
+        .screen {
+            padding: 0 20px 20px;
+        }
+        .hidden {
+            display: none !important;
         }
 
-        .danger-tag {
-            background-color: var(--warning-red);
-            color: white; padding: 8px; border-radius: 6px;
-            font-size: 0.8em; text-align: center; margin-top: 10px;
+        h1, h2, h3 {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .title-gradient {
+            background: linear-gradient(135deg, #ff2a6d, #ff6a3d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 24px 20px;
+            margin-bottom: 20px;
+            border: 1px solid #2c2c2c;
+        }
+
+        input, select {
+            width: 100%;
+            background: #2a2a2a;
+            border: 1px solid #3d3d3d;
+            color: white;
+            padding: 14px 16px;
+            border-radius: 16px;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            outline: none;
+            transition: 0.2s;
+        }
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255,42,109,0.2);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 20px rgba(255,42,109,0.3);
+            margin-top: 8px;
+        }
+        .btn-primary:hover {
+            background: #ff4d7e;
+            transform: scale(1.01);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1.5px solid #555;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+        .btn-secondary:hover {
+            background: #2a2a2a;
+        }
+
+        .pilot-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .pilot-option {
+            background: #1e1e1e;
+            border: 1.5px solid #3a3a3a;
+            border-radius: 18px;
+            padding: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .pilot-option.selected {
+            border-color: var(--accent);
+            background: #2a1a22;
+            box-shadow: 0 0 15px rgba(255,42,109,0.3);
+        }
+        .pilot-option:hover {
+            background: #262626;
+        }
+        .price-badge {
+            background: #333;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .divider {
+            height: 2px;
+            background: #2c2c2c;
+            margin: 20px 0;
+            border-radius: 2px;
+        }
+
+        .agree-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+            background: #1b1b1b;
+            padding: 14px;
+            border-radius: 20px;
+        }
+        .agree-check {
+            width: 24px;
+            height: 24px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .check-cross {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .check-btn, .cross-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            text-align: center;
+        }
+        .check-btn { background: #00c853; color: black; }
+        .cross-btn { background: #ff1744; color: white; }
+        .check-btn.selected, .cross-btn.selected {
+            box-shadow: 0 0 0 4px white, 0 0 20px currentColor;
+            transform: scale(1.02);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin: 30px 0 10px;
+        }
+        .social-icon {
+            font-size: 2.4rem;
+            color: white;
+            background: #222;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .social-icon.facebook { color: #1877f2; }
+        .social-icon.tiktok { color: #69c9d0; }
+        .social-icon.youtube { color: #ff0000; }
+
+        .inbox-container, .settings-container {
+            background: #141414;
+            border-radius: 24px;
+            padding: 20px;
+        }
+        .message-bubble {
+            background: #222;
+            padding: 14px;
+            border-radius: 16px;
+            margin: 10px 0;
+            border-left: 4px solid var(--accent);
+        }
+        .automation-message {
+            background: #1a2a2a;
+            border-left: 4px solid var(--accent2);
+        }
+        .small-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .save-btn {
+            background: var(--accent2);
+            color: black;
+            font-weight: 700;
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <div class="logo-container">
-            <img src="https://cdn.discordapp.com/attachments/1501879351292067950/1511976415632031754/orca-image-746284181.jpeg.jpg?ex=6a7abdc4&is=6a796c44&hm=68d1c46079e6a19e7f864afd18260281ae94fe0d6b45f8b2b693a654d59b2abe&" alt="Logo" class="logo">
-            <div class="site-title">Hub</div>
-        </div>
-        <div class="header-actions">
-            <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
-            <span id="userDisplay" style="display:none; color: var(--success-green); font-weight:bold;"></span>
-            <button class="login-btn" id="loginBtn" onclick="openModal('loginModal')">Login</button>
-            <button class="signup-btn" id="signupBtn" onclick="openModal('signupModal')">Sign Up</button>
-            <button class="logout-btn" id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
-        </div>
-    </header>
-
-    <div class="user-stats">
-        <div class="stat"><span class="dot-green"></span> Supabase Shared Cloud</div>
-        <div class="stat"><span class="dot-blue"></span> 897 Guests online</div>
+<div id="app">
+    <!-- top bar inbox & settings -->
+    <div class="top-bar">
+        <button class="inbox-btn" id="inboxBtn" title="Inbox">📥 <span class="badge-dot" id="inboxBadge" style="display: none;"></span></button>
+        <h2 style="font-weight:800;">⚡Xdrg Pilot</h2>
+        <button class="settings-btn" id="settingsBtn" title="Settings">⚙️</button>
     </div>
 
-    <div class="main-container">
-        <div class="search-container">
-            🔍 <input type="text" id="searchInput" placeholder="Search scripts..." onkeyup="searchScripts()">
-        </div>
+    <!-- language -->
+    <div class="lang-selector">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="tl">Tagalog</button>
+    </div>
 
-        <div class="section-header">
-            <div style="font-size: 1.5em; font-weight: bold;">Recent Scripts</div>
-            <button class="upload-btn" onclick="openModal('uploadModal')">⊕ Upload</button>
+    <!-- SCREENS -->
+    <div id="signinScreen" class="screen">
+        <div class="card">
+            <h2 class="title-gradient">Sign in / Log in</h2>
+            <input type="text" id="loginName" placeholder="Name (full name)" />
+            <input type="text" id="loginUsername" placeholder="Username" />
+            <input type="password" id="loginPassword" placeholder="Password" />
+            <button class="btn-primary" id="loginBtn">Sign in / Log in</button>
+            <p class="small-text" style="margin-top:10px; text-align:center;">New? Login automatically creates account.</p>
         </div>
-
-        <div class="scripts-grid" id="scriptsGrid">
-            <!-- Dynamic scripts loaded from Supabase -->
+        <div class="social-links">
+            <a class="social-icon facebook" href="https://www.facebook.com/share/1BiViKpPbt/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a class="social-icon tiktok" href="https://tiktok.com/@xdragon...1" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a class="social-icon youtube" href="https://www.youtube.com/@dev-xdragon" target="_blank"><i class="fab fa-youtube"></i></a>
         </div>
     </div>
 
-    <!-- Login Modal -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal">
-            <h2>Login</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" id="loginEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Password *</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <button type="submit" class="modal-submit-btn">Login</button>
-            </form>
+    <div id="mainScreen" class="screen hidden">
+        <h2 class="title-gradient">Welcome, <span id="welcomeUser">Pilot</span> 👋</h2>
+        <p class="small-text" style="margin-bottom:10px;">Select any Pilot set-up you want 👇</p>
+        <!-- NEW vs OLD user toggle automatically by age of account -->
+        <div id="newMemberSection" class="hidden">
+            <div class="card" style="background: #2a1a1a; border-color:#ff3b5c;">
+                <h3>🔥 New Member Selection</h3>
+                <div class="pilot-grid" id="newPilotGrid"></div>
+            </div>
         </div>
+        <div id="oldUserSection">
+            <div class="card">
+                <h3>🖥️ With 5min breaks every hour</h3>
+                <div class="pilot-grid" id="breakPilotGrid"></div>
+            </div>
+            <div class="card">
+                <h3>🤖 Without Break (Best Selection)</h3>
+                <div class="pilot-grid" id="nobreakPilotGrid"></div>
+            </div>
+        </div>
+
+        <!-- agreement -->
+        <div class="agree-row">
+            <input type="checkbox" id="agreeCheckbox" class="agree-check" />
+            <span>✅/❎ | [ ] Do you agree with Xdrg Pilot</span>
+        </div>
+        <div class="check-cross">
+            <button class="check-btn" id="agreeYes">✅ Yes</button>
+            <button class="cross-btn" id="agreeNo">❎ No</button>
+        </div>
+        <button class="btn-primary" id="confirmPilotBtn">Confirm & Send to Owner</button>
     </div>
 
-    <!-- Sign Up Modal -->
-    <div class="modal-overlay" id="signupModal">
-        <div class="modal">
-            <h2>Sign Up</h2>
-            <form id="signupForm">
-                <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" id="signupEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Username (optional)</label>
-                    <input type="text" id="signupUsername">
-                </div>
-                <div class="form-group">
-                    <label>Password *</label>
-                    <input type="password" id="signupPassword" required>
-                </div>
-                <div class="danger-tag">If You agree that's your own risk</div>
-                <button type="submit" class="modal-submit-btn">Sign Up</button>
-            </form>
-        </div>
+    <div id="inboxScreen" class="screen hidden">
+        <h3>📥 Inbox</h3>
+        <div id="inboxMessages" class="inbox-container"></div>
+        <button class="btn-secondary" id="backFromInbox">← Back</button>
     </div>
 
-    <!-- Upload Modal -->
-    <div class="modal-overlay" id="uploadModal">
-        <div class="modal">
-            <h2>Upload Script</h2>
-            <form id="uploadForm">
-                <div class="form-group">
-                    <label>Image (File Upload or Image URL)</label>
-                    <input type="file" id="scriptFile" accept="image/*">
-                </div>
-                <div class="form-group">
-                    <label>Title *</label>
-                    <input type="text" id="scriptTitleInput" placeholder="e.g. Jailbreak Auto Farm" required>
-                </div>
-                <div class="form-group">
-                    <label>Code Script *</label>
-                    <textarea id="scriptCodeInput" placeholder="loadstring(game:HttpGet('...'))()" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Key System (Optional Link)</label>
-                    <input type="text" id="keySystemInput" placeholder="https://keysystem.com">
-                </div>
-                <div class="form-group">
-                    <label>Price ($) - Enter 0 for Free *</label>
-                    <input type="number" id="scriptPriceInput" value="0" min="0" required>
-                </div>
-                <button type="submit" class="modal-submit-btn">Next / Submit</button>
-            </form>
+    <div id="settingsScreen" class="screen hidden">
+        <h3>⚙️ Settings / Profile</h3>
+        <div class="card">
+            <label>Name:</label><input type="text" id="profileName" placeholder="Your name" />
+            <label>Username:</label><input type="text" id="profileUsername" placeholder="Username" />
+            <label>Payment Name:</label><input type="text" id="paymentName" placeholder="e.g. GCash name" />
+            <label>Payment Number:</label><input type="text" id="paymentNumber" placeholder="09xxxxxxxxx" />
+            <label>Pilot Username (Roblox):</label><input type="text" id="pilotUsername" placeholder="Roblox username" />
+            <label>Pilot Password:</label><input type="password" id="pilotPassword" placeholder="Roblox password" />
+            <button class="btn-primary save-btn" id="saveProfileBtn">💾 Save Profile</button>
         </div>
+        <button class="btn-secondary" id="backFromSettings">← Back</button>
     </div>
+</div>
 
-    <!-- Payment Modal -->
-    <div class="modal-overlay" id="paymentModal">
-        <div class="modal">
-            <button class="modal-back-btn" onclick="goBackToUpload()">← Back</button>
-            <h2 style="margin-top:20px;">Payment Details</h2>
-            <form id="paymentForm">
-                <div class="form-group">
-                    <label>Select Payment Method *</label>
-                    <select id="paymentMethod" required>
-                        <option value="GCash">GCash</option>
-                        <option value="Maya">Maya</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Number *</label>
-                    <input type="text" id="paymentNumber" placeholder="09123456789" required>
-                </div>
-                <div class="form-group">
-                    <label>Account Name *</label>
-                    <input type="text" id="paymentName" placeholder="Account Holder Name" required>
-                </div>
-                <button type="submit" class="modal-submit-btn">Verify & Post Script</button>
-            </form>
-        </div>
-    </div>
+<script>
+    // SUPABASE CREDENTIALS (provided)
+    const SUPABASE_URL = "https://iitvkgptsaowlghxfuec.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdHZrZ3B0c2Fvd2xnaHhmdWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0Njk4NjIsImV4cCI6MjEwMzA0NTg2Mn0.JRnDge3FS-DFJN_1AazUELHPcIr-wNEFBBGnKL2nCcw";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    <script>
-        // Supabase Initialization
-        const SUPABASE_URL = "https://qwfdxojphubvpalargbe.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3ZmR4b2pwaHVidnBhbGFyZ2JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNzk2NjEsImV4cCI6MjEwMTk1NTY2MX0.t6Vb4xpPfatVAimvrT5OoNxcd9eyInilxRxmTIW2siU";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        let loadedScripts = [];
-        let pendingUploadData = null;
-
-        // Theme Toggle
-        function toggleTheme() {
-            const body = document.body;
-            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    // Language strings
+    const translations = {
+        en: {
+            welcome: "Welcome",
+            newMemberTitle: "🔥 New Member Selection",
+            breakTitle: "🖥️ With 5min breaks every hour",
+            nobreakTitle: "🤖 Without Break (Best Selection)",
+            agreeText: "Do you agree with Xdrg Pilot",
+            confirmBtn: "Confirm & Send to Owner",
+            inboxTitle: "📥 Inbox",
+        },
+        tl: {
+            welcome: "Maligayang pagdating",
+            newMemberTitle: "🔥 Bagong Miyembro",
+            breakTitle: "🖥️ May 5 minutong pahinga kada oras",
+            nobreakTitle: "🤖 Walang Pahinga (Pinakamahusay)",
+            agreeText: "Sumasang-ayon ka ba sa Xdrg Pilot",
+            confirmBtn: "Kumpirmahin at Ipadala sa May-ari",
+            inboxTitle: "📥 Inbox",
         }
+    };
+    let currentLang = 'en';
 
-        // Modal Controls
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target === m) m.classList.remove('active'); }));
+    // PILOT DATA
+    const newMemberPlans = [
+        { label: "30 Minute", price: "Free" },
+        { label: "2 Hour", price: "₱5" },
+        { label: "3 Hour", price: "₱12" },
+        { label: "4 Hour", price: "₱25" },
+        { label: "24 Hour", price: "₱899" },
+        { label: "24D/7H", price: "₱3499" }
+    ];
+    const breakPlans = [
+        { label: "30 minute", price: "₱35" },
+        { label: "2 Hour", price: "₱110" },
+        { label: "3 Hour", price: "₱159" },
+        { label: "4 Hour", price: "₱229" },
+        { label: "24 Hour", price: "₱1100" },
+        { label: "24D/7H", price: "₱4299" }
+    ];
+    const noBreakPlans = [
+        { label: "30 minute", price: "₱65" },
+        { label: "2 Hour", price: "₱128" },
+        { label: "3 Hour", price: "₱179" },
+        { label: "4 Hour", price: "₱249" },
+        { label: "24 Hour", price: "₱1299" },
+        { label: "24D/7H", price: "₱4599" }
+    ];
 
-        // Local Storage Saved Login System
-        function getCurrentUser() {
-            return JSON.parse(localStorage.getItem('app_user')) || null;
-        }
+    let currentUser = null; // { name, username, password, created_at }
+    let selectedPilot = null;
+    let agreeStatus = null; // 'yes' or 'no'
 
-        function checkUserUI() {
-            const user = getCurrentUser();
-            if (user) {
-                document.getElementById('userDisplay').innerText = "👤 " + (user.username || user.email);
-                document.getElementById('userDisplay').style.display = 'inline';
-                document.getElementById('loginBtn').style.display = 'none';
-                document.getElementById('signupBtn').style.display = 'none';
-                document.getElementById('logoutBtn').style.display = 'inline-block';
-            } else {
-                document.getElementById('userDisplay').style.display = 'none';
-                document.getElementById('loginBtn').style.display = 'inline-block';
-                document.getElementById('signupBtn').style.display = 'inline-block';
-                document.getElementById('logoutBtn').style.display = 'none';
-            }
-        }
+    // DOM elements
+    const signinScreen = document.getElementById('signinScreen');
+    const mainScreen = document.getElementById('mainScreen');
+    const inboxScreen = document.getElementById('inboxScreen');
+    const settingsScreen = document.getElementById('settingsScreen');
+    const newMemberSection = document.getElementById('newMemberSection');
+    const oldUserSection = document.getElementById('oldUserSection');
+    const welcomeUserSpan = document.getElementById('welcomeUser');
 
-        document.getElementById('signupForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            const username = document.getElementById('signupUsername').value || email.split('@')[0];
-
-            let users = JSON.parse(localStorage.getItem('registered_users')) || [];
-            users.push({ email, password, username });
-            localStorage.setItem('registered_users', JSON.stringify(users));
-
-            localStorage.setItem('app_user', JSON.stringify({ email, username }));
-            alert("Account created successfully!");
-            closeModal('signupModal');
-            checkUserUI();
-        });
-
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            let users = JSON.parse(localStorage.getItem('registered_users')) || [];
-            let foundUser = users.find(u => u.email === email && u.password === password);
-
-            if (foundUser) {
-                localStorage.setItem('app_user', JSON.stringify({ email: foundUser.email, username: foundUser.username }));
-                alert("Logged in successfully!");
-                closeModal('loginModal');
-                checkUserUI();
-            } else {
-                alert("Invalid email or password!");
-            }
-        });
-
-        function logout() {
-            localStorage.removeItem('app_user');
-            checkUserUI();
-        }
-
-        // Upload Workflow & Payment
-        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const fileInput = document.getElementById('scriptFile');
-            const file = fileInput.files[0];
-            
-            // Default placeholder image if no file selected
-            let imageUrl = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=500&q=80";
-
-            if (file) {
-                // Resize / read file to prevent exceeding payload limits
-                imageUrl = await new Promise(resolve => {
-                    const reader = new FileReader();
-                    reader.onload = event => resolve(event.target.result);
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            const activeUser = getCurrentUser();
-
-            pendingUploadData = {
-                title: document.getElementById('scriptTitleInput').value,
-                script_code: document.getElementById('scriptCodeInput').value,
-                key_link: document.getElementById('keySystemInput').value,
-                price: parseFloat(document.getElementById('scriptPriceInput').value),
-                image_url: imageUrl,
-                owner_name: activeUser ? activeUser.username : 'Guest'
-            };
-
-            if (pendingUploadData.price > 0) {
-                closeModal('uploadModal');
-                openModal('paymentModal');
-            } else {
-                saveScriptToSupabase(pendingUploadData);
-            }
-        });
-
-        document.getElementById('paymentForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            saveScriptToSupabase(pendingUploadData);
-            closeModal('paymentModal');
-        });
-
-        function goBackToUpload() {
-            closeModal('paymentModal');
-            openModal('uploadModal');
-        }
-
-        async function saveScriptToSupabase(data) {
-            const { error } = await supabase.from('scripts').insert([data]);
-            if (error) {
-                alert("Failed to post script: " + error.message);
-            } else {
-                alert("Script posted successfully to global cloud!");
-                closeModal('uploadModal');
-                document.getElementById('uploadForm').reset();
-                fetchScripts();
-            }
-        }
-
-        // Fetch & Render Scripts from Supabase
-        async function fetchScripts() {
-            const { data, error } = await supabase
-                .from('scripts')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error("Fetch Error:", error);
-                return;
-            }
-
-            loadedScripts = data || [];
-            renderScripts(loadedScripts);
-        }
-
-        function renderScripts(scripts) {
-            const grid = document.getElementById('scriptsGrid');
-            grid.innerHTML = '';
-
-            if (scripts.length === 0) {
-                grid.innerHTML = '<div style="color:var(--sub-text);">No scripts posted yet. Be the first to upload!</div>';
-                return;
-            }
-
-            scripts.forEach((s, index) => {
-                const card = document.createElement('div');
-                card.className = 'script-card';
-
-                const keyTag = s.key_link ? `<a href="${s.key_link}" target="_blank" class="key-system-tag">Key System</a>` : '';
-                const priceTag = s.price > 0 ? `<div class="price-tag">$${s.price}</div>` : `<div class="price-tag">Free</div>`;
-
-                card.innerHTML = `
-                    <div class="script-card-header">
-                        <img src="${s.image_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=500&q=80'}" alt="Script Banner">
-                        <div class="script-card-header-overlay">
-                            <div class="script-tag">👁 ${s.views || 1}</div>
-                            <div class="script-tag">Recent</div>
-                        </div>
-                        ${keyTag}
-                        ${priceTag}
-                    </div>
-                    <div class="script-card-content">
-                        <div class="owner-name">Owner: ${s.owner_name}</div>
-                        <div class="script-title">${escapeHTML(s.title)}</div>
-                        <button class="copy-btn" onclick="copyCodeByIndex(${index})">📋 Copy Script</button>
-                    </div>
-                `;
-                grid.appendChild(card);
+    // Helper to render pilot options
+    function renderPilotGrid(containerId, plans, category) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        plans.forEach((plan, idx) => {
+            const div = document.createElement('div');
+            div.className = 'pilot-option';
+            div.dataset.category = category;
+            div.dataset.label = plan.label;
+            div.dataset.price = plan.price;
+            div.innerHTML = `<span>${plan.label}</span><span class="price-badge">${plan.price}</span>`;
+            div.addEventListener('click', () => {
+                document.querySelectorAll('.pilot-option').forEach(opt => opt.classList.remove('selected'));
+                div.classList.add('selected');
+                selectedPilot = {
+                    category: category,
+                    label: plan.label,
+                    price: plan.price,
+                    user: currentUser?.username || 'unknown',
+                };
             });
-        }
+            container.appendChild(div);
+        });
+    }
 
-        function escapeHTML(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    function updateLanguageUI() {
+        const lang = translations[currentLang];
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === currentLang);
+        });
+        if (!document.getElementById('mainScreen').classList.contains('hidden')) {
+            welcomeUserSpan.textContent = currentUser?.name || 'Pilot';
         }
-
-        function copyCodeByIndex(index) {
-            const script = loadedScripts[index];
-            if (script && script.script_code) {
-                navigator.clipboard.writeText(script.script_code).then(() => {
-                    alert("Script copied to clipboard!");
-                }).catch(err => {
-                    alert("Failed to copy code: " + err);
-                });
-            }
+        // adjust titles
+        if (newMemberSection && oldUserSection) {
+            document.querySelector('#newMemberSection h3')!.textContent = lang.newMemberTitle;
+            document.querySelector('#oldUserSection .card:nth-child(1) h3')!.textContent = lang.breakTitle;
+            document.querySelector('#oldUserSection .card:nth-child(2) h3')!.textContent = lang.nobreakTitle;
         }
+        const agreeText = document.querySelector('.agree-row span');
+        if (agreeText) agreeText.textContent = `✅/❎ | [ ] ${lang.agreeText}`;
+        const confirmBtn = document.getElementById('confirmPilotBtn');
+        if (confirmBtn) confirmBtn.textContent = lang.confirmBtn;
+        const inboxTitle = document.querySelector('#inboxScreen h3');
+        if (inboxTitle) inboxTitle.textContent = lang.inboxTitle;
+    }
 
-        async function searchScripts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = loadedScripts.filter(s => s.title.toLowerCase().includes(query));
-            renderScripts(filtered);
+    // Supabase table name (assumed 'pilot_messages' and 'profiles')
+    async function savePilotMessage(messageData) {
+        try {
+            const { data, error } = await supabase.from('pilot_messages').insert([messageData]);
+            if (error) console.error('Supabase insert error', error);
+            else console.log('Message saved', data);
+        } catch (e) { console.warn(e); }
+    }
+
+    async function fetchInbox() {
+        try {
+            const { data, error } = await supabase.from('pilot_messages').select('*').order('created_at', { ascending: false });
+            if (error) return [];
+            return data || [];
+        } catch { return []; }
+    }
+
+    // login / signup
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+        const name = document.getElementById('loginName').value.trim();
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        if (!name || !username || !password) { alert('Please fill all fields'); return; }
+
+        // check existing user (mock)
+        const { data: existingUser, error } = await supabase.from('users').select('*').eq('username', username).maybeSingle();
+        let user;
+        if (existingUser) {
+            user = existingUser;
+        } else {
+            const createdAt = new Date().toISOString();
+            const { data: newUser, error: insertErr } = await supabase.from('users').insert([{ name, username, password, created_at: createdAt }]).select().single();
+            if (insertErr) { alert('Error creating user'); return; }
+            user = newUser;
         }
+        currentUser = user;
+        // determine if new (less than 24h old)
+        const isNew = (Date.now() - new Date(user.created_at).getTime()) < 86400000; 
+        showMainScreen(isNew);
+        updateLanguageUI();
+    });
 
-        // On Page Load
-        checkUserUI();
-        fetchScripts();
-    </script>
+    function showMainScreen(isNew) {
+        signinScreen.classList.add('hidden');
+        inboxScreen.classList.add('hidden');
+        settingsScreen.classList.add('hidden');
+        mainScreen.classList.remove('hidden');
+        welcomeUserSpan.textContent = currentUser?.name || '';
+        newMemberSection.classList.toggle('hidden', !isNew);
+        oldUserSection.classList.toggle('hidden', isNew);
+        // reset selection
+        selectedPilot = null;
+        agreeStatus = null;
+        document.querySelectorAll('.pilot-option').forEach(o => o.classList.remove('selected'));
+        document.getElementById('agreeCheckbox').checked = false;
+        document.querySelector('.check-btn').classList.remove('selected');
+        document.querySelector('.cross-btn').classList.remove('selected');
+        updateLanguageUI();
+    }
+
+    // navigation
+    document.getElementById('inboxBtn').addEventListener('click', async () => {
+        signinScreen.classList.add('hidden');
+        mainScreen.classList.add('hidden');
+        settingsScreen.classList.add('hidden');
+        inboxScreen.classList.remove('hidden');
+        const messages = await fetchInbox();
+        const container = document.getElementById('inboxMessages');
+        container.innerHTML = messages.map(msg => `
+            <div class="message-bubble">
+                <strong>${msg.username || 'unknown'}</strong> <span class="small-text">(${msg.pilot_selected || ''})</span>
+                <p>${msg.message || ''}</p>
+                <span class="small-text">${new Date(msg.created_at).toLocaleString()}</span>
+            </div>`).join('');
+    });
+
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+        signinScreen.classList.add('hidden');
+        mainScreen.classList.add('hidden');
+        inboxScreen.classList.add('hidden');
+        settingsScreen.classList.remove('hidden');
+        // load profile if available
+        if (currentUser) {
+            document.getElementById('profileName').value = currentUser.name || '';
+            document.getElementById('profileUsername').value = currentUser.username || '';
+            // payment fields from localstorage or supabase (simple)
+        }
+    });
+
+    document.getElementById('backFromInbox').addEventListener('click', () => {
+        inboxScreen.classList.add('hidden');
+        mainScreen.classList.remove('hidden');
+    });
+    document.getElementById('backFromSettings').addEventListener('click', () => {
+        settingsScreen.classList.add('hidden');
+        mainScreen.classList.remove('hidden');
+    });
+
+    // language switching
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentLang = btn.dataset.lang;
+            updateLanguageUI();
+        });
+    });
+
+    // agree buttons
+    document.getElementById('agreeYes').addEventListener('click', () => {
+        agreeStatus = 'yes';
+        document.querySelector('.check-btn').classList.add('selected');
+        document.querySelector('.cross-btn').classList.remove('selected');
+        document.getElementById('agreeCheckbox').checked = true;
+    });
+    document.getElementById('agreeNo').addEventListener('click', () => {
+        agreeStatus = 'no';
+        document.querySelector('.cross-btn').classList.add('selected');
+        document.querySelector('.check-btn').classList.remove('selected');
+        document.getElementById('agreeCheckbox').checked = false;
+    });
+
+    // confirm pilot
+    document.getElementById('confirmPilotBtn').addEventListener('click', async () => {
+        if (!selectedPilot) { alert('Please select a pilot set-up'); return; }
+        if (agreeStatus !== 'yes') { alert('You must agree (✅) first'); return; }
+        const checkbox = document.getElementById('agreeCheckbox');
+        if (!checkbox.checked) { alert('Check the agreement box'); return; }
+
+        const messageData = {
+            username: currentUser?.username || 'anonymous',
+            password: '••••••', // never send real password
+            pilot_selected: `${selectedPilot.label} - ${selectedPilot.price} (${selectedPilot.category})`,
+            message: `Pilot selected: ${selectedPilot.label} ${selectedPilot.price}`,
+            owner_email: 'xdrgxdragon@gmail.com',
+            created_at: new Date().toISOString(),
+        };
+        await savePilotMessage(messageData);
+        // automation message for user
+        const autoMsg = {
+            username: 'Xdrg System',
+            message: 'Your Pilot System Has End To Renew the pilot just Select at Pilot Selection Date & Time',
+            created_at: new Date().toISOString(),
+        };
+        await savePilotMessage(autoMsg);
+        alert('✅ Pilot sent to owner! Check inbox.');
+        // show inbox maybe
+    });
+
+    // save profile
+    document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+        const profileData = {
+            name: document.getElementById('profileName').value,
+            username: document.getElementById('profileUsername').value,
+            payment_name: document.getElementById('paymentName').value,
+            payment_number: document.getElementById('paymentNumber').value,
+            pilot_username: document.getElementById('pilotUsername').value,
+            pilot_password: document.getElementById('pilotPassword').value,
+        };
+        if (currentUser) {
+            const { error } = await supabase.from('users').update(profileData).eq('username', currentUser.username);
+            if (!error) alert('Profile saved!');
+            else alert('Error saving');
+        } else {
+            alert('Login first');
+        }
+    });
+
+    // initial render pilot grids
+    renderPilotGrid('newPilotGrid', newMemberPlans, 'new');
+    renderPilotGrid('breakPilotGrid', breakPlans, 'break');
+    renderPilotGrid('nobreakPilotGrid', noBreakPlans, 'nobreak');
+
+    // Auto show signin initially
+    window.addEventListener('load', () => {
+        signinScreen.classList.remove('hidden');
+        mainScreen.classList.add('hidden');
+        inboxScreen.classList.add('hidden');
+        settingsScreen.classList.add('hidden');
+        updateLanguageUI();
+    });
+
+    // handle old/new toggle (simplified)
+    // Actually we handle by login time
+</script>
 </body>
 </html>
