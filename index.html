@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Xdrg Pilot Service • TikTok style</title>
-    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -45,6 +43,7 @@
             border: 1px solid #2a2a2a;
             box-shadow: 0 20px 40px rgba(0,0,0,0.8);
             padding-bottom: 20px;
+            position: relative;
         }
         .top-bar {
             display: flex;
@@ -63,19 +62,10 @@
             cursor: pointer;
             transition: 0.2s;
             position: relative;
+            z-index: 10;
         }
-        .inbox-btn:hover, .settings-btn:hover {
-            background: #333;
-        }
-        .badge-dot {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 10px;
-            height: 10px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: none;
+        .inbox-btn:active, .settings-btn:active {
+            transform: scale(0.95);
         }
         .lang-selector {
             display: flex;
@@ -92,12 +82,16 @@
             font-size: 0.8rem;
             cursor: pointer;
             transition: 0.2s;
+            z-index: 10;
         }
         .lang-btn.active {
             background: var(--accent);
             border-color: var(--accent);
             color: white;
             font-weight: 600;
+        }
+        .lang-btn:active {
+            transform: scale(0.95);
         }
         .screen {
             padding: 0 20px 20px;
@@ -112,7 +106,7 @@
             margin-bottom: 16px;
             border: 1px solid #2c2c2c;
         }
-        input, select {
+        input {
             width: 100%;
             background: #222;
             border: 1px solid #3d3d3d;
@@ -122,6 +116,7 @@
             font-size: 1rem;
             margin-bottom: 12px;
             outline: none;
+            pointer-events: auto;
         }
         input:focus {
             border-color: var(--accent);
@@ -140,9 +135,10 @@
             transition: 0.2s;
             box-shadow: 0 8px 20px rgba(255,42,109,0.3);
             margin-top: 8px;
+            pointer-events: auto;
         }
-        .btn-primary:hover {
-            background: #ff4d7e;
+        .btn-primary:active {
+            transform: scale(0.98);
         }
         .btn-secondary {
             background: transparent;
@@ -154,9 +150,10 @@
             cursor: pointer;
             width: 100%;
             transition: 0.2s;
+            pointer-events: auto;
         }
-        .btn-secondary:hover {
-            background: #2a2a2a;
+        .btn-secondary:active {
+            transform: scale(0.98);
         }
         .pilot-grid {
             display: flex;
@@ -166,20 +163,28 @@
         }
         .pilot-option {
             background: #1e1e1e;
-            border: 1.5px solid #3a3a3a;
+            border: 2px solid #3a3a3a;
             border-radius: 18px;
-            padding: 16px;
+            padding: 16px 20px;
             cursor: pointer;
             transition: 0.2s;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1rem;
+            pointer-events: auto;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .pilot-option:active {
+            transform: scale(0.97);
+            background: #2a2a2a;
         }
         .pilot-option.selected {
             border-color: var(--accent);
             background: #2a1a22;
-            box-shadow: 0 0 15px rgba(255,42,109,0.3);
+            box-shadow: 0 0 20px rgba(255,42,109,0.4);
         }
         .price-badge {
             background: #333;
@@ -187,6 +192,7 @@
             border-radius: 30px;
             font-weight: 700;
             color: var(--gold);
+            font-size: 0.9rem;
         }
         .agree-row {
             display: flex;
@@ -196,12 +202,14 @@
             background: #1b1b1b;
             padding: 14px;
             border-radius: 20px;
+            pointer-events: auto;
         }
         .agree-check {
             width: 24px;
             height: 24px;
             accent-color: var(--accent);
             cursor: pointer;
+            pointer-events: auto;
         }
         .check-cross {
             display: flex;
@@ -216,6 +224,11 @@
             cursor: pointer;
             border: none;
             text-align: center;
+            pointer-events: auto;
+            font-size: 1.1rem;
+        }
+        .check-btn:active, .cross-btn:active {
+            transform: scale(0.95);
         }
         .check-btn { background: #00c853; color: black; }
         .cross-btn { background: #ff1744; color: white; }
@@ -240,6 +253,7 @@
             border-radius: 50%;
             text-decoration: none;
             transition: 0.2s;
+            pointer-events: auto;
         }
         .social-icon.facebook { color: #1877f2; }
         .social-icon.tiktok { color: #69c9d0; }
@@ -250,13 +264,14 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
             cursor: pointer;
+            pointer-events: auto;
         }
         .auth-toggle span {
             color: var(--accent);
             font-weight: 600;
             text-decoration: underline;
         }
-        .inbox-container, .settings-container {
+        .inbox-container {
             background: #141414;
             border-radius: 24px;
             padding: 16px;
@@ -268,10 +283,6 @@
             margin: 10px 0;
             border-left: 4px solid var(--accent);
         }
-        .automation-message {
-            background: #1a2a2a;
-            border-left: 4px solid var(--accent2);
-        }
         .small-text {
             font-size: 0.8rem;
             color: var(--text-secondary);
@@ -280,6 +291,7 @@
             background: var(--accent2);
             color: black;
             font-weight: 700;
+            pointer-events: auto;
         }
         .title-gradient {
             background: linear-gradient(135deg, #ff2a6d, #ff6a3d);
@@ -288,6 +300,12 @@
             color: transparent;
             font-size: 1.8rem;
             margin-bottom: 8px;
+        }
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
         }
     </style>
 </head>
@@ -300,7 +318,7 @@
         <button class="settings-btn" id="settingsBtn" title="Settings">⚙️</button>
     </div>
 
-    <!-- Language selector - always visible -->
+    <!-- Language selector -->
     <div class="lang-selector">
         <button class="lang-btn active" data-lang="en">English</button>
         <button class="lang-btn" data-lang="tl">Tagalog</button>
@@ -387,13 +405,19 @@
     // SUPABASE CONFIG
     const SUPABASE_URL = "https://iitvkgptsaowlghxfuec.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdHZrZ3B0c2Fvd2xnaHhmdWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0Njk4NjIsImV4cCI6MjEwMzA0NTg2Mn0.JRnDge3FS-DFJN_1AazUELHPcIr-wNEFBBGnKL2nCcw";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    let supabase;
+    try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch(e) {
+        console.error('Supabase init error:', e);
+    }
 
     // STATE
     let currentUser = null;
     let selectedPilot = null;
     let agreeStatus = null;
-    let isLoginMode = true; // true = sign in, false = register
+    let isLoginMode = true;
     let currentLang = 'en';
 
     // TRANSLATIONS
@@ -407,13 +431,11 @@
             authBtnRegister: 'Register',
             toggleToRegister: "Don't have an account? Register now",
             toggleToLogin: "Already have an account? Sign in",
-            welcome: 'Welcome',
             newMemberTitle: '🔥 New Member Selection',
             breakTitle: '🖥️ With 5min breaks every hour',
             nobreakTitle: '🤖 Without Break (Best Selection)',
             agreeText: '✅/❎ | [ ] Do you agree with Xdrg Pilot',
             confirmBtn: 'Confirm & Send to Owner',
-            inboxTitle: '📥 Inbox',
         },
         tl: {
             signInTitle: 'Mag-sign In',
@@ -424,17 +446,15 @@
             authBtnRegister: 'Magrehistro',
             toggleToRegister: "Walang account? Magrehistro ngayon",
             toggleToLogin: "May account na? Mag-sign in",
-            welcome: 'Maligayang pagdating',
             newMemberTitle: '🔥 Bagong Miyembro',
             breakTitle: '🖥️ May 5 minutong pahinga kada oras',
             nobreakTitle: '🤖 Walang Pahinga (Pinakamahusay)',
             agreeText: '✅/❎ | [ ] Sumasang-ayon ka ba sa Xdrg Pilot',
             confirmBtn: 'Kumpirmahin at Ipadala sa May-ari',
-            inboxTitle: '📥 Inbox',
         }
     };
 
-    // PILOT PLANS
+    // PILOT PLANS - ETO YUNG MGA BUTTONS NA SELECTION
     const newMemberPlans = [
         { label: "30 Minute", price: "Free" },
         { label: "2 Hour", price: "₱5" },
@@ -474,30 +494,48 @@
     const welcomeUserSpan = document.getElementById('welcomeUser');
     const agreeLabel = document.getElementById('agreeLabel');
     const confirmPilotBtn = document.getElementById('confirmPilotBtn');
-    const inboxTitle = document.getElementById('inboxTitle');
 
-    // RENDER PILOT GRID
+    // RENDER PILOT BUTTONS - ITO YUNG GUMAGAWA NG MGA BUTTONS
     function renderPilotGrid(containerId, plans, category) {
         const container = document.getElementById(containerId);
+        if (!container) return;
         container.innerHTML = '';
+        
         plans.forEach(plan => {
-            const div = document.createElement('div');
-            div.className = 'pilot-option';
-            div.dataset.category = category;
-            div.dataset.label = plan.label;
-            div.dataset.price = plan.price;
-            div.innerHTML = `<span>${plan.label}</span><span class="price-badge">${plan.price}</span>`;
-            div.addEventListener('click', () => {
-                document.querySelectorAll('.pilot-option').forEach(opt => opt.classList.remove('selected'));
-                div.classList.add('selected');
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'pilot-option';
+            button.dataset.category = category;
+            button.dataset.label = plan.label;
+            button.dataset.price = plan.price;
+            button.innerHTML = `<span>${plan.label}</span><span class="price-badge">${plan.price}</span>`;
+            
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Remove selected from all buttons
+                document.querySelectorAll('.pilot-option').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                
+                // Add selected to this button
+                this.classList.add('selected');
+                
                 selectedPilot = {
                     category: category,
                     label: plan.label,
                     price: plan.price,
                 };
+                
+                console.log('SELECTED PILOT:', selectedPilot.label, selectedPilot.price);
+                alert('Selected: ' + selectedPilot.label + ' - ' + selectedPilot.price);
             });
-            container.appendChild(div);
+            
+            container.appendChild(button);
         });
+        
+        console.log('Rendered', plans.length, 'buttons in', containerId);
     }
 
     // UPDATE LANGUAGE
@@ -507,7 +545,6 @@
             btn.classList.toggle('active', btn.dataset.lang === currentLang);
         });
         
-        // Auth screen
         if (isLoginMode) {
             authTitle.textContent = lang.signInTitle;
             authSubtitle.textContent = lang.signInSub;
@@ -520,33 +557,39 @@
             toggleText.textContent = lang.toggleToLogin;
         }
         
-        // Main screen
         if (currentUser) {
             welcomeUserSpan.textContent = currentUser.name || 'Pilot';
         }
-        document.querySelector('#newMemberSection h3').textContent = lang.newMemberTitle;
-        document.querySelector('#oldUserSection .card:nth-child(1) h3').textContent = lang.breakTitle;
-        document.querySelector('#oldUserSection .card:nth-child(2) h3').textContent = lang.nobreakTitle;
-        agreeLabel.textContent = lang.agreeText;
-        confirmPilotBtn.textContent = lang.confirmBtn;
         
-        // Inbox
-        document.querySelector('#inboxScreen h3').textContent = lang.inboxTitle;
+        const newMemberTitle = document.querySelector('#newMemberSection h3');
+        if (newMemberTitle) newMemberTitle.textContent = lang.newMemberTitle;
+        
+        const breakTitle = document.querySelector('#oldUserSection .card:nth-child(1) h3');
+        if (breakTitle) breakTitle.textContent = lang.breakTitle;
+        
+        const nobreakTitle = document.querySelector('#oldUserSection .card:nth-child(2) h3');
+        if (nobreakTitle) nobreakTitle.textContent = lang.nobreakTitle;
+        
+        if (agreeLabel) agreeLabel.textContent = lang.agreeText;
+        if (confirmPilotBtn) confirmPilotBtn.textContent = lang.confirmBtn;
     }
 
-    // SHOW SCREEN HELPER
+    // SHOW SCREEN
     function showScreen(screen) {
-        [signinScreen, mainScreen, inboxScreen, settingsScreen].forEach(s => s.classList.add('hidden'));
+        signinScreen.classList.add('hidden');
+        mainScreen.classList.add('hidden');
+        inboxScreen.classList.add('hidden');
+        settingsScreen.classList.add('hidden');
+        topBar.classList.add('hidden');
+        
         if (screen === 'main' && currentUser) {
             topBar.classList.remove('hidden');
             mainScreen.classList.remove('hidden');
-            // determine new vs old
             const isNew = (Date.now() - new Date(currentUser.created_at).getTime()) < 86400000;
             document.getElementById('newMemberSection').classList.toggle('hidden', !isNew);
             document.getElementById('oldUserSection').classList.toggle('hidden', isNew);
             welcomeUserSpan.textContent = currentUser.name || 'Pilot';
         } else if (screen === 'signin') {
-            topBar.classList.add('hidden');
             signinScreen.classList.remove('hidden');
         } else if (screen === 'inbox') {
             topBar.classList.remove('hidden');
@@ -561,13 +604,13 @@
     }
 
     // AUTH TOGGLE
-    authToggle.addEventListener('click', () => {
+    authToggle.addEventListener('click', function() {
         isLoginMode = !isLoginMode;
         updateLanguage();
     });
 
     // AUTH BUTTON
-    authBtn.addEventListener('click', async () => {
+    authBtn.addEventListener('click', async function() {
         const name = document.getElementById('loginName').value.trim();
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
@@ -579,77 +622,97 @@
 
         if (isLoginMode) {
             // SIGN IN
-            const { data: user, error } = await supabase
-                .from('users')
-                .select('*')
-                .eq('username', username)
-                .maybeSingle();
-            
-            if (error || !user) {
-                alert('User not found. Please register first.');
-                return;
+            try {
+                const { data: user, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('username', username)
+                    .maybeSingle();
+                
+                if (error || !user) {
+                    alert('User not found. Please register first.');
+                    return;
+                }
+                if (user.password !== password) {
+                    alert('Incorrect password');
+                    return;
+                }
+                currentUser = user;
+                showScreen('main');
+            } catch(e) {
+                alert('Login error: ' + e.message);
             }
-            if (user.password !== password) {
-                alert('Incorrect password');
-                return;
-            }
-            currentUser = user;
-            showScreen('main');
         } else {
             // REGISTER
-            const { data: existingUser } = await supabase
-                .from('users')
-                .select('username')
-                .eq('username', username)
-                .maybeSingle();
-            
-            if (existingUser) {
-                alert('Username already exists');
-                return;
+            try {
+                const { data: existingUser } = await supabase
+                    .from('users')
+                    .select('username')
+                    .eq('username', username)
+                    .maybeSingle();
+                
+                if (existingUser) {
+                    alert('Username already exists');
+                    return;
+                }
+                
+                const { data: newUser, error: insertError } = await supabase
+                    .from('users')
+                    .insert([{ 
+                        name, 
+                        username, 
+                        password, 
+                        created_at: new Date().toISOString() 
+                    }])
+                    .select()
+                    .single();
+                
+                if (insertError || !newUser) {
+                    alert('Registration failed');
+                    return;
+                }
+                currentUser = newUser;
+                showScreen('main');
+            } catch(e) {
+                alert('Registration error: ' + e.message);
             }
-            
-            const { data: newUser, error: insertError } = await supabase
-                .from('users')
-                .insert([{ 
-                    name, 
-                    username, 
-                    password, 
-                    created_at: new Date().toISOString() 
-                }])
-                .select()
-                .single();
-            
-            if (insertError || !newUser) {
-                alert('Registration failed');
-                return;
-            }
-            currentUser = newUser;
-            showScreen('main');
         }
     });
 
     // NAVIGATION
-    document.getElementById('inboxBtn').addEventListener('click', () => showScreen('inbox'));
-    document.getElementById('settingsBtn').addEventListener('click', () => showScreen('settings'));
-    document.getElementById('backFromInbox').addEventListener('click', () => showScreen('main'));
-    document.getElementById('backFromSettings').addEventListener('click', () => showScreen('main'));
+    document.getElementById('inboxBtn').addEventListener('click', function() {
+        showScreen('inbox');
+    });
+    
+    document.getElementById('settingsBtn').addEventListener('click', function() {
+        showScreen('settings');
+    });
+    
+    document.getElementById('backFromInbox').addEventListener('click', function() {
+        showScreen('main');
+    });
+    
+    document.getElementById('backFromSettings').addEventListener('click', function() {
+        showScreen('main');
+    });
 
     // LANGUAGE BUTTONS
     document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', function() {
             currentLang = btn.dataset.lang;
             updateLanguage();
         });
     });
 
     // AGREE BUTTONS
-    document.getElementById('agreeYes').addEventListener('click', () => {
+    document.getElementById('agreeYes').addEventListener('click', function() {
         agreeStatus = 'yes';
         document.querySelector('.check-btn').classList.add('selected');
         document.querySelector('.cross-btn').classList.remove('selected');
         document.getElementById('agreeCheckbox').checked = true;
     });
-    document.getElementById('agreeNo').addEventListener('click', () => {
+    
+    document.getElementById('agreeNo').addEventListener('click', function() {
         agreeStatus = 'no';
         document.querySelector('.cross-btn').classList.add('selected');
         document.querySelector('.check-btn').classList.remove('selected');
@@ -657,9 +720,9 @@
     });
 
     // CONFIRM PILOT
-    confirmPilotBtn.addEventListener('click', async () => {
+    confirmPilotBtn.addEventListener('click', async function() {
         if (!selectedPilot) {
-            alert('Please select a pilot set-up');
+            alert('Please select a pilot set-up first!');
             return;
         }
         if (agreeStatus !== 'yes' || !document.getElementById('agreeCheckbox').checked) {
@@ -667,51 +730,66 @@
             return;
         }
 
-        const messageData = {
-            username: currentUser.username,
-            password: '••••••',
-            pilot_selected: `${selectedPilot.label} - ${selectedPilot.price} (${selectedPilot.category})`,
-            message: `Pilot selected: ${selectedPilot.label} ${selectedPilot.price}`,
-            owner_email: 'xdrgxdragon@gmail.com',
-            created_at: new Date().toISOString(),
-        };
-        await supabase.from('pilot_messages').insert([messageData]);
-        
-        // Automation message
-        await supabase.from('pilot_messages').insert([{
-            username: 'Xdrg System',
-            message: 'Your Pilot System Has End To Renew the pilot just Select at Pilot Selection Date & Time',
-            created_at: new Date().toISOString(),
-        }]);
-        
-        alert('✅ Pilot sent to owner!');
-        // Reset selection
-        selectedPilot = null;
-        agreeStatus = null;
-        document.querySelectorAll('.pilot-option').forEach(o => o.classList.remove('selected'));
-        document.getElementById('agreeCheckbox').checked = false;
-        document.querySelector('.check-btn').classList.remove('selected');
-        document.querySelector('.cross-btn').classList.remove('selected');
+        try {
+            const messageData = {
+                username: currentUser.username,
+                password: '••••••',
+                pilot_selected: `${selectedPilot.label} - ${selectedPilot.price} (${selectedPilot.category})`,
+                message: `Pilot selected: ${selectedPilot.label} ${selectedPilot.price}`,
+                owner_email: 'xdrgxdragon@gmail.com',
+                created_at: new Date().toISOString(),
+            };
+            
+            await supabase.from('pilot_messages').insert([messageData]);
+            
+            // Automation message
+            await supabase.from('pilot_messages').insert([{
+                username: 'Xdrg System',
+                message: 'Your Pilot System Has End To Renew the pilot just Select at Pilot Selection Date & Time',
+                created_at: new Date().toISOString(),
+            }]);
+            
+            alert('✅ Pilot sent to owner!');
+            
+            // Reset
+            selectedPilot = null;
+            agreeStatus = null;
+            document.querySelectorAll('.pilot-option').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('agreeCheckbox').checked = false;
+            document.querySelector('.check-btn').classList.remove('selected');
+            document.querySelector('.cross-btn').classList.remove('selected');
+        } catch(e) {
+            alert('Error sending pilot: ' + e.message);
+        }
     });
 
     // LOAD INBOX
     async function loadInbox() {
-        const { data: messages } = await supabase
-            .from('pilot_messages')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        const container = document.getElementById('inboxMessages');
-        if (messages && messages.length > 0) {
-            container.innerHTML = messages.map(msg => `
-                <div class="message-bubble">
-                    <strong>${msg.username || 'unknown'}</strong>
-                    <p>${msg.message || ''}</p>
-                    <span class="small-text">${new Date(msg.created_at).toLocaleString()}</span>
-                </div>
-            `).join('');
-        } else {
-            container.innerHTML = '<p class="small-text">No messages yet</p>';
+        try {
+            const { data: messages, error } = await supabase
+                .from('pilot_messages')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            const container = document.getElementById('inboxMessages');
+            if (error) {
+                container.innerHTML = '<p class="small-text">Error loading messages</p>';
+                return;
+            }
+            
+            if (messages && messages.length > 0) {
+                container.innerHTML = messages.map(msg => `
+                    <div class="message-bubble">
+                        <strong>${msg.username || 'unknown'}</strong>
+                        <p>${msg.message || ''}</p>
+                        <span class="small-text">${new Date(msg.created_at).toLocaleString()}</span>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<p class="small-text">No messages yet</p>';
+            }
+        } catch(e) {
+            document.getElementById('inboxMessages').innerHTML = '<p class="small-text">Error loading messages</p>';
         }
     }
 
@@ -728,26 +806,35 @@
     }
 
     // SAVE PROFILE
-    document.getElementById('saveProfileBtn').addEventListener('click', async () => {
-        if (!currentUser) return;
-        const profileData = {
-            name: document.getElementById('profileName').value,
-            username: document.getElementById('profileUsername').value,
-            payment_name: document.getElementById('paymentName').value,
-            payment_number: document.getElementById('paymentNumber').value,
-            pilot_username: document.getElementById('pilotUsername').value,
-            pilot_password: document.getElementById('pilotPassword').value,
-        };
-        const { error } = await supabase
-            .from('users')
-            .update(profileData)
-            .eq('username', currentUser.username);
+    document.getElementById('saveProfileBtn').addEventListener('click', async function() {
+        if (!currentUser) {
+            alert('Please login first');
+            return;
+        }
         
-        if (error) {
-            alert('Error saving profile');
-        } else {
-            alert('✅ Profile saved!');
-            currentUser = { ...currentUser, ...profileData };
+        try {
+            const profileData = {
+                name: document.getElementById('profileName').value,
+                username: document.getElementById('profileUsername').value,
+                payment_name: document.getElementById('paymentName').value,
+                payment_number: document.getElementById('paymentNumber').value,
+                pilot_username: document.getElementById('pilotUsername').value,
+                pilot_password: document.getElementById('pilotPassword').value,
+            };
+            
+            const { error } = await supabase
+                .from('users')
+                .update(profileData)
+                .eq('username', currentUser.username);
+            
+            if (error) {
+                alert('Error saving profile: ' + error.message);
+            } else {
+                alert('✅ Profile saved!');
+                currentUser = { ...currentUser, ...profileData };
+            }
+        } catch(e) {
+            alert('Error saving profile: ' + e.message);
         }
     });
 
@@ -755,8 +842,13 @@
     renderPilotGrid('newPilotGrid', newMemberPlans, 'new');
     renderPilotGrid('breakPilotGrid', breakPlans, 'break');
     renderPilotGrid('nobreakPilotGrid', noBreakPlans, 'nobreak');
+    
     showScreen('signin');
     updateLanguage();
+    console.log('App initialized! All buttons ready.');
+    console.log('New Member Plans:', newMemberPlans.length, 'buttons');
+    console.log('Break Plans:', breakPlans.length, 'buttons');
+    console.log('No Break Plans:', noBreakPlans.length, 'buttons');
 </script>
 </body>
 </html>
