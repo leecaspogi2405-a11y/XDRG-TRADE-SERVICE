@@ -12,6 +12,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Removes blue flash on mobile taps */
         }
         :root {
             --bg: #0a0a0a;
@@ -46,6 +47,7 @@
             display: flex;
             flex-direction: column;
             min-height: 85vh;
+            max-height: 95vh;
         }
         .top-bar {
             display: flex;
@@ -131,6 +133,7 @@
             margin-bottom: 12px;
             outline: none;
             transition: 0.2s;
+            -webkit-appearance: none; /* fixes ios default styling */
         }
         input:focus {
             border-color: var(--accent);
@@ -156,6 +159,11 @@
         }
         .btn-primary:active {
             transform: scale(0.96);
+        }
+        .btn-primary:disabled {
+            background: #555;
+            box-shadow: none;
+            cursor: not-allowed;
         }
         .btn-secondary {
             background: #222;
@@ -330,6 +338,28 @@
             color: var(--text-secondary);
             font-weight: 600;
         }
+
+        /* CUSTOM TOAST NOTIFICATION STYLES */
+        .toast {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translate(-50%, -20px);
+            background: var(--red);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            z-index: 10000;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            opacity: 0;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            pointer-events: none;
+        }
+        .toast-success { background: var(--green); color: black; }
     </style>
 </head>
 <body>
@@ -358,16 +388,16 @@
             <h2 class="title-gradient" id="authTitle">Sign In</h2>
             <p class="small-text" id="authSubtitle" style="margin-bottom: 20px;">Welcome back! Please login</p>
             
-            <div id="nameInputWrapper" class="hidden">
-                <input type="text" id="loginName" placeholder="Full Name" />
-            </div>
+            <!-- Hide this field by default for Sign In -->
+            <input type="text" id="loginName" placeholder="Full Name" style="display: none;" />
+            
             <input type="text" id="loginUsername" placeholder="Username" />
             <input type="password" id="loginPassword" placeholder="Password" />
             
             <button class="btn-primary" id="authBtn">Sign In</button>
             
             <div class="auth-toggle" id="authToggle">
-                Don't have an account? <span id="toggleText">Register now</span>
+                <span id="toggleQuestion">Don't have an account?</span> <span id="toggleText">Register now</span>
             </div>
         </div>
         <div class="social-links">
@@ -448,11 +478,33 @@
 </div>
 
 <script>
-    // SUPABASE CONFIG
+    // --- TOAST NOTIFICATION SYSTEM (Fixes the invisible mobile errors) ---
+    function showToast(msg, type = 'error') {
+        const existing = document.querySelector('.toast');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+
+        // Force browser to animate it
+        void toast.offsetWidth;
+        toast.style.opacity = '1';
+        toast.style.transform = 'translate(-50%, 0)'; 
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translate(-50%, -20px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // --- SUPABASE CONFIG ---
     const SUPABASE_URL = "https://iitvkgptsaowlghxfuec.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdHZrZ3B0c2Fvd2xnaHhmdWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0Njk4NjIsImV4cCI6MjEwMzA0NTg2Mn0.JRnDge3FS-DFJN_1AazUELHPcIr-wNEFBBGnKL2nCcw";
     
-    let supabase;
+    let supabase = null;
     try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     } catch(e) {
@@ -460,10 +512,17 @@
     }
 
     // STATE VARIABLES
-    let currentUser = JSON.parse(localStorage.getItem('xdrg_user')) || null;
+    let currentUser = null;
+    try {
+        const storedUser = localStorage.getItem('xdrg_user');
+        if (storedUser) currentUser = JSON.parse(storedUser);
+    } catch(e) {
+        localStorage.removeItem('xdrg_user');
+    }
+    
     let selectedPilot = null;
     let agreeStatus = null;
-    let isLoginMode = true;
+    let isLoginMode = true; // Starts in Sign In mode
     let currentLang = 'en';
 
     // TRANSLATIONS
@@ -475,8 +534,10 @@
             registerSub: 'Create your new account',
             authBtnSignIn: 'Sign In',
             authBtnRegister: 'Register',
-            toggleToRegister: "Don't have an account? Register now",
-            toggleToLogin: "Already have an account? Sign in",
+            toggleQuestion: "Don't have an account?",
+            toggleTextRegister: "Register now",
+            toggleQuestion2: "Already have an account?",
+            toggleTextLogin: "Sign in",
             newMemberTitle: '🔥 New Member Selection',
             breakTitle: '🖥️ With 5min breaks every hour',
             nobreakTitle: '🤖 Without Break (Best Selection)',
@@ -490,8 +551,10 @@
             registerSub: 'Gumawa ng iyong account',
             authBtnSignIn: 'Mag-sign In',
             authBtnRegister: 'Magrehistro',
-            toggleToRegister: "Walang account? Magrehistro ngayon",
-            toggleToLogin: "May account na? Mag-sign in",
+            toggleQuestion: "Walang account?",
+            toggleTextRegister: "Magrehistro ngayon",
+            toggleQuestion2: "May account na?",
+            toggleTextLogin: "Mag-sign in",
             newMemberTitle: '🔥 Bagong Miyembro Promo',
             breakTitle: '🖥️ May 5 minutong pahinga/oras',
             nobreakTitle: '🤖 Walang Pahinga (Pinakamahusay)',
@@ -546,7 +609,7 @@
         });
     }
 
-    // UPDATE UI LANGUAGE
+    // UPDATE UI LANGUAGE & TOGGLE STATE
     function updateLanguage() {
         const lang = translations[currentLang];
         document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -557,14 +620,16 @@
             document.getElementById('authTitle').textContent = lang.signInTitle;
             document.getElementById('authSubtitle').textContent = lang.signInSub;
             document.getElementById('authBtn').textContent = lang.authBtnSignIn;
-            document.getElementById('toggleText').textContent = lang.toggleToRegister;
-            document.getElementById('nameInputWrapper').classList.add('hidden');
+            document.getElementById('toggleQuestion').textContent = lang.toggleQuestion;
+            document.getElementById('toggleText').textContent = lang.toggleTextRegister;
+            document.getElementById('loginName').style.display = 'none'; // Hide Name on Sign In
         } else {
             document.getElementById('authTitle').textContent = lang.registerTitle;
             document.getElementById('authSubtitle').textContent = lang.registerSub;
             document.getElementById('authBtn').textContent = lang.authBtnRegister;
-            document.getElementById('toggleText').textContent = lang.toggleToLogin;
-            document.getElementById('nameInputWrapper').classList.remove('hidden');
+            document.getElementById('toggleQuestion').textContent = lang.toggleQuestion2;
+            document.getElementById('toggleText').textContent = lang.toggleTextLogin;
+            document.getElementById('loginName').style.display = 'block'; // Show Name on Register
         }
         
         if (currentUser) {
@@ -587,8 +652,9 @@
             document.getElementById('topBar').classList.remove('hidden');
             document.getElementById('mainScreen').classList.remove('hidden');
             
-            // Check if account is < 24 hours old
-            const isNew = (Date.now() - new Date(currentUser.created_at).getTime()) < 86400000;
+            // Validate < 24 hours logic safely
+            const createdAt = currentUser.created_at ? new Date(currentUser.created_at).getTime() : Date.now();
+            const isNew = (Date.now() - createdAt) < 86400000;
             document.getElementById('newMemberSection').classList.toggle('hidden', !isNew);
             document.getElementById('oldUserSection').classList.toggle('hidden', isNew);
             document.getElementById('welcomeUser').textContent = currentUser.name;
@@ -608,48 +674,59 @@
         updateLanguage();
     }
 
-    // AUTHENTICATION LOGIC
+    // AUTHENTICATION LOGIC (Fixed for mobile web views)
     document.getElementById('authToggle').addEventListener('click', () => {
         isLoginMode = !isLoginMode;
         updateLanguage();
     });
 
     document.getElementById('authBtn').addEventListener('click', async () => {
-        const name = document.getElementById('loginName').value.trim();
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
+        const name = document.getElementById('loginName').value.trim();
         
-        if (!username || !password || (!isLoginMode && !name)) {
-            alert('Please fill in all required fields.');
+        if (!supabase) {
+            showToast('⚠️ Database error: System not connected.');
             return;
         }
 
-        document.getElementById('authBtn').textContent = 'Loading...';
-        
-        if (isLoginMode) {
-            // SIGN IN
-            try {
+        if (!username || !password) {
+            showToast('⚠️ Please enter your Username and Password.');
+            return;
+        }
+
+        if (!isLoginMode && !name) {
+            showToast('⚠️ Please enter your Full Name to register.');
+            return;
+        }
+
+        const btn = document.getElementById('authBtn');
+        btn.textContent = 'Please wait...';
+        btn.disabled = true;
+
+        try {
+            if (isLoginMode) {
+                // SIGN IN
                 const { data: user, error } = await supabase
                     .from('users')
                     .select('*')
                     .eq('username', username)
                     .maybeSingle();
                 
-                if (error || !user) {
-                    alert('User not found. Please register first.');
+                if (error) throw error;
+
+                if (!user) {
+                    showToast('❌ User not found. Please register first.');
                 } else if (user.password !== password) {
-                    alert('Incorrect password!');
+                    showToast('❌ Incorrect password!');
                 } else {
                     currentUser = user;
                     localStorage.setItem('xdrg_user', JSON.stringify(user));
-                    showScreen('main');
+                    showToast('✅ Login successful!', 'success');
+                    setTimeout(() => showScreen('main'), 1000);
                 }
-            } catch(e) {
-                alert('Login error: ' + e.message);
-            }
-        } else {
-            // REGISTER
-            try {
+            } else {
+                // REGISTER
                 const { data: existingUser } = await supabase
                     .from('users')
                     .select('username')
@@ -657,7 +734,7 @@
                     .maybeSingle();
                 
                 if (existingUser) {
-                    alert('Username already exists. Choose a different one.');
+                    showToast('⚠️ Username is already taken.');
                 } else {
                     const { data: newUser, error } = await supabase
                         .from('users')
@@ -666,15 +743,19 @@
                         .single();
                     
                     if (error) throw error;
+                    
                     currentUser = newUser;
                     localStorage.setItem('xdrg_user', JSON.stringify(newUser));
-                    showScreen('main');
+                    showToast('✅ Account registered successfully!', 'success');
+                    setTimeout(() => showScreen('main'), 1000);
                 }
-            } catch(e) {
-                alert('Registration error: ' + e.message);
             }
+        } catch(e) {
+            showToast('❌ System Error: ' + e.message);
         }
-        updateLanguage(); // Reset button text
+        
+        btn.disabled = false;
+        updateLanguage(); // This resets the button text
     });
 
     // AGREEMENT LOGIC
@@ -683,7 +764,8 @@
         const isYes = status === 'yes';
         document.getElementById('agreeCheckbox').checked = isYes;
         document.getElementById('agreeYes').classList.toggle('selected', isYes);
-        document.getElementById('agreeNo').classList.toggle('selected', !isYes);
+        // Only turn on cross if explicitly 'no'
+        document.getElementById('agreeNo').classList.toggle('selected', !isYes && status !== null);
     }
     
     document.getElementById('agreeYes').addEventListener('click', () => setAgreement('yes'));
@@ -695,11 +777,15 @@
     // CONFIRM PILOT LOGIC
     document.getElementById('confirmPilotBtn').addEventListener('click', async () => {
         if (!selectedPilot) {
-            alert('⚠️ Please select a Pilot Plan first!');
+            showToast('⚠️ Please select a Pilot set-up first!');
             return;
         }
         if (agreeStatus !== 'yes') {
-            alert('⚠️ You must agree to the Xdrg Pilot rules first.');
+            showToast('⚠️ You must agree to the rules (Click ✅ Yes).');
+            return;
+        }
+        if (!supabase) {
+            showToast('⚠️ Database error: Cannot connect to server.');
             return;
         }
 
@@ -708,7 +794,6 @@
         btn.disabled = true;
 
         try {
-            // 1. Send User's Request
             await supabase.from('pilot_messages').insert([{
                 username: currentUser.username,
                 pilot_selected: `${selectedPilot.label} - ${selectedPilot.price} (${selectedPilot.category})`,
@@ -717,40 +802,44 @@
                 created_at: new Date().toISOString(),
             }]);
             
-            // 2. Send System Auto-Reply (Attached to user's username so they can see it in inbox)
+            // Send System Auto-Reply
             await supabase.from('pilot_messages').insert([{
                 username: currentUser.username,
-                message: `🤖 SYSTEM: Your pilot plan (${selectedPilot.label}) has been received by the owner! To renew later, just select a new plan.`,
-                created_at: new Date(Date.now() + 1000).toISOString(), // 1 second later
+                message: `🤖 SYSTEM: Your pilot plan (${selectedPilot.label}) has been received! To renew later, just select a new plan here.`,
+                created_at: new Date(Date.now() + 1000).toISOString(),
             }]);
             
-            alert('✅ Pilot successfully requested!');
-            document.getElementById('inboxBadge').style.display = 'block'; // Notify new message
+            showToast('✅ Pilot successfully sent to owner!', 'success');
+            document.getElementById('inboxBadge').style.display = 'block'; 
             
             // Reset Selections
             selectedPilot = null;
             setAgreement(null);
-            document.getElementById('agreeCheckbox').checked = false;
             document.querySelectorAll('.pilot-option').forEach(b => b.classList.remove('selected'));
             
         } catch(e) {
-            alert('Error sending pilot: ' + e.message);
+            showToast('❌ Error sending pilot: ' + e.message);
         }
         
         btn.disabled = false;
-        updateLanguage(); // Resets btn text
+        updateLanguage();
     });
 
     // INBOX LOGIC
     async function loadInbox() {
         const container = document.getElementById('inboxMessages');
-        container.innerHTML = '<p class="small-text">Loading...</p>';
+        container.innerHTML = '<p class="small-text">Loading messages...</p>';
         
+        if (!supabase) {
+            container.innerHTML = '<p class="small-text" style="color:var(--red);">System database disconnected.</p>';
+            return;
+        }
+
         try {
             const { data: messages, error } = await supabase
                 .from('pilot_messages')
                 .select('*')
-                .eq('username', currentUser.username) // Only get YOUR messages
+                .eq('username', currentUser.username)
                 .order('created_at', { ascending: false });
             
             if (error) throw error;
@@ -769,7 +858,7 @@
                 container.innerHTML = '<p class="small-text">Your inbox is empty.</p>';
             }
         } catch(e) {
-            container.innerHTML = '<p class="small-text" style="color:var(--red);">Error loading messages.</p>';
+            container.innerHTML = `<p class="small-text" style="color:var(--red);">Failed to load messages: ${e.message}</p>`;
         }
     }
 
@@ -784,8 +873,11 @@
     }
 
     document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+        if (!supabase) return showToast('⚠️ System disconnected.');
+
         const btn = document.getElementById('saveProfileBtn');
         btn.textContent = 'Saving...';
+        btn.disabled = true;
         
         try {
             const updates = {
@@ -803,17 +895,20 @@
             
             if (error) throw error;
             
-            alert('✅ Profile saved successfully!');
+            showToast('✅ Profile saved successfully!', 'success');
             currentUser = { ...currentUser, ...updates };
             localStorage.setItem('xdrg_user', JSON.stringify(currentUser));
             
         } catch(e) {
-            alert('Error saving profile: ' + e.message);
+            showToast('❌ Error saving profile: ' + e.message);
         }
+        
         btn.textContent = '💾 Save Profile';
+        btn.disabled = false;
     });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
+        // We use standard confirm here because it's native and pauses execution intentionally
         if(confirm('Are you sure you want to log out?')) {
             currentUser = null;
             localStorage.removeItem('xdrg_user');
@@ -822,7 +917,7 @@
         }
     });
 
-    // EVENT LISTENERS FOR NAV
+    // EVENT LISTENERS FOR NAV & LANGUAGE
     document.getElementById('inboxBtn').addEventListener('click', () => showScreen('inbox'));
     document.getElementById('settingsBtn').addEventListener('click', () => showScreen('settings'));
     document.getElementById('backFromInbox').addEventListener('click', () => showScreen('main'));
@@ -839,7 +934,7 @@
     renderPilotGrid('breakPilotGrid', breakPlans, 'break');
     renderPilotGrid('nobreakPilotGrid', noBreakPlans, 'nobreak');
     
-    // Check if user is already logged in via localStorage
+    // Auto-Login if active session found
     if (currentUser) {
         showScreen('main');
     } else {
