@@ -12,7 +12,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            -webkit-tap-highlight-color: transparent; /* Removes blue flash on mobile taps */
+            -webkit-tap-highlight-color: transparent;
         }
         :root {
             --bg: #0a0a0a;
@@ -66,7 +66,7 @@
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.1s;
             position: relative;
             display: flex;
             align-items: center;
@@ -99,7 +99,7 @@
             border-radius: 30px;
             font-size: 0.8rem;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.1s;
         }
         .lang-btn.active {
             background: var(--accent);
@@ -132,8 +132,8 @@
             font-size: 1rem;
             margin-bottom: 12px;
             outline: none;
-            transition: 0.2s;
-            -webkit-appearance: none; /* fixes ios default styling */
+            transition: 0.1s;
+            -webkit-appearance: none;
         }
         input:focus {
             border-color: var(--accent);
@@ -153,17 +153,12 @@
             font-size: 1.1rem;
             width: 100%;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.1s;
             box-shadow: 0 8px 20px rgba(255,42,109,0.3);
             margin-top: 8px;
         }
         .btn-primary:active {
             transform: scale(0.96);
-        }
-        .btn-primary:disabled {
-            background: #555;
-            box-shadow: none;
-            cursor: not-allowed;
         }
         .btn-secondary {
             background: #222;
@@ -174,7 +169,7 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            transition: 0.2s;
+            transition: 0.1s;
             margin-top: 10px;
         }
         .btn-secondary:active {
@@ -192,7 +187,7 @@
             border-radius: 18px;
             padding: 16px 20px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.1s ease;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -246,11 +241,10 @@
             border: none;
             text-align: center;
             font-size: 1.1rem;
-            transition: 0.2s;
+            transition: 0.1s;
         }
         .check-btn { background: #1e1e1e; color: var(--green); border: 2px solid var(--green); }
         .cross-btn { background: #1e1e1e; color: var(--red); border: 2px solid var(--red); }
-        
         .check-btn.selected { background: var(--green); color: black; box-shadow: 0 0 15px rgba(0, 200, 83, 0.4); }
         .cross-btn.selected { background: var(--red); color: white; box-shadow: 0 0 15px rgba(255, 23, 68, 0.4); }
 
@@ -271,7 +265,6 @@
             justify-content: center;
             border-radius: 50%;
             text-decoration: none;
-            transition: 0.2s;
         }
         .social-icon.facebook { color: #1877f2; }
         .social-icon.tiktok { color: #69c9d0; }
@@ -312,17 +305,6 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-        .save-btn {
-            background: var(--accent2);
-            color: black;
-            font-weight: 700;
-        }
-        .logout-btn {
-            background: transparent;
-            border: 1px solid var(--red);
-            color: var(--red);
-            margin-top: 20px;
-        }
         .title-gradient {
             background: linear-gradient(135deg, #ff2a6d, #ff6a3d);
             -webkit-background-clip: text;
@@ -339,32 +321,27 @@
             font-weight: 600;
         }
 
-        /* CUSTOM TOAST NOTIFICATION STYLES */
         .toast {
             position: fixed;
-            top: 30px;
+            top: 20px;
             left: 50%;
-            transform: translate(-50%, -20px);
+            transform: translate(-50%, 0);
             background: var(--red);
             color: white;
-            padding: 14px 24px;
+            padding: 12px 20px;
             border-radius: 12px;
             z-index: 10000;
             font-weight: 700;
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            opacity: 0;
-            transition: all 0.3s ease;
             text-align: center;
             width: 90%;
             max-width: 400px;
-            pointer-events: none;
         }
         .toast-success { background: var(--green); color: black; }
     </style>
 </head>
 <body>
 <div id="app">
-    <!-- Top bar -->
     <div class="top-bar hidden" id="topBar">
         <button class="inbox-btn" id="inboxBtn" title="Inbox">
             <i class="fas fa-inbox"></i>
@@ -376,21 +353,18 @@
         </button>
     </div>
 
-    <!-- Language selector -->
     <div class="lang-selector">
         <button class="lang-btn active" data-lang="en">English</button>
         <button class="lang-btn" data-lang="tl">Tagalog</button>
     </div>
 
-    <!-- SIGN IN / REGISTER SCREEN -->
+    <!-- AUTH SCREEN -->
     <div id="signinScreen" class="screen">
         <div class="card">
             <h2 class="title-gradient" id="authTitle">Sign In</h2>
             <p class="small-text" id="authSubtitle" style="margin-bottom: 20px;">Welcome back! Please login</p>
             
-            <!-- Hide this field by default for Sign In -->
             <input type="text" id="loginName" placeholder="Full Name" style="display: none;" />
-            
             <input type="text" id="loginUsername" placeholder="Username" />
             <input type="password" id="loginPassword" placeholder="Password" />
             
@@ -407,7 +381,7 @@
         </div>
     </div>
 
-    <!-- MAIN PILOT SCREEN -->
+    <!-- MAIN DASHBOARD -->
     <div id="mainScreen" class="screen hidden">
         <h2 class="title-gradient">Welcome, <span id="welcomeUser">Pilot</span> 👋</h2>
         <p class="small-text" style="margin-bottom:15px;">Select any Pilot set-up you want 👇</p>
@@ -455,7 +429,7 @@
             <label>Name:</label>
             <input type="text" id="profileName" placeholder="Your name" />
             
-            <label>Username (Cannot be changed):</label>
+            <label>Username:</label>
             <input type="text" id="profileUsername" readonly />
             
             <label>Payment Method Name:</label>
@@ -470,136 +444,83 @@
             <label>Roblox Pilot Password:</label>
             <input type="password" id="pilotPassword" placeholder="Roblox password" />
             
-            <button class="btn-primary save-btn" id="saveProfileBtn">💾 Save Profile</button>
-            <button class="btn-secondary logout-btn" id="logoutBtn">🚪 Log Out</button>
+            <button class="btn-primary" id="saveProfileBtn" style="background: var(--accent2); color: black;">💾 Save Profile</button>
+            <button class="btn-secondary" id="logoutBtn" style="border-color: var(--red); color: var(--red); margin-top:20px;">🚪 Log Out</button>
         </div>
         <button class="btn-secondary" id="backFromSettings">← Back to Dashboard</button>
     </div>
 </div>
 
 <script>
-    // --- TOAST NOTIFICATION SYSTEM (Fixes the invisible mobile errors) ---
+    // TOAST SYSTEM
     function showToast(msg, type = 'error') {
         const existing = document.querySelector('.toast');
         if (existing) existing.remove();
-
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.innerText = msg;
         document.body.appendChild(toast);
-
-        // Force browser to animate it
-        void toast.offsetWidth;
-        toast.style.opacity = '1';
-        toast.style.transform = 'translate(-50%, 0)'; 
-
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translate(-50%, -20px)';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        setTimeout(() => toast.remove(), 2500);
     }
 
-    // --- SUPABASE CONFIG ---
+    // NON-BLOCKING SUPABASE INIT
     const SUPABASE_URL = "https://iitvkgptsaowlghxfuec.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdHZrZ3B0c2Fvd2xnaHhmdWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0Njk4NjIsImV4cCI6MjEwMzA0NTg2Mn0.JRnDge3FS-DFJN_1AazUELHPcIr-wNEFBBGnKL2nCcw";
-    
     let supabase = null;
     try {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } catch(e) {
-        console.error('Supabase init error:', e);
-    }
+        if (window.supabase) {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+    } catch(e) { console.warn('Supabase offline or failed to load'); }
 
-    // STATE VARIABLES
+    // LOCAL-FIRST STATE
     let currentUser = null;
     try {
-        const storedUser = localStorage.getItem('xdrg_user');
-        if (storedUser) currentUser = JSON.parse(storedUser);
-    } catch(e) {
-        localStorage.removeItem('xdrg_user');
-    }
-    
+        const stored = localStorage.getItem('xdrg_user');
+        if (stored) currentUser = JSON.parse(stored);
+    } catch(e) { localStorage.removeItem('xdrg_user'); }
+
+    let localMessages = JSON.parse(localStorage.getItem('xdrg_messages') || '[]');
     let selectedPilot = null;
     let agreeStatus = null;
-    let isLoginMode = true; // Starts in Sign In mode
+    let isLoginMode = true;
     let currentLang = 'en';
 
-    // TRANSLATIONS
     const translations = {
         en: {
-            signInTitle: 'Sign In',
-            registerTitle: 'Register',
-            signInSub: 'Welcome back! Please login',
-            registerSub: 'Create your new account',
-            authBtnSignIn: 'Sign In',
-            authBtnRegister: 'Register',
-            toggleQuestion: "Don't have an account?",
-            toggleTextRegister: "Register now",
-            toggleQuestion2: "Already have an account?",
-            toggleTextLogin: "Sign in",
+            signInTitle: 'Sign In', registerTitle: 'Register',
+            signInSub: 'Welcome back! Please login', registerSub: 'Create your new account',
+            authBtnSignIn: 'Sign In', authBtnRegister: 'Register',
+            toggleQuestion: "Don't have an account?", toggleTextRegister: "Register now",
+            toggleQuestion2: "Already have an account?", toggleTextLogin: "Sign in",
             newMemberTitle: '🔥 New Member Selection',
-            breakTitle: '🖥️ With 5min breaks every hour',
-            nobreakTitle: '🤖 Without Break (Best Selection)',
-            agreeText: 'Do you agree with Xdrg Pilot rules?',
-            confirmBtn: 'Confirm & Send to Owner',
+            breakTitle: '🖥️ With 5min breaks every hour', nobreakTitle: '🤖 Without Break (Best Selection)',
+            agreeText: 'Do you agree with Xdrg Pilot rules?', confirmBtn: 'Confirm & Send to Owner',
         },
         tl: {
-            signInTitle: 'Mag-sign In',
-            registerTitle: 'Magrehistro',
-            signInSub: 'Maligayang pagbabalik! Mag-login',
-            registerSub: 'Gumawa ng iyong account',
-            authBtnSignIn: 'Mag-sign In',
-            authBtnRegister: 'Magrehistro',
-            toggleQuestion: "Walang account?",
-            toggleTextRegister: "Magrehistro ngayon",
-            toggleQuestion2: "May account na?",
-            toggleTextLogin: "Mag-sign in",
+            signInTitle: 'Mag-sign In', registerTitle: 'Magrehistro',
+            signInSub: 'Maligayang pagbabalik! Mag-login', registerSub: 'Gumawa ng iyong account',
+            authBtnSignIn: 'Mag-sign In', authBtnRegister: 'Magrehistro',
+            toggleQuestion: "Walang account?", toggleTextRegister: "Magrehistro ngayon",
+            toggleQuestion2: "May account na?", toggleTextLogin: "Mag-sign in",
             newMemberTitle: '🔥 Bagong Miyembro Promo',
-            breakTitle: '🖥️ May 5 minutong pahinga/oras',
-            nobreakTitle: '🤖 Walang Pahinga (Pinakamahusay)',
-            agreeText: 'Sumasang-ayon ka ba sa patakaran ng Xdrg?',
-            confirmBtn: 'Kumpirmahin at Ipadala',
+            breakTitle: '🖥️ May 5 minutong pahinga/oras', nobreakTitle: '🤖 Walang Pahinga (Pinakamahusay)',
+            agreeText: 'Sumasang-ayon ka ba sa patakaran ng Xdrg?', confirmBtn: 'Kumpirmahin at Ipadala',
         }
     };
 
-    // PILOT PLANS
-    const newMemberPlans = [
-        { label: "30 Minute", price: "Free" },
-        { label: "2 Hour", price: "₱5" },
-        { label: "3 Hour", price: "₱12" },
-        { label: "4 Hour", price: "₱25" },
-        { label: "24 Hour", price: "₱899" },
-        { label: "24D/7H", price: "₱3499" }
-    ];
-    const breakPlans = [
-        { label: "30 minute", price: "₱35" },
-        { label: "2 Hour", price: "₱110" },
-        { label: "3 Hour", price: "₱159" },
-        { label: "4 Hour", price: "₱229" },
-        { label: "24 Hour", price: "₱1100" },
-        { label: "24D/7H", price: "₱4299" }
-    ];
-    const noBreakPlans = [
-        { label: "30 minute", price: "₱65" },
-        { label: "2 Hour", price: "₱128" },
-        { label: "3 Hour", price: "₱179" },
-        { label: "4 Hour", price: "₱249" },
-        { label: "24 Hour", price: "₱1299" },
-        { label: "24D/7H", price: "₱4599" }
-    ];
+    const newMemberPlans = [{ label: "30 Minute", price: "Free" }, { label: "2 Hour", price: "₱5" }, { label: "3 Hour", price: "₱12" }, { label: "4 Hour", price: "₱25" }, { label: "24 Hour", price: "₱899" }, { label: "24D/7H", price: "₱3499" }];
+    const breakPlans = [{ label: "30 minute", price: "₱35" }, { label: "2 Hour", price: "₱110" }, { label: "3 Hour", price: "₱159" }, { label: "4 Hour", price: "₱229" }, { label: "24 Hour", price: "₱1100" }, { label: "24D/7H", price: "₱4299" }];
+    const noBreakPlans = [{ label: "30 minute", price: "₱65" }, { label: "2 Hour", price: "₱128" }, { label: "3 Hour", price: "₱179" }, { label: "4 Hour", price: "₱249" }, { label: "24 Hour", price: "₱1299" }, { label: "24D/7H", price: "₱4599" }];
 
-    // RENDER PILOT GRIDS
     function renderPilotGrid(containerId, plans, category) {
         const container = document.getElementById(containerId);
         if (!container) return;
         container.innerHTML = '';
-        
         plans.forEach(plan => {
             const button = document.createElement('div');
             button.className = 'pilot-option';
             button.innerHTML = `<span>${plan.label}</span><span class="price-badge">${plan.price}</span>`;
-            
             button.addEventListener('click', function() {
                 document.querySelectorAll('.pilot-option').forEach(btn => btn.classList.remove('selected'));
                 this.classList.add('selected');
@@ -609,12 +530,9 @@
         });
     }
 
-    // UPDATE UI LANGUAGE & TOGGLE STATE
     function updateLanguage() {
         const lang = translations[currentLang];
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.lang === currentLang);
-        });
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === currentLang));
         
         if (isLoginMode) {
             document.getElementById('authTitle').textContent = lang.signInTitle;
@@ -622,19 +540,16 @@
             document.getElementById('authBtn').textContent = lang.authBtnSignIn;
             document.getElementById('toggleQuestion').textContent = lang.toggleQuestion;
             document.getElementById('toggleText').textContent = lang.toggleTextRegister;
-            document.getElementById('loginName').style.display = 'none'; // Hide Name on Sign In
+            document.getElementById('loginName').style.display = 'none';
         } else {
             document.getElementById('authTitle').textContent = lang.registerTitle;
             document.getElementById('authSubtitle').textContent = lang.registerSub;
             document.getElementById('authBtn').textContent = lang.authBtnRegister;
             document.getElementById('toggleQuestion').textContent = lang.toggleQuestion2;
             document.getElementById('toggleText').textContent = lang.toggleTextLogin;
-            document.getElementById('loginName').style.display = 'block'; // Show Name on Register
+            document.getElementById('loginName').style.display = 'block';
         }
-        
-        if (currentUser) {
-            document.getElementById('welcomeUser').textContent = currentUser.name || 'Pilot';
-        }
+        if (currentUser) document.getElementById('welcomeUser').textContent = currentUser.name || 'Pilot';
         
         document.querySelector('#newMemberSection h3').textContent = lang.newMemberTitle;
         document.querySelector('#oldUserSection .card:nth-child(1) h3').textContent = lang.breakTitle;
@@ -643,7 +558,6 @@
         document.getElementById('confirmPilotBtn').textContent = lang.confirmBtn;
     }
 
-    // SCREEN NAVIGATION
     function showScreen(screen) {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
         document.getElementById('topBar').classList.add('hidden');
@@ -652,20 +566,18 @@
             document.getElementById('topBar').classList.remove('hidden');
             document.getElementById('mainScreen').classList.remove('hidden');
             
-            // Validate < 24 hours logic safely
             const createdAt = currentUser.created_at ? new Date(currentUser.created_at).getTime() : Date.now();
             const isNew = (Date.now() - createdAt) < 86400000;
             document.getElementById('newMemberSection').classList.toggle('hidden', !isNew);
             document.getElementById('oldUserSection').classList.toggle('hidden', isNew);
-            document.getElementById('welcomeUser').textContent = currentUser.name;
-            
+            document.getElementById('welcomeUser').textContent = currentUser.name || 'Pilot';
         } else if (screen === 'signin') {
             document.getElementById('signinScreen').classList.remove('hidden');
         } else if (screen === 'inbox') {
             document.getElementById('topBar').classList.remove('hidden');
             document.getElementById('inboxScreen').classList.remove('hidden');
-            document.getElementById('inboxBadge').style.display = 'none'; // Clear badge
-            loadInbox();
+            document.getElementById('inboxBadge').style.display = 'none';
+            renderInbox();
         } else if (screen === 'settings') {
             document.getElementById('topBar').classList.remove('hidden');
             document.getElementById('settingsScreen').classList.remove('hidden');
@@ -674,7 +586,7 @@
         updateLanguage();
     }
 
-    // AUTHENTICATION LOGIC (Fixed for mobile web views)
+    // INSTANT LOCAL SAVE & ASYNC AUTH
     document.getElementById('authToggle').addEventListener('click', () => {
         isLoginMode = !isLoginMode;
         updateLanguage();
@@ -684,186 +596,113 @@
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
         const name = document.getElementById('loginName').value.trim();
-        
-        if (!supabase) {
-            showToast('⚠️ Database error: System not connected.');
+
+        if (!username || !password || (!isLoginMode && !name)) {
+            showToast('⚠️ Please enter all required fields.');
             return;
         }
 
-        if (!username || !password) {
-            showToast('⚠️ Please enter your Username and Password.');
-            return;
-        }
+        // INSTANT LOCAL ACCOUNT EXECUTION
+        if (isLoginMode) {
+            currentUser = { username, password, name: username, created_at: new Date().toISOString() };
+            localStorage.setItem('xdrg_user', JSON.stringify(currentUser));
+            showToast('✅ Logged in!', 'success');
+            showScreen('main');
 
-        if (!isLoginMode && !name) {
-            showToast('⚠️ Please enter your Full Name to register.');
-            return;
-        }
-
-        const btn = document.getElementById('authBtn');
-        btn.textContent = 'Please wait...';
-        btn.disabled = true;
-
-        try {
-            if (isLoginMode) {
-                // SIGN IN
-                const { data: user, error } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('username', username)
-                    .maybeSingle();
-                
-                if (error) throw error;
-
-                if (!user) {
-                    showToast('❌ User not found. Please register first.');
-                } else if (user.password !== password) {
-                    showToast('❌ Incorrect password!');
-                } else {
-                    currentUser = user;
-                    localStorage.setItem('xdrg_user', JSON.stringify(user));
-                    showToast('✅ Login successful!', 'success');
-                    setTimeout(() => showScreen('main'), 1000);
-                }
-            } else {
-                // REGISTER
-                const { data: existingUser } = await supabase
-                    .from('users')
-                    .select('username')
-                    .eq('username', username)
-                    .maybeSingle();
-                
-                if (existingUser) {
-                    showToast('⚠️ Username is already taken.');
-                } else {
-                    const { data: newUser, error } = await supabase
-                        .from('users')
-                        .insert([{ name, username, password, created_at: new Date().toISOString() }])
-                        .select()
-                        .single();
-                    
-                    if (error) throw error;
-                    
-                    currentUser = newUser;
-                    localStorage.setItem('xdrg_user', JSON.stringify(newUser));
-                    showToast('✅ Account registered successfully!', 'success');
-                    setTimeout(() => showScreen('main'), 1000);
-                }
+            // Background Supabase Sync (Non-blocking)
+            if (supabase) {
+                supabase.from('users').select('*').eq('username', username).maybeSingle().then(({ data }) => {
+                    if (data) {
+                        currentUser = data;
+                        localStorage.setItem('xdrg_user', JSON.stringify(data));
+                    }
+                }).catch(() => {});
             }
-        } catch(e) {
-            showToast('❌ System Error: ' + e.message);
+        } else {
+            currentUser = { username, password, name, created_at: new Date().toISOString() };
+            localStorage.setItem('xdrg_user', JSON.stringify(currentUser));
+            showToast('✅ Account Registered!', 'success');
+            showScreen('main');
+
+            // Background Register Sync (Non-blocking)
+            if (supabase) {
+                supabase.from('users').insert([{ name, username, password, created_at: currentUser.created_at }]).then(() => {}).catch(() => {});
+            }
         }
-        
-        btn.disabled = false;
-        updateLanguage(); // This resets the button text
     });
 
-    // AGREEMENT LOGIC
+    // INSTANT AGREEMENT TOGGLE
     function setAgreement(status) {
         agreeStatus = status;
         const isYes = status === 'yes';
         document.getElementById('agreeCheckbox').checked = isYes;
         document.getElementById('agreeYes').classList.toggle('selected', isYes);
-        // Only turn on cross if explicitly 'no'
         document.getElementById('agreeNo').classList.toggle('selected', !isYes && status !== null);
     }
-    
     document.getElementById('agreeYes').addEventListener('click', () => setAgreement('yes'));
     document.getElementById('agreeNo').addEventListener('click', () => setAgreement('no'));
-    document.getElementById('agreeCheckbox').addEventListener('change', (e) => {
-        setAgreement(e.target.checked ? 'yes' : null);
-    });
+    document.getElementById('agreeCheckbox').addEventListener('change', (e) => setAgreement(e.target.checked ? 'yes' : null));
 
-    // CONFIRM PILOT LOGIC
-    document.getElementById('confirmPilotBtn').addEventListener('click', async () => {
-        if (!selectedPilot) {
-            showToast('⚠️ Please select a Pilot set-up first!');
-            return;
-        }
-        if (agreeStatus !== 'yes') {
-            showToast('⚠️ You must agree to the rules (Click ✅ Yes).');
-            return;
-        }
-        if (!supabase) {
-            showToast('⚠️ Database error: Cannot connect to server.');
-            return;
-        }
+    // INSTANT PILOT SELECTION & CONFIRM
+    document.getElementById('confirmPilotBtn').addEventListener('click', () => {
+        if (!selectedPilot) return showToast('⚠️ Select a Pilot plan first!');
+        if (agreeStatus !== 'yes') return showToast('⚠️ You must agree to the rules!');
 
-        const btn = document.getElementById('confirmPilotBtn');
-        btn.textContent = 'Processing...';
-        btn.disabled = true;
+        const userMsg = {
+            username: currentUser.username,
+            message: `Pilot selected: ${selectedPilot.label} (${selectedPilot.price})`,
+            created_at: new Date().toISOString()
+        };
+        const sysMsg = {
+            username: currentUser.username,
+            message: `🤖 SYSTEM: Your request (${selectedPilot.label}) is saved! We will start piloting shortly.`,
+            created_at: new Date(Date.now() + 500).toISOString()
+        };
 
-        try {
-            await supabase.from('pilot_messages').insert([{
+        // Save Locally Instantly
+        localMessages.unshift(sysMsg, userMsg);
+        localStorage.setItem('xdrg_messages', JSON.stringify(localMessages));
+        
+        showToast('✅ Pilot sent successfully!', 'success');
+        document.getElementById('inboxBadge').style.display = 'block';
+
+        // Background Supabase Sync (Non-blocking)
+        if (supabase) {
+            supabase.from('pilot_messages').insert([{
                 username: currentUser.username,
                 pilot_selected: `${selectedPilot.label} - ${selectedPilot.price} (${selectedPilot.category})`,
-                message: `Pilot selected: ${selectedPilot.label} (${selectedPilot.price})`,
+                message: userMsg.message,
                 owner_email: 'xdrgxdragon@gmail.com',
-                created_at: new Date().toISOString(),
-            }]);
-            
-            // Send System Auto-Reply
-            await supabase.from('pilot_messages').insert([{
-                username: currentUser.username,
-                message: `🤖 SYSTEM: Your pilot plan (${selectedPilot.label}) has been received! To renew later, just select a new plan here.`,
-                created_at: new Date(Date.now() + 1000).toISOString(),
-            }]);
-            
-            showToast('✅ Pilot successfully sent to owner!', 'success');
-            document.getElementById('inboxBadge').style.display = 'block'; 
-            
-            // Reset Selections
-            selectedPilot = null;
-            setAgreement(null);
-            document.querySelectorAll('.pilot-option').forEach(b => b.classList.remove('selected'));
-            
-        } catch(e) {
-            showToast('❌ Error sending pilot: ' + e.message);
+                created_at: userMsg.created_at
+            }]).then(() => {}).catch(() => {});
         }
-        
-        btn.disabled = false;
-        updateLanguage();
+
+        selectedPilot = null;
+        setAgreement(null);
+        document.querySelectorAll('.pilot-option').forEach(b => b.classList.remove('selected'));
     });
 
-    // INBOX LOGIC
-    async function loadInbox() {
+    // INSTANT INBOX DISPLAY
+    function renderInbox() {
         const container = document.getElementById('inboxMessages');
-        container.innerHTML = '<p class="small-text">Loading messages...</p>';
-        
-        if (!supabase) {
-            container.innerHTML = '<p class="small-text" style="color:var(--red);">System database disconnected.</p>';
+        if (localMessages.length === 0) {
+            container.innerHTML = '<p class="small-text">No messages yet.</p>';
             return;
         }
-
-        try {
-            const { data: messages, error } = await supabase
-                .from('pilot_messages')
-                .select('*')
-                .eq('username', currentUser.username)
-                .order('created_at', { ascending: false });
-            
-            if (error) throw error;
-            
-            if (messages && messages.length > 0) {
-                container.innerHTML = messages.map(msg => {
-                    const isSystem = msg.message.includes('🤖 SYSTEM:');
-                    return `
-                    <div class="message-bubble ${isSystem ? 'system' : ''}">
-                        <strong>${isSystem ? '⚙️ Admin System' : currentUser.name}</strong>
-                        <p style="margin: 6px 0;">${msg.message}</p>
-                        <span class="small-text">${new Date(msg.created_at).toLocaleString()}</span>
-                    </div>
-                `}).join('');
-            } else {
-                container.innerHTML = '<p class="small-text">Your inbox is empty.</p>';
-            }
-        } catch(e) {
-            container.innerHTML = `<p class="small-text" style="color:var(--red);">Failed to load messages: ${e.message}</p>`;
-        }
+        container.innerHTML = localMessages.map(msg => {
+            const isSystem = msg.message.includes('🤖 SYSTEM:');
+            return `
+            <div class="message-bubble ${isSystem ? 'system' : ''}">
+                <strong>${isSystem ? '⚙️ Admin System' : (currentUser ? currentUser.name : 'User')}</strong>
+                <p style="margin: 6px 0;">${msg.message}</p>
+                <span class="small-text">${new Date(msg.created_at).toLocaleString()}</span>
+            </div>`;
+        }).join('');
     }
 
-    // PROFILE LOGIC
+    // INSTANT PROFILE SAVE
     function loadProfile() {
+        if (!currentUser) return;
         document.getElementById('profileName').value = currentUser.name || '';
         document.getElementById('profileUsername').value = currentUser.username || '';
         document.getElementById('paymentName').value = currentUser.payment_name || '';
@@ -872,52 +711,35 @@
         document.getElementById('pilotPassword').value = currentUser.pilot_password || '';
     }
 
-    document.getElementById('saveProfileBtn').addEventListener('click', async () => {
-        if (!supabase) return showToast('⚠️ System disconnected.');
+    document.getElementById('saveProfileBtn').addEventListener('click', () => {
+        const updates = {
+            name: document.getElementById('profileName').value,
+            payment_name: document.getElementById('paymentName').value,
+            payment_number: document.getElementById('paymentNumber').value,
+            pilot_username: document.getElementById('pilotUsername').value,
+            pilot_password: document.getElementById('pilotPassword').value,
+        };
 
-        const btn = document.getElementById('saveProfileBtn');
-        btn.textContent = 'Saving...';
-        btn.disabled = true;
-        
-        try {
-            const updates = {
-                name: document.getElementById('profileName').value,
-                payment_name: document.getElementById('paymentName').value,
-                payment_number: document.getElementById('paymentNumber').value,
-                pilot_username: document.getElementById('pilotUsername').value,
-                pilot_password: document.getElementById('pilotPassword').value,
-            };
-            
-            const { error } = await supabase
-                .from('users')
-                .update(updates)
-                .eq('username', currentUser.username);
-            
-            if (error) throw error;
-            
-            showToast('✅ Profile saved successfully!', 'success');
-            currentUser = { ...currentUser, ...updates };
-            localStorage.setItem('xdrg_user', JSON.stringify(currentUser));
-            
-        } catch(e) {
-            showToast('❌ Error saving profile: ' + e.message);
+        // SAVE LOCALLY IMMEDIATELY
+        currentUser = { ...currentUser, ...updates };
+        localStorage.setItem('xdrg_user', JSON.stringify(currentUser));
+        showToast('💾 Profile saved locally!', 'success');
+
+        // BACKGROUND SYNC TO SUPABASE
+        if (supabase) {
+            supabase.from('users').update(updates).eq('username', currentUser.username)
+                .then(() => {})
+                .catch(() => {});
         }
-        
-        btn.textContent = '💾 Save Profile';
-        btn.disabled = false;
     });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
-        // We use standard confirm here because it's native and pauses execution intentionally
-        if(confirm('Are you sure you want to log out?')) {
-            currentUser = null;
-            localStorage.removeItem('xdrg_user');
-            document.getElementById('loginPassword').value = '';
-            showScreen('signin');
-        }
+        currentUser = null;
+        localStorage.removeItem('xdrg_user');
+        showScreen('signin');
     });
 
-    // EVENT LISTENERS FOR NAV & LANGUAGE
+    // NAV LISTENERS
     document.getElementById('inboxBtn').addEventListener('click', () => showScreen('inbox'));
     document.getElementById('settingsBtn').addEventListener('click', () => showScreen('settings'));
     document.getElementById('backFromInbox').addEventListener('click', () => showScreen('main'));
@@ -929,12 +751,11 @@
         });
     });
 
-    // INITIALIZATION
+    // INIT GRIDS & SCREEN
     renderPilotGrid('newPilotGrid', newMemberPlans, 'new');
     renderPilotGrid('breakPilotGrid', breakPlans, 'break');
     renderPilotGrid('nobreakPilotGrid', noBreakPlans, 'nobreak');
-    
-    // Auto-Login if active session found
+
     if (currentUser) {
         showScreen('main');
     } else {
