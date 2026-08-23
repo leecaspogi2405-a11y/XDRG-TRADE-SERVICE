@@ -6,7 +6,7 @@
     <title>Xdrg Pilot Service • TikTok style</title>
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Font Awesome for social icons -->
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -15,53 +15,46 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-
         :root {
-            --bg: #121212;
-            --card: #1e1e1e;
-            --card-hover: #2a2a2a;
-            --text: #f1f1f1;
-            --text-secondary: #b0b0b0;
+            --bg: #0a0a0a;
+            --card: #1a1a1a;
+            --text: #f5f5f5;
+            --text-secondary: #aaa;
             --accent: #ff2a6d;
             --accent2: #00e5ff;
+            --gold: #ffb300;
             --green: #00c853;
             --red: #ff1744;
-            --gold: #ffb300;
-            --border: #333;
+            --border: #2c2c2c;
         }
-
         body {
-            background: var(--bg);
+            background: #000;
             color: var(--text);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 12px;
-            transition: all 0.2s;
+            padding: 10px;
         }
-
         #app {
             width: 100%;
             max-width: 480px;
             background: #0d0d0d;
             border-radius: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
             overflow: hidden;
-            position: relative;
             border: 1px solid #2a2a2a;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
             padding-bottom: 20px;
         }
-
-        /* header / inbox top */
         .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 18px 20px 10px;
+            background: #0f0f0f;
         }
         .inbox-btn, .settings-btn {
-            background: #222;
+            background: #1e1e1e;
             border: none;
             color: white;
             font-size: 1.5rem;
@@ -82,10 +75,8 @@
             height: 10px;
             background: var(--accent);
             border-radius: 50%;
-            border: 2px solid #0d0d0d;
+            display: none;
         }
-
-        /* language selector */
         .lang-selector {
             display: flex;
             gap: 8px;
@@ -108,39 +99,22 @@
             color: white;
             font-weight: 600;
         }
-
-        /* screens */
         .screen {
             padding: 0 20px 20px;
         }
         .hidden {
             display: none !important;
         }
-
-        h1, h2, h3 {
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .title-gradient {
-            background: linear-gradient(135deg, #ff2a6d, #ff6a3d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
         .card {
             background: var(--card);
             border-radius: 24px;
             padding: 24px 20px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             border: 1px solid #2c2c2c;
         }
-
         input, select {
             width: 100%;
-            background: #2a2a2a;
+            background: #222;
             border: 1px solid #3d3d3d;
             color: white;
             padding: 14px 16px;
@@ -148,13 +122,11 @@
             font-size: 1rem;
             margin-bottom: 12px;
             outline: none;
-            transition: 0.2s;
         }
         input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(255,42,109,0.2);
         }
-
         .btn-primary {
             background: var(--accent);
             border: none;
@@ -171,9 +143,7 @@
         }
         .btn-primary:hover {
             background: #ff4d7e;
-            transform: scale(1.01);
         }
-
         .btn-secondary {
             background: transparent;
             border: 1.5px solid #555;
@@ -188,11 +158,10 @@
         .btn-secondary:hover {
             background: #2a2a2a;
         }
-
         .pilot-grid {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             margin: 16px 0;
         }
         .pilot-option {
@@ -205,16 +174,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1rem;
             font-weight: 600;
         }
         .pilot-option.selected {
             border-color: var(--accent);
             background: #2a1a22;
             box-shadow: 0 0 15px rgba(255,42,109,0.3);
-        }
-        .pilot-option:hover {
-            background: #262626;
         }
         .price-badge {
             background: #333;
@@ -223,14 +188,6 @@
             font-weight: 700;
             color: var(--gold);
         }
-
-        .divider {
-            height: 2px;
-            background: #2c2c2c;
-            margin: 20px 0;
-            border-radius: 2px;
-        }
-
         .agree-row {
             display: flex;
             align-items: center;
@@ -246,7 +203,6 @@
             accent-color: var(--accent);
             cursor: pointer;
         }
-
         .check-cross {
             display: flex;
             gap: 15px;
@@ -259,28 +215,25 @@
             font-weight: 700;
             cursor: pointer;
             border: none;
-            transition: 0.2s;
             text-align: center;
         }
         .check-btn { background: #00c853; color: black; }
         .cross-btn { background: #ff1744; color: white; }
         .check-btn.selected, .cross-btn.selected {
             box-shadow: 0 0 0 4px white, 0 0 20px currentColor;
-            transform: scale(1.02);
         }
-
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 28px;
-            margin: 30px 0 10px;
+            gap: 25px;
+            margin: 25px 0 10px;
         }
         .social-icon {
-            font-size: 2.4rem;
+            font-size: 2.2rem;
             color: white;
             background: #222;
-            width: 60px;
-            height: 60px;
+            width: 55px;
+            height: 55px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -291,11 +244,22 @@
         .social-icon.facebook { color: #1877f2; }
         .social-icon.tiktok { color: #69c9d0; }
         .social-icon.youtube { color: #ff0000; }
-
+        .auth-toggle {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .auth-toggle span {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: underline;
+        }
         .inbox-container, .settings-container {
             background: #141414;
             border-radius: 24px;
-            padding: 20px;
+            padding: 16px;
         }
         .message-bubble {
             background: #222;
@@ -312,38 +276,48 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-
         .save-btn {
             background: var(--accent2);
             color: black;
             font-weight: 700;
         }
+        .title-gradient {
+            background: linear-gradient(135deg, #ff2a6d, #ff6a3d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
 <div id="app">
-    <!-- top bar inbox & settings -->
-    <div class="top-bar">
-        <button class="inbox-btn" id="inboxBtn" title="Inbox">📥 <span class="badge-dot" id="inboxBadge" style="display: none;"></span></button>
+    <!-- Top bar - only visible when logged in -->
+    <div class="top-bar hidden" id="topBar">
+        <button class="inbox-btn" id="inboxBtn" title="Inbox">📥 <span class="badge-dot" id="inboxBadge"></span></button>
         <h2 style="font-weight:800;">⚡Xdrg Pilot</h2>
         <button class="settings-btn" id="settingsBtn" title="Settings">⚙️</button>
     </div>
 
-    <!-- language -->
+    <!-- Language selector - always visible -->
     <div class="lang-selector">
         <button class="lang-btn active" data-lang="en">English</button>
         <button class="lang-btn" data-lang="tl">Tagalog</button>
     </div>
 
-    <!-- SCREENS -->
+    <!-- SIGN IN SCREEN -->
     <div id="signinScreen" class="screen">
         <div class="card">
-            <h2 class="title-gradient">Sign in / Log in</h2>
-            <input type="text" id="loginName" placeholder="Name (full name)" />
+            <h2 class="title-gradient" id="authTitle">Sign In</h2>
+            <p class="small-text" id="authSubtitle">Welcome back! Please login</p>
+            <input type="text" id="loginName" placeholder="Full Name" />
             <input type="text" id="loginUsername" placeholder="Username" />
             <input type="password" id="loginPassword" placeholder="Password" />
-            <button class="btn-primary" id="loginBtn">Sign in / Log in</button>
-            <p class="small-text" style="margin-top:10px; text-align:center;">New? Login automatically creates account.</p>
+            <button class="btn-primary" id="authBtn">Sign In</button>
+            <div class="auth-toggle" id="authToggle">
+                Don't have an account? <span id="toggleText">Register now</span>
+            </div>
         </div>
         <div class="social-links">
             <a class="social-icon facebook" href="https://www.facebook.com/share/1BiViKpPbt/" target="_blank"><i class="fab fa-facebook-f"></i></a>
@@ -352,16 +326,18 @@
         </div>
     </div>
 
+    <!-- MAIN SCREEN -->
     <div id="mainScreen" class="screen hidden">
         <h2 class="title-gradient">Welcome, <span id="welcomeUser">Pilot</span> 👋</h2>
         <p class="small-text" style="margin-bottom:10px;">Select any Pilot set-up you want 👇</p>
-        <!-- NEW vs OLD user toggle automatically by age of account -->
+        
         <div id="newMemberSection" class="hidden">
             <div class="card" style="background: #2a1a1a; border-color:#ff3b5c;">
                 <h3>🔥 New Member Selection</h3>
                 <div class="pilot-grid" id="newPilotGrid"></div>
             </div>
         </div>
+        
         <div id="oldUserSection">
             <div class="card">
                 <h3>🖥️ With 5min breaks every hour</h3>
@@ -373,10 +349,9 @@
             </div>
         </div>
 
-        <!-- agreement -->
         <div class="agree-row">
             <input type="checkbox" id="agreeCheckbox" class="agree-check" />
-            <span>✅/❎ | [ ] Do you agree with Xdrg Pilot</span>
+            <span id="agreeLabel">✅/❎ | [ ] Do you agree with Xdrg Pilot</span>
         </div>
         <div class="check-cross">
             <button class="check-btn" id="agreeYes">✅ Yes</button>
@@ -385,12 +360,14 @@
         <button class="btn-primary" id="confirmPilotBtn">Confirm & Send to Owner</button>
     </div>
 
+    <!-- INBOX SCREEN -->
     <div id="inboxScreen" class="screen hidden">
         <h3>📥 Inbox</h3>
         <div id="inboxMessages" class="inbox-container"></div>
         <button class="btn-secondary" id="backFromInbox">← Back</button>
     </div>
 
+    <!-- SETTINGS SCREEN -->
     <div id="settingsScreen" class="screen hidden">
         <h3>⚙️ Settings / Profile</h3>
         <div class="card">
@@ -407,35 +384,57 @@
 </div>
 
 <script>
-    // SUPABASE CREDENTIALS (provided)
+    // SUPABASE CONFIG
     const SUPABASE_URL = "https://iitvkgptsaowlghxfuec.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpdHZrZ3B0c2Fvd2xnaHhmdWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0Njk4NjIsImV4cCI6MjEwMzA0NTg2Mn0.JRnDge3FS-DFJN_1AazUELHPcIr-wNEFBBGnKL2nCcw";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Language strings
-    const translations = {
-        en: {
-            welcome: "Welcome",
-            newMemberTitle: "🔥 New Member Selection",
-            breakTitle: "🖥️ With 5min breaks every hour",
-            nobreakTitle: "🤖 Without Break (Best Selection)",
-            agreeText: "Do you agree with Xdrg Pilot",
-            confirmBtn: "Confirm & Send to Owner",
-            inboxTitle: "📥 Inbox",
-        },
-        tl: {
-            welcome: "Maligayang pagdating",
-            newMemberTitle: "🔥 Bagong Miyembro",
-            breakTitle: "🖥️ May 5 minutong pahinga kada oras",
-            nobreakTitle: "🤖 Walang Pahinga (Pinakamahusay)",
-            agreeText: "Sumasang-ayon ka ba sa Xdrg Pilot",
-            confirmBtn: "Kumpirmahin at Ipadala sa May-ari",
-            inboxTitle: "📥 Inbox",
-        }
-    };
+    // STATE
+    let currentUser = null;
+    let selectedPilot = null;
+    let agreeStatus = null;
+    let isLoginMode = true; // true = sign in, false = register
     let currentLang = 'en';
 
-    // PILOT DATA
+    // TRANSLATIONS
+    const translations = {
+        en: {
+            signInTitle: 'Sign In',
+            registerTitle: 'Register',
+            signInSub: 'Welcome back! Please login',
+            registerSub: 'Create your account',
+            authBtnSignIn: 'Sign In',
+            authBtnRegister: 'Register',
+            toggleToRegister: "Don't have an account? Register now",
+            toggleToLogin: "Already have an account? Sign in",
+            welcome: 'Welcome',
+            newMemberTitle: '🔥 New Member Selection',
+            breakTitle: '🖥️ With 5min breaks every hour',
+            nobreakTitle: '🤖 Without Break (Best Selection)',
+            agreeText: '✅/❎ | [ ] Do you agree with Xdrg Pilot',
+            confirmBtn: 'Confirm & Send to Owner',
+            inboxTitle: '📥 Inbox',
+        },
+        tl: {
+            signInTitle: 'Mag-sign In',
+            registerTitle: 'Magrehistro',
+            signInSub: 'Maligayang pagbabalik! Mag-login',
+            registerSub: 'Gumawa ng iyong account',
+            authBtnSignIn: 'Mag-sign In',
+            authBtnRegister: 'Magrehistro',
+            toggleToRegister: "Walang account? Magrehistro ngayon",
+            toggleToLogin: "May account na? Mag-sign in",
+            welcome: 'Maligayang pagdating',
+            newMemberTitle: '🔥 Bagong Miyembro',
+            breakTitle: '🖥️ May 5 minutong pahinga kada oras',
+            nobreakTitle: '🤖 Walang Pahinga (Pinakamahusay)',
+            agreeText: '✅/❎ | [ ] Sumasang-ayon ka ba sa Xdrg Pilot',
+            confirmBtn: 'Kumpirmahin at Ipadala sa May-ari',
+            inboxTitle: '📥 Inbox',
+        }
+    };
+
+    // PILOT PLANS
     const newMemberPlans = [
         { label: "30 Minute", price: "Free" },
         { label: "2 Hour", price: "₱5" },
@@ -461,24 +460,27 @@
         { label: "24D/7H", price: "₱4599" }
     ];
 
-    let currentUser = null; // { name, username, password, created_at }
-    let selectedPilot = null;
-    let agreeStatus = null; // 'yes' or 'no'
-
-    // DOM elements
+    // DOM ELEMENTS
     const signinScreen = document.getElementById('signinScreen');
     const mainScreen = document.getElementById('mainScreen');
     const inboxScreen = document.getElementById('inboxScreen');
     const settingsScreen = document.getElementById('settingsScreen');
-    const newMemberSection = document.getElementById('newMemberSection');
-    const oldUserSection = document.getElementById('oldUserSection');
+    const topBar = document.getElementById('topBar');
+    const authTitle = document.getElementById('authTitle');
+    const authSubtitle = document.getElementById('authSubtitle');
+    const authBtn = document.getElementById('authBtn');
+    const toggleText = document.getElementById('toggleText');
+    const authToggle = document.getElementById('authToggle');
     const welcomeUserSpan = document.getElementById('welcomeUser');
+    const agreeLabel = document.getElementById('agreeLabel');
+    const confirmPilotBtn = document.getElementById('confirmPilotBtn');
+    const inboxTitle = document.getElementById('inboxTitle');
 
-    // Helper to render pilot options
+    // RENDER PILOT GRID
     function renderPilotGrid(containerId, plans, category) {
         const container = document.getElementById(containerId);
         container.innerHTML = '';
-        plans.forEach((plan, idx) => {
+        plans.forEach(plan => {
             const div = document.createElement('div');
             div.className = 'pilot-option';
             div.dataset.category = category;
@@ -492,142 +494,155 @@
                     category: category,
                     label: plan.label,
                     price: plan.price,
-                    user: currentUser?.username || 'unknown',
                 };
             });
             container.appendChild(div);
         });
     }
 
-    function updateLanguageUI() {
+    // UPDATE LANGUAGE
+    function updateLanguage() {
         const lang = translations[currentLang];
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.lang === currentLang);
         });
-        if (!document.getElementById('mainScreen').classList.contains('hidden')) {
-            welcomeUserSpan.textContent = currentUser?.name || 'Pilot';
+        
+        // Auth screen
+        if (isLoginMode) {
+            authTitle.textContent = lang.signInTitle;
+            authSubtitle.textContent = lang.signInSub;
+            authBtn.textContent = lang.authBtnSignIn;
+            toggleText.textContent = lang.toggleToRegister;
+        } else {
+            authTitle.textContent = lang.registerTitle;
+            authSubtitle.textContent = lang.registerSub;
+            authBtn.textContent = lang.authBtnRegister;
+            toggleText.textContent = lang.toggleToLogin;
         }
-        // adjust titles
-        if (newMemberSection && oldUserSection) {
-            document.querySelector('#newMemberSection h3')!.textContent = lang.newMemberTitle;
-            document.querySelector('#oldUserSection .card:nth-child(1) h3')!.textContent = lang.breakTitle;
-            document.querySelector('#oldUserSection .card:nth-child(2) h3')!.textContent = lang.nobreakTitle;
+        
+        // Main screen
+        if (currentUser) {
+            welcomeUserSpan.textContent = currentUser.name || 'Pilot';
         }
-        const agreeText = document.querySelector('.agree-row span');
-        if (agreeText) agreeText.textContent = `✅/❎ | [ ] ${lang.agreeText}`;
-        const confirmBtn = document.getElementById('confirmPilotBtn');
-        if (confirmBtn) confirmBtn.textContent = lang.confirmBtn;
-        const inboxTitle = document.querySelector('#inboxScreen h3');
-        if (inboxTitle) inboxTitle.textContent = lang.inboxTitle;
+        document.querySelector('#newMemberSection h3').textContent = lang.newMemberTitle;
+        document.querySelector('#oldUserSection .card:nth-child(1) h3').textContent = lang.breakTitle;
+        document.querySelector('#oldUserSection .card:nth-child(2) h3').textContent = lang.nobreakTitle;
+        agreeLabel.textContent = lang.agreeText;
+        confirmPilotBtn.textContent = lang.confirmBtn;
+        
+        // Inbox
+        document.querySelector('#inboxScreen h3').textContent = lang.inboxTitle;
     }
 
-    // Supabase table name (assumed 'pilot_messages' and 'profiles')
-    async function savePilotMessage(messageData) {
-        try {
-            const { data, error } = await supabase.from('pilot_messages').insert([messageData]);
-            if (error) console.error('Supabase insert error', error);
-            else console.log('Message saved', data);
-        } catch (e) { console.warn(e); }
+    // SHOW SCREEN HELPER
+    function showScreen(screen) {
+        [signinScreen, mainScreen, inboxScreen, settingsScreen].forEach(s => s.classList.add('hidden'));
+        if (screen === 'main' && currentUser) {
+            topBar.classList.remove('hidden');
+            mainScreen.classList.remove('hidden');
+            // determine new vs old
+            const isNew = (Date.now() - new Date(currentUser.created_at).getTime()) < 86400000;
+            document.getElementById('newMemberSection').classList.toggle('hidden', !isNew);
+            document.getElementById('oldUserSection').classList.toggle('hidden', isNew);
+            welcomeUserSpan.textContent = currentUser.name || 'Pilot';
+        } else if (screen === 'signin') {
+            topBar.classList.add('hidden');
+            signinScreen.classList.remove('hidden');
+        } else if (screen === 'inbox') {
+            topBar.classList.remove('hidden');
+            inboxScreen.classList.remove('hidden');
+            loadInbox();
+        } else if (screen === 'settings') {
+            topBar.classList.remove('hidden');
+            settingsScreen.classList.remove('hidden');
+            loadProfile();
+        }
+        updateLanguage();
     }
 
-    async function fetchInbox() {
-        try {
-            const { data, error } = await supabase.from('pilot_messages').select('*').order('created_at', { ascending: false });
-            if (error) return [];
-            return data || [];
-        } catch { return []; }
-    }
+    // AUTH TOGGLE
+    authToggle.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        updateLanguage();
+    });
 
-    // login / signup
-    document.getElementById('loginBtn').addEventListener('click', async () => {
+    // AUTH BUTTON
+    authBtn.addEventListener('click', async () => {
         const name = document.getElementById('loginName').value.trim();
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
-        if (!name || !username || !password) { alert('Please fill all fields'); return; }
+        
+        if (!name || !username || !password) {
+            alert('Please fill all fields');
+            return;
+        }
 
-        // check existing user (mock)
-        const { data: existingUser, error } = await supabase.from('users').select('*').eq('username', username).maybeSingle();
-        let user;
-        if (existingUser) {
-            user = existingUser;
+        if (isLoginMode) {
+            // SIGN IN
+            const { data: user, error } = await supabase
+                .from('users')
+                .select('*')
+                .eq('username', username)
+                .maybeSingle();
+            
+            if (error || !user) {
+                alert('User not found. Please register first.');
+                return;
+            }
+            if (user.password !== password) {
+                alert('Incorrect password');
+                return;
+            }
+            currentUser = user;
+            showScreen('main');
         } else {
-            const createdAt = new Date().toISOString();
-            const { data: newUser, error: insertErr } = await supabase.from('users').insert([{ name, username, password, created_at: createdAt }]).select().single();
-            if (insertErr) { alert('Error creating user'); return; }
-            user = newUser;
-        }
-        currentUser = user;
-        // determine if new (less than 24h old)
-        const isNew = (Date.now() - new Date(user.created_at).getTime()) < 86400000; 
-        showMainScreen(isNew);
-        updateLanguageUI();
-    });
-
-    function showMainScreen(isNew) {
-        signinScreen.classList.add('hidden');
-        inboxScreen.classList.add('hidden');
-        settingsScreen.classList.add('hidden');
-        mainScreen.classList.remove('hidden');
-        welcomeUserSpan.textContent = currentUser?.name || '';
-        newMemberSection.classList.toggle('hidden', !isNew);
-        oldUserSection.classList.toggle('hidden', isNew);
-        // reset selection
-        selectedPilot = null;
-        agreeStatus = null;
-        document.querySelectorAll('.pilot-option').forEach(o => o.classList.remove('selected'));
-        document.getElementById('agreeCheckbox').checked = false;
-        document.querySelector('.check-btn').classList.remove('selected');
-        document.querySelector('.cross-btn').classList.remove('selected');
-        updateLanguageUI();
-    }
-
-    // navigation
-    document.getElementById('inboxBtn').addEventListener('click', async () => {
-        signinScreen.classList.add('hidden');
-        mainScreen.classList.add('hidden');
-        settingsScreen.classList.add('hidden');
-        inboxScreen.classList.remove('hidden');
-        const messages = await fetchInbox();
-        const container = document.getElementById('inboxMessages');
-        container.innerHTML = messages.map(msg => `
-            <div class="message-bubble">
-                <strong>${msg.username || 'unknown'}</strong> <span class="small-text">(${msg.pilot_selected || ''})</span>
-                <p>${msg.message || ''}</p>
-                <span class="small-text">${new Date(msg.created_at).toLocaleString()}</span>
-            </div>`).join('');
-    });
-
-    document.getElementById('settingsBtn').addEventListener('click', () => {
-        signinScreen.classList.add('hidden');
-        mainScreen.classList.add('hidden');
-        inboxScreen.classList.add('hidden');
-        settingsScreen.classList.remove('hidden');
-        // load profile if available
-        if (currentUser) {
-            document.getElementById('profileName').value = currentUser.name || '';
-            document.getElementById('profileUsername').value = currentUser.username || '';
-            // payment fields from localstorage or supabase (simple)
+            // REGISTER
+            const { data: existingUser } = await supabase
+                .from('users')
+                .select('username')
+                .eq('username', username)
+                .maybeSingle();
+            
+            if (existingUser) {
+                alert('Username already exists');
+                return;
+            }
+            
+            const { data: newUser, error: insertError } = await supabase
+                .from('users')
+                .insert([{ 
+                    name, 
+                    username, 
+                    password, 
+                    created_at: new Date().toISOString() 
+                }])
+                .select()
+                .single();
+            
+            if (insertError || !newUser) {
+                alert('Registration failed');
+                return;
+            }
+            currentUser = newUser;
+            showScreen('main');
         }
     });
 
-    document.getElementById('backFromInbox').addEventListener('click', () => {
-        inboxScreen.classList.add('hidden');
-        mainScreen.classList.remove('hidden');
-    });
-    document.getElementById('backFromSettings').addEventListener('click', () => {
-        settingsScreen.classList.add('hidden');
-        mainScreen.classList.remove('hidden');
-    });
+    // NAVIGATION
+    document.getElementById('inboxBtn').addEventListener('click', () => showScreen('inbox'));
+    document.getElementById('settingsBtn').addEventListener('click', () => showScreen('settings'));
+    document.getElementById('backFromInbox').addEventListener('click', () => showScreen('main'));
+    document.getElementById('backFromSettings').addEventListener('click', () => showScreen('main'));
 
-    // language switching
+    // LANGUAGE BUTTONS
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             currentLang = btn.dataset.lang;
-            updateLanguageUI();
+            updateLanguage();
         });
     });
 
-    // agree buttons
+    // AGREE BUTTONS
     document.getElementById('agreeYes').addEventListener('click', () => {
         agreeStatus = 'yes';
         document.querySelector('.check-btn').classList.add('selected');
@@ -641,35 +656,80 @@
         document.getElementById('agreeCheckbox').checked = false;
     });
 
-    // confirm pilot
-    document.getElementById('confirmPilotBtn').addEventListener('click', async () => {
-        if (!selectedPilot) { alert('Please select a pilot set-up'); return; }
-        if (agreeStatus !== 'yes') { alert('You must agree (✅) first'); return; }
-        const checkbox = document.getElementById('agreeCheckbox');
-        if (!checkbox.checked) { alert('Check the agreement box'); return; }
+    // CONFIRM PILOT
+    confirmPilotBtn.addEventListener('click', async () => {
+        if (!selectedPilot) {
+            alert('Please select a pilot set-up');
+            return;
+        }
+        if (agreeStatus !== 'yes' || !document.getElementById('agreeCheckbox').checked) {
+            alert('You must agree (✅) first and check the box');
+            return;
+        }
 
         const messageData = {
-            username: currentUser?.username || 'anonymous',
-            password: '••••••', // never send real password
+            username: currentUser.username,
+            password: '••••••',
             pilot_selected: `${selectedPilot.label} - ${selectedPilot.price} (${selectedPilot.category})`,
             message: `Pilot selected: ${selectedPilot.label} ${selectedPilot.price}`,
             owner_email: 'xdrgxdragon@gmail.com',
             created_at: new Date().toISOString(),
         };
-        await savePilotMessage(messageData);
-        // automation message for user
-        const autoMsg = {
+        await supabase.from('pilot_messages').insert([messageData]);
+        
+        // Automation message
+        await supabase.from('pilot_messages').insert([{
             username: 'Xdrg System',
             message: 'Your Pilot System Has End To Renew the pilot just Select at Pilot Selection Date & Time',
             created_at: new Date().toISOString(),
-        };
-        await savePilotMessage(autoMsg);
-        alert('✅ Pilot sent to owner! Check inbox.');
-        // show inbox maybe
+        }]);
+        
+        alert('✅ Pilot sent to owner!');
+        // Reset selection
+        selectedPilot = null;
+        agreeStatus = null;
+        document.querySelectorAll('.pilot-option').forEach(o => o.classList.remove('selected'));
+        document.getElementById('agreeCheckbox').checked = false;
+        document.querySelector('.check-btn').classList.remove('selected');
+        document.querySelector('.cross-btn').classList.remove('selected');
     });
 
-    // save profile
+    // LOAD INBOX
+    async function loadInbox() {
+        const { data: messages } = await supabase
+            .from('pilot_messages')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        const container = document.getElementById('inboxMessages');
+        if (messages && messages.length > 0) {
+            container.innerHTML = messages.map(msg => `
+                <div class="message-bubble">
+                    <strong>${msg.username || 'unknown'}</strong>
+                    <p>${msg.message || ''}</p>
+                    <span class="small-text">${new Date(msg.created_at).toLocaleString()}</span>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<p class="small-text">No messages yet</p>';
+        }
+    }
+
+    // LOAD PROFILE
+    function loadProfile() {
+        if (currentUser) {
+            document.getElementById('profileName').value = currentUser.name || '';
+            document.getElementById('profileUsername').value = currentUser.username || '';
+            document.getElementById('paymentName').value = currentUser.payment_name || '';
+            document.getElementById('paymentNumber').value = currentUser.payment_number || '';
+            document.getElementById('pilotUsername').value = currentUser.pilot_username || '';
+            document.getElementById('pilotPassword').value = currentUser.pilot_password || '';
+        }
+    }
+
+    // SAVE PROFILE
     document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+        if (!currentUser) return;
         const profileData = {
             name: document.getElementById('profileName').value,
             username: document.getElementById('profileUsername').value,
@@ -678,31 +738,25 @@
             pilot_username: document.getElementById('pilotUsername').value,
             pilot_password: document.getElementById('pilotPassword').value,
         };
-        if (currentUser) {
-            const { error } = await supabase.from('users').update(profileData).eq('username', currentUser.username);
-            if (!error) alert('Profile saved!');
-            else alert('Error saving');
+        const { error } = await supabase
+            .from('users')
+            .update(profileData)
+            .eq('username', currentUser.username);
+        
+        if (error) {
+            alert('Error saving profile');
         } else {
-            alert('Login first');
+            alert('✅ Profile saved!');
+            currentUser = { ...currentUser, ...profileData };
         }
     });
 
-    // initial render pilot grids
+    // INITIALIZE
     renderPilotGrid('newPilotGrid', newMemberPlans, 'new');
     renderPilotGrid('breakPilotGrid', breakPlans, 'break');
     renderPilotGrid('nobreakPilotGrid', noBreakPlans, 'nobreak');
-
-    // Auto show signin initially
-    window.addEventListener('load', () => {
-        signinScreen.classList.remove('hidden');
-        mainScreen.classList.add('hidden');
-        inboxScreen.classList.add('hidden');
-        settingsScreen.classList.add('hidden');
-        updateLanguageUI();
-    });
-
-    // handle old/new toggle (simplified)
-    // Actually we handle by login time
+    showScreen('signin');
+    updateLanguage();
 </script>
 </body>
 </html>
