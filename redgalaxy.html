@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedGalaxy Studio / NebulaForge Studio</title>
+    <style>
+        /* WIKIPEDIA STYLE CSS */
+        body { font-family: sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
+        .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
+        
+        /* SIDEBAR */
+        .mw-sidebar { width: 200px; padding: 20px; background-color: #f6f6f6; }
+        .mw-logo { display: block; font-family: 'Linux Libertine', Georgia, serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; }
+        .mw-sidebar h3 { font-family: sans-serif; font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
+        .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
+        .mw-sidebar li { margin-bottom: 5px; font-size: 0.85rem; }
+        .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; }
+        .mw-sidebar a:hover { text-decoration: underline; }
+        
+        /* MAIN CONTENT */
+        .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; }
+        .mw-top-tools { text-align: right; font-size: 0.85rem; margin-bottom: 20px; }
+        .mw-top-tools span { margin-left: 10px; }
+        
+        h1 { font-family: 'Linux Libertine', Georgia, serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
+        h2 { font-family: 'Linux Libertine', Georgia, serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
+        
+        /* TABLES */
+        .wikitable { background-color: #f8f9fa; color: #202122; margin: 1em 0; border: 1px solid #a2a9b1; border-collapse: collapse; width: 100%; text-align: left; }
+        .wikitable th, .wikitable td { border: 1px solid #a2a9b1; padding: 8px 10px; }
+        .wikitable th { background-color: #eaecf0; text-align: center; }
+        
+        /* LOGIN PAGE */
+        .login-box { max-width: 400px; margin: 50px auto; border: 1px solid #a2a9b1; padding: 30px; background: #f8f9fa; }
+        .login-box input { width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #a2a9b1; box-sizing: border-box; }
+        .login-box button { background-color: #3366cc; color: white; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; width: 100%; }
+        .login-box button:hover { background-color: #2a4b8d; }
+        
+        /* CONTROLS */
+        .infobox { float: right; border: 1px solid #a2a9b1; background-color: #f8f9fa; padding: 10px; margin: 0 0 15px 15px; width: 250px; font-size: 0.9rem; }
+        .infobox select { width: 100%; padding: 5px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: WIKIPEDIA LOGIN PAGE -->
+    <div id="loginScreen">
+        <div class="mw-page-container" style="justify-content: center; align-items: flex-start; padding-top: 50px;">
+            <div class="login-box">
+                <h2 style="margin-top:0; border:none; text-align:center;">User Log in</h2>
+                <p style="font-size:0.85rem; color:#54595d; text-align:center;">RedGalaxy Studio / NebulaForge Studio</p>
+                
+                <label>Name</label>
+                <input type="text" id="authName" placeholder="Enter your name">
+                
+                <label>Gmail</label>
+                <input type="email" id="authEmail" placeholder="Enter your gmail">
+                
+                <label>Password</label>
+                <input type="password" id="authPassword" placeholder="Enter your password">
+                
+                <button onclick="handleLogin()">Log in</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: MAIN WIKI PAGE -->
+    <div id="wikiScreen" style="display: none;">
+        <div class="mw-page-container">
+            
+            <!-- SIDEBAR -->
+            <div class="mw-sidebar">
+                <a href="#" class="mw-logo" onclick="openHome()">RedGalaxy Studio<br>NebulaForge Studio</a>
+                
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a onclick="openHome()">Main Page</a></li>
+                    <li><a onclick="openGame('brainrots')">Don't Crash Train For Brainrots</a></li>
+                    <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
+                </ul>
+
+                <h3>Staff / Team</h3>
+                <ul>
+                    <li><b>Owner:</b><br>Dev_Xdragon / LumeCraftor</li>
+                    <li style="margin-top:8px;"><b>Head-Admin:</b><br>Vincent Magtolis</li>
+                    <li style="margin-top:8px;"><b>Admin:</b><br>Jayson Areglo<br>Summere Castrence</li>
+                </ul>
+            </div>
+            
+            <!-- MAIN WIKI CONTENT -->
+            <div class="mw-content-container">
+                <div class="mw-top-tools">
+                    <span id="userStatus" style="font-weight:bold;">Not logged in</span>
+                    <span><a onclick="logout()">Log out</a></span>
+                </div>
+                
+                <h1 id="pageTitle">Main Page</h1>
+                
+                <div id="pageContent">
+                    <p>Welcome to the <b>RedGalaxy Studio / NebulaForge Studio</b> official wiki. Please select a game from the sidebar navigation to view its database.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- 1. DATA STRUCTURE (EXACT ORDER REQUESTED) --- */
+        
+        const areaMapping = {
+            "Common": "Forest Area",
+            "Rare": "City Area",
+            "Legendary": "Farm Area",
+            "Mythic": "Volcano Area",
+            "Godly": "Beach Area",
+            "Limited": "Unknown / Event Area"
+        };
+
+        const categories = [
+            {
+                title: "Common",
+                units: [
+                    { name: "Bananita Dolphinita", price: 250 },
+                    { name: "Trippi Troppi", price: 200 },
+                    { name: "Gangster Footera", price: 55 }
+                ]
+            },
+            {
+                title: "Rare",
+                units: [
+                    { name: "Ballerina Cappuccina", price: 400 },
+                    { name: "Svinina Bombardino", price: 150 },
+                    { name: "Bombombini Gusini", price: 100 }
+                ]
+            },
+            {
+                title: "Legendary",
+                units: [
+                    { name: "Cappuccino Assassino", price: 550 },
+                    { name: "La Vacca Saturno", price: 1200 }
+                ]
+            },
+            {
+                title: "Mythic",
+                units: [
+                    { name: "Crab Chef", price: 1300 },
+                    { name: "Matteo", price: 1500 },
+                    { name: "Tralalero Tralala", price: 1800 }
+                ]
+            },
+            {
+                title: "Godly",
+                units: [
+                    { name: "Giraffa Celestre", price: 3000 },
+                    { name: "Odin Din Din Din", price: 5000 },
+                    { name: "Six Seven", price: 6700 }
+                ]
+            },
+            {
+                title: "Limited",
+                units: [
+                    { name: "Strawberry Elephant", price: 150000 },
+                    { name: "Summerini Fattini", price: 1500000 }
+                ]
+            }
+        ];
+
+        // EXACT Order requested for Shop
+        const shopItems = [
+            { name: "Boneca Ambalabu", price: 65000, perSecond: 25000, rarity: "Rare" },
+            { name: "Job Job Job Sahur", price: 155000, perSecond: 80000, rarity: "Rare" },
+            { name: "Trippi Troppi Troppa", price: 35000, perSecond: 10000, rarity: "Common" },
+            { name: "Esok Sekolah", price: 12000000, perSecond: 125000, rarity: "Mythical" },
+            { name: "Karkerkar Kurkur", price: 25000000000, perSecond: 115000, rarity: "Mythical" },
+            { name: "Chimpanzini Bananini", price: 10000, perSecond: 8000, rarity: "Common" },
+            { name: "Pot Hotspot", price: 125000, perSecond: 75000, rarity: "Rare" }
+        ];
+
+        let currentMutation = 1;
+        let mutationName = "Normal";
+
+        /* --- 2. LOGIC & NAVIGATION --- */
+        
+        window.onload = () => {
+            const savedUser = localStorage.getItem('wikiUser');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${user.name}</b>`;
+                showWiki();
+            }
+        };
+
+        function handleLogin() {
+            const name = document.getElementById('authName').value;
+            const email = document.getElementById('authEmail').value;
+            const pass = document.getElementById('authPassword').value;
+            if(!name || !email || !pass) { alert("Please fill all fields"); return; }
+            
+            localStorage.setItem('wikiUser', JSON.stringify({name, email}));
+            document.getElementById('userStatus').innerHTML = `Logged in as: <b>${name}</b>`;
+            showWiki();
+        }
+
+        function logout() {
+            localStorage.removeItem('wikiUser');
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('wikiScreen').style.display = 'none';
+        }
+
+        function showWiki() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('wikiScreen').style.display = 'block';
+        }
+
+        function openHome() {
+            document.getElementById('pageTitle').innerText = "Main Page";
+            document.getElementById('pageContent').innerHTML = "<p>Welcome to the <b>RedGalaxy Studio / NebulaForge Studio</b> official wiki. Please select a game from the sidebar navigation to view its database.</p>";
+        }
+
+        function openGame(game) {
+            if(game === 'crystal') {
+                document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
+                document.getElementById('pageContent').innerHTML = "<p><i>Article stub: Content for Crystal Collecting Simulator is currently under construction.</i></p>";
+                return;
+            }
+
+            // Brainrots Page Generation
+            document.getElementById('pageTitle').innerText = "Don't Crash Train For Brainrots";
+            renderBrainrotsPage();
+        }
+
+        function changeMutation() {
+            const sel = document.getElementById('mutationSelect');
+            currentMutation = parseInt(sel.value);
+            mutationName = sel.options[sel.selectedIndex].text.split(" ")[0];
+            renderBrainrotsPage();
+        }
+
+        function renderBrainrotsPage() {
+            let html = `
+                <div class="infobox">
+                    <b>Game Mechanics</b>
+                    <hr style="margin:5px 0;">
+                    <label style="font-size:0.85em;">Apply Mutation Multiplier:</label>
+                    <select id="mutationSelect" onchange="changeMutation()">
+                        <option value="1" ${currentMutation===1?'selected':''}>Normal (x1)</option>
+                        <option value="5" ${currentMutation===5?'selected':''}>Gold (x5)</option>
+                        <option value="15" ${currentMutation===15?'selected':''}>Diamond (x15)</option>
+                        <option value="20" ${currentMutation===20?'selected':''}>Crab (x20)</option>
+                        <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
+                    </select>
+                </div>
+                <p>This page documents the characters and shop items found in <b>Don't Crash Train For Brainrots</b>. Values shown reflect the current mutation modifier.</p>
+            `;
+
+            // Standard Categories
+            categories.forEach(cat => {
+                const areaName = areaMapping[cat.title];
+                html += `<h2>${cat.title} Units</h2>`;
+                html += `
+                    <table class="wikitable">
+                        <tr>
+                            <th width="5%">#</th>
+                            <th width="25%">Name</th>
+                            <th width="20%">Area</th>
+                            <th width="15%">Rarity</th>
+                            <th width="20%">Mutation Status</th>
+                            <th width="15%">Cost / Price</th>
+                        </tr>
+                `;
+                cat.units.forEach((unit, index) => {
+                    const finalPrice = unit.price * currentMutation;
+                    html += `
+                        <tr>
+                            <td align="center">${index + 1}</td>
+                            <td><b>${unit.name}</b></td>
+                            <td>${areaName}</td>
+                            <td>${cat.title}</td>
+                            <td>${mutationName} (x${currentMutation})</td>
+                            <td>${finalPrice.toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
+                html += `</table>`;
+            });
+
+            // Shop Section
+            html += `<h2>Shop Items</h2>`;
+            html += `
+                <table class="wikitable">
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="25%">Name</th>
+                        <th width="15%">Base Rarity</th>
+                        <th width="15%">Mutation Status</th>
+                        <th width="20%">Cost / Price</th>
+                        <th width="20%">Income (Per/s)</th>
+                    </tr>
+            `;
+            shopItems.forEach((item, index) => {
+                const finalPrice = item.price * currentMutation;
+                const finalPerSec = item.perSecond * currentMutation;
+                html += `
+                    <tr>
+                        <td align="center">${index + 1}</td>
+                        <td><b>${item.name}</b></td>
+                        <td>${item.rarity}</td>
+                        <td>${mutationName} (x${currentMutation})</td>
+                        <td>${finalPrice.toLocaleString()}</td>
+                        <td style="color: #0645ad; font-weight:bold;">${finalPerSec.toLocaleString()} /s</td>
+                    </tr>
+                `;
+            });
+            html += `</table>`;
+
+            document.getElementById('pageContent').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
