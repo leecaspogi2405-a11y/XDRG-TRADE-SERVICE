@@ -31,11 +31,30 @@
         .wikitable th, .wikitable td { border: 1px solid #a2a9b1; padding: 8px 10px; }
         .wikitable th { background-color: #eaecf0; text-align: center; }
         
-        /* LOGIN PAGE */
-        .login-box { max-width: 400px; margin: 50px auto; border: 1px solid #a2a9b1; padding: 30px; background: #f8f9fa; }
-        .login-box input { width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #a2a9b1; box-sizing: border-box; }
-        .login-box button { background-color: #3366cc; color: white; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; width: 100%; }
-        .login-box button:hover { background-color: #2a4b8d; }
+        /* LOGIN & SETTINGS FORMS */
+        .form-box { max-width: 400px; margin: 50px auto; border: 1px solid #a2a9b1; padding: 30px; background: #f8f9fa; }
+        .form-box input[type="text"], .form-box input[type="email"], .form-box input[type="password"] { width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #a2a9b1; box-sizing: border-box; }
+        .form-box button { background-color: #3366cc; color: white; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; width: 100%; }
+        .form-box button:hover { background-color: #2a4b8d; }
+        
+        /* SETTINGS PAGE SPECIFICS */
+        .settings-section { max-width: 600px; margin-top: 20px; }
+        .settings-row { margin-bottom: 15px; }
+        .settings-row label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .settings-row input[type="text"], .settings-row input[type="password"] { width: 100%; max-width: 300px; padding: 8px; border: 1px solid #a2a9b1; }
+        .settings-row.checkbox-row { display: flex; align-items: center; gap: 10px; }
+        .settings-row.checkbox-row label { margin-bottom: 0; }
+        .btn-save { background-color: #3366cc; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; }
+        .btn-save:hover { background-color: #2a4b8d; }
+        
+        .social-links { list-style: none; padding: 0; font-size: 1.1rem; line-height: 2; }
+        .social-links a { text-decoration: none; color: #0645ad; }
+        .social-links a:hover { text-decoration: underline; }
+        
+        .copy-container { display: flex; align-items: center; gap: 10px; max-width: 500px; }
+        .copy-container input { flex: 1; padding: 8px; border: 1px solid #a2a9b1; background-color: #eaecf0; color: #54595d; }
+        .btn-copy { background-color: #00af89; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; }
+        .btn-copy:hover { background-color: #008a6b; }
         
         /* CONTROLS */
         .infobox { float: right; border: 1px solid #a2a9b1; background-color: #f8f9fa; padding: 10px; margin: 0 0 15px 15px; width: 250px; font-size: 0.9rem; }
@@ -47,7 +66,7 @@
     <!-- SCREEN 1: WIKIPEDIA LOGIN PAGE -->
     <div id="loginScreen">
         <div class="mw-page-container" style="justify-content: center; align-items: flex-start; padding-top: 50px;">
-            <div class="login-box">
+            <div class="form-box">
                 <h2 style="margin-top:0; border:none; text-align:center;">User Log in</h2>
                 <p style="font-size:0.85rem; color:#54595d; text-align:center;">RedGalaxy Studio / NebulaForge Studio</p>
                 
@@ -78,6 +97,11 @@
                     <li><a onclick="openHome()">Main Page</a></li>
                     <li><a onclick="openGame('brainrots')">Don't Crash the Train for Brainrots</a></li>
                     <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
+                </ul>
+
+                <h3>Account</h3>
+                <ul>
+                    <li><a onclick="openSettings()">⚙️ Settings</a></li>
                 </ul>
 
                 <h3>Staff / Team</h3>
@@ -202,19 +226,28 @@
             const savedUser = localStorage.getItem('wikiUser');
             if (savedUser) {
                 const user = JSON.parse(savedUser);
-                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${user.name}</b>`;
+                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${user.username}</b>`;
                 showWiki();
             }
         };
 
         function handleLogin() {
-            const name = document.getElementById('authName').value;
+            const username = document.getElementById('authName').value;
             const email = document.getElementById('authEmail').value;
             const pass = document.getElementById('authPassword').value;
-            if(!name || !email || !pass) { alert("Please fill out all fields."); return; }
+            if(!username || !email || !pass) { alert("Please fill out all fields."); return; }
             
-            localStorage.setItem('wikiUser', JSON.stringify({name, email}));
-            document.getElementById('userStatus').innerHTML = `Logged in as: <b>${name}</b>`;
+            // Extract a display "Name" from the email for the settings page
+            const name = email.split('@')[0];
+            
+            localStorage.setItem('wikiUser', JSON.stringify({
+                name: name,
+                username: username, 
+                password: pass,
+                desktop: false
+            }));
+            
+            document.getElementById('userStatus').innerHTML = `Logged in as: <b>${username}</b>`;
             showWiki();
         }
 
@@ -241,10 +274,97 @@
                 return;
             }
 
-            // Brainrots Page Generation
             document.getElementById('pageTitle').innerText = "Don't Crash the Train for Brainrots";
             renderBrainrotsPage();
         }
+
+        /* --- 3. SETTINGS PAGE LOGIC --- */
+        
+        function openSettings() {
+            document.getElementById('pageTitle').innerText = "⚙️ Settings";
+            renderSettingsPage();
+        }
+
+        function renderSettingsPage() {
+            const savedUser = localStorage.getItem('wikiUser');
+            // Provide default fallback structure if somehow missing
+            const user = savedUser ? JSON.parse(savedUser) : {name: 'Guest', username: 'Guest', password: '', desktop: false};
+
+            let html = `
+                <div class="settings-section">
+                    <div class="settings-row" style="margin-bottom: 20px;">
+                        <span><b>Name:</b> ${user.name}</span>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <label>Username [New]</label>
+                        <input type="text" id="setUserName" value="${user.username}">
+                    </div>
+                    
+                    <div class="settings-row">
+                        <label>Password [New]</label>
+                        <input type="password" id="setUserPass" value="${user.password}">
+                    </div>
+                    
+                    <div class="settings-row checkbox-row" style="margin-bottom: 25px;">
+                        <input type="checkbox" id="setDesktop" ${user.desktop ? 'checked' : ''}> 
+                        <label for="setDesktop">Desktop</label>
+                    </div>
+                    
+                    <button class="btn-save" onclick="saveSettings()">Save Changes</button>
+                    
+                    <hr style="margin: 40px 0 20px 0; border: 0; border-top: 1px solid #c8ccd1;">
+                    
+                    <h2>Socials</h2>
+                    <ul class="social-links">
+                        <li>🟦 <a href="https://www.facebook.com/profile.php?id=61583174657283&mibextid=ZbWKwL" target="_blank">Facebook</a></li>
+                        <li>🎵 <a href="https://tiktok.com/@xdragon...1" target="_blank">TikTok</a></li>
+                        <li>📺 <a href="https://www.youtube.com/@dev-xdragon" target="_blank">YouTube</a></li>
+                    </ul>
+
+                    <hr style="margin: 40px 0 20px 0; border: 0; border-top: 1px solid #c8ccd1;">
+
+                    <h2>Downloads</h2>
+                    <p style="margin-top: 0;">Latest APK Release:</p>
+                    <div class="copy-container">
+                        <input type="text" id="dlLinkInput" value="https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file" readonly>
+                        <button class="btn-copy" onclick="copyLink()">Copy</button>
+                        <span id="copyConfirm" style="color: #00af89; font-weight: bold; display: none;">Copied!</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('pageContent').innerHTML = html;
+        }
+
+        function saveSettings() {
+            const savedUser = localStorage.getItem('wikiUser');
+            if (savedUser) {
+                let user = JSON.parse(savedUser);
+                user.username = document.getElementById('setUserName').value;
+                user.password = document.getElementById('setUserPass').value;
+                user.desktop = document.getElementById('setDesktop').checked;
+                
+                localStorage.setItem('wikiUser', JSON.stringify(user));
+                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${user.username}</b>`;
+                alert("Settings have been updated successfully!");
+            }
+        }
+
+        function copyLink() {
+            const linkInput = document.getElementById("dlLinkInput");
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999); // For mobile devices
+            navigator.clipboard.writeText(linkInput.value);
+            
+            const confirmMsg = document.getElementById("copyConfirm");
+            confirmMsg.style.display = "inline";
+            setTimeout(() => {
+                confirmMsg.style.display = "none";
+            }, 2000);
+        }
+
+        /* --- 4. GAME RENDERING LOGIC --- */
 
         function changeMutation() {
             const sel = document.getElementById('mutationSelect');
@@ -270,7 +390,6 @@
                 <p>This page documents the characters and shop items found in <b>Don't Crash the Train for Brainrots</b>. Values shown reflect the current mutation modifier.</p>
             `;
 
-            // Standard Categories
             categories.forEach(cat => {
                 const areaName = areaMapping[cat.title];
                 html += `<h2>${cat.title} Units</h2>`;
@@ -301,7 +420,6 @@
                 html += `</table>`;
             });
 
-            // Shop Section
             html += `<h2>Shop Items</h2>`;
             html += `
                 <table class="wikitable">
@@ -336,7 +454,6 @@
         function renderCrystalPage() {
             let html = `<p>This page documents the items and resources found in <b>Crystal Collecting Simulator</b>.</p>`;
 
-            // Pickaxes Section
             html += `<h2>Pickaxes</h2>`;
             html += `
                 <table class="wikitable">
@@ -361,7 +478,6 @@
             });
             html += `</table>`;
 
-            // Crystals Section
             html += `<h2>Crystals</h2>`;
             html += `
                 <table class="wikitable">
