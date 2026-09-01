@@ -59,6 +59,18 @@
         /* CONTROLS */
         .infobox { float: right; border: 1px solid #a2a9b1; background-color: #f8f9fa; padding: 10px; margin: 0 0 15px 15px; width: 250px; font-size: 0.9rem; }
         .infobox select { width: 100%; padding: 5px; margin-top: 5px; }
+
+        /* LOADING & ERROR SCREEN */
+        .loader { border: 8px solid #eaecf0; border-top: 8px solid #3366cc; border-radius: 50%; width: 50px; height: 50px; animation: spin 1.5s linear infinite; margin: 40px auto 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .error-container { text-align: center; margin-top: 30px; background-color: #f8f9fa; border: 1px solid #eaecf0; padding: 30px; }
+        .error-container img { max-width: 100%; height: auto; border: 2px solid #202122; margin-bottom: 25px; border-radius: 4px; }
+        .error-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; font-family: 'Linux Libertine', Georgia, serif; }
+        .error-desc { font-size: 1rem; margin-bottom: 15px; }
+        .error-mod { color: #d33; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; padding: 10px; background-color: #fee7e6; border-left: 5px solid #d33; display: inline-block; }
+        .try-again-btn { color: #0645ad; cursor: pointer; font-weight: bold; text-decoration: underline; font-size: 1.1rem; }
+        .try-again-btn:hover { color: #0b0080; }
     </style>
 </head>
 <body>
@@ -131,7 +143,6 @@
     <script>
         /* --- 1. DATA STRUCTURE --- */
         
-        // Game 1: Don't Crash the Train for Brainrots
         const areaMapping = {
             "Common": "Forest Area",
             "Rare": "City Area",
@@ -142,52 +153,12 @@
         };
 
         const categories = [
-            {
-                title: "Common",
-                units: [
-                    { name: "Bananita Dolphinita", price: 250 },
-                    { name: "Trippi Troppi", price: 200 },
-                    { name: "Gangster Footera", price: 55 }
-                ]
-            },
-            {
-                title: "Rare",
-                units: [
-                    { name: "Ballerina Cappuccina", price: 400 },
-                    { name: "Svinina Bombardino", price: 150 },
-                    { name: "Bombombini Gusini", price: 100 }
-                ]
-            },
-            {
-                title: "Legendary",
-                units: [
-                    { name: "Cappuccino Assassino", price: 550 },
-                    { name: "La Vacca Saturno", price: 1200 }
-                ]
-            },
-            {
-                title: "Mythic",
-                units: [
-                    { name: "Crab Chef", price: 1300 },
-                    { name: "Matteo", price: 1500 },
-                    { name: "Tralalero Tralala", price: 1800 }
-                ]
-            },
-            {
-                title: "Godly",
-                units: [
-                    { name: "Giraffa Celestre", price: 3000 },
-                    { name: "Odin Din Din Din", price: 5000 },
-                    { name: "Six Seven", price: 6700 }
-                ]
-            },
-            {
-                title: "Limited",
-                units: [
-                    { name: "Strawberry Elephant", price: 150000 },
-                    { name: "Summerini Fattini", price: 1500000 }
-                ]
-            }
+            { title: "Common", units: [{ name: "Bananita Dolphinita", price: 250 }, { name: "Trippi Troppi", price: 200 }, { name: "Gangster Footera", price: 55 }] },
+            { title: "Rare", units: [{ name: "Ballerina Cappuccina", price: 400 }, { name: "Svinina Bombardino", price: 150 }, { name: "Bombombini Gusini", price: 100 }] },
+            { title: "Legendary", units: [{ name: "Cappuccino Assassino", price: 550 }, { name: "La Vacca Saturno", price: 1200 }] },
+            { title: "Mythic", units: [{ name: "Crab Chef", price: 1300 }, { name: "Matteo", price: 1500 }, { name: "Tralalero Tralala", price: 1800 }] },
+            { title: "Godly", units: [{ name: "Giraffa Celestre", price: 3000 }, { name: "Odin Din Din Din", price: 5000 }, { name: "Six Seven", price: 6700 }] },
+            { title: "Limited", units: [{ name: "Strawberry Elephant", price: 150000 }, { name: "Summerini Fattini", price: 1500000 }] }
         ];
 
         const shopItems = [
@@ -198,23 +169,6 @@
             { name: "Karkerkar Kurkur", price: 25000000000, perSecond: 115000, rarity: "Mythical" },
             { name: "Chimpanzini Bananini", price: 10000, perSecond: 8000, rarity: "Common" },
             { name: "Pot Hotspot", price: 125000, perSecond: 75000, rarity: "Rare" }
-        ];
-
-        // Game 2: Crystal Collecting Simulator Data
-        const pickaxes = [
-            { name: "Wooden Pickaxe", holdChange: 2, durability: 100, price: 100 },
-            { name: "Copper Pickaxe", holdChange: 4, durability: 350, price: 500 },
-            { name: "Stone Pickaxe", holdChange: 2, durability: 200, price: 1500 },
-            { name: "Iron Pickaxe", holdChange: 5, durability: 500, price: 3950 },
-            { name: "Emerald Pickaxe", holdChange: 6, durability: 750, price: 5500 },
-            { name: "Hardened Pickaxe", holdChange: 7, durability: 1000, price: 8500 }
-        ];
-
-        const crystals = [
-            { name: "Wooden Crystal", hold: 7, damage: 8, price: 80 },
-            { name: "Acorn Crystal", hold: 10, damage: 20, price: 240 },
-            { name: "Rock Crystal", hold: 14, damage: 39, price: 349 },
-            { name: "Mushroom Crystal", hold: 8, damage: 14, price: 200 }
         ];
 
         let currentMutation = 1;
@@ -237,7 +191,6 @@
             const pass = document.getElementById('authPassword').value;
             if(!username || !email || !pass) { alert("Please fill out all fields."); return; }
             
-            // Extract a display "Name" from the email for the settings page
             const name = email.split('@')[0];
             
             localStorage.setItem('wikiUser', JSON.stringify({
@@ -269,8 +222,7 @@
 
         function openGame(game) {
             if(game === 'crystal') {
-                document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
-                renderCrystalPage();
+                triggerError144Sequence();
                 return;
             }
 
@@ -287,7 +239,6 @@
 
         function renderSettingsPage() {
             const savedUser = localStorage.getItem('wikiUser');
-            // Provide default fallback structure if somehow missing
             const user = savedUser ? JSON.parse(savedUser) : {name: 'Guest', username: 'Guest', password: '', desktop: false};
 
             let html = `
@@ -354,7 +305,7 @@
         function copyLink() {
             const linkInput = document.getElementById("dlLinkInput");
             linkInput.select();
-            linkInput.setSelectionRange(0, 99999); // For mobile devices
+            linkInput.setSelectionRange(0, 99999); 
             navigator.clipboard.writeText(linkInput.value);
             
             const confirmMsg = document.getElementById("copyConfirm");
@@ -451,58 +402,41 @@
             document.getElementById('pageContent').innerHTML = html;
         }
 
-        function renderCrystalPage() {
-            let html = `<p>This page documents the items and resources found in <b>Crystal Collecting Simulator</b>.</p>`;
+        /* --- 5. ERROR 144 SEQUENCE (Crystal Collecting Simulator) --- */
 
-            html += `<h2>Pickaxes</h2>`;
-            html += `
-                <table class="wikitable">
-                    <tr>
-                        <th width="5%">#</th>
-                        <th width="35%">Name</th>
-                        <th width="20%">Hold Change</th>
-                        <th width="20%">Durability</th>
-                        <th width="20%">Price</th>
-                    </tr>
+        function triggerError144Sequence() {
+            // Step 1: Display the Loading Video / Spinner State
+            document.getElementById('pageTitle').innerText = "Loading Video Asset...";
+            document.getElementById('pageContent').innerHTML = `
+                <div style="text-align:center; padding: 50px;">
+                    <div class="loader"></div>
+                    <p style="font-weight: bold; color: #54595d;">Establishing connection to game database...</p>
+                </div>
             `;
-            pickaxes.forEach((item, index) => {
-                html += `
-                    <tr>
-                        <td align="center">${index + 1}</td>
-                        <td><b>${item.name}</b></td>
-                        <td>${item.holdChange}</td>
-                        <td>${item.durability.toLocaleString()}</td>
-                        <td>${item.price.toLocaleString()}</td>
-                    </tr>
-                `;
-            });
-            html += `</table>`;
 
-            html += `<h2>Crystals</h2>`;
-            html += `
-                <table class="wikitable">
-                    <tr>
-                        <th width="5%">#</th>
-                        <th width="35%">Name</th>
-                        <th width="20%">Hold Capacity</th>
-                        <th width="20%">Damage</th>
-                        <th width="20%">Price</th>
-                    </tr>
-            `;
-            crystals.forEach((item, index) => {
-                html += `
-                    <tr>
-                        <td align="center">${index + 1}</td>
-                        <td><b>${item.name}</b></td>
-                        <td>${item.hold}</td>
-                        <td>${item.damage}</td>
-                        <td>${item.price.toLocaleString()}</td>
-                    </tr>
+            // Step 2: Set Timeout to render the Error Screen after 3 seconds
+            setTimeout(() => {
+                document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
+                document.getElementById('pageContent').innerHTML = `
+                    <div class="error-container">
+                        <img src="https://cdn.discordapp.com/attachments/1538168440756375582/1544263947572478022/file_00000000f2f081faa3e4720876265965.png?ex=6a97df60&is=6a968de0&hm=d9ab6919420e0a72f38a595795387f9ae2855efa731c6519fc497900f945c7b6&" alt="Error Screen Image">
+                        
+                        <div class="error-title">This Wiki Website was found error 144</div>
+                        
+                        <div class="error-desc">
+                            [The owner of Crystal Collecting Simulator {Ccs} was announce that the game was going to Delete or Suspended]
+                        </div>
+                        
+                        <div class="error-mod">
+                            Moderator Action: This Game Wiki was Under Review because we found an error 144
+                        </div>
+                        
+                        <div>
+                            <span class="try-again-btn" onclick="triggerError144Sequence()">Try Again</span>
+                        </div>
+                    </div>
                 `;
-            });
-            html += `</table>`;
-
-            document.getElementById('pageContent').innerHTML = html;
+            }, 3000);
         }
     </script>
 </body>
