@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Changing the viewport to a fixed width forces a desktop-like layout on mobile, allowing pinch-to-zoom -->
+    <meta name="viewport" content="width=1200, user-scalable=yes">
     <title>RedGalaxy Studio / NebulaForge Studio</title>
     <style>
         /* WIKIPEDIA STYLE CSS */
@@ -10,7 +11,7 @@
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
         /* SIDEBAR */
-        .mw-sidebar { width: 200px; padding: 20px; background-color: #f6f6f6; }
+        .mw-sidebar { width: 200px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; }
         .mw-logo { display: block; font-family: 'Linux Libertine', Georgia, serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; }
         .mw-sidebar h3 { font-family: sans-serif; font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
@@ -19,7 +20,7 @@
         .mw-sidebar a:hover { text-decoration: underline; }
         
         /* MAIN CONTENT */
-        .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; }
+        .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; min-width: 800px; }
         .mw-top-tools { text-align: right; font-size: 0.85rem; margin-bottom: 20px; }
         .mw-top-tools span { margin-left: 10px; }
         
