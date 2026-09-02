@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Changing the viewport to a fixed width forces a desktop-like layout on mobile, allowing pinch-to-zoom -->
     <meta name="viewport" content="width=1200, user-scalable=yes">
     <title>RedGalaxy Studio / NebulaForge Studio</title>
     <style>
@@ -67,16 +66,14 @@
         
         .error-container { text-align: center; margin-top: 30px; background-color: #f8f9fa; border: 1px solid #eaecf0; padding: 30px; }
         .error-container img { max-width: 100%; height: auto; border: 2px solid #202122; margin-bottom: 25px; border-radius: 4px; }
-        .error-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; font-family: 'Linux Libertine', Georgia, serif; }
-        .error-desc { font-size: 1rem; margin-bottom: 15px; }
-        .error-mod { color: #d33; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; padding: 10px; background-color: #fee7e6; border-left: 5px solid #d33; display: inline-block; }
-        .try-again-btn { color: #0645ad; cursor: pointer; font-weight: bold; text-decoration: underline; font-size: 1.1rem; }
+        .error-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; font-family: 'Linux Libertine', Georgia, serif; }
+        .error-mod { color: #005a9c; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; padding: 10px; background-color: #eaf3ff; border-left: 5px solid #005a9c; display: inline-block; }
+        .try-again-btn { color: #0645ad; cursor: pointer; font-weight: bold; text-decoration: underline; font-size: 1.1rem; display: inline-block; }
         .try-again-btn:hover { color: #0b0080; }
     </style>
 </head>
 <body>
 
-    <!-- SCREEN 1: WIKIPEDIA LOGIN PAGE -->
     <div id="loginScreen">
         <div class="mw-page-container" style="justify-content: center; align-items: flex-start; padding-top: 50px;">
             <div class="form-box">
@@ -97,11 +94,9 @@
         </div>
     </div>
 
-    <!-- SCREEN 2: MAIN WIKI PAGE -->
     <div id="wikiScreen" style="display: none;">
         <div class="mw-page-container">
             
-            <!-- SIDEBAR -->
             <div class="mw-sidebar">
                 <a href="#" class="mw-logo" onclick="openHome()">RedGalaxy Studio<br>NebulaForge Studio</a>
                 
@@ -125,7 +120,6 @@
                 </ul>
             </div>
             
-            <!-- MAIN WIKI CONTENT -->
             <div class="mw-content-container">
                 <div class="mw-top-tools">
                     <span id="userStatus" style="font-weight:bold;">Not logged in</span>
@@ -223,7 +217,7 @@
 
         function openGame(game) {
             if(game === 'crystal') {
-                triggerError144Sequence();
+                triggerReleaseSequence();
                 return;
             }
 
@@ -403,37 +397,39 @@
             document.getElementById('pageContent').innerHTML = html;
         }
 
-        /* --- 5. ERROR 144 SEQUENCE (Crystal Collecting Simulator) --- */
+        /* --- 5. RELEASE ANNOUNCEMENT SEQUENCE (Crystal Collecting Simulator) --- */
 
-        function triggerError144Sequence() {
+        function triggerReleaseSequence() {
             // Step 1: Display the Loading Video / Spinner State
-            document.getElementById('pageTitle').innerText = "Loading Video Asset...";
+            document.getElementById('pageTitle').innerText = "Loading Asset...";
             document.getElementById('pageContent').innerHTML = `
                 <div style="text-align:center; padding: 50px;">
                     <div class="loader"></div>
-                    <p style="font-weight: bold; color: #54595d;">Establishing connection to game database...</p>
+                    <p style="font-weight: bold; color: #54595d;">Fetching game data...</p>
                 </div>
             `;
 
-            // Step 2: Set Timeout to render the Error Screen after 3 seconds
+            // Step 2: Set Timeout to render the Release Screen after 3 seconds
             setTimeout(() => {
                 document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
                 document.getElementById('pageContent').innerHTML = `
                     <div class="error-container">
-                        <img src="https://cdn.discordapp.com/attachments/1538168440756375582/1544263947572478022/file_00000000f2f081faa3e4720876265965.png?ex=6a97df60&is=6a968de0&hm=d9ab6919420e0a72f38a595795387f9ae2855efa731c6519fc497900f945c7b6&" alt="Error Screen Image">
+                        <div style="margin-bottom: 25px;">
+                            <span class="try-again-btn" onclick="triggerReleaseSequence()">Try Again</span>
+                        </div>
                         
-                        <div class="error-title">This Wiki Website was found error 144</div>
+                        <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Announcement Image">
                         
-                        <div class="error-desc">
-                            [The owner of Crystal Collecting Simulator {Ccs} was announce that the game was going to Delete or Suspended]
+                        <div class="error-title">
+                            (Lume Craftor announce that the game will be Release at September 6, 2026, 1:00PM)
                         </div>
                         
                         <div class="error-mod">
-                            Moderator Action: This Game Wiki was Under Review because we found an error 144
+                            (Moderator Action: Admin Abuse will be Starting 30 minutes after the release, see y'all at September 6, 2026, 1:00PM)
                         </div>
                         
-                        <div>
-                            <span class="try-again-btn" onclick="triggerError144Sequence()">Try Again</span>
+                        <div style="margin-top: 15px;">
+                            <span class="try-again-btn" onclick="triggerReleaseSequence()">Try Again</span>
                         </div>
                     </div>
                 `;
