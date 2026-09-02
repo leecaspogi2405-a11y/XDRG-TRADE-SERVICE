@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=1200, user-scalable=yes">
     <title>RedGalaxy Studio / NebulaForge Studio</title>
     <style>
-        /* WIKIPEDIA STYLE CSS */
         body { font-family: sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
-        /* SIDEBAR */
         .mw-sidebar { width: 200px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; }
         .mw-logo { display: block; font-family: 'Linux Libertine', Georgia, serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
         .mw-sidebar h3 { font-family: sans-serif; font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
@@ -18,7 +16,6 @@
         .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; }
         .mw-sidebar a:hover { text-decoration: underline; }
         
-        /* MAIN CONTENT */
         .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; min-width: 800px; }
         .mw-top-tools { text-align: right; font-size: 0.85rem; margin-bottom: 20px; }
         .mw-top-tools span { margin-left: 10px; }
@@ -26,12 +23,10 @@
         h1 { font-family: 'Linux Libertine', Georgia, serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
         h2 { font-family: 'Linux Libertine', Georgia, serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
         
-        /* TABLES */
         .wikitable { background-color: #f8f9fa; color: #202122; margin: 1em 0; border: 1px solid #a2a9b1; border-collapse: collapse; width: 100%; text-align: left; }
         .wikitable th, .wikitable td { border: 1px solid #a2a9b1; padding: 8px 10px; }
         .wikitable th { background-color: #eaecf0; text-align: center; }
         
-        /* LOGIN & FORMS */
         .form-box { max-width: 450px; margin: 30px auto; border: 1px solid #a2a9b1; padding: 30px; background: #f8f9fa; border-radius: 6px; }
         .form-box label { display: block; font-weight: bold; margin-bottom: 3px; font-size: 0.85rem; }
         .form-box input[type="text"], .form-box input[type="email"], .form-box input[type="password"], .form-box input[type="number"] { width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid #a2a9b1; box-sizing: border-box; border-radius: 4px; }
@@ -42,7 +37,6 @@
         .auth-toggle button { background: #eaecf0; color: #202122; border: 1px solid #a2a9b1; padding: 8px; font-weight: bold; width: 50%; cursor: pointer; }
         .auth-toggle button.active { background: #3366cc; color: white; border-color: #3366cc; }
 
-        /* SETTINGS PAGE */
         .settings-section { max-width: 600px; margin-top: 20px; }
         .settings-row { margin-bottom: 15px; }
         .settings-row label { display: block; font-weight: bold; margin-bottom: 5px; }
@@ -63,11 +57,9 @@
         .btn-copy { background-color: #00af89; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; }
         .btn-copy:hover { background-color: #008a6b; }
         
-        /* CONTROLS */
         .infobox { float: right; border: 1px solid #a2a9b1; background-color: #f8f9fa; padding: 10px; margin: 0 0 15px 15px; width: 250px; font-size: 0.9rem; }
         .infobox select { width: 100%; padding: 5px; margin-top: 5px; }
 
-        /* LOADING & ERROR SCREEN */
         .loader { border: 8px solid #eaecf0; border-top: 8px solid #3366cc; border-radius: 50%; width: 50px; height: 50px; animation: spin 1.5s linear infinite; margin: 40px auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
@@ -78,7 +70,6 @@
         .try-again-btn { color: #0645ad; cursor: pointer; font-weight: bold; text-decoration: underline; font-size: 1.1rem; display: inline-block; }
         .try-again-btn:hover { color: #0b0080; }
 
-        /* QUEST DASHBOARD */
         .quest-box { border: 1px solid #a2a9b1; background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .quest-box.disabled { background: #fff0f0; border-color: #f5c6cb; }
         .points-header { background: #eaf3ff; border: 1px solid #3366cc; padding: 12px; font-weight: bold; font-size: 1.1rem; color: #005a9c; text-align: center; border-radius: 6px; margin-bottom: 20px; }
@@ -90,7 +81,6 @@
 </head>
 <body>
 
-    <!-- AUTHENTICATION SCREEN -->
     <div id="loginScreen">
         <div class="mw-page-container" style="justify-content: center; align-items: flex-start; padding-top: 30px;">
             <div class="form-box">
@@ -106,10 +96,9 @@
                     <button id="btnTabLog" onclick="switchAuthTab('login')">Log In</button>
                 </div>
 
-                <!-- SIGN UP FORM -->
                 <form id="signInForm" onsubmit="handleAuth(event, 'signin')">
                     <label>Full Name:</label>
-                    <input type="text" id="signName" required placeholder="Enter your full name">
+                    <input type="text" id="signName" required placeholder="Enter full name">
                     
                     <label>Username:</label>
                     <input type="text" id="signUsername" required placeholder="Enter username">
@@ -123,13 +112,12 @@
                     <label>Password / Secret Key:</label>
                     <input type="password" id="signPass" required placeholder="Enter password or secret key">
                     
-                    <button type="submit">Sign Up (Register)</button>
+                    <button type="submit">Sign Up</button>
                 </form>
 
-                <!-- LOG IN FORM -->
                 <form id="loginForm" onsubmit="handleAuth(event, 'login')" style="display: none;">
                     <label>Name / Username:</label>
-                    <input type="text" id="logName" required placeholder="Enter your name or username">
+                    <input type="text" id="logName" required placeholder="Enter name or username">
                     
                     <label>Roblox User ID:</label>
                     <input type="number" id="logRblxId" required placeholder="Enter Roblox User ID">
@@ -146,7 +134,6 @@
         </div>
     </div>
 
-    <!-- MAIN WIKI SCREEN -->
     <div id="wikiScreen" style="display: none;">
         <div class="mw-page-container">
             
@@ -183,15 +170,13 @@
                 <h1 id="pageTitle">Main Page</h1>
                 
                 <div id="pageContent">
-                    <p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> wiki portal. Select an option from the navigation menu to browse game databases or access trade rewards.</p>
+                    <p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases or access trade services.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        /* --- 1. DATA STRUCTURES --- */
-        
         const areaMapping = {
             "Common": "Forest Area",
             "Rare": "City Area",
@@ -226,8 +211,6 @@
         let selectedCards = [];
         const emojis = ["🐱", "🐶", "🦊", "🐸", "🐵", "🦁"];
 
-        /* --- 2. INITIALIZATION & URL REFERRAL AUTO-DETECTION --- */
-        
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const referrerId = urlParams.get('ref');
@@ -236,7 +219,7 @@
                 localStorage.setItem('activeReferrer', referrerId);
                 const alertBanner = document.getElementById('refDetectAlert');
                 if (alertBanner) {
-                    alertBanner.innerText = `🔗 Inviter Link Detected! (RblxID: ${referrerId}) Sign up to grant +25 points to your inviter.`;
+                    alertBanner.innerText = `🔗 Referred Link Detected! (RblxID: ${referrerId}) Register to grant +25 points to your inviter.`;
                     alertBanner.style.display = 'block';
                 }
             }
@@ -296,7 +279,6 @@
             let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
             refStore[referrerId] = (refStore[referrerId] || 0) + 1;
             localStorage.setItem('referralDataStore', JSON.stringify(refStore));
-            alert(`🎉 Referral link verified! User ID ${referrerId} will receive +25 points.`);
         }
 
         function updateUserStatusHeader() {
@@ -322,11 +304,9 @@
             localStorage.setItem('wikiUser', JSON.stringify(currentUser));
         }
 
-        /* --- 3. NAVIGATION LOGIC --- */
-
         function openHome() {
             document.getElementById('pageTitle').innerText = "Main Page";
-            document.getElementById('pageContent').innerHTML = "<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> wiki portal. Select an option from the sidebar to view game databases or claim trade rewards.</p>";
+            document.getElementById('pageContent').innerHTML = "<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases or claim trade rewards.</p>";
         }
 
         function openGame(game) {
@@ -337,8 +317,6 @@
             document.getElementById('pageTitle').innerText = "Don't Crash the Train for Brainrots";
             renderBrainrotsPage();
         }
-
-        /* --- 4. QUESTS DASHBOARD & FIREBASE CLAIM SYSTEM --- */
 
         function openQuests() {
             document.getElementById('pageTitle').innerText = "🎯 Quests & Trade Service Dashboard";
@@ -360,12 +338,9 @@
                     Total Points: <span id="pointCount">${totalPoints}</span> / 35
                 </div>
 
-                <!-- QUEST 1: AUTOMATIC REFERRAL LINK -->
                 <div class="quest-box">
                     <h3>Quest 1: Auto-Detect Friend Invite (+25 Points / Referral)</h3>
-                    <p style="color:#54595d; font-size:0.9rem; margin-bottom:5px;">Share your unique invite link. When someone opens it and registers, you automatically gain +25 points!</p>
-                    
-                    <label><b>Your Unique Auto-Invite Link:</b></label>
+                    <label><b>Your Unique Invite Link:</b></label>
                     <div class="copy-container">
                         <input type="text" id="inviteUrlInput" value="${autoInviteLink}" readonly>
                         <button class="btn-copy" onclick="copyInviteLink()">Copy Link</button>
@@ -373,31 +348,27 @@
                     </div>
 
                     <div style="margin-top:12px; font-weight:bold; color:#005a9c;">
-                        📊 Verified Referrals: <span>${detectedInvites}</span> (${detectedInvites * 25} Points Earned)
+                        📊 Verified Referrals: <span>${detectedInvites}</span> (${detectedInvites * 25} Points)
                     </div>
                 </div>
 
-                <!-- REWARD CLAIM SECTION -->
                 <div class="quest-box">
-                    <h3>🎁 Summerini Fattini Tool Reward (Top Limited)</h3>
-                    <p style="color:#54595d; font-size:0.9rem;">Requires 35 Points or Dev VIP Access to claim. Instantly converts model into a welded Tool in your Roblox inventory upon claim.</p>
+                    <h3>🎁 Summerini Fattini Reward</h3>
                     <button class="btn-claim" onclick="claimRewardFirebase('${currentUser.username || currentUser.name}', 'Summerini Fattini', '${currentUser.gmail}')">
-                        Claim Summerini Fattini
+                        Claim Reward
                     </button>
                 </div>
 
-                <!-- QUEST 2 -->
                 <div class="quest-box disabled">
                     <h3>Quest 2: Image Leaks Voting</h3>
                     <div class="status-closed-text">
-                        (Under Construction 🚧 Quest Closed 🔒)
+                        Quest Closed 🔒
                     </div>
                 </div>
 
-                <!-- QUEST 3 -->
                 <div class="quest-box">
                     <h3>Quest 3: Emoji Matching Puzzle (+1 Pt / Level)</h3>
-                    <p style="color:#54595d; font-size:0.9rem;">Find matching emoji pairs to clear levels (Level <span id="gameLevel">${currentUser.level}</span>/250).</p>
+                    <p style="color:#54595d; font-size:0.9rem;">Level <span id="gameLevel">${currentUser.level}</span>/250</p>
                     <div class="game-grid" id="gameGrid"></div>
                 </div>
             `;
@@ -406,11 +377,9 @@
             initMiniGame();
         }
 
-        /* --- FIREBASE CLAIM REQUEST HANDLER --- */
         async function claimRewardFirebase(robloxUsername, rewardItem, userEmail) {
             const FIREBASE_URL = "https://automation-giver-xdrg-default-rtdb.firebaseio.com/claims.json";
 
-            // VIP Free Claim Bypass Check for Dev Email
             let isFreeClaim = (userEmail === "xdrgxdragon@gmail.com");
 
             let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
@@ -439,7 +408,7 @@
                 });
 
                 if (response.ok) {
-                    alert(`🎉 Reward Claim Recorded! Log into the Roblox game to receive your ${rewardItem} Tool!`);
+                    alert(`🎉 Claim request submitted for ${rewardItem}!`);
                 } else {
                     alert("Error submitting claim request. Please try again.");
                 }
@@ -506,15 +475,11 @@
 
                     if(document.getElementById('pointCount')) document.getElementById('pointCount').innerText = totalPoints;
                     if(document.getElementById('gameLevel')) document.getElementById('gameLevel').innerText = currentUser.level;
-                    
-                    alert(`Level Cleared! +1 Point added. Next Level: ${currentUser.level}`);
                 }
             }
             initMiniGame();
         }
 
-        /* --- 5. SETTINGS PAGE --- */
-        
         function openSettings() {
             document.getElementById('pageTitle').innerText = "⚙️ Settings";
             renderSettingsPage();
@@ -560,7 +525,7 @@
                     <hr style="margin: 40px 0 20px 0; border: 0; border-top: 1px solid #c8ccd1;">
 
                     <h2>Downloads</h2>
-                    <p style="margin-top: 0;">Latest Mobile APK Release:</p>
+                    <p style="margin-top: 0;">Mobile APK Release:</p>
                     <div class="copy-container">
                         <input type="text" id="dlLinkInput" value="https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file" readonly>
                         <button class="btn-copy" onclick="copyDownloadLink()">Copy Link</button>
@@ -595,8 +560,6 @@
             setTimeout(() => { confirmMsg.style.display = "none"; }, 2000);
         }
 
-        /* --- 6. GAME DATABASE RENDERING --- */
-
         function changeMutation() {
             const sel = document.getElementById('mutationSelect');
             currentMutation = parseInt(sel.value);
@@ -618,7 +581,6 @@
                         <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
                     </select>
                 </div>
-                <p>Character units and shop values in <b>Don't Crash the Train for Brainrots</b>. Prices reflect current mutation multipliers.</p>
             `;
 
             categories.forEach(cat => {
@@ -681,8 +643,6 @@
 
             document.getElementById('pageContent').innerHTML = html;
         }
-
-        /* --- 7. GAME RELEASE ANNOUNCEMENT SEQUENCE --- */
 
         function triggerReleaseSequence() {
             document.getElementById('pageTitle').innerText = "Loading Asset...";
