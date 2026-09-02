@@ -285,36 +285,29 @@
             window.location.reload();
         }
 
-        // --- MULTI-PROXY JSON FETCH HELPER WITH UNWRAPPING ---
+        // --- RAW MULTI-PROXY JSON FETCH HELPER ---
         async function fetchJsonWithProxy(targetUrl) {
-            const proxyConfigs = [
-                { url: "https://api.codetabs.com/v1/proxy?quest=", type: "direct" },
-                { url: "https://corsproxy.io/?", type: "direct" },
-                { url: "https://api.allorigins.win/get?url=", type: "allorigins" }
+            const proxies = [
+                url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+                url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+                url => `https://thingproxy.freeboard.io/fetch/${url}`
             ];
 
-            for (let proxy of proxyConfigs) {
+            for (let getProxyUrl of proxies) {
                 try {
-                    const fullUrl = proxy.url + encodeURIComponent(targetUrl);
-                    const res = await fetch(fullUrl);
-                    if (!res.ok) continue;
-
-                    if (proxy.type === "allorigins") {
-                        const wrapper = await res.json();
-                        if (wrapper && wrapper.contents) {
-                            return typeof wrapper.contents === 'string' ? JSON.parse(wrapper.contents) : wrapper.contents;
-                        }
-                    } else {
-                        return await res.json();
+                    const res = await fetch(getProxyUrl(targetUrl));
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data) return data;
                     }
                 } catch (e) {
-                    console.warn(`Proxy fail on ${proxy.url}`, e);
+                    console.warn("Proxy attempt failed, trying fallback...", e);
                 }
             }
             return null;
         }
 
-        // --- FETCH REAL ROBLOX PROFILE & CDN HEADSHOT ---
+        // --- FETCH REAL ROBLOX PROFILE & CDN HEADSHOT (FIXED PLURAL ENDPOINT) ---
         async function fetchRobloxProfile(userId) {
             if (!userId || isNaN(userId)) return null;
 
@@ -322,7 +315,8 @@
                 const userUrl = `https://users.roblox.com/v1/users/${userId}`;
                 const userData = await fetchJsonWithProxy(userUrl);
 
-                const thumbUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`;
+                // FIXED: Used correct Roblox API endpoint 'avatar-headshots' (plural)
+                const thumbUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshots?userIds=${userId}&size=150x150&format=Png&isCircular=false`;
                 const thumbData = await fetchJsonWithProxy(thumbUrl);
 
                 const imgUrl = thumbData?.data?.[0]?.imageUrl;
@@ -950,7 +944,6 @@
             
             document.getElementById('pageContent').innerHTML = html;
 
-            // Trigger active profile reload to populate avatar image immediately
             if (currentUser && currentUser.rblxUserId) {
                 fetchRobloxProfile(currentUser.rblxUserId).then(profile => {
                     if (profile && profile.avatarUrl && profile.avatarUrl !== DEFAULT_AVATAR) {
