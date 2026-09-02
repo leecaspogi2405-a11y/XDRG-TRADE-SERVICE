@@ -127,8 +127,8 @@
                 <div id="robloxPreviewBox" class="roblox-preview-card" style="display: none;">
                     <img id="robloxPreviewImg" src="" alt="Roblox Avatar">
                     <div>
-                        <div id="robloxPreviewDisplayName" style="font-weight: bold; font-size: 0.95rem;">Detecting User...</div>
-                        <div id="robloxPreviewUsername" style="color: #54595d; font-size: 0.8rem;">@username</div>
+                        <div id="robloxPreviewDisplayName" style="font-weight: bold; font-size: 0.95rem;">Roblox User Verified</div>
+                        <div id="robloxPreviewUsername" style="color: #54595d; font-size: 0.8rem;">@roblox</div>
                     </div>
                 </div>
 
@@ -141,7 +141,7 @@
                     <input type="number" id="signRblxId" required placeholder="Enter Roblox User ID (e.g. 9676166807)" oninput="detectRobloxProfile(this.value, 'signUsername')">
                     
                     <label>Roblox Username:</label>
-                    <input type="text" id="signUsername" required placeholder="Auto-detected from Roblox User ID">
+                    <input type="text" id="signUsername" required placeholder="Enter Roblox Username">
                     
                     <label>Gmail:</label>
                     <input type="email" id="signGmail" required placeholder="Enter Gmail address">
@@ -274,7 +274,6 @@
                 const item = localStorage.getItem(key);
                 return item ? JSON.parse(item) : defaultVal;
             } catch (e) {
-                console.error("Storage read error:", e);
                 return defaultVal;
             }
         }
@@ -285,52 +284,10 @@
             window.location.reload();
         }
 
-        // --- RAW MULTI-PROXY JSON FETCH HELPER ---
-        async function fetchJsonWithProxy(targetUrl) {
-            const proxies = [
-                url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-                url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-                url => `https://thingproxy.freeboard.io/fetch/${url}`
-            ];
-
-            for (let getProxyUrl of proxies) {
-                try {
-                    const res = await fetch(getProxyUrl(targetUrl));
-                    if (res.ok) {
-                        const data = await res.json();
-                        if (data) return data;
-                    }
-                } catch (e) {
-                    console.warn("Proxy attempt failed, trying fallback...", e);
-                }
-            }
-            return null;
-        }
-
-        // --- FETCH REAL ROBLOX PROFILE & CDN HEADSHOT (FIXED PLURAL ENDPOINT) ---
-        async function fetchRobloxProfile(userId) {
-            if (!userId || isNaN(userId)) return null;
-
-            try {
-                const userUrl = `https://users.roblox.com/v1/users/${userId}`;
-                const userData = await fetchJsonWithProxy(userUrl);
-
-                // FIXED: Used correct Roblox API endpoint 'avatar-headshots' (plural)
-                const thumbUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshots?userIds=${userId}&size=150x150&format=Png&isCircular=false`;
-                const thumbData = await fetchJsonWithProxy(thumbUrl);
-
-                const imgUrl = thumbData?.data?.[0]?.imageUrl;
-
-                return {
-                    username: userData?.name || "Unknown",
-                    displayName: userData?.displayName || "Unknown",
-                    avatarUrl: (imgUrl && imgUrl.length > 0) ? imgUrl : DEFAULT_AVATAR
-                };
-            } catch (err) {
-                console.error("Error fetching Roblox Profile:", err);
-            }
-
-            return null;
+        // DIRECT ROBLOX CDN AVATAR URL (Gagana agad at walang CORS issue sa kahit anong browser/app)
+        function getRobloxAvatarUrl(userId) {
+            if (!userId || isNaN(userId)) return DEFAULT_AVATAR;
+            return `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
         }
 
         function detectRobloxProfile(userId, targetUsernameInputId) {
@@ -342,34 +299,22 @@
                 return;
             }
 
-            robloxDebounceTimer = setTimeout(async () => {
+            robloxDebounceTimer = setTimeout(() => {
+                const cleanId = userId.trim();
+                const avatarUrl = getRobloxAvatarUrl(cleanId);
+
                 if (previewBox) {
                     previewBox.style.display = 'flex';
-                    document.getElementById('robloxPreviewImg').src = DEFAULT_AVATAR;
-                    document.getElementById('robloxPreviewDisplayName').innerText = "Fetching Roblox Avatar...";
-                    document.getElementById('robloxPreviewUsername').innerText = "@...";
+                    document.getElementById('robloxPreviewImg').src = avatarUrl;
+                    document.getElementById('robloxPreviewDisplayName').innerText = "Roblox ID: " + cleanId;
+                    document.getElementById('robloxPreviewUsername').innerText = "@roblox_user";
                 }
 
-                const profile = await fetchRobloxProfile(userId.trim());
-                if (profile) {
-                    document.getElementById('robloxPreviewImg').src = profile.avatarUrl;
-                    document.getElementById('robloxPreviewDisplayName').innerText = profile.displayName;
-                    document.getElementById('robloxPreviewUsername').innerText = `@${profile.username}`;
-                    
-                    if (targetUsernameInputId) {
-                        document.getElementById(targetUsernameInputId).value = profile.username;
-                    }
-
-                    if (currentUser && String(currentUser.rblxUserId) === String(userId)) {
-                        currentUser.avatarUrl = profile.avatarUrl;
-                        currentUser.displayName = profile.displayName;
-                    }
-                } else {
-                    document.getElementById('robloxPreviewImg').src = DEFAULT_AVATAR;
-                    document.getElementById('robloxPreviewDisplayName').innerText = "User Not Found";
-                    document.getElementById('robloxPreviewUsername').innerText = "@invalid";
+                if (currentUser && String(currentUser.rblxUserId) === String(cleanId)) {
+                    currentUser.avatarUrl = avatarUrl;
+                    saveUserData();
                 }
-            }, 500);
+            }, 300);
         }
 
         window.onload = () => {
@@ -429,13 +374,13 @@
                         return;
                     }
 
-                    const robloxProfile = await fetchRobloxProfile(rblxId);
+                    const avatarUrl = getRobloxAvatarUrl(rblxId);
 
                     currentUser = {
                         name: name,
-                        username: username || (robloxProfile ? robloxProfile.username : "User"),
-                        displayName: robloxProfile ? robloxProfile.displayName : name,
-                        avatarUrl: (robloxProfile && robloxProfile.avatarUrl) ? robloxProfile.avatarUrl : DEFAULT_AVATAR,
+                        username: username || "User",
+                        displayName: name,
+                        avatarUrl: avatarUrl,
                         rblxUserId: rblxId,
                         gmail: gmail,
                         password: pass,
@@ -532,10 +477,10 @@
             localStorage.setItem('referralDataStore', JSON.stringify(refStore));
         }
 
-        async function updateUserStatusHeader() {
+        function updateUserStatusHeader() {
             if (!currentUser) return;
 
-            let avatar = currentUser.avatarUrl && currentUser.avatarUrl.length > 0 ? currentUser.avatarUrl : DEFAULT_AVATAR;
+            let avatar = getRobloxAvatarUrl(currentUser.rblxUserId);
             let dName = currentUser.displayName || currentUser.name || "User";
 
             document.getElementById('userStatus').innerHTML = `
@@ -544,22 +489,6 @@
                     <b>${dName}</b> (@${currentUser.username}) | <span style="color:#28a745; font-weight:bold;">🟢 Connected</span>
                 </div>
             `;
-
-            // Background update to retrieve live Roblox CDN headshot image
-            if (currentUser.rblxUserId) {
-                const profile = await fetchRobloxProfile(currentUser.rblxUserId);
-                if (profile && profile.avatarUrl && profile.avatarUrl !== DEFAULT_AVATAR) {
-                    currentUser.avatarUrl = profile.avatarUrl;
-                    currentUser.displayName = profile.displayName;
-                    saveUserData();
-                    
-                    const imgElem = document.getElementById('headerAvatarImg');
-                    if (imgElem) imgElem.src = profile.avatarUrl;
-
-                    const settingsImg = document.getElementById('settingsAvatarImg');
-                    if (settingsImg) settingsImg.src = profile.avatarUrl;
-                }
-            }
         }
 
         function logout() {
@@ -874,11 +803,12 @@
 
             const votingData = await fetchVotingData();
             const voteImages = votingData.images || [];
+            const avatarUrl = getRobloxAvatarUrl(user.rblxUserId);
 
             let html = `
                 <div class="settings-section">
                     <div style="display:flex; align-items:center; gap:15px; margin-bottom: 20px; background:#f8f9fa; border:1px solid #a2a9b1; padding:15px; border-radius:6px;">
-                        <img id="settingsAvatarImg" src="${user.avatarUrl || DEFAULT_AVATAR}" style="width:70px; height:70px; border-radius:50%; border:3px solid #3366cc; object-fit:cover;" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
+                        <img id="settingsAvatarImg" src="${avatarUrl}" style="width:70px; height:70px; border-radius:50%; border:3px solid #3366cc; object-fit:cover;" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
                         <div>
                             <div style="font-size:1.2rem; font-weight:bold;">${user.displayName || user.name}</div>
                             <div style="color:#54595d;">@${user.username || 'username'}</div>
@@ -943,17 +873,6 @@
             `;
             
             document.getElementById('pageContent').innerHTML = html;
-
-            if (currentUser && currentUser.rblxUserId) {
-                fetchRobloxProfile(currentUser.rblxUserId).then(profile => {
-                    if (profile && profile.avatarUrl && profile.avatarUrl !== DEFAULT_AVATAR) {
-                        currentUser.avatarUrl = profile.avatarUrl;
-                        saveUserData();
-                        const sImg = document.getElementById('settingsAvatarImg');
-                        if (sImg) sImg.src = profile.avatarUrl;
-                    }
-                });
-            }
         }
 
         function saveSettings() {
@@ -1094,7 +1013,7 @@
                             <span class="try-again-btn" onclick="triggerReleaseSequence()">Refresh Status</span>
                         </div>
                         
-                        <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" onerror="this.onerror=null; this.src='https://via.placeholder.com/600x300?text=Release+Banner';">
+                        <img src="https://via.placeholder.com/600x300?text=Crystal+Collecting+Simulator+Release" alt="Game Release Announcement Banner">
                         
                         <div class="error-title">
                             Official Release Announcement: Game scheduled to launch on September 6, 2026 at 1:00 PM PST.
