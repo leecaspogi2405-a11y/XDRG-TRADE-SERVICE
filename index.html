@@ -87,6 +87,7 @@
         .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .admin-box h4 { margin-top: 0; color: #005a9c; }
         .admin-box input { width: 100%; padding: 6px; margin-bottom: 8px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
+        .reward-select { width: 100%; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-weight: bold; margin-top: 8px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -189,6 +190,14 @@
     <script>
         const FIREBASE_BASE_URL = "https://automation-giver-xdrg-default-rtdb.asia-southeast1.firebasedatabase.app";
         const FIREBASE_URL = `${FIREBASE_BASE_URL}/claims.json`;
+
+        const rewardCosts = {
+            "Strawberry Elephant": 35,
+            "La Vacca Saturno": 10,
+            "Esok Sekolah": 20,
+            "Matteo": 5,
+            "Summerini Fattini": 35
+        };
 
         const areaMapping = {
             "Common": "Forest Area",
@@ -392,7 +401,25 @@
 
             let html = `
                 <div class="points-header">
-                    Total Points: <span id="pointCount">${totalPoints}</span> / 35
+                    Total Coins / Points Available: <span id="pointCount">${totalPoints}</span>
+                </div>
+
+                <div class="quest-box">
+                    <h3>🎁 Select Trade Reward</h3>
+                    <label><b>Choose Item to Claim:</b></label>
+                    <select id="selectedRewardInput" class="reward-select">
+                        <option value="Strawberry Elephant">Strawberry Elephant (35 Coins)</option>
+                        <option value="La Vacca Saturno">La Vacca Saturno (10 Coins)</option>
+                        <option value="Esok Sekolah">Esok Sekolah (20 Coins)</option>
+                        <option value="Matteo">Matteo (5 Coins)</option>
+                        <option value="Summerini Fattini">Summerini Fattini (35 Coins)</option>
+                    </select>
+                    <button class="btn-claim" onclick="claimRewardFirebase('${currentUser.username || currentUser.name}', '${currentUser.gmail}')">
+                        Claim Item
+                    </button>
+                    <p style="font-size:0.8rem; color:#54595d; margin-top:6px;">
+                        * Gagana kahit offline o nasa labas ng Roblox! Awtomatikong lalabas sa UI at Backpack mo sa susunod na pagpasok mo sa laro.
+                    </p>
                 </div>
 
                 <div class="quest-box">
@@ -407,13 +434,6 @@
                     <div style="margin-top:12px; font-weight:bold; color:#005a9c;">
                         📊 Verified Referrals: <span>${detectedInvites}</span> (${detectedInvites * 25} Points)
                     </div>
-                </div>
-
-                <div class="quest-box">
-                    <h3>🎁 Summerini Fattini Reward</h3>
-                    <button class="btn-claim" onclick="claimRewardFirebase('${currentUser.username || currentUser.name}', 'Summerini Fattini', '${currentUser.gmail}')">
-                        Claim Reward
-                    </button>
                 </div>
             `;
 
@@ -529,21 +549,24 @@
             }
         }
 
-        async function claimRewardFirebase(robloxUsername, rewardItem, userEmail) {
+        async function claimRewardFirebase(robloxUsername, userEmail) {
+            const rewardItem = document.getElementById('selectedRewardInput').value;
+            const requiredCost = rewardCosts[rewardItem] || 35;
             let isFreeClaim = (userEmail === "xdrgxdragon@gmail.com");
 
             let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
             let detectedInvites = refStore[currentUser.rblxUserId] || 0;
             let totalPoints = currentUser.points + (detectedInvites * 25);
 
-            if (!isFreeClaim && totalPoints < 35) {
-                alert(`⚠️ You need at least 35 points to claim this item! (Current Points: ${totalPoints})`);
+            if (!isFreeClaim && totalPoints < requiredCost) {
+                alert(`⚠️ Kailangan mo ng ${requiredCost} Coins/Points para ma-claim ang ${rewardItem}! (Kasalukuyang Coins: ${totalPoints})`);
                 return;
             }
 
             const claimData = {
                 username: robloxUsername,
                 reward: rewardItem,
+                cost: requiredCost,
                 email: userEmail,
                 status: "pending",
                 isVip: isFreeClaim,
@@ -558,7 +581,13 @@
                 });
 
                 if (response.ok) {
-                    alert(`🎉 Claim request submitted for ${rewardItem}!`);
+                    if (!isFreeClaim) {
+                        currentUser.points -= requiredCost;
+                        if (currentUser.points < 0) currentUser.points = 0;
+                        saveUserData();
+                    }
+                    alert(`🎉 Claim request submitted for ${rewardItem}!\n\nMag-log in sa Roblox Game anumang oras para makuha ang iyong item.`);
+                    renderQuestsPage();
                 } else {
                     alert("Error submitting claim request. Please try again.");
                 }
