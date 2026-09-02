@@ -8,7 +8,7 @@
         body { font-family: sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
-        .mw-sidebar { width: 200px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; }
+        .mw-sidebar { width: 220px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; }
         .mw-logo { display: block; font-family: 'Linux Libertine', Georgia, serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
         .mw-sidebar h3 { font-family: sans-serif; font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
@@ -17,9 +17,11 @@
         .mw-sidebar a:hover { text-decoration: underline; }
         
         .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; min-width: 800px; }
-        .mw-top-tools { text-align: right; font-size: 0.85rem; margin-bottom: 20px; }
-        .mw-top-tools span { margin-left: 10px; }
+        .mw-top-tools { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 20px; border-bottom: 1px solid #eaecf0; padding-bottom: 10px; }
         
+        .user-badge { display: flex; align-items: center; gap: 10px; }
+        .user-avatar-small { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #3366cc; object-fit: cover; background: #eaf3ff; }
+
         h1 { font-family: 'Linux Libertine', Georgia, serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
         h2 { font-family: 'Linux Libertine', Georgia, serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
         
@@ -33,6 +35,9 @@
         .form-box button { background-color: #3366cc; color: white; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; width: 100%; border-radius: 4px; }
         .form-box button:hover { background-color: #2a4b8d; }
         
+        .roblox-preview-card { display: flex; align-items: center; gap: 12px; background: #eaf3ff; border: 1px solid #a7d7f9; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+        .roblox-preview-card img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3366cc; background: #ffffff; }
+
         .auth-toggle { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid #a2a9b1; padding-bottom: 10px; }
         .auth-toggle button { background: #eaecf0; color: #202122; border: 1px solid #a2a9b1; padding: 8px; font-weight: bold; width: 50%; cursor: pointer; }
         .auth-toggle button.active { background: #3366cc; color: white; border-color: #3366cc; }
@@ -92,6 +97,7 @@
 </head>
 <body>
 
+    <!-- LOGIN / REGISTRATION SCREEN -->
     <div id="loginScreen">
         <div class="mw-page-container" style="justify-content: center; align-items: flex-start; padding-top: 30px;">
             <div class="form-box">
@@ -99,7 +105,7 @@
                 <p style="font-size:0.85rem; color:#54595d; text-align:center; margin-bottom:20px;">RedGalaxy Studio / NebulaForge Studio</p>
                 
                 <div id="refDetectAlert" class="alert-banner" style="display:none;">
-                    🔗 Referral Link Detected! Register to credit your inviter.
+                    🔗 Referral Link Detected! Register to grant points to your inviter.
                 </div>
 
                 <div class="auth-toggle">
@@ -107,15 +113,25 @@
                     <button id="btnTabLog" onclick="switchAuthTab('login')">Log In</button>
                 </div>
 
+                <!-- Live Roblox Profile Preview Box -->
+                <div id="robloxPreviewBox" class="roblox-preview-card" style="display: none;">
+                    <img id="robloxPreviewImg" src="https://via.placeholder.com/50?text=Roblox" alt="Roblox Avatar">
+                    <div>
+                        <div id="robloxPreviewDisplayName" style="font-weight: bold; font-size: 0.95rem;">Detecting User...</div>
+                        <div id="robloxPreviewUsername" style="color: #54595d; font-size: 0.8rem;">@username</div>
+                    </div>
+                </div>
+
+                <!-- Registration Form -->
                 <form id="signInForm" onsubmit="handleAuth(event, 'signin')">
                     <label>Full Name:</label>
-                    <input type="text" id="signName" required placeholder="Enter full name">
-                    
-                    <label>Username:</label>
-                    <input type="text" id="signUsername" required placeholder="Enter username">
+                    <input type="text" id="signName" required placeholder="Enter your full name">
                     
                     <label>Roblox User ID:</label>
-                    <input type="number" id="signRblxId" required placeholder="Enter Roblox User ID">
+                    <input type="number" id="signRblxId" required placeholder="Enter Roblox User ID" oninput="detectRobloxProfile(this.value, 'signUsername')">
+                    
+                    <label>Roblox Username:</label>
+                    <input type="text" id="signUsername" required placeholder="Auto-detected from Roblox User ID">
                     
                     <label>Gmail:</label>
                     <input type="email" id="signGmail" required placeholder="Enter Gmail address">
@@ -126,6 +142,7 @@
                     <button type="submit">Sign Up</button>
                 </form>
 
+                <!-- Login Form -->
                 <form id="loginForm" onsubmit="handleAuth(event, 'login')" style="display: none;">
                     <label>Name or Username:</label>
                     <input type="text" id="logName" required placeholder="Enter registered name or username">
@@ -144,13 +161,14 @@
                 
                 <div style="text-align: center; margin-top: 15px;">
                     <button type="button" onclick="resetStorageSystem()" style="background:none; border:none; color:#721c24; cursor:pointer; text-decoration:underline; font-size:0.8rem;">
-                        ⚠️ Stuck? Click here to Reset System Cache
+                        ⚠️ System Error? Click here to Clear Cache
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- MAIN DASHBOARD SCREEN -->
     <div id="wikiScreen" style="display: none;">
         <div class="mw-page-container">
             
@@ -180,7 +198,9 @@
             
             <div class="mw-content-container">
                 <div class="mw-top-tools">
-                    <span id="userStatus" style="font-weight:bold;">Not logged in</span>
+                    <div id="userStatus" class="user-badge">
+                        <span>Not logged in</span>
+                    </div>
                     <span><a onclick="logout()" style="color:#0645ad; cursor:pointer;">Log out</a></span>
                 </div>
                 
@@ -235,6 +255,7 @@
         let currentUser = null;
         let selectedCards = [];
         const emojis = ["🐱", "🐶", "🦊", "🐸", "🐵", "🦁"];
+        let robloxDebounceTimer = null;
 
         function safeGetJSON(key, defaultVal) {
             try {
@@ -250,6 +271,72 @@
             localStorage.clear();
             alert("System cache cleared! Page will reload now.");
             window.location.reload();
+        }
+
+        // --- ROBLOX API FETCHING FUNCTION ---
+        async function fetchRobloxProfile(userId) {
+            if (!userId || isNaN(userId)) return null;
+
+            try {
+                const proxy = "https://corsproxy.io/?";
+                
+                // 1. Fetch Username and Display Name
+                const userUrl = `https://users.roblox.com/v1/users/${userId}`;
+                const userRes = await fetch(proxy + encodeURIComponent(userUrl));
+                if (!userRes.ok) return null;
+                const userData = await userRes.json();
+
+                // 2. Fetch Circular Avatar Headshot
+                const thumbUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
+                const thumbRes = await fetch(proxy + encodeURIComponent(thumbUrl));
+                const thumbData = await thumbRes.json();
+
+                return {
+                    username: userData.name || "Unknown",
+                    displayName: userData.displayName || "Unknown",
+                    avatarUrl: thumbData.data?.[0]?.imageUrl || "https://via.placeholder.com/150?text=Roblox"
+                };
+            } catch (err) {
+                console.error("Roblox API Fetch Error:", err);
+                return null;
+            }
+        }
+
+        function detectRobloxProfile(userId, targetUsernameInputId) {
+            clearTimeout(robloxDebounceTimer);
+            const previewBox = document.getElementById('robloxPreviewBox');
+            
+            if (!userId || userId.trim() === "") {
+                if (previewBox) previewBox.style.display = 'none';
+                return;
+            }
+
+            robloxDebounceTimer = setTimeout(async () => {
+                if (previewBox) {
+                    previewBox.style.display = 'flex';
+                    document.getElementById('robloxPreviewDisplayName').innerText = "Searching Roblox...";
+                    document.getElementById('robloxPreviewUsername').innerText = "@...";
+                }
+
+                const profile = await fetchRobloxProfile(userId.trim());
+                if (profile) {
+                    document.getElementById('robloxPreviewImg').src = profile.avatarUrl;
+                    document.getElementById('robloxPreviewDisplayName').innerText = profile.displayName;
+                    document.getElementById('robloxPreviewUsername').innerText = `@${profile.username}`;
+                    
+                    if (targetUsernameInputId) {
+                        document.getElementById(targetUsernameInputId).value = profile.username;
+                    }
+
+                    if (currentUser && String(currentUser.rblxUserId) === String(userId)) {
+                        currentUser.avatarUrl = profile.avatarUrl;
+                        currentUser.displayName = profile.displayName;
+                    }
+                } else {
+                    document.getElementById('robloxPreviewDisplayName').innerText = "User Not Found";
+                    document.getElementById('robloxPreviewUsername').innerText = "@invalid";
+                }
+            }, 600);
         }
 
         window.onload = () => {
@@ -285,19 +372,18 @@
             document.getElementById('btnTabLog').classList.toggle('active', type === 'login');
         }
 
-        function handleAuth(event, type) {
+        async function handleAuth(event, type) {
             event.preventDefault();
             let allUsers = safeGetJSON('app_users_db', []);
             
             try {
                 if (type === 'signin') {
                     const name = (document.getElementById('signName').value || '').trim();
-                    const username = (document.getElementById('signUsername').value || '').trim();
                     const rblxId = (document.getElementById('signRblxId').value || '').trim();
+                    const username = (document.getElementById('signUsername').value || '').trim();
                     const gmail = (document.getElementById('signGmail').value || '').trim().toLowerCase();
                     const pass = (document.getElementById('signPass').value || '').trim();
 
-                    // Strict uniqueness check across all accounts with safe string navigation
                     const duplicateUser = allUsers.find(u => 
                         (u.name || '').toLowerCase() === name.toLowerCase() ||
                         (u.username || '').toLowerCase() === username.toLowerCase() ||
@@ -306,13 +392,17 @@
                     );
 
                     if (duplicateUser) {
-                        alert("❌ Registration Error: An account with this Name, Username, Gmail, or Roblox User ID already exists!\n\nTo prevent account hijacking, duplicate information cannot be used.");
+                        alert("❌ Registration Error: An account with this Name, Username, Gmail, or Roblox User ID already exists!");
                         return;
                     }
 
+                    const robloxProfile = await fetchRobloxProfile(rblxId);
+
                     currentUser = {
                         name: name,
-                        username: username,
+                        username: username || (robloxProfile ? robloxProfile.username : "User"),
+                        displayName: robloxProfile ? robloxProfile.displayName : name,
+                        avatarUrl: robloxProfile ? robloxProfile.avatarUrl : "https://via.placeholder.com/150",
                         rblxUserId: rblxId,
                         gmail: gmail,
                         password: pass,
@@ -347,7 +437,7 @@
                     );
 
                     if (!existingUser) {
-                        alert("❌ Invalid Login Credentials! Please verify your inputs.");
+                        alert("❌ Invalid Login Credentials! Please double-check your inputs.");
                         return;
                     }
 
@@ -409,9 +499,27 @@
             localStorage.setItem('referralDataStore', JSON.stringify(refStore));
         }
 
-        function updateUserStatusHeader() {
-            if(currentUser) {
-                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${currentUser.username || currentUser.name}</b> (RblxID: ${currentUser.rblxUserId}) | 🟢 Connected`;
+        async function updateUserStatusHeader() {
+            if (!currentUser) return;
+
+            let avatar = currentUser.avatarUrl || "https://via.placeholder.com/36";
+            let dName = currentUser.displayName || currentUser.name || "User";
+
+            document.getElementById('userStatus').innerHTML = `
+                <img src="${avatar}" class="user-avatar-small" onerror="this.src='https://via.placeholder.com/36'">
+                <div>
+                    <b>${dName}</b> (@${currentUser.username}) | <span style="color:#28a745; font-weight:bold;">🟢 Connected</span>
+                </div>
+            `;
+
+            if (!currentUser.avatarUrl && currentUser.rblxUserId) {
+                const profile = await fetchRobloxProfile(currentUser.rblxUserId);
+                if (profile) {
+                    currentUser.avatarUrl = profile.avatarUrl;
+                    currentUser.displayName = profile.displayName;
+                    saveUserData();
+                    updateUserStatusHeader();
+                }
             }
         }
 
@@ -730,13 +838,15 @@
 
             let html = `
                 <div class="settings-section">
-                    <div class="settings-row" style="margin-bottom: 20px;">
-                        <span><b>Full Name:</b> ${user.name}</span><br>
-                        <span><b>Roblox User ID:</b> ${user.rblxUserId || 'N/A'}</span><br>
-                        <span><b>Gmail:</b> ${user.gmail || 'N/A'}</span><br>
-                        <span><b>Device Status:</b> <span style="color:#28a745; font-weight:bold;">🟢 Connected to Cloud</span></span>
+                    <div style="display:flex; align-items:center; gap:15px; margin-bottom: 20px; background:#f8f9fa; border:1px solid #a2a9b1; padding:15px; border-radius:6px;">
+                        <img src="${user.avatarUrl || 'https://via.placeholder.com/80'}" style="width:70px; height:70px; border-radius:50%; border:3px solid #3366cc;">
+                        <div>
+                            <div style="font-size:1.2rem; font-weight:bold;">${user.displayName || user.name}</div>
+                            <div style="color:#54595d;">@${user.username || 'username'}</div>
+                            <div style="font-size:0.85rem; margin-top:4px;">Roblox User ID: <b>${user.rblxUserId || 'N/A'}</b></div>
+                        </div>
                     </div>
-                    
+
                     <div class="settings-row">
                         <label>New Username:</label>
                         <input type="text" id="setUserName" value="${user.username || ''}">
@@ -858,7 +968,7 @@
 
             categories.forEach(cat => {
                 const areaName = areaMapping[cat.title];
-                html += `<h2>${cat.title} Units</h2>`;
+                html += `` + `<h2>${cat.title} Units</h2>`;
                 html += `
                     <table class="wikitable">
                         <tr>
