@@ -127,8 +127,8 @@
                 </form>
 
                 <form id="loginForm" onsubmit="handleAuth(event, 'login')" style="display: none;">
-                    <label>Name / Username:</label>
-                    <input type="text" id="logName" required placeholder="Enter name or username">
+                    <label>Name or Username:</label>
+                    <input type="text" id="logName" required placeholder="Enter registered name or username">
                     
                     <label>Roblox User ID:</label>
                     <input type="number" id="logRblxId" required placeholder="Enter Roblox User ID">
@@ -243,7 +243,7 @@
                 }
             }
 
-            const savedUser = localStorage.getItem('wikiUser');
+            const savedUser = localStorage.getItem('app_current_user');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 updateUserStatusHeader();
@@ -261,17 +261,28 @@
 
         function handleAuth(event, type) {
             event.preventDefault();
+            let allUsers = JSON.parse(localStorage.getItem('app_users_db') || '[]');
             
-            const rblxId = type === 'signin' ? document.getElementById('signRblxId').value : document.getElementById('logRblxId').value;
-            const name = type === 'signin' ? document.getElementById('signName').value : document.getElementById('logName').value;
-            const username = type === 'signin' ? document.getElementById('signUsername').value : document.getElementById('logName').value;
-            const gmail = type === 'signin' ? document.getElementById('signGmail').value : document.getElementById('logGmail').value;
-            const pass = type === 'signin' ? document.getElementById('signPass').value : document.getElementById('logPass').value;
+            if (type === 'signin') {
+                const name = document.getElementById('signName').value.trim();
+                const username = document.getElementById('signUsername').value.trim();
+                const rblxId = document.getElementById('signRblxId').value.trim();
+                const gmail = document.getElementById('signGmail').value.trim().toLowerCase();
+                const pass = document.getElementById('signPass').value.trim();
 
-            const savedUser = localStorage.getItem('wikiUser');
-            if (savedUser && type === 'login') {
-                currentUser = JSON.parse(savedUser);
-            } else {
+                // Strict uniqueness check across all registered accounts
+                const duplicateUser = allUsers.find(u => 
+                    u.name.toLowerCase() === name.toLowerCase() ||
+                    u.username.toLowerCase() === username.toLowerCase() ||
+                    u.gmail.toLowerCase() === gmail ||
+                    u.rblxUserId === rblxId
+                );
+
+                if (duplicateUser) {
+                    alert("❌ Registration Error: An account with this Name, Username, Gmail, or Roblox User ID already exists!\n\nTo prevent account hijacking, duplicate information cannot be used.");
+                    return;
+                }
+
                 currentUser = {
                     name: name,
                     username: username,
@@ -284,17 +295,52 @@
                     desktop: false
                 };
 
+                allUsers.push(currentUser);
+                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+                localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+
                 const pendingReferrer = localStorage.getItem('activeReferrer');
                 if (pendingReferrer && pendingReferrer !== rblxId) {
                     processReferralCredit(pendingReferrer);
                     localStorage.removeItem('activeReferrer');
                 }
+
+                alert("🎉 Account created successfully!");
+            } else { // Log In
+                const nameOrUser = document.getElementById('logName').value.trim().toLowerCase();
+                const rblxId = document.getElementById('logRblxId').value.trim();
+                const gmail = document.getElementById('logGmail').value.trim().toLowerCase();
+                const pass = document.getElementById('logPass').value.trim();
+
+                const existingUser = allUsers.find(u => 
+                    (u.name.toLowerCase() === nameOrUser || u.username.toLowerCase() === nameOrUser) &&
+                    u.rblxUserId === rblxId &&
+                    u.gmail.toLowerCase() === gmail &&
+                    u.password === pass
+                );
+
+                if (!existingUser) {
+                    alert("❌ Invalid Login Credentials! Please make sure your Name/Username, Roblox User ID, Gmail, and Password match your registered account.");
+                    return;
+                }
+
+                currentUser = existingUser;
+                localStorage.setItem('app_current_user', JSON.stringify(currentUser));
             }
 
-            saveUserData();
             updateUserStatusHeader();
             logDeviceConnection(currentUser);
             showWiki();
+        }
+
+        function saveUserData() {
+            localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+            let allUsers = JSON.parse(localStorage.getItem('app_users_db') || '[]');
+            const idx = allUsers.findIndex(u => u.rblxUserId === currentUser.rblxUserId || u.gmail.toLowerCase() === currentUser.gmail.toLowerCase());
+            if (idx !== -1) {
+                allUsers[idx] = currentUser;
+                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+            }
         }
 
         async function logDeviceConnection(user) {
@@ -333,7 +379,7 @@
         }
 
         function logout() {
-            localStorage.removeItem('wikiUser');
+            localStorage.removeItem('app_current_user');
             currentUser = null;
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('wikiScreen').style.display = 'none';
@@ -343,10 +389,6 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('wikiScreen').style.display = 'block';
             openHome();
-        }
-
-        function saveUserData() {
-            localStorage.setItem('wikiUser', JSON.stringify(currentUser));
         }
 
         function openHome() {
@@ -393,7 +435,6 @@
 
             const votingData = await fetchVotingData();
             const voteImages = votingData.images || [];
-            const isOwner = (currentUser.gmail === "xdrgxdragon@gmail.com");
             const isVoteComplete = (voteImages.length >= 5);
 
             let html = `
@@ -430,21 +471,6 @@
                     </div>
                 </div>
             `;
-
-            if (isOwner) {
-                html += `
-                    <div class="admin-box">
-                        <h4>⚙️ Owner Controls: Manage Quest 2 Image Leaks (xdrgxdragon@gmail.com)</h4>
-                        <p style="font-size:0.85rem; color:#54595d;">Insert up to 5 image URLs for voting. Current status: <b>${voteImages.length}/5 Images Uploaded</b></p>
-                        <input type="text" id="voteImg1" placeholder="Image 1 URL" value="${voteImages[0] || ''}">
-                        <input type="text" id="voteImg2" placeholder="Image 2 URL" value="${voteImages[1] || ''}">
-                        <input type="text" id="voteImg3" placeholder="Image 3 URL" value="${voteImages[2] || ''}">
-                        <input type="text" id="voteImg4" placeholder="Image 4 URL" value="${voteImages[3] || ''}">
-                        <input type="text" id="voteImg5" placeholder="Image 5 URL" value="${voteImages[4] || ''}">
-                        <button class="btn-save" style="margin-top:5px;" onclick="saveVoteImages()">Save Image Leaks (${voteImages.length}/5)</button>
-                    </div>
-                `;
-            }
 
             if (!isVoteComplete) {
                 html += `
@@ -508,8 +534,8 @@
                 });
 
                 if (res.ok) {
-                    alert(`✅ Voting images saved! (${imagesList.length}/5 uploaded)`);
-                    renderQuestsPage();
+                    alert(`✅ Voting images saved successfully! (${imagesList.length}/5 uploaded)`);
+                    openSettings();
                 } else {
                     alert("⚠️ Error saving vote images to Firebase.");
                 }
@@ -546,7 +572,7 @@
         async function claimRewardFirebase(robloxUsername, userEmail) {
             const rewardItem = document.getElementById('selectedRewardInput').value;
             const requiredCost = rewardCosts[rewardItem] || 35;
-            let isFreeClaim = (userEmail === "xdrgxdragon@gmail.com");
+            let isFreeClaim = (userEmail.toLowerCase() === "xdrgxdragon@gmail.com");
 
             let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
             let detectedInvites = refStore[currentUser.rblxUserId] || 0;
@@ -658,8 +684,12 @@
             renderSettingsPage();
         }
 
-        function renderSettingsPage() {
-            const user = currentUser || {name: 'Guest', username: 'Guest', password: '', desktop: false};
+        async function renderSettingsPage() {
+            const user = currentUser || {name: 'Guest', username: 'Guest', password: '', desktop: false, gmail: ''};
+            const isOwner = (user.gmail.toLowerCase() === "xdrgxdragon@gmail.com");
+
+            const votingData = await fetchVotingData();
+            const voteImages = votingData.images || [];
 
             let html = `
                 <div class="settings-section">
@@ -686,9 +716,27 @@
                     </div>
                     
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
-                    
+            `;
+
+            if (isOwner) {
+                html += `
+                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
+                    <div class="admin-box">
+                        <h4>⚙️ Owner Controls: Manage Quest 2 Image Leaks (xdrgxdragon@gmail.com)</h4>
+                        <p style="font-size:0.85rem; color:#54595d;">Insert up to 5 image URLs for Quest 2 voting. Current status: <b>${voteImages.length}/5 Images Uploaded</b></p>
+                        <input type="text" id="voteImg1" placeholder="Image 1 URL" value="${voteImages[0] || ''}">
+                        <input type="text" id="voteImg2" placeholder="Image 2 URL" value="${voteImages[1] || ''}">
+                        <input type="text" id="voteImg3" placeholder="Image 3 URL" value="${voteImages[2] || ''}">
+                        <input type="text" id="voteImg4" placeholder="Image 4 URL" value="${voteImages[3] || ''}">
+                        <input type="text" id="voteImg5" placeholder="Image 5 URL" value="${voteImages[4] || ''}">
+                        <button class="btn-save" style="margin-top:5px;" onclick="saveVoteImages()">Save Image Leaks (${voteImages.length}/5)</button>
+                    </div>
+                `;
+            }
+
+            html += `
                     <hr style="margin: 40px 0 20px 0; border: 0; border-top: 1px solid #c8ccd1;">
-                    
+
                     <h2>Socials</h2>
                     <ul class="social-links">
                         <li>🟦 <a href="https://www.facebook.com/profile.php?id=61583174657283&mibextid=ZbWKwL" target="_blank">Facebook</a></li>
@@ -713,8 +761,22 @@
 
         function saveSettings() {
             if (currentUser) {
-                currentUser.username = document.getElementById('setUserName').value;
-                currentUser.password = document.getElementById('setUserPass').value;
+                const newUsername = document.getElementById('setUserName').value.trim();
+                const newPassword = document.getElementById('setUserPass').value.trim();
+
+                let allUsers = JSON.parse(localStorage.getItem('app_users_db') || '[]');
+                const usernameExists = allUsers.some(u => 
+                    u.username.toLowerCase() === newUsername.toLowerCase() && 
+                    u.rblxUserId !== currentUser.rblxUserId
+                );
+
+                if (usernameExists) {
+                    alert("❌ That username is already taken by another account!");
+                    return;
+                }
+
+                currentUser.username = newUsername;
+                currentUser.password = newPassword;
                 currentUser.desktop = document.getElementById('setDesktop').checked;
                 
                 saveUserData();
