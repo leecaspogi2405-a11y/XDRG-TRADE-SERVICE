@@ -32,11 +32,16 @@
         .wikitable th { background-color: #eaecf0; text-align: center; }
         
         /* LOGIN & SETTINGS FORMS */
-        .form-box { max-width: 400px; margin: 50px auto; border: 1px solid #a2a9b1; padding: 30px; background: #f8f9fa; }
-        .form-box input[type="text"], .form-box input[type="email"], .form-box input[type="password"] { width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid #a2a9b1; box-sizing: border-box; }
-        .form-box button { background-color: #3366cc; color: white; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; width: 100%; }
+        .form-box { max-width: 450px; margin: 30px auto; border: 1px solid #a2a9b1; padding: 30px; background: #f8f9fa; border-radius: 6px; }
+        .form-box label { display: block; font-weight: bold; margin-bottom: 3px; font-size: 0.85rem; }
+        .form-box input[type="text"], .form-box input[type="email"], .form-box input[type="password"], .form-box input[type="number"] { width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid #a2a9b1; box-sizing: border-box; border-radius: 4px; }
+        .form-box button { background-color: #3366cc; color: white; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; width: 100%; border-radius: 4px; }
         .form-box button:hover { background-color: #2a4b8d; }
         
+        .auth-toggle { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid #a2a9b1; padding-bottom: 10px; }
+        .auth-toggle button { background: #eaecf0; color: #202122; border: 1px solid #a2a9b1; padding: 8px; font-weight: bold; width: 50%; cursor: pointer; }
+        .auth-toggle button.active { background: #3366cc; color: white; border-color: #3366cc; }
+
         /* SETTINGS PAGE SPECIFICS */
         .settings-section { max-width: 600px; margin-top: 20px; }
         .settings-row { margin-bottom: 15px; }
@@ -70,30 +75,71 @@
         .error-mod { color: #005a9c; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; padding: 10px; background-color: #eaf3ff; border-left: 5px solid #005a9c; display: inline-block; }
         .try-again-btn { color: #0645ad; cursor: pointer; font-weight: bold; text-decoration: underline; font-size: 1.1rem; display: inline-block; }
         .try-again-btn:hover { color: #0b0080; }
+
+        /* QUEST DASHBOARD STYLING */
+        .quest-box { border: 1px solid #a2a9b1; background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .quest-box.disabled { background: #fff0f0; border-color: #f5c6cb; }
+        .points-header { background: #eaf3ff; border: 1px solid #3366cc; padding: 12px; font-weight: bold; font-size: 1.1rem; color: #005a9c; text-align: center; border-radius: 6px; margin-bottom: 20px; }
+        .status-closed-text { color: #721c24; font-weight: bold; font-size: 1rem; text-align: center; padding: 10px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; margin-top: 10px; }
+        .game-grid { display: grid; grid-template-columns: repeat(2, 80px); gap: 10px; margin-top: 15px; justify-content: center; }
+        .emoji-card { width: 80px; height: 80px; background: #eaecf0; border: 2px solid #a2a9b1; font-size: 2rem; display: flex; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer; user-select: none; }
     </style>
 </head>
 <body>
 
+    <!-- AUTHENTICATION SCREEN -->
     <div id="loginScreen">
-        <div class="mw-page-container" style="justify-content: center; align-items: flex-start; padding-top: 50px;">
+        <div class="mw-page-container" style="justify-content: center; align-items: flex-start; padding-top: 30px;">
             <div class="form-box">
-                <h2 style="margin-top:0; border:none; text-align:center;">User Log in</h2>
-                <p style="font-size:0.85rem; color:#54595d; text-align:center;">RedGalaxy Studio / NebulaForge Studio</p>
+                <h2 style="margin-top:0; border:none; text-align:center;">XDRG Trade Service / Studio Portal</h2>
+                <p style="font-size:0.85rem; color:#54595d; text-align:center; margin-bottom:20px;">RedGalaxy Studio / NebulaForge Studio</p>
                 
-                <label>Username</label>
-                <input type="text" id="authName" placeholder="Enter your username">
-                
-                <label>Email Address</label>
-                <input type="email" id="authEmail" placeholder="Enter your email address">
-                
-                <label>Password</label>
-                <input type="password" id="authPassword" placeholder="Enter your password">
-                
-                <button onclick="handleLogin()">Log in</button>
+                <div class="auth-toggle">
+                    <button id="btnTabSign" class="active" onclick="switchAuthTab('signin')">Sign In</button>
+                    <button id="btnTabLog" onclick="switchAuthTab('login')">Log In</button>
+                </div>
+
+                <!-- SIGN IN FORM -->
+                <form id="signInForm" onsubmit="handleAuth(event, 'signin')">
+                    <label>Name:</label>
+                    <input type="text" id="signName" required placeholder="Enter your full name">
+                    
+                    <label>Username:</label>
+                    <input type="text" id="signUsername" required placeholder="Enter username">
+                    
+                    <label>RblxUserId:</label>
+                    <input type="number" id="signRblxId" required placeholder="Enter Roblox User ID">
+                    
+                    <label>Gmail:</label>
+                    <input type="email" id="signGmail" required placeholder="Enter Gmail address">
+                    
+                    <label>Password/Secret Key:</label>
+                    <input type="password" id="signPass" required placeholder="Enter password or secret key">
+                    
+                    <button type="submit">Sign In (Register)</button>
+                </form>
+
+                <!-- LOG IN FORM -->
+                <form id="loginForm" onsubmit="handleAuth(event, 'login')" style="display: none;">
+                    <label>Name:</label>
+                    <input type="text" id="logName" required placeholder="Enter your name">
+                    
+                    <label>RblxUserId:</label>
+                    <input type="number" id="logRblxId" required placeholder="Enter Roblox User ID">
+                    
+                    <label>Gmail:</label>
+                    <input type="email" id="logGmail" required placeholder="Enter Gmail address">
+                    
+                    <label>Password/Secret Key:</label>
+                    <input type="password" id="logPass" required placeholder="Enter password or secret key">
+                    
+                    <button type="submit">Log In</button>
+                </form>
             </div>
         </div>
     </div>
 
+    <!-- MAIN WIKI SCREEN -->
     <div id="wikiScreen" style="display: none;">
         <div class="mw-page-container">
             
@@ -103,6 +149,7 @@
                 <h3>Navigation</h3>
                 <ul>
                     <li><a onclick="openHome()">Main Page</a></li>
+                    <li><a onclick="openQuests()">🎯 Quests & Trade Service</a></li>
                     <li><a onclick="openGame('brainrots')">Don't Crash the Train for Brainrots</a></li>
                     <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
                 </ul>
@@ -123,13 +170,13 @@
             <div class="mw-content-container">
                 <div class="mw-top-tools">
                     <span id="userStatus" style="font-weight:bold;">Not logged in</span>
-                    <span><a onclick="logout()">Log out</a></span>
+                    <span><a onclick="logout()" style="color:#0645ad; cursor:pointer;">Log out</a></span>
                 </div>
                 
                 <h1 id="pageTitle">Main Page</h1>
                 
                 <div id="pageContent">
-                    <p>Welcome to the <b>RedGalaxy Studio / NebulaForge Studio</b> official wiki. Please select a game from the sidebar navigation to view its database.</p>
+                    <p>Welcome to the <b>RedGalaxy Studio / NebulaForge Studio</b> official wiki. Please select an option from the sidebar navigation to continue.</p>
                 </div>
             </div>
         </div>
@@ -168,39 +215,71 @@
 
         let currentMutation = 1;
         let mutationName = "Normal";
+        let currentUser = null;
+        let selectedCards = [];
+        const emojis = ["🐱", "🐶", "🦊", "🐸", "🐵", "🦁"];
 
-        /* --- 2. LOGIC & NAVIGATION --- */
+        /* --- 2. AUTHENTICATION & INITIALIZATION --- */
         
         window.onload = () => {
             const savedUser = localStorage.getItem('wikiUser');
             if (savedUser) {
-                const user = JSON.parse(savedUser);
-                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${user.username}</b>`;
+                currentUser = JSON.parse(savedUser);
+                updateUserStatusHeader();
                 showWiki();
             }
         };
 
-        function handleLogin() {
-            const username = document.getElementById('authName').value;
-            const email = document.getElementById('authEmail').value;
-            const pass = document.getElementById('authPassword').value;
-            if(!username || !email || !pass) { alert("Please fill out all fields."); return; }
+        function switchAuthTab(type) {
+            document.getElementById('signInForm').style.display = type === 'signin' ? 'block' : 'none';
+            document.getElementById('loginForm').style.display = type === 'login' ? 'block' : 'none';
+            document.getElementById('btnTabSign').classList.toggle('active', type === 'signin');
+            document.getElementById('btnTabLog').classList.toggle('active', type === 'login');
+        }
+
+        function handleAuth(event, type) {
+            event.preventDefault();
             
-            const name = email.split('@')[0];
-            
-            localStorage.setItem('wikiUser', JSON.stringify({
-                name: name,
-                username: username, 
-                password: pass,
-                desktop: false
-            }));
-            
-            document.getElementById('userStatus').innerHTML = `Logged in as: <b>${username}</b>`;
+            if (type === 'signin') {
+                currentUser = {
+                    name: document.getElementById('signName').value,
+                    username: document.getElementById('signUsername').value,
+                    rblxUserId: document.getElementById('signRblxId').value,
+                    gmail: document.getElementById('signGmail').value,
+                    password: document.getElementById('signPass').value,
+                    points: 0,
+                    level: 1,
+                    inviteClaimed: false,
+                    desktop: false
+                };
+            } else {
+                currentUser = {
+                    name: document.getElementById('logName').value,
+                    username: document.getElementById('logName').value,
+                    rblxUserId: document.getElementById('logRblxId').value,
+                    gmail: document.getElementById('logGmail').value,
+                    password: document.getElementById('logPass').value,
+                    points: 0,
+                    level: 1,
+                    inviteClaimed: false,
+                    desktop: false
+                };
+            }
+
+            localStorage.setItem('wikiUser', JSON.stringify(currentUser));
+            updateUserStatusHeader();
             showWiki();
+        }
+
+        function updateUserStatusHeader() {
+            if(currentUser) {
+                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${currentUser.username || currentUser.name}</b> (RblxID: ${currentUser.rblxUserId})`;
+            }
         }
 
         function logout() {
             localStorage.removeItem('wikiUser');
+            currentUser = null;
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('wikiScreen').style.display = 'none';
         }
@@ -208,11 +287,14 @@
         function showWiki() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('wikiScreen').style.display = 'block';
+            openHome();
         }
+
+        /* --- 3. NAVIGATION LOGIC --- */
 
         function openHome() {
             document.getElementById('pageTitle').innerText = "Main Page";
-            document.getElementById('pageContent').innerHTML = "<p>Welcome to the <b>RedGalaxy Studio / NebulaForge Studio</b> official wiki. Please select a game from the sidebar navigation to view its database.</p>";
+            document.getElementById('pageContent').innerHTML = "<p>Welcome to the <b>RedGalaxy Studio / NebulaForge Studio</b> official wiki. Please select an option from the sidebar navigation to view databases or claim trade rewards.</p>";
         }
 
         function openGame(game) {
@@ -225,7 +307,115 @@
             renderBrainrotsPage();
         }
 
-        /* --- 3. SETTINGS PAGE LOGIC --- */
+        /* --- 4. QUESTS & TRADE SERVICE DASHBOARD --- */
+
+        function openQuests() {
+            document.getElementById('pageTitle').innerText = "🎯 Quests & Trade Service Dashboard";
+            renderQuestsPage();
+        }
+
+        function renderQuestsPage() {
+            if (!currentUser) return;
+
+            let html = `
+                <div class="points-header">
+                    Total Points: <span id="pointCount">${currentUser.points}</span> / 35
+                </div>
+
+                <!-- QUEST 1 -->
+                <div class="quest-box">
+                    <h3>Quest 1: Invite Friends (+25 Points)</h3>
+                    <p style="color:#54595d; font-size:0.9rem;">Share your trade code with friends to earn points instantly.</p>
+                    <button class="btn-save" onclick="claimInvitePoints()">Claim +25 Points</button>
+                </div>
+
+                <!-- QUEST 2 -->
+                <div class="quest-box disabled">
+                    <h3>Quest 2: Image Leaks Voting</h3>
+                    <div class="status-closed-text">
+                        (Under Construction 🚧 this [Guest] was closed🔒)
+                    </div>
+                </div>
+
+                <!-- QUEST 3 -->
+                <div class="quest-box">
+                    <h3>Quest 3: Emoji Matching Puzzle (+1 Pt/Level)</h3>
+                    <p style="color:#54595d; font-size:0.9rem;">Find the matching pair to clear levels (Level <span id="gameLevel">${currentUser.level}</span>/250).</p>
+                    
+                    <div class="game-grid" id="gameGrid"></div>
+                </div>
+            `;
+
+            document.getElementById('pageContent').innerHTML = html;
+            initMiniGame();
+        }
+
+        function saveUserData() {
+            localStorage.setItem('wikiUser', JSON.stringify(currentUser));
+        }
+
+        function claimInvitePoints() {
+            if (currentUser.inviteClaimed) {
+                alert("You already claimed the invite reward!");
+                return;
+            }
+            currentUser.points += 25;
+            currentUser.inviteClaimed = true;
+            saveUserData();
+            document.getElementById('pointCount').innerText = currentUser.points;
+            alert("+25 Points added successfully!");
+        }
+
+        function initMiniGame() {
+            const grid = document.getElementById('gameGrid');
+            if(!grid) return;
+            
+            grid.innerHTML = "";
+            selectedCards = [];
+
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            const cardValues = [randomEmoji, randomEmoji, "❓", "❓"];
+            cardValues.sort(() => Math.random() - 0.5);
+
+            cardValues.forEach((val) => {
+                const card = document.createElement('div');
+                card.className = 'emoji-card';
+                card.innerText = '❓';
+                card.dataset.value = val;
+                card.onclick = () => flipCard(card);
+                grid.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (selectedCards.length < 2 && card.innerText === '❓') {
+                card.innerText = card.dataset.value;
+                selectedCards.push(card);
+
+                if (selectedCards.length === 2) {
+                    setTimeout(checkMatch, 600);
+                }
+            }
+        }
+
+        function checkMatch() {
+            const [c1, c2] = selectedCards;
+            if (c1.dataset.value === c2.dataset.value && c1.dataset.value !== "❓") {
+                if (currentUser.level <= 250) {
+                    currentUser.points += 1;
+                    currentUser.level += 1;
+                    saveUserData();
+                    
+                    if(document.getElementById('pointCount')) document.getElementById('pointCount').innerText = currentUser.points;
+                    if(document.getElementById('gameLevel')) document.getElementById('gameLevel').innerText = currentUser.level;
+                    
+                    alert(`Level Cleared! +1 Point added. Next Level: ${currentUser.level}`);
+                }
+            }
+            initMiniGame();
+        }
+
+        /* --- 5. SETTINGS PAGE LOGIC --- */
         
         function openSettings() {
             document.getElementById('pageTitle').innerText = "⚙️ Settings";
@@ -233,28 +423,29 @@
         }
 
         function renderSettingsPage() {
-            const savedUser = localStorage.getItem('wikiUser');
-            const user = savedUser ? JSON.parse(savedUser) : {name: 'Guest', username: 'Guest', password: '', desktop: false};
+            const user = currentUser || {name: 'Guest', username: 'Guest', password: '', desktop: false};
 
             let html = `
                 <div class="settings-section">
                     <div class="settings-row" style="margin-bottom: 20px;">
-                        <span><b>Name:</b> ${user.name}</span>
+                        <span><b>Name:</b> ${user.name}</span><br>
+                        <span><b>Roblox User ID:</b> ${user.rblxUserId || 'N/A'}</span><br>
+                        <span><b>Gmail:</b> ${user.gmail || 'N/A'}</span>
                     </div>
                     
                     <div class="settings-row">
                         <label>Username [New]</label>
-                        <input type="text" id="setUserName" value="${user.username}">
+                        <input type="text" id="setUserName" value="${user.username || ''}">
                     </div>
                     
                     <div class="settings-row">
-                        <label>Password [New]</label>
-                        <input type="password" id="setUserPass" value="${user.password}">
+                        <label>Password / Secret Key [New]</label>
+                        <input type="password" id="setUserPass" value="${user.password || ''}">
                     </div>
                     
                     <div class="settings-row checkbox-row" style="margin-bottom: 25px;">
                         <input type="checkbox" id="setDesktop" ${user.desktop ? 'checked' : ''}> 
-                        <label for="setDesktop">Desktop</label>
+                        <label for="setDesktop">Desktop View Mode</label>
                     </div>
                     
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
@@ -284,15 +475,13 @@
         }
 
         function saveSettings() {
-            const savedUser = localStorage.getItem('wikiUser');
-            if (savedUser) {
-                let user = JSON.parse(savedUser);
-                user.username = document.getElementById('setUserName').value;
-                user.password = document.getElementById('setUserPass').value;
-                user.desktop = document.getElementById('setDesktop').checked;
+            if (currentUser) {
+                currentUser.username = document.getElementById('setUserName').value;
+                currentUser.password = document.getElementById('setUserPass').value;
+                currentUser.desktop = document.getElementById('setDesktop').checked;
                 
-                localStorage.setItem('wikiUser', JSON.stringify(user));
-                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${user.username}</b>`;
+                saveUserData();
+                updateUserStatusHeader();
                 alert("Settings have been updated successfully!");
             }
         }
@@ -310,7 +499,7 @@
             }, 2000);
         }
 
-        /* --- 4. GAME RENDERING LOGIC --- */
+        /* --- 6. GAME RENDERING LOGIC --- */
 
         function changeMutation() {
             const sel = document.getElementById('mutationSelect');
@@ -397,10 +586,9 @@
             document.getElementById('pageContent').innerHTML = html;
         }
 
-        /* --- 5. RELEASE ANNOUNCEMENT SEQUENCE (Crystal Collecting Simulator) --- */
+        /* --- 7. RELEASE ANNOUNCEMENT SEQUENCE (Crystal Collecting Simulator) --- */
 
         function triggerReleaseSequence() {
-            // Step 1: Display the Loading Video / Spinner State
             document.getElementById('pageTitle').innerText = "Loading Asset...";
             document.getElementById('pageContent').innerHTML = `
                 <div style="text-align:center; padding: 50px;">
@@ -409,7 +597,6 @@
                 </div>
             `;
 
-            // Step 2: Set Timeout to render the Release Screen after 3 seconds
             setTimeout(() => {
                 document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
                 document.getElementById('pageContent').innerHTML = `
