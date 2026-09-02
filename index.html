@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=1200, user-scalable=yes">
     <title>RedGalaxy Studio / NebulaForge Studio</title>
     <style>
+        * { box-sizing: border-box; }
         body { font-family: sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
@@ -20,7 +21,16 @@
         .mw-top-tools { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 20px; border-bottom: 1px solid #eaecf0; padding-bottom: 10px; }
         
         .user-badge { display: flex; align-items: center; gap: 10px; }
-        .user-avatar-small { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #3366cc; object-fit: cover; background: #eaf3ff; }
+        .user-avatar-small { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            border: 2px solid #3366cc; 
+            object-fit: cover; 
+            background: #eaf3ff; 
+            display: block; 
+            flex-shrink: 0; 
+        }
 
         h1 { font-family: 'Linux Libertine', Georgia, serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
         h2 { font-family: 'Linux Libertine', Georgia, serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
@@ -36,7 +46,7 @@
         .form-box button:hover { background-color: #2a4b8d; }
         
         .roblox-preview-card { display: flex; align-items: center; gap: 12px; background: #eaf3ff; border: 1px solid #a7d7f9; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
-        .roblox-preview-card img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3366cc; background: #ffffff; }
+        .roblox-preview-card img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3366cc; background: #ffffff; object-fit: cover; }
 
         .auth-toggle { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid #a2a9b1; padding-bottom: 10px; }
         .auth-toggle button { background: #eaecf0; color: #202122; border: 1px solid #a2a9b1; padding: 8px; font-weight: bold; width: 50%; cursor: pointer; }
@@ -97,7 +107,7 @@
 </head>
 <body>
 
-    <!-- LOGIN / REGISTRATION SCREEN -->
+    <!-- AUTH SCREEN -->
     <div id="loginScreen">
         <div class="mw-page-container" style="justify-content: center; align-items: flex-start; padding-top: 30px;">
             <div class="form-box">
@@ -113,9 +123,9 @@
                     <button id="btnTabLog" onclick="switchAuthTab('login')">Log In</button>
                 </div>
 
-                <!-- Live Roblox Profile Preview Box -->
+                <!-- Live Roblox Profile Preview Card -->
                 <div id="robloxPreviewBox" class="roblox-preview-card" style="display: none;">
-                    <img id="robloxPreviewImg" src="https://via.placeholder.com/50?text=Roblox" alt="Roblox Avatar">
+                    <img id="robloxPreviewImg" src="" alt="Roblox Avatar">
                     <div>
                         <div id="robloxPreviewDisplayName" style="font-weight: bold; font-size: 0.95rem;">Detecting User...</div>
                         <div id="robloxPreviewUsername" style="color: #54595d; font-size: 0.8rem;">@username</div>
@@ -214,6 +224,9 @@
     </div>
 
     <script>
+        // Guaranteed Embedded SVG Avatar Fallback (Prevents white box/circle on network error)
+        const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233366cc'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
+
         const FIREBASE_BASE_URL = "https://automation-giver-xdrg-default-rtdb.asia-southeast1.firebasedatabase.app";
         const FIREBASE_URL = `${FIREBASE_BASE_URL}/claims.json`;
 
@@ -273,33 +286,40 @@
             window.location.reload();
         }
 
-        // --- ROBLOX API FETCHING FUNCTION ---
+        // --- DUAL PROXY ROBLOX FETCH FUNCTION ---
         async function fetchRobloxProfile(userId) {
             if (!userId || isNaN(userId)) return null;
 
-            try {
-                const proxy = "https://corsproxy.io/?";
-                
-                // 1. Fetch Username and Display Name
-                const userUrl = `https://users.roblox.com/v1/users/${userId}`;
-                const userRes = await fetch(proxy + encodeURIComponent(userUrl));
-                if (!userRes.ok) return null;
-                const userData = await userRes.json();
+            const proxies = [
+                "https://corsproxy.io/?",
+                "https://api.allorigins.win/raw?url="
+            ];
 
-                // 2. Fetch Circular Avatar Headshot
-                const thumbUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
-                const thumbRes = await fetch(proxy + encodeURIComponent(thumbUrl));
-                const thumbData = await thumbRes.json();
+            for (let proxy of proxies) {
+                try {
+                    const userUrl = `https://users.roblox.com/v1/users/${userId}`;
+                    const userRes = await fetch(proxy + encodeURIComponent(userUrl));
+                    if (!userRes.ok) continue;
+                    const userData = await userRes.json();
 
-                return {
-                    username: userData.name || "Unknown",
-                    displayName: userData.displayName || "Unknown",
-                    avatarUrl: thumbData.data?.[0]?.imageUrl || "https://via.placeholder.com/150?text=Roblox"
-                };
-            } catch (err) {
-                console.error("Roblox API Fetch Error:", err);
-                return null;
+                    const thumbUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
+                    const thumbRes = await fetch(proxy + encodeURIComponent(thumbUrl));
+                    if (!thumbRes.ok) continue;
+                    const thumbData = await thumbRes.json();
+
+                    const imgUrl = thumbData.data?.[0]?.imageUrl;
+
+                    return {
+                        username: userData.name || "Unknown",
+                        displayName: userData.displayName || "Unknown",
+                        avatarUrl: (imgUrl && imgUrl.length > 0) ? imgUrl : DEFAULT_AVATAR
+                    };
+                } catch (err) {
+                    console.warn(`Proxy connection failed on: ${proxy}`, err);
+                }
             }
+
+            return null;
         }
 
         function detectRobloxProfile(userId, targetUsernameInputId) {
@@ -314,6 +334,7 @@
             robloxDebounceTimer = setTimeout(async () => {
                 if (previewBox) {
                     previewBox.style.display = 'flex';
+                    document.getElementById('robloxPreviewImg').src = DEFAULT_AVATAR;
                     document.getElementById('robloxPreviewDisplayName').innerText = "Searching Roblox...";
                     document.getElementById('robloxPreviewUsername').innerText = "@...";
                 }
@@ -333,6 +354,7 @@
                         currentUser.displayName = profile.displayName;
                     }
                 } else {
+                    document.getElementById('robloxPreviewImg').src = DEFAULT_AVATAR;
                     document.getElementById('robloxPreviewDisplayName').innerText = "User Not Found";
                     document.getElementById('robloxPreviewUsername').innerText = "@invalid";
                 }
@@ -402,7 +424,7 @@
                         name: name,
                         username: username || (robloxProfile ? robloxProfile.username : "User"),
                         displayName: robloxProfile ? robloxProfile.displayName : name,
-                        avatarUrl: robloxProfile ? robloxProfile.avatarUrl : "https://via.placeholder.com/150",
+                        avatarUrl: robloxProfile ? robloxProfile.avatarUrl : DEFAULT_AVATAR,
                         rblxUserId: rblxId,
                         gmail: gmail,
                         password: pass,
@@ -502,23 +524,25 @@
         async function updateUserStatusHeader() {
             if (!currentUser) return;
 
-            let avatar = currentUser.avatarUrl || "https://via.placeholder.com/36";
+            let avatar = currentUser.avatarUrl || DEFAULT_AVATAR;
             let dName = currentUser.displayName || currentUser.name || "User";
 
             document.getElementById('userStatus').innerHTML = `
-                <img src="${avatar}" class="user-avatar-small" onerror="this.src='https://via.placeholder.com/36'">
+                <img src="${avatar}" class="user-avatar-small" alt="Avatar" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
                 <div>
                     <b>${dName}</b> (@${currentUser.username}) | <span style="color:#28a745; font-weight:bold;">🟢 Connected</span>
                 </div>
             `;
 
-            if (!currentUser.avatarUrl && currentUser.rblxUserId) {
+            if (currentUser.rblxUserId) {
                 const profile = await fetchRobloxProfile(currentUser.rblxUserId);
-                if (profile) {
+                if (profile && profile.avatarUrl !== DEFAULT_AVATAR) {
                     currentUser.avatarUrl = profile.avatarUrl;
                     currentUser.displayName = profile.displayName;
                     saveUserData();
-                    updateUserStatusHeader();
+                    
+                    const imgElem = document.querySelector('.user-avatar-small');
+                    if (imgElem) imgElem.src = profile.avatarUrl;
                 }
             }
         }
@@ -638,7 +662,7 @@
                 voteImages.slice(0, 5).forEach((imgUrl, idx) => {
                     html += `
                         <div class="vote-card">
-                            <img src="${imgUrl}" alt="Leak ${idx + 1}" onerror="this.src='https://via.placeholder.com/180x120?text=Leak+${idx + 1}'">
+                            <img src="${imgUrl}" alt="Leak ${idx + 1}" onerror="this.onerror=null; this.src='https://via.placeholder.com/180x120?text=Leak+${idx + 1}'">
                             <b>Option ${idx + 1}</b><br>
                             <button class="vote-btn" style="margin-top:6px;" onclick="submitVote(${idx + 1})">Vote #${idx + 1}</button>
                         </div>
@@ -839,7 +863,7 @@
             let html = `
                 <div class="settings-section">
                     <div style="display:flex; align-items:center; gap:15px; margin-bottom: 20px; background:#f8f9fa; border:1px solid #a2a9b1; padding:15px; border-radius:6px;">
-                        <img src="${user.avatarUrl || 'https://via.placeholder.com/80'}" style="width:70px; height:70px; border-radius:50%; border:3px solid #3366cc;">
+                        <img src="${user.avatarUrl || DEFAULT_AVATAR}" style="width:70px; height:70px; border-radius:50%; border:3px solid #3366cc; object-fit:cover;" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
                         <div>
                             <div style="font-size:1.2rem; font-weight:bold;">${user.displayName || user.name}</div>
                             <div style="color:#54595d;">@${user.username || 'username'}</div>
@@ -968,7 +992,7 @@
 
             categories.forEach(cat => {
                 const areaName = areaMapping[cat.title];
-                html += `` + `<h2>${cat.title} Units</h2>`;
+                html += `<h2>${cat.title} Units</h2>`;
                 html += `
                     <table class="wikitable">
                         <tr>
@@ -1044,7 +1068,7 @@
                             <span class="try-again-btn" onclick="triggerReleaseSequence()">Refresh Status</span>
                         </div>
                         
-                        <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner">
+                        <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" onerror="this.onerror=null; this.src='https://via.placeholder.com/600x300?text=Release+Banner';">
                         
                         <div class="error-title">
                             Official Release Announcement: Game scheduled to launch on September 6, 2026 at 1:00 PM PST.
