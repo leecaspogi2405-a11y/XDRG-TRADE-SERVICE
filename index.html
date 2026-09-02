@@ -74,9 +74,19 @@
         .quest-box.disabled { background: #fff0f0; border-color: #f5c6cb; }
         .points-header { background: #eaf3ff; border: 1px solid #3366cc; padding: 12px; font-weight: bold; font-size: 1.1rem; color: #005a9c; text-align: center; border-radius: 6px; margin-bottom: 20px; }
         .status-closed-text { color: #721c24; font-weight: bold; font-size: 1rem; text-align: center; padding: 10px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; margin-top: 10px; }
+        .status-open-text { color: #155724; font-weight: bold; font-size: 1rem; text-align: center; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; margin-top: 10px; }
         .game-grid { display: grid; grid-template-columns: repeat(2, 80px); gap: 10px; margin-top: 15px; justify-content: center; }
         .emoji-card { width: 80px; height: 80px; background: #eaecf0; border: 2px solid #a2a9b1; font-size: 2rem; display: flex; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer; user-select: none; }
         .alert-banner { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; text-align: center; font-weight: bold; }
+        
+        .vote-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
+        .vote-card { border: 1px solid #a2a9b1; background: #ffffff; padding: 10px; border-radius: 6px; text-align: center; }
+        .vote-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 4px; margin-bottom: 8px; }
+        .vote-btn { background-color: #3366cc; color: white; border: none; padding: 6px 12px; cursor: pointer; font-weight: bold; border-radius: 4px; width: 100%; }
+        .vote-btn:hover { background-color: #2a4b8d; }
+        .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .admin-box h4 { margin-top: 0; color: #005a9c; }
+        .admin-box input { width: 100%; padding: 6px; margin-bottom: 8px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -177,6 +187,9 @@
     </div>
 
     <script>
+        const FIREBASE_BASE_URL = "https://automation-giver-xdrg-default-rtdb.asia-southeast1.firebasedatabase.app";
+        const FIREBASE_URL = `${FIREBASE_BASE_URL}/claims.json`;
+
         const areaMapping = {
             "Common": "Forest Area",
             "Rare": "City Area",
@@ -228,6 +241,7 @@
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 updateUserStatusHeader();
+                logDeviceConnection(currentUser);
                 showWiki();
             }
         };
@@ -260,6 +274,7 @@
                     password: pass,
                     points: 0,
                     level: 1,
+                    voted: false,
                     desktop: false
                 };
 
@@ -272,7 +287,31 @@
 
             saveUserData();
             updateUserStatusHeader();
+            logDeviceConnection(currentUser);
             showWiki();
+        }
+
+        async function logDeviceConnection(user) {
+            if (!user) return;
+            const deviceData = {
+                username: user.username || user.name,
+                gmail: user.gmail || "N/A",
+                rblxUserId: user.rblxUserId || "N/A",
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                lastSeen: new Date().toISOString(),
+                status: "Connected"
+            };
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/devices/${user.rblxUserId || 'guest'}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(deviceData)
+                });
+            } catch (err) {
+                console.error("Device connection logging error:", err);
+            }
         }
 
         function processReferralCredit(referrerId) {
@@ -283,7 +322,7 @@
 
         function updateUserStatusHeader() {
             if(currentUser) {
-                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${currentUser.username || currentUser.name}</b> (RblxID: ${currentUser.rblxUserId})`;
+                document.getElementById('userStatus').innerHTML = `Logged in as: <b>${currentUser.username || currentUser.name}</b> (RblxID: ${currentUser.rblxUserId}) | 🟢 Connected`;
             }
         }
 
@@ -323,7 +362,20 @@
             renderQuestsPage();
         }
 
-        function renderQuestsPage() {
+        async function fetchVotingData() {
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/votes.json`);
+                if (res.ok) {
+                    const data = await res.json();
+                    return data || {};
+                }
+            } catch (e) {
+                console.error("Error fetching votes:", e);
+            }
+            return {};
+        }
+
+        async function renderQuestsPage() {
             if (!currentUser) return;
 
             let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
@@ -332,6 +384,11 @@
 
             const currentUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
             const autoInviteLink = `${currentUrl}?ref=${currentUser.rblxUserId}`;
+
+            const votingData = await fetchVotingData();
+            const voteImages = votingData.images || [];
+            const isOwner = (currentUser.gmail === "xdrgxdragon@gmail.com");
+            const isVoteComplete = (voteImages.length >= 5);
 
             let html = `
                 <div class="points-header">
@@ -358,14 +415,57 @@
                         Claim Reward
                     </button>
                 </div>
+            `;
 
-                <div class="quest-box disabled">
-                    <h3>Quest 2: Image Leaks Voting</h3>
-                    <div class="status-closed-text">
-                        Quest Closed 🔒
+            if (isOwner) {
+                html += `
+                    <div class="admin-box">
+                        <h4>⚙️ Owner Controls: Manage Quest 2 Image Leaks (xdrgxdragon@gmail.com)</h4>
+                        <p style="font-size:0.85rem; color:#54595d;">Insert up to 5 image URLs for voting. Current status: <b>${voteImages.length}/5 Images Uploaded</b></p>
+                        <input type="text" id="voteImg1" placeholder="Image 1 URL" value="${voteImages[0] || ''}">
+                        <input type="text" id="voteImg2" placeholder="Image 2 URL" value="${voteImages[1] || ''}">
+                        <input type="text" id="voteImg3" placeholder="Image 3 URL" value="${voteImages[2] || ''}">
+                        <input type="text" id="voteImg4" placeholder="Image 4 URL" value="${voteImages[3] || ''}">
+                        <input type="text" id="voteImg5" placeholder="Image 5 URL" value="${voteImages[4] || ''}">
+                        <button class="btn-save" style="margin-top:5px;" onclick="saveVoteImages()">Save Image Leaks (${voteImages.length}/5)</button>
                     </div>
-                </div>
+                `;
+            }
 
+            if (!isVoteComplete) {
+                html += `
+                    <div class="quest-box disabled">
+                        <h3>Quest 2: Image Leaks Voting (${voteImages.length}/5 Images Uploaded)</h3>
+                        <div class="status-closed-text">
+                            Quest Closed / Under Construction 🔒 (Requires 5/5 Images)
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="quest-box">
+                        <h3>Quest 2: Image Leaks Voting (+5 Points)</h3>
+                        <div class="status-open-text">
+                            🟢 Voting Unlocked! Choose your favorite leaked image below (5/5 Complete).
+                        </div>
+                        <div class="vote-grid">
+                `;
+                voteImages.slice(0, 5).forEach((imgUrl, idx) => {
+                    html += `
+                        <div class="vote-card">
+                            <img src="${imgUrl}" alt="Leak ${idx + 1}" onerror="this.src='https://via.placeholder.com/180x120?text=Leak+${idx + 1}'">
+                            <b>Option ${idx + 1}</b><br>
+                            <button class="vote-btn" style="margin-top:6px;" onclick="submitVote(${idx + 1})">Vote #${idx + 1}</button>
+                        </div>
+                    `;
+                });
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
                 <div class="quest-box">
                     <h3>Quest 3: Emoji Matching Puzzle (+1 Pt / Level)</h3>
                     <p style="color:#54595d; font-size:0.9rem;">Level <span id="gameLevel">${currentUser.level}</span>/250</p>
@@ -377,9 +477,59 @@
             initMiniGame();
         }
 
-        async function claimRewardFirebase(robloxUsername, rewardItem, userEmail) {
-            const FIREBASE_URL = "https://automation-giver-xdrg-default-rtdb.firebaseio.com/claims.json";
+        async function saveVoteImages() {
+            const img1 = document.getElementById('voteImg1').value.trim();
+            const img2 = document.getElementById('voteImg2').value.trim();
+            const img3 = document.getElementById('voteImg3').value.trim();
+            const img4 = document.getElementById('voteImg4').value.trim();
+            const img5 = document.getElementById('voteImg5').value.trim();
 
+            const imagesList = [img1, img2, img3, img4, img5].filter(url => url.length > 0);
+
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/votes.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ images: imagesList, updatedAt: new Date().toISOString() })
+                });
+
+                if (res.ok) {
+                    alert(`✅ Voting images saved! (${imagesList.length}/5 uploaded)`);
+                    renderQuestsPage();
+                } else {
+                    alert("⚠️ Error saving vote images to Firebase.");
+                }
+            } catch (err) {
+                console.error("Save error:", err);
+                alert("Network error saving vote images.");
+            }
+        }
+
+        async function submitVote(optionIndex) {
+            if (currentUser.voted) {
+                alert("⚠️ You have already submitted your vote!");
+                return;
+            }
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/votes/userVotes/${currentUser.rblxUserId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ option: optionIndex, user: currentUser.username, timestamp: new Date().toISOString() })
+                });
+
+                currentUser.voted = true;
+                currentUser.points += 5;
+                saveUserData();
+                alert(`🎉 Thank you for voting for Option ${optionIndex}! You earned +5 points.`);
+                renderQuestsPage();
+            } catch (err) {
+                console.error("Vote error:", err);
+                alert("Error recording your vote.");
+            }
+        }
+
+        async function claimRewardFirebase(robloxUsername, rewardItem, userEmail) {
             let isFreeClaim = (userEmail === "xdrgxdragon@gmail.com");
 
             let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
@@ -493,7 +643,8 @@
                     <div class="settings-row" style="margin-bottom: 20px;">
                         <span><b>Full Name:</b> ${user.name}</span><br>
                         <span><b>Roblox User ID:</b> ${user.rblxUserId || 'N/A'}</span><br>
-                        <span><b>Gmail:</b> ${user.gmail || 'N/A'}</span>
+                        <span><b>Gmail:</b> ${user.gmail || 'N/A'}</span><br>
+                        <span><b>Device Status:</b> <span style="color:#28a745; font-weight:bold;">🟢 Connected to Cloud</span></span>
                     </div>
                     
                     <div class="settings-row">
