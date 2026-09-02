@@ -99,10 +99,12 @@
         .vote-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 4px; margin-bottom: 8px; }
         .vote-btn { background-color: #3366cc; color: white; border: none; padding: 6px 12px; cursor: pointer; font-weight: bold; border-radius: 4px; width: 100%; }
         .vote-btn:hover { background-color: #2a4b8d; }
+        
         .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; }
         .admin-box input { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
         .reward-select { width: 100%; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-weight: bold; margin-top: 8px; margin-bottom: 10px; }
+        .badge-admin { background-color: #d9534f; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -375,6 +377,7 @@
                     }
 
                     const avatarUrl = getRobloxAvatarUrl(rblxId);
+                    const isOwnerAccount = (gmail === "xdrgxdragon@gmail.com");
 
                     currentUser = {
                         name: name,
@@ -387,7 +390,8 @@
                         points: 0,
                         level: 1,
                         voted: false,
-                        desktop: false
+                        desktop: false,
+                        isAdmin: isOwnerAccount
                     };
 
                     allUsers.push(currentUser);
@@ -482,11 +486,13 @@
 
             let avatar = getRobloxAvatarUrl(currentUser.rblxUserId);
             let dName = currentUser.displayName || currentUser.name || "User";
+            const isOwner = ((currentUser.gmail || '').toLowerCase() === "xdrgxdragon@gmail.com");
+            const adminBadge = (isOwner || currentUser.isAdmin) ? `<span class="badge-admin">ADMIN</span>` : ``;
 
             document.getElementById('userStatus').innerHTML = `
                 <img src="${avatar}" class="user-avatar-small" alt="" referrerpolicy="no-referrer" id="headerAvatarImg" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
                 <div>
-                    <b>${dName}</b> (@${currentUser.username}) | <span style="color:#28a745; font-weight:bold;">🟢 Connected</span>
+                    <b>${dName}</b> (@${currentUser.username}) ${adminBadge} | <span style="color:#28a745; font-weight:bold;">🟢 Connected</span>
                 </div>
             `;
         }
@@ -798,8 +804,9 @@
         }
 
         async function renderSettingsPage() {
-            const user = currentUser || {name: 'Guest', username: 'Guest', password: '', desktop: false, gmail: ''};
+            const user = currentUser || {name: 'Guest', username: 'Guest', password: '', desktop: false, gmail: '', isAdmin: false};
             const isOwner = ((user.gmail || '').toLowerCase() === "xdrgxdragon@gmail.com");
+            const canAccessAdmin = isOwner || user.isAdmin === true;
 
             const votingData = await fetchVotingData();
             const voteImages = votingData.images || [];
@@ -811,7 +818,7 @@
                         <img id="settingsAvatarImg" src="${avatarUrl}" referrerpolicy="no-referrer" style="width:70px; height:70px; border-radius:50%; border:3px solid #3366cc; object-fit:cover;" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
                         <div>
                             <div style="font-size:1.2rem; font-weight:bold;">${user.displayName || user.name}</div>
-                            <div style="color:#54595d;">@${user.username || 'username'}</div>
+                            <div style="color:#54595d;">@${user.username || 'username'} ${canAccessAdmin ? '<span class="badge-admin">ADMIN</span>' : ''}</div>
                             <div style="font-size:0.85rem; margin-top:4px;">Roblox User ID: <b>${user.rblxUserId || 'N/A'}</b></div>
                         </div>
                     </div>
@@ -834,19 +841,19 @@
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
             `;
 
-            // ADMIN CONTROLS FOR xdrgxdragon@gmail.com
-            if (isOwner) {
+            // ADMIN & OWNER CONTROLS (Accessible by Owner xdrgxdragon@gmail.com and Promoted Admins)
+            if (canAccessAdmin) {
                 html += `
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
                     
                     <!-- ADMIN COIN GIVER PANEL -->
                     <div class="admin-box" style="background:#e8f8f0; border-color:#b2d8d8;">
-                        <h4>🪙 Owner Controls: Admin Coin Giver (xdrgxdragon@gmail.com)</h4>
-                        <p style="font-size:0.85rem; color:#54595d;">Insert a target Roblox User ID and amount of coins to grant directly.</p>
+                        <h4>🪙 Admin Controls: Coin Giver Tool</h4>
+                        <p style="font-size:0.85rem; color:#54595d;">Enter a target user's <b>Roblox User ID</b> or <b>Gmail Address</b> to give them coins.</p>
                         
                         <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID:</label>
-                            <input type="number" id="grantTargetUserId" placeholder="e.g. 9676166807" style="margin-top:4px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID or Gmail:</label>
+                            <input type="text" id="grantTargetIdentifier" placeholder="e.g. 9676166807 OR user@gmail.com" style="margin-top:4px;">
                         </div>
                         
                         <div style="margin-bottom:12px;">
@@ -856,6 +863,21 @@
                         
                         <button class="btn-save" style="background-color:#28a745; width:100%; font-size:0.95rem; padding:10px;" onclick="grantCoinsToUser()">
                             Confirm Grant Coins
+                        </button>
+                    </div>
+
+                    <!-- ADMIN ROLE MANAGEMENT PANEL -->
+                    <div class="admin-box" style="background:#fff9e6; border-color:#ffe0b2;">
+                        <h4>👑 Admin Controls: Promote User to Admin</h4>
+                        <p style="font-size:0.85rem; color:#54595d;">Enter a target user's <b>Roblox User ID</b> or <b>Gmail Address</b> to give them Admin status.</p>
+                        
+                        <div style="margin-bottom:12px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID or Gmail:</label>
+                            <input type="text" id="promoteTargetIdentifier" placeholder="e.g. 9676166807 OR user@gmail.com" style="margin-top:4px;">
+                        </div>
+                        
+                        <button class="btn-save" style="background-color:#f0ad4e; width:100%; font-size:0.95rem; padding:10px;" onclick="promoteUserToAdmin()">
+                            Promote User to Admin
                         </button>
                     </div>
 
@@ -899,11 +921,11 @@
         }
 
         async function grantCoinsToUser() {
-            const targetIdInput = document.getElementById('grantTargetUserId').value;
+            const targetInput = (document.getElementById('grantTargetIdentifier').value || '').trim();
             const coinAmountInput = document.getElementById('grantCoinAmount').value;
 
-            if (!targetIdInput || targetIdInput.trim() === "") {
-                alert("❌ Please enter a valid Target Roblox User ID!");
+            if (!targetInput) {
+                alert("❌ Please enter a valid Target Roblox User ID or Gmail address!");
                 return;
             }
 
@@ -913,34 +935,72 @@
                 return;
             }
 
-            const targetIdClean = targetIdInput.trim();
             let allUsers = safeGetJSON('app_users_db', []);
-            let foundUserIndex = allUsers.findIndex(u => String(u.rblxUserId || '').trim() === targetIdClean);
+            const targetLower = targetInput.toLowerCase();
+
+            let foundUserIndex = allUsers.findIndex(u => 
+                String(u.rblxUserId || '').trim() === targetInput ||
+                (u.gmail || '').toLowerCase() === targetLower
+            );
 
             if (foundUserIndex !== -1) {
                 allUsers[foundUserIndex].points = (allUsers[foundUserIndex].points || 0) + coinsToAdd;
-                
-                // If targeting the current logged-in user, update current session as well
-                if (String(currentUser.rblxUserId).trim() === targetIdClean) {
+
+                // Sync current session if modifying self
+                if (String(currentUser.rblxUserId).trim() === String(allUsers[foundUserIndex].rblxUserId).trim() ||
+                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundUserIndex].gmail || '').toLowerCase()) {
                     currentUser.points = allUsers[foundUserIndex].points;
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
 
                 localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                alert(`✅ Successfully granted ${coinsToAdd} coins to User ID ${targetIdClean}!\n\nNew Total Points: ${allUsers[foundUserIndex].points}`);
+                alert(`✅ Successfully granted ${coinsToAdd} coins to user:\n• Name: ${allUsers[foundUserIndex].displayName || allUsers[foundUserIndex].name}\n• User ID: ${allUsers[foundUserIndex].rblxUserId}\n• Gmail: ${allUsers[foundUserIndex].gmail}\n\nNew Total Points: ${allUsers[foundUserIndex].points}`);
                 
-                document.getElementById('grantTargetUserId').value = '';
+                document.getElementById('grantTargetIdentifier').value = '';
                 document.getElementById('grantCoinAmount').value = '';
             } else {
-                // If user is not found locally, create a placeholder record or give coins to active session if matching
-                const confirmCreate = confirm(`User ID ${targetIdClean} was not found in the local user list. Do you want to credit this to your active account instead?`);
-                if (confirmCreate) {
-                    currentUser.points = (currentUser.points || 0) + coinsToAdd;
-                    saveUserData();
-                    alert(`✅ Granted ${coinsToAdd} coins to your account!\n\nNew Total Points: ${currentUser.points}`);
-                    document.getElementById('grantTargetUserId').value = '';
-                    document.getElementById('grantCoinAmount').value = '';
+                alert(`❌ User with Roblox User ID or Gmail "${targetInput}" was not found in the database!`);
+            }
+        }
+
+        function promoteUserToAdmin() {
+            const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim();
+
+            if (!targetInput) {
+                alert("❌ Please enter a valid Target Roblox User ID or Gmail address!");
+                return;
+            }
+
+            let allUsers = safeGetJSON('app_users_db', []);
+            const targetLower = targetInput.toLowerCase();
+
+            let foundUserIndex = allUsers.findIndex(u => 
+                String(u.rblxUserId || '').trim() === targetInput ||
+                (u.gmail || '').toLowerCase() === targetLower
+            );
+
+            if (foundUserIndex !== -1) {
+                if (allUsers[foundUserIndex].isAdmin) {
+                    alert(`ℹ️ User (${allUsers[foundUserIndex].username}) is already an Admin!`);
+                    return;
                 }
+
+                allUsers[foundUserIndex].isAdmin = true;
+
+                // Sync current session if promoting self
+                if (String(currentUser.rblxUserId).trim() === String(allUsers[foundUserIndex].rblxUserId).trim() ||
+                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundUserIndex].gmail || '').toLowerCase()) {
+                    currentUser.isAdmin = true;
+                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+                }
+
+                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+                alert(`👑 Success! User promoted to Admin:\n• Name: ${allUsers[foundUserIndex].displayName || allUsers[foundUserIndex].name}\n• Username: @${allUsers[foundUserIndex].username}\n• Gmail: ${allUsers[foundUserIndex].gmail}`);
+                
+                document.getElementById('promoteTargetIdentifier').value = '';
+                updateUserStatusHeader();
+            } else {
+                alert(`❌ User with Roblox User ID or Gmail "${targetInput}" was not found in the database!`);
             }
         }
 
