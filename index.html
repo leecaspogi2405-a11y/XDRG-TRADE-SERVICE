@@ -11,7 +11,7 @@
         
         /* SIDEBAR */
         .mw-sidebar { width: 200px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; }
-        .mw-logo { display: block; font-family: 'Linux Libertine', Georgia, serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; }
+        .mw-logo { display: block; font-family: 'Linux Libertine', Georgia, serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
         .mw-sidebar h3 { font-family: sans-serif; font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
         .mw-sidebar li { margin-bottom: 5px; font-size: 0.85rem; }
@@ -31,7 +31,7 @@
         .wikitable th, .wikitable td { border: 1px solid #a2a9b1; padding: 8px 10px; }
         .wikitable th { background-color: #eaecf0; text-align: center; }
         
-        /* LOGIN & SETTINGS FORMS */
+        /* LOGIN & FORMS */
         .form-box { max-width: 450px; margin: 30px auto; border: 1px solid #a2a9b1; padding: 30px; background: #f8f9fa; border-radius: 6px; }
         .form-box label { display: block; font-weight: bold; margin-bottom: 3px; font-size: 0.85rem; }
         .form-box input[type="text"], .form-box input[type="email"], .form-box input[type="password"], .form-box input[type="number"] { width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid #a2a9b1; box-sizing: border-box; border-radius: 4px; }
@@ -42,21 +42,23 @@
         .auth-toggle button { background: #eaecf0; color: #202122; border: 1px solid #a2a9b1; padding: 8px; font-weight: bold; width: 50%; cursor: pointer; }
         .auth-toggle button.active { background: #3366cc; color: white; border-color: #3366cc; }
 
-        /* SETTINGS PAGE SPECIFICS */
+        /* SETTINGS PAGE */
         .settings-section { max-width: 600px; margin-top: 20px; }
         .settings-row { margin-bottom: 15px; }
         .settings-row label { display: block; font-weight: bold; margin-bottom: 5px; }
         .settings-row input[type="text"], .settings-row input[type="password"] { width: 100%; max-width: 300px; padding: 8px; border: 1px solid #a2a9b1; }
         .settings-row.checkbox-row { display: flex; align-items: center; gap: 10px; }
         .settings-row.checkbox-row label { margin-bottom: 0; }
-        .btn-save { background-color: #3366cc; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; }
+        .btn-save { background-color: #3366cc; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; border-radius: 4px; }
         .btn-save:hover { background-color: #2a4b8d; }
+        .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; }
+        .btn-claim:hover { background-color: #218838; }
         
         .social-links { list-style: none; padding: 0; font-size: 1.1rem; line-height: 2; }
         .social-links a { text-decoration: none; color: #0645ad; }
         .social-links a:hover { text-decoration: underline; }
         
-        .copy-container { display: flex; align-items: center; gap: 10px; max-width: 500px; }
+        .copy-container { display: flex; align-items: center; gap: 10px; max-width: 500px; margin-top: 10px; }
         .copy-container input { flex: 1; padding: 8px; border: 1px solid #a2a9b1; background-color: #eaecf0; color: #54595d; }
         .btn-copy { background-color: #00af89; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; }
         .btn-copy:hover { background-color: #008a6b; }
@@ -76,13 +78,14 @@
         .try-again-btn { color: #0645ad; cursor: pointer; font-weight: bold; text-decoration: underline; font-size: 1.1rem; display: inline-block; }
         .try-again-btn:hover { color: #0b0080; }
 
-        /* QUEST DASHBOARD STYLING */
+        /* QUEST DASHBOARD */
         .quest-box { border: 1px solid #a2a9b1; background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .quest-box.disabled { background: #fff0f0; border-color: #f5c6cb; }
         .points-header { background: #eaf3ff; border: 1px solid #3366cc; padding: 12px; font-weight: bold; font-size: 1.1rem; color: #005a9c; text-align: center; border-radius: 6px; margin-bottom: 20px; }
         .status-closed-text { color: #721c24; font-weight: bold; font-size: 1rem; text-align: center; padding: 10px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; margin-top: 10px; }
         .game-grid { display: grid; grid-template-columns: repeat(2, 80px); gap: 10px; margin-top: 15px; justify-content: center; }
         .emoji-card { width: 80px; height: 80px; background: #eaecf0; border: 2px solid #a2a9b1; font-size: 2rem; display: flex; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer; user-select: none; }
+        .alert-banner { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -94,43 +97,47 @@
                 <h2 style="margin-top:0; border:none; text-align:center;">XDRG Trade Service / Studio Portal</h2>
                 <p style="font-size:0.85rem; color:#54595d; text-align:center; margin-bottom:20px;">RedGalaxy Studio / NebulaForge Studio</p>
                 
+                <div id="refDetectAlert" class="alert-banner" style="display:none;">
+                    🔗 Referred Link Detected! Register to credit your inviter.
+                </div>
+
                 <div class="auth-toggle">
-                    <button id="btnTabSign" class="active" onclick="switchAuthTab('signin')">Sign In</button>
+                    <button id="btnTabSign" class="active" onclick="switchAuthTab('signin')">Sign Up</button>
                     <button id="btnTabLog" onclick="switchAuthTab('login')">Log In</button>
                 </div>
 
-                <!-- SIGN IN FORM -->
+                <!-- SIGN UP FORM -->
                 <form id="signInForm" onsubmit="handleAuth(event, 'signin')">
-                    <label>Name:</label>
+                    <label>Full Name:</label>
                     <input type="text" id="signName" required placeholder="Enter your full name">
                     
                     <label>Username:</label>
                     <input type="text" id="signUsername" required placeholder="Enter username">
                     
-                    <label>RblxUserId:</label>
+                    <label>Roblox User ID:</label>
                     <input type="number" id="signRblxId" required placeholder="Enter Roblox User ID">
                     
                     <label>Gmail:</label>
                     <input type="email" id="signGmail" required placeholder="Enter Gmail address">
                     
-                    <label>Password/Secret Key:</label>
+                    <label>Password / Secret Key:</label>
                     <input type="password" id="signPass" required placeholder="Enter password or secret key">
                     
-                    <button type="submit">Sign In (Register)</button>
+                    <button type="submit">Sign Up (Register)</button>
                 </form>
 
                 <!-- LOG IN FORM -->
                 <form id="loginForm" onsubmit="handleAuth(event, 'login')" style="display: none;">
-                    <label>Name:</label>
-                    <input type="text" id="logName" required placeholder="Enter your name">
+                    <label>Name / Username:</label>
+                    <input type="text" id="logName" required placeholder="Enter your name or username">
                     
-                    <label>RblxUserId:</label>
+                    <label>Roblox User ID:</label>
                     <input type="number" id="logRblxId" required placeholder="Enter Roblox User ID">
                     
                     <label>Gmail:</label>
                     <input type="email" id="logGmail" required placeholder="Enter Gmail address">
                     
-                    <label>Password/Secret Key:</label>
+                    <label>Password / Secret Key:</label>
                     <input type="password" id="logPass" required placeholder="Enter password or secret key">
                     
                     <button type="submit">Log In</button>
@@ -144,7 +151,7 @@
         <div class="mw-page-container">
             
             <div class="mw-sidebar">
-                <a href="#" class="mw-logo" onclick="openHome()">RedGalaxy Studio<br>NebulaForge Studio</a>
+                <a class="mw-logo" onclick="openHome()">RedGalaxy Studio<br>NebulaForge Studio</a>
                 
                 <h3>Navigation</h3>
                 <ul>
@@ -176,14 +183,14 @@
                 <h1 id="pageTitle">Main Page</h1>
                 
                 <div id="pageContent">
-                    <p>Welcome to the <b>RedGalaxy Studio / NebulaForge Studio</b> official wiki. Please select an option from the sidebar navigation to continue.</p>
+                    <p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> wiki portal. Select an option from the navigation menu to browse game databases or access trade rewards.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        /* --- 1. DATA STRUCTURE --- */
+        /* --- 1. DATA STRUCTURES --- */
         
         const areaMapping = {
             "Common": "Forest Area",
@@ -219,9 +226,21 @@
         let selectedCards = [];
         const emojis = ["🐱", "🐶", "🦊", "🐸", "🐵", "🦁"];
 
-        /* --- 2. AUTHENTICATION & INITIALIZATION --- */
+        /* --- 2. INITIALIZATION & URL REFERRAL AUTO-DETECTION --- */
         
         window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const referrerId = urlParams.get('ref');
+            
+            if (referrerId) {
+                localStorage.setItem('activeReferrer', referrerId);
+                const alertBanner = document.getElementById('refDetectAlert');
+                if (alertBanner) {
+                    alertBanner.innerText = `🔗 Inviter Link Detected! (RblxID: ${referrerId}) Sign up to grant +25 points to your inviter.`;
+                    alertBanner.style.display = 'block';
+                }
+            }
+
             const savedUser = localStorage.getItem('wikiUser');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
@@ -240,35 +259,44 @@
         function handleAuth(event, type) {
             event.preventDefault();
             
-            if (type === 'signin') {
-                currentUser = {
-                    name: document.getElementById('signName').value,
-                    username: document.getElementById('signUsername').value,
-                    rblxUserId: document.getElementById('signRblxId').value,
-                    gmail: document.getElementById('signGmail').value,
-                    password: document.getElementById('signPass').value,
-                    points: 0,
-                    level: 1,
-                    inviteClaimed: false,
-                    desktop: false
-                };
+            const rblxId = type === 'signin' ? document.getElementById('signRblxId').value : document.getElementById('logRblxId').value;
+            const name = type === 'signin' ? document.getElementById('signName').value : document.getElementById('logName').value;
+            const username = type === 'signin' ? document.getElementById('signUsername').value : document.getElementById('logName').value;
+            const gmail = type === 'signin' ? document.getElementById('signGmail').value : document.getElementById('logGmail').value;
+            const pass = type === 'signin' ? document.getElementById('signPass').value : document.getElementById('logPass').value;
+
+            const savedUser = localStorage.getItem('wikiUser');
+            if (savedUser && type === 'login') {
+                currentUser = JSON.parse(savedUser);
             } else {
                 currentUser = {
-                    name: document.getElementById('logName').value,
-                    username: document.getElementById('logName').value,
-                    rblxUserId: document.getElementById('logRblxId').value,
-                    gmail: document.getElementById('logGmail').value,
-                    password: document.getElementById('logPass').value,
+                    name: name,
+                    username: username,
+                    rblxUserId: rblxId,
+                    gmail: gmail,
+                    password: pass,
                     points: 0,
                     level: 1,
-                    inviteClaimed: false,
                     desktop: false
                 };
+
+                const pendingReferrer = localStorage.getItem('activeReferrer');
+                if (pendingReferrer && pendingReferrer !== rblxId) {
+                    processReferralCredit(pendingReferrer);
+                    localStorage.removeItem('activeReferrer');
+                }
             }
 
-            localStorage.setItem('wikiUser', JSON.stringify(currentUser));
+            saveUserData();
             updateUserStatusHeader();
             showWiki();
+        }
+
+        function processReferralCredit(referrerId) {
+            let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
+            refStore[referrerId] = (refStore[referrerId] || 0) + 1;
+            localStorage.setItem('referralDataStore', JSON.stringify(refStore));
+            alert(`🎉 Referral link verified! User ID ${referrerId} will receive +25 points.`);
         }
 
         function updateUserStatusHeader() {
@@ -290,11 +318,15 @@
             openHome();
         }
 
+        function saveUserData() {
+            localStorage.setItem('wikiUser', JSON.stringify(currentUser));
+        }
+
         /* --- 3. NAVIGATION LOGIC --- */
 
         function openHome() {
             document.getElementById('pageTitle').innerText = "Main Page";
-            document.getElementById('pageContent').innerHTML = "<p>Welcome to the <b>RedGalaxy Studio / NebulaForge Studio</b> official wiki. Please select an option from the sidebar navigation to view databases or claim trade rewards.</p>";
+            document.getElementById('pageContent').innerHTML = "<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> wiki portal. Select an option from the sidebar to view game databases or claim trade rewards.</p>";
         }
 
         function openGame(game) {
@@ -302,12 +334,11 @@
                 triggerReleaseSequence();
                 return;
             }
-
             document.getElementById('pageTitle').innerText = "Don't Crash the Train for Brainrots";
             renderBrainrotsPage();
         }
 
-        /* --- 4. QUESTS & TRADE SERVICE DASHBOARD --- */
+        /* --- 4. QUESTS DASHBOARD & FIREBASE CLAIM SYSTEM --- */
 
         function openQuests() {
             document.getElementById('pageTitle').innerText = "🎯 Quests & Trade Service Dashboard";
@@ -317,31 +348,56 @@
         function renderQuestsPage() {
             if (!currentUser) return;
 
+            let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
+            let detectedInvites = refStore[currentUser.rblxUserId] || 0;
+            let totalPoints = currentUser.points + (detectedInvites * 25);
+
+            const currentUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+            const autoInviteLink = `${currentUrl}?ref=${currentUser.rblxUserId}`;
+
             let html = `
                 <div class="points-header">
-                    Total Points: <span id="pointCount">${currentUser.points}</span> / 35
+                    Total Points: <span id="pointCount">${totalPoints}</span> / 35
                 </div>
 
-                <!-- QUEST 1 -->
+                <!-- QUEST 1: AUTOMATIC REFERRAL LINK -->
                 <div class="quest-box">
-                    <h3>Quest 1: Invite Friends (+25 Points)</h3>
-                    <p style="color:#54595d; font-size:0.9rem;">Share your trade code with friends to earn points instantly.</p>
-                    <button class="btn-save" onclick="claimInvitePoints()">Claim +25 Points</button>
+                    <h3>Quest 1: Auto-Detect Friend Invite (+25 Points / Referral)</h3>
+                    <p style="color:#54595d; font-size:0.9rem; margin-bottom:5px;">Share your unique invite link. When someone opens it and registers, you automatically gain +25 points!</p>
+                    
+                    <label><b>Your Unique Auto-Invite Link:</b></label>
+                    <div class="copy-container">
+                        <input type="text" id="inviteUrlInput" value="${autoInviteLink}" readonly>
+                        <button class="btn-copy" onclick="copyInviteLink()">Copy Link</button>
+                        <span id="inviteCopyMsg" style="color: #00af89; font-weight: bold; display: none;">Copied!</span>
+                    </div>
+
+                    <div style="margin-top:12px; font-weight:bold; color:#005a9c;">
+                        📊 Verified Referrals: <span>${detectedInvites}</span> (${detectedInvites * 25} Points Earned)
+                    </div>
+                </div>
+
+                <!-- REWARD CLAIM SECTION -->
+                <div class="quest-box">
+                    <h3>🎁 Summerini Fattini Tool Reward (Top Limited)</h3>
+                    <p style="color:#54595d; font-size:0.9rem;">Requires 35 Points or Dev VIP Access to claim. Instantly converts model into a welded Tool in your Roblox inventory upon claim.</p>
+                    <button class="btn-claim" onclick="claimRewardFirebase('${currentUser.username || currentUser.name}', 'Summerini Fattini', '${currentUser.gmail}')">
+                        Claim Summerini Fattini
+                    </button>
                 </div>
 
                 <!-- QUEST 2 -->
                 <div class="quest-box disabled">
                     <h3>Quest 2: Image Leaks Voting</h3>
                     <div class="status-closed-text">
-                        (Under Construction 🚧 this [Guest] was closed🔒)
+                        (Under Construction 🚧 Quest Closed 🔒)
                     </div>
                 </div>
 
                 <!-- QUEST 3 -->
                 <div class="quest-box">
-                    <h3>Quest 3: Emoji Matching Puzzle (+1 Pt/Level)</h3>
-                    <p style="color:#54595d; font-size:0.9rem;">Find the matching pair to clear levels (Level <span id="gameLevel">${currentUser.level}</span>/250).</p>
-                    
+                    <h3>Quest 3: Emoji Matching Puzzle (+1 Pt / Level)</h3>
+                    <p style="color:#54595d; font-size:0.9rem;">Find matching emoji pairs to clear levels (Level <span id="gameLevel">${currentUser.level}</span>/250).</p>
                     <div class="game-grid" id="gameGrid"></div>
                 </div>
             `;
@@ -350,20 +406,58 @@
             initMiniGame();
         }
 
-        function saveUserData() {
-            localStorage.setItem('wikiUser', JSON.stringify(currentUser));
-        }
+        /* --- FIREBASE CLAIM REQUEST HANDLER --- */
+        async function claimRewardFirebase(robloxUsername, rewardItem, userEmail) {
+            const FIREBASE_URL = "https://automation-giver-xdrg-default-rtdb.firebaseio.com/claims.json";
 
-        function claimInvitePoints() {
-            if (currentUser.inviteClaimed) {
-                alert("You already claimed the invite reward!");
+            // VIP Free Claim Bypass Check for Dev Email
+            let isFreeClaim = (userEmail === "xdrgxdragon@gmail.com");
+
+            let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
+            let detectedInvites = refStore[currentUser.rblxUserId] || 0;
+            let totalPoints = currentUser.points + (detectedInvites * 25);
+
+            if (!isFreeClaim && totalPoints < 35) {
+                alert(`⚠️ You need at least 35 points to claim this item! (Current Points: ${totalPoints})`);
                 return;
             }
-            currentUser.points += 25;
-            currentUser.inviteClaimed = true;
-            saveUserData();
-            document.getElementById('pointCount').innerText = currentUser.points;
-            alert("+25 Points added successfully!");
+
+            const claimData = {
+                username: robloxUsername,
+                reward: rewardItem,
+                email: userEmail,
+                status: "pending",
+                isVip: isFreeClaim,
+                timestamp: Date.now()
+            };
+
+            try {
+                const response = await fetch(FIREBASE_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(claimData)
+                });
+
+                if (response.ok) {
+                    alert(`🎉 Reward Claim Recorded! Log into the Roblox game to receive your ${rewardItem} Tool!`);
+                } else {
+                    alert("Error submitting claim request. Please try again.");
+                }
+            } catch (error) {
+                console.error("Firebase Error:", error);
+                alert("Network error connecting to Firebase database.");
+            }
+        }
+
+        function copyInviteLink() {
+            const linkInput = document.getElementById("inviteUrlInput");
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(linkInput.value);
+            
+            const confirmMsg = document.getElementById("inviteCopyMsg");
+            confirmMsg.style.display = "inline";
+            setTimeout(() => { confirmMsg.style.display = "none"; }, 2000);
         }
 
         function initMiniGame() {
@@ -406,7 +500,11 @@
                     currentUser.level += 1;
                     saveUserData();
                     
-                    if(document.getElementById('pointCount')) document.getElementById('pointCount').innerText = currentUser.points;
+                    let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
+                    let detectedInvites = refStore[currentUser.rblxUserId] || 0;
+                    let totalPoints = currentUser.points + (detectedInvites * 25);
+
+                    if(document.getElementById('pointCount')) document.getElementById('pointCount').innerText = totalPoints;
                     if(document.getElementById('gameLevel')) document.getElementById('gameLevel').innerText = currentUser.level;
                     
                     alert(`Level Cleared! +1 Point added. Next Level: ${currentUser.level}`);
@@ -415,7 +513,7 @@
             initMiniGame();
         }
 
-        /* --- 5. SETTINGS PAGE LOGIC --- */
+        /* --- 5. SETTINGS PAGE --- */
         
         function openSettings() {
             document.getElementById('pageTitle').innerText = "⚙️ Settings";
@@ -428,18 +526,18 @@
             let html = `
                 <div class="settings-section">
                     <div class="settings-row" style="margin-bottom: 20px;">
-                        <span><b>Name:</b> ${user.name}</span><br>
+                        <span><b>Full Name:</b> ${user.name}</span><br>
                         <span><b>Roblox User ID:</b> ${user.rblxUserId || 'N/A'}</span><br>
                         <span><b>Gmail:</b> ${user.gmail || 'N/A'}</span>
                     </div>
                     
                     <div class="settings-row">
-                        <label>Username [New]</label>
+                        <label>New Username:</label>
                         <input type="text" id="setUserName" value="${user.username || ''}">
                     </div>
                     
                     <div class="settings-row">
-                        <label>Password / Secret Key [New]</label>
+                        <label>New Password / Secret Key:</label>
                         <input type="password" id="setUserPass" value="${user.password || ''}">
                     </div>
                     
@@ -462,10 +560,10 @@
                     <hr style="margin: 40px 0 20px 0; border: 0; border-top: 1px solid #c8ccd1;">
 
                     <h2>Downloads</h2>
-                    <p style="margin-top: 0;">Latest APK Release:</p>
+                    <p style="margin-top: 0;">Latest Mobile APK Release:</p>
                     <div class="copy-container">
                         <input type="text" id="dlLinkInput" value="https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file" readonly>
-                        <button class="btn-copy" onclick="copyLink()">Copy</button>
+                        <button class="btn-copy" onclick="copyDownloadLink()">Copy Link</button>
                         <span id="copyConfirm" style="color: #00af89; font-weight: bold; display: none;">Copied!</span>
                     </div>
                 </div>
@@ -482,11 +580,11 @@
                 
                 saveUserData();
                 updateUserStatusHeader();
-                alert("Settings have been updated successfully!");
+                alert("Settings updated successfully!");
             }
         }
 
-        function copyLink() {
+        function copyDownloadLink() {
             const linkInput = document.getElementById("dlLinkInput");
             linkInput.select();
             linkInput.setSelectionRange(0, 99999); 
@@ -494,12 +592,10 @@
             
             const confirmMsg = document.getElementById("copyConfirm");
             confirmMsg.style.display = "inline";
-            setTimeout(() => {
-                confirmMsg.style.display = "none";
-            }, 2000);
+            setTimeout(() => { confirmMsg.style.display = "none"; }, 2000);
         }
 
-        /* --- 6. GAME RENDERING LOGIC --- */
+        /* --- 6. GAME DATABASE RENDERING --- */
 
         function changeMutation() {
             const sel = document.getElementById('mutationSelect');
@@ -522,7 +618,7 @@
                         <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
                     </select>
                 </div>
-                <p>This page documents the characters and shop items found in <b>Don't Crash the Train for Brainrots</b>. Values shown reflect the current mutation modifier.</p>
+                <p>Character units and shop values in <b>Don't Crash the Train for Brainrots</b>. Prices reflect current mutation multipliers.</p>
             `;
 
             categories.forEach(cat => {
@@ -548,7 +644,7 @@
                             <td>${areaName}</td>
                             <td>${cat.title}</td>
                             <td>${mutationName} (x${currentMutation})</td>
-                            <td>${finalPrice.toLocaleString()}</td>
+                            <td>$${finalPrice.toLocaleString()}</td>
                         </tr>
                     `;
                 });
@@ -576,8 +672,8 @@
                         <td><b>${item.name}</b></td>
                         <td>${item.rarity}</td>
                         <td>${mutationName} (x${currentMutation})</td>
-                        <td>${finalPrice.toLocaleString()}</td>
-                        <td style="color: #0645ad; font-weight:bold;">${finalPerSec.toLocaleString()} /s</td>
+                        <td>$${finalPrice.toLocaleString()}</td>
+                        <td style="color: #0645ad; font-weight:bold;">+$${finalPerSec.toLocaleString()} /s</td>
                     </tr>
                 `;
             });
@@ -586,14 +682,14 @@
             document.getElementById('pageContent').innerHTML = html;
         }
 
-        /* --- 7. RELEASE ANNOUNCEMENT SEQUENCE (Crystal Collecting Simulator) --- */
+        /* --- 7. GAME RELEASE ANNOUNCEMENT SEQUENCE --- */
 
         function triggerReleaseSequence() {
             document.getElementById('pageTitle').innerText = "Loading Asset...";
             document.getElementById('pageContent').innerHTML = `
                 <div style="text-align:center; padding: 50px;">
                     <div class="loader"></div>
-                    <p style="font-weight: bold; color: #54595d;">Fetching game data...</p>
+                    <p style="font-weight: bold; color: #54595d;">Fetching game server data...</p>
                 </div>
             `;
 
@@ -602,25 +698,25 @@
                 document.getElementById('pageContent').innerHTML = `
                     <div class="error-container">
                         <div style="margin-bottom: 25px;">
-                            <span class="try-again-btn" onclick="triggerReleaseSequence()">Try Again</span>
+                            <span class="try-again-btn" onclick="triggerReleaseSequence()">Refresh Status</span>
                         </div>
                         
-                        <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Announcement Image">
+                        <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner">
                         
                         <div class="error-title">
-                            (Lume Craftor announce that the game will be Release at September 6, 2026, 1:00PM)
+                            Official Release Announcement: Game scheduled to launch on September 6, 2026 at 1:00 PM PST.
                         </div>
                         
                         <div class="error-mod">
-                            (Moderator Action: Admin Abuse will be Starting 30 minutes after the release, see y'all at September 6, 2026, 1:00PM)
+                            Moderator Event: Admin Abuse event starts 30 minutes post-release on September 6, 2026.
                         </div>
                         
                         <div style="margin-top: 15px;">
-                            <span class="try-again-btn" onclick="triggerReleaseSequence()">Try Again</span>
+                            <span class="try-again-btn" onclick="triggerReleaseSequence()">Refresh Status</span>
                         </div>
                     </div>
                 `;
-            }, 3000);
+            }, 2500);
         }
     </script>
 </body>
