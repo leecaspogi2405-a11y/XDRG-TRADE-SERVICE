@@ -99,7 +99,7 @@
                 <p style="font-size:0.85rem; color:#54595d; text-align:center; margin-bottom:20px;">RedGalaxy Studio / NebulaForge Studio</p>
                 
                 <div id="refDetectAlert" class="alert-banner" style="display:none;">
-                    🔗 Referred Link Detected! Register to credit your inviter.
+                    🔗 Referral Link Detected! Register to credit your inviter.
                 </div>
 
                 <div class="auth-toggle">
@@ -193,9 +193,6 @@
 
         const rewardCosts = {
             "Strawberry Elephant": 35,
-            "La Vacca Saturno": 10,
-            "Esok Sekolah": 20,
-            "Matteo": 5,
             "Summerini Fattini": 35
         };
 
@@ -241,7 +238,7 @@
                 localStorage.setItem('activeReferrer', referrerId);
                 const alertBanner = document.getElementById('refDetectAlert');
                 if (alertBanner) {
-                    alertBanner.innerText = `🔗 Referred Link Detected! (RblxID: ${referrerId}) Register to grant +25 points to your inviter.`;
+                    alertBanner.innerText = `🔗 Referral Link Detected! (RblxID: ${referrerId}) Register to grant +25 points to your inviter.`;
                     alertBanner.style.display = 'block';
                 }
             }
@@ -409,16 +406,13 @@
                     <label><b>Choose Item to Claim:</b></label>
                     <select id="selectedRewardInput" class="reward-select">
                         <option value="Strawberry Elephant">Strawberry Elephant (35 Coins)</option>
-                        <option value="La Vacca Saturno">La Vacca Saturno (10 Coins)</option>
-                        <option value="Esok Sekolah">Esok Sekolah (20 Coins)</option>
-                        <option value="Matteo">Matteo (5 Coins)</option>
                         <option value="Summerini Fattini">Summerini Fattini (35 Coins)</option>
                     </select>
                     <button class="btn-claim" onclick="claimRewardFirebase('${currentUser.username || currentUser.name}', '${currentUser.gmail}')">
                         Claim Item
                     </button>
                     <p style="font-size:0.8rem; color:#54595d; margin-top:6px;">
-                        * Gagana kahit offline o nasa labas ng Roblox! Awtomatikong lalabas sa UI at Backpack mo sa susunod na pagpasok mo sa laro.
+                        * Works even if you are offline or outside Roblox! Automatically delivered to your Backpack upon joining the game.
                     </p>
                 </div>
 
@@ -559,7 +553,7 @@
             let totalPoints = currentUser.points + (detectedInvites * 25);
 
             if (!isFreeClaim && totalPoints < requiredCost) {
-                alert(`⚠️ Kailangan mo ng ${requiredCost} Coins/Points para ma-claim ang ${rewardItem}! (Kasalukuyang Coins: ${totalPoints})`);
+                alert(`⚠️ You need ${requiredCost} Coins/Points to claim ${rewardItem}! (Current Coins: ${totalPoints})`);
                 return;
             }
 
@@ -586,7 +580,7 @@
                         if (currentUser.points < 0) currentUser.points = 0;
                         saveUserData();
                     }
-                    alert(`🎉 Claim request submitted for ${rewardItem}!\n\nMag-log in sa Roblox Game anumang oras para makuha ang iyong item.`);
+                    alert(`🎉 Claim request submitted for ${rewardItem}!\n\nLog into the Roblox Game anytime to receive your item.`);
                     renderQuestsPage();
                 } else {
                     alert("Error submitting claim request. Please try again.");
@@ -765,7 +759,7 @@
 
             categories.forEach(cat => {
                 const areaName = areaMapping[cat.title];
-                html += `<h2>${cat.title} Units</h2>`;
+                html += ``<h2>${cat.title} Units</h2>``;
                 html += `
                     <table class="wikitable">
                         <tr>
