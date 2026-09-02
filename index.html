@@ -141,6 +141,12 @@
                     
                     <button type="submit">Log In</button>
                 </form>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    <button type="button" onclick="resetStorageSystem()" style="background:none; border:none; color:#721c24; cursor:pointer; text-decoration:underline; font-size:0.8rem;">
+                        ⚠️ Stuck? Click here to Reset System Cache
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -230,25 +236,45 @@
         let selectedCards = [];
         const emojis = ["🐱", "🐶", "🦊", "🐸", "🐵", "🦁"];
 
-        window.onload = () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const referrerId = urlParams.get('ref');
-            
-            if (referrerId) {
-                localStorage.setItem('activeReferrer', referrerId);
-                const alertBanner = document.getElementById('refDetectAlert');
-                if (alertBanner) {
-                    alertBanner.innerText = `🔗 Referral Link Detected! (RblxID: ${referrerId}) Register to grant +25 points to your inviter.`;
-                    alertBanner.style.display = 'block';
-                }
+        function safeGetJSON(key, defaultVal) {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : defaultVal;
+            } catch (e) {
+                console.error("Storage read error:", e);
+                return defaultVal;
             }
+        }
 
-            const savedUser = localStorage.getItem('app_current_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateUserStatusHeader();
-                logDeviceConnection(currentUser);
-                showWiki();
+        function resetStorageSystem() {
+            localStorage.clear();
+            alert("System cache cleared! Page will reload now.");
+            window.location.reload();
+        }
+
+        window.onload = () => {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const referrerId = urlParams.get('ref');
+                
+                if (referrerId) {
+                    localStorage.setItem('activeReferrer', referrerId);
+                    const alertBanner = document.getElementById('refDetectAlert');
+                    if (alertBanner) {
+                        alertBanner.innerText = `🔗 Referral Link Detected! (RblxID: ${referrerId}) Register to grant +25 points to your inviter.`;
+                        alertBanner.style.display = 'block';
+                    }
+                }
+
+                const savedUser = safeGetJSON('app_current_user', null);
+                if (savedUser && savedUser.gmail) {
+                    currentUser = savedUser;
+                    updateUserStatusHeader();
+                    logDeviceConnection(currentUser);
+                    showWiki();
+                }
+            } catch (err) {
+                console.error("Initialization error:", err);
             }
         };
 
@@ -261,92 +287,103 @@
 
         function handleAuth(event, type) {
             event.preventDefault();
-            let allUsers = JSON.parse(localStorage.getItem('app_users_db') || '[]');
+            let allUsers = safeGetJSON('app_users_db', []);
             
-            if (type === 'signin') {
-                const name = document.getElementById('signName').value.trim();
-                const username = document.getElementById('signUsername').value.trim();
-                const rblxId = document.getElementById('signRblxId').value.trim();
-                const gmail = document.getElementById('signGmail').value.trim().toLowerCase();
-                const pass = document.getElementById('signPass').value.trim();
+            try {
+                if (type === 'signin') {
+                    const name = (document.getElementById('signName').value || '').trim();
+                    const username = (document.getElementById('signUsername').value || '').trim();
+                    const rblxId = (document.getElementById('signRblxId').value || '').trim();
+                    const gmail = (document.getElementById('signGmail').value || '').trim().toLowerCase();
+                    const pass = (document.getElementById('signPass').value || '').trim();
 
-                // Strict uniqueness check across all registered accounts
-                const duplicateUser = allUsers.find(u => 
-                    u.name.toLowerCase() === name.toLowerCase() ||
-                    u.username.toLowerCase() === username.toLowerCase() ||
-                    u.gmail.toLowerCase() === gmail ||
-                    u.rblxUserId === rblxId
-                );
+                    // Strict uniqueness check across all accounts with safe string navigation
+                    const duplicateUser = allUsers.find(u => 
+                        (u.name || '').toLowerCase() === name.toLowerCase() ||
+                        (u.username || '').toLowerCase() === username.toLowerCase() ||
+                        (u.gmail || '').toLowerCase() === gmail ||
+                        String(u.rblxUserId || '') === String(rblxId)
+                    );
 
-                if (duplicateUser) {
-                    alert("❌ Registration Error: An account with this Name, Username, Gmail, or Roblox User ID already exists!\n\nTo prevent account hijacking, duplicate information cannot be used.");
-                    return;
+                    if (duplicateUser) {
+                        alert("❌ Registration Error: An account with this Name, Username, Gmail, or Roblox User ID already exists!\n\nTo prevent account hijacking, duplicate information cannot be used.");
+                        return;
+                    }
+
+                    currentUser = {
+                        name: name,
+                        username: username,
+                        rblxUserId: rblxId,
+                        gmail: gmail,
+                        password: pass,
+                        points: 0,
+                        level: 1,
+                        voted: false,
+                        desktop: false
+                    };
+
+                    allUsers.push(currentUser);
+                    localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+
+                    const pendingReferrer = localStorage.getItem('activeReferrer');
+                    if (pendingReferrer && String(pendingReferrer) !== String(rblxId)) {
+                        processReferralCredit(pendingReferrer);
+                        localStorage.removeItem('activeReferrer');
+                    }
+
+                    alert("🎉 Account created successfully!");
+                } else { // Log In
+                    const nameOrUser = (document.getElementById('logName').value || '').trim().toLowerCase();
+                    const rblxId = (document.getElementById('logRblxId').value || '').trim();
+                    const gmail = (document.getElementById('logGmail').value || '').trim().toLowerCase();
+                    const pass = (document.getElementById('logPass').value || '').trim();
+
+                    const existingUser = allUsers.find(u => 
+                        ((u.name || '').toLowerCase() === nameOrUser || (u.username || '').toLowerCase() === nameOrUser) &&
+                        String(u.rblxUserId || '') === String(rblxId) &&
+                        (u.gmail || '').toLowerCase() === gmail &&
+                        String(u.password || '') === String(pass)
+                    );
+
+                    if (!existingUser) {
+                        alert("❌ Invalid Login Credentials! Please verify your inputs.");
+                        return;
+                    }
+
+                    currentUser = existingUser;
+                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
 
-                currentUser = {
-                    name: name,
-                    username: username,
-                    rblxUserId: rblxId,
-                    gmail: gmail,
-                    password: pass,
-                    points: 0,
-                    level: 1,
-                    voted: false,
-                    desktop: false
-                };
-
-                allUsers.push(currentUser);
-                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                localStorage.setItem('app_current_user', JSON.stringify(currentUser));
-
-                const pendingReferrer = localStorage.getItem('activeReferrer');
-                if (pendingReferrer && pendingReferrer !== rblxId) {
-                    processReferralCredit(pendingReferrer);
-                    localStorage.removeItem('activeReferrer');
-                }
-
-                alert("🎉 Account created successfully!");
-            } else { // Log In
-                const nameOrUser = document.getElementById('logName').value.trim().toLowerCase();
-                const rblxId = document.getElementById('logRblxId').value.trim();
-                const gmail = document.getElementById('logGmail').value.trim().toLowerCase();
-                const pass = document.getElementById('logPass').value.trim();
-
-                const existingUser = allUsers.find(u => 
-                    (u.name.toLowerCase() === nameOrUser || u.username.toLowerCase() === nameOrUser) &&
-                    u.rblxUserId === rblxId &&
-                    u.gmail.toLowerCase() === gmail &&
-                    u.password === pass
-                );
-
-                if (!existingUser) {
-                    alert("❌ Invalid Login Credentials! Please make sure your Name/Username, Roblox User ID, Gmail, and Password match your registered account.");
-                    return;
-                }
-
-                currentUser = existingUser;
-                localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+                updateUserStatusHeader();
+                logDeviceConnection(currentUser);
+                showWiki();
+            } catch (err) {
+                console.error("Auth Exception:", err);
+                alert("⚠️ System error during authentication: " + err.message);
             }
-
-            updateUserStatusHeader();
-            logDeviceConnection(currentUser);
-            showWiki();
         }
 
         function saveUserData() {
+            if (!currentUser) return;
             localStorage.setItem('app_current_user', JSON.stringify(currentUser));
-            let allUsers = JSON.parse(localStorage.getItem('app_users_db') || '[]');
-            const idx = allUsers.findIndex(u => u.rblxUserId === currentUser.rblxUserId || u.gmail.toLowerCase() === currentUser.gmail.toLowerCase());
+            let allUsers = safeGetJSON('app_users_db', []);
+            const idx = allUsers.findIndex(u => 
+                String(u.rblxUserId || '') === String(currentUser.rblxUserId) || 
+                (u.gmail || '').toLowerCase() === (currentUser.gmail || '').toLowerCase()
+            );
             if (idx !== -1) {
                 allUsers[idx] = currentUser;
-                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+            } else {
+                allUsers.push(currentUser);
             }
+            localStorage.setItem('app_users_db', JSON.stringify(allUsers));
         }
 
         async function logDeviceConnection(user) {
             if (!user) return;
             const deviceData = {
-                username: user.username || user.name,
+                username: user.username || user.name || "Guest",
                 gmail: user.gmail || "N/A",
                 rblxUserId: user.rblxUserId || "N/A",
                 userAgent: navigator.userAgent,
@@ -367,7 +404,7 @@
         }
 
         function processReferralCredit(referrerId) {
-            let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
+            let refStore = safeGetJSON('referralDataStore', {});
             refStore[referrerId] = (refStore[referrerId] || 0) + 1;
             localStorage.setItem('referralDataStore', JSON.stringify(refStore));
         }
@@ -393,7 +430,7 @@
 
         function openHome() {
             document.getElementById('pageTitle').innerText = "Main Page";
-            document.getElementById('pageContent').innerHTML = "<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases or claim trade rewards.</p>";
+            document.getElementById('pageContent').innerHTML = "<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases or access trade services.</p>";
         }
 
         function openGame(game) {
@@ -426,7 +463,7 @@
         async function renderQuestsPage() {
             if (!currentUser) return;
 
-            let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
+            let refStore = safeGetJSON('referralDataStore', {});
             let detectedInvites = refStore[currentUser.rblxUserId] || 0;
             let totalPoints = currentUser.points + (detectedInvites * 25);
 
@@ -518,11 +555,11 @@
         }
 
         async function saveVoteImages() {
-            const img1 = document.getElementById('voteImg1').value.trim();
-            const img2 = document.getElementById('voteImg2').value.trim();
-            const img3 = document.getElementById('voteImg3').value.trim();
-            const img4 = document.getElementById('voteImg4').value.trim();
-            const img5 = document.getElementById('voteImg5').value.trim();
+            const img1 = (document.getElementById('voteImg1').value || '').trim();
+            const img2 = (document.getElementById('voteImg2').value || '').trim();
+            const img3 = (document.getElementById('voteImg3').value || '').trim();
+            const img4 = (document.getElementById('voteImg4').value || '').trim();
+            const img5 = (document.getElementById('voteImg5').value || '').trim();
 
             const imagesList = [img1, img2, img3, img4, img5].filter(url => url.length > 0);
 
@@ -572,9 +609,9 @@
         async function claimRewardFirebase(robloxUsername, userEmail) {
             const rewardItem = document.getElementById('selectedRewardInput').value;
             const requiredCost = rewardCosts[rewardItem] || 35;
-            let isFreeClaim = (userEmail.toLowerCase() === "xdrgxdragon@gmail.com");
+            let isFreeClaim = ((userEmail || '').toLowerCase() === "xdrgxdragon@gmail.com");
 
-            let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
+            let refStore = safeGetJSON('referralDataStore', {});
             let detectedInvites = refStore[currentUser.rblxUserId] || 0;
             let totalPoints = currentUser.points + (detectedInvites * 25);
 
@@ -668,7 +705,7 @@
                     currentUser.level += 1;
                     saveUserData();
                     
-                    let refStore = JSON.parse(localStorage.getItem('referralDataStore') || '{}');
+                    let refStore = safeGetJSON('referralDataStore', {});
                     let detectedInvites = refStore[currentUser.rblxUserId] || 0;
                     let totalPoints = currentUser.points + (detectedInvites * 25);
 
@@ -686,7 +723,7 @@
 
         async function renderSettingsPage() {
             const user = currentUser || {name: 'Guest', username: 'Guest', password: '', desktop: false, gmail: ''};
-            const isOwner = (user.gmail.toLowerCase() === "xdrgxdragon@gmail.com");
+            const isOwner = ((user.gmail || '').toLowerCase() === "xdrgxdragon@gmail.com");
 
             const votingData = await fetchVotingData();
             const voteImages = votingData.images || [];
@@ -761,13 +798,13 @@
 
         function saveSettings() {
             if (currentUser) {
-                const newUsername = document.getElementById('setUserName').value.trim();
-                const newPassword = document.getElementById('setUserPass').value.trim();
+                const newUsername = (document.getElementById('setUserName').value || '').trim();
+                const newPassword = (document.getElementById('setUserPass').value || '').trim();
 
-                let allUsers = JSON.parse(localStorage.getItem('app_users_db') || '[]');
+                let allUsers = safeGetJSON('app_users_db', []);
                 const usernameExists = allUsers.some(u => 
-                    u.username.toLowerCase() === newUsername.toLowerCase() && 
-                    u.rblxUserId !== currentUser.rblxUserId
+                    (u.username || '').toLowerCase() === newUsername.toLowerCase() && 
+                    String(u.rblxUserId || '') !== String(currentUser.rblxUserId)
                 );
 
                 if (usernameExists) {
