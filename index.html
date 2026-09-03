@@ -6,14 +6,14 @@
     <title>RedGalaxy Studio / NebulaForge Studio</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
-        .mw-sidebar { width: 220px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; }
-        .mw-logo { display: block; font-family: 'Linux Libertine', Georgia, serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
-        .mw-sidebar h3 { font-family: sans-serif; font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
+        .mw-sidebar { width: 230px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
+        .mw-logo { display: block; font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
+        .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
-        .mw-sidebar li { margin-bottom: 5px; font-size: 0.85rem; }
+        .mw-sidebar li { margin-bottom: 6px; font-size: 0.85rem; }
         .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; }
         .mw-sidebar a:hover { text-decoration: underline; }
         
@@ -21,19 +21,10 @@
         .mw-top-tools { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 20px; border-bottom: 1px solid #eaecf0; padding-bottom: 10px; }
         
         .user-badge { display: flex; align-items: center; gap: 10px; }
-        .user-avatar-small { 
-            width: 36px; 
-            height: 36px; 
-            border-radius: 50%; 
-            border: 2px solid #3366cc; 
-            object-fit: cover; 
-            background: #eaf3ff; 
-            display: block; 
-            flex-shrink: 0; 
-        }
+        .user-avatar-small { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #3366cc; object-fit: cover; background: #eaf3ff; display: block; flex-shrink: 0; }
 
-        h1 { font-family: 'Linux Libertine', Georgia, serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
-        h2 { font-family: 'Linux Libertine', Georgia, serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
+        h1 { font-family: 'Georgia', serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
+        h2 { font-family: 'Georgia', serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
         
         .wikitable { background-color: #f8f9fa; color: #202122; margin: 1em 0; border: 1px solid #a2a9b1; border-collapse: collapse; width: 100%; text-align: left; }
         .wikitable th, .wikitable td { border: 1px solid #a2a9b1; padding: 8px 10px; }
@@ -58,6 +49,11 @@
         .settings-row input[type="text"], .settings-row input[type="password"], .settings-row input[type="number"] { width: 100%; max-width: 300px; padding: 8px; border: 1px solid #a2a9b1; border-radius: 4px; }
         .settings-row.checkbox-row { display: flex; align-items: center; gap: 10px; }
         .settings-row.checkbox-row label { margin-bottom: 0; }
+        
+        .privacy-toggle-btn { padding: 8px 16px; font-weight: bold; border-radius: 6px; border: 1px solid #a2a9b1; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .privacy-private { background-color: #fff0f0; color: #c82333; border-color: #f5c6cb; }
+        .privacy-public { background-color: #e6fffa; color: #0d9488; border-color: #99f6e4; }
+
         .btn-save { background-color: #3366cc; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; border-radius: 4px; }
         .btn-save:hover { background-color: #2a4b8d; }
         .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; }
@@ -80,10 +76,9 @@
         
         .error-container { text-align: center; margin-top: 30px; background-color: #f8f9fa; border: 1px solid #eaecf0; padding: 30px; }
         .error-container img { max-width: 100%; height: auto; border: 2px solid #202122; margin-bottom: 25px; border-radius: 4px; }
-        .error-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; font-family: 'Linux Libertine', Georgia, serif; }
+        .error-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; font-family: Georgia, serif; }
         .error-mod { color: #005a9c; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; padding: 10px; background-color: #eaf3ff; border-left: 5px solid #005a9c; display: inline-block; }
         .try-again-btn { color: #0645ad; cursor: pointer; font-weight: bold; text-decoration: underline; font-size: 1.1rem; display: inline-block; }
-        .try-again-btn:hover { color: #0b0080; }
 
         .quest-box { border: 1px solid #a2a9b1; background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .quest-box.disabled { background: #fff0f0; border-color: #f5c6cb; }
@@ -98,7 +93,6 @@
         .vote-card { border: 1px solid #a2a9b1; background: #ffffff; padding: 10px; border-radius: 6px; text-align: center; }
         .vote-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 4px; margin-bottom: 8px; }
         .vote-btn { background-color: #3366cc; color: white; border: none; padding: 6px 12px; cursor: pointer; font-weight: bold; border-radius: 4px; width: 100%; }
-        .vote-btn:hover { background-color: #2a4b8d; }
         
         .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; }
@@ -111,6 +105,9 @@
         .status-successful { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .status-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .status-unsuccessful { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .btn-action-sm { padding: 4px 10px; font-size: 0.8rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-action-sm:hover { background-color: #218838; }
 
         /* XDRG AI STYLES */
         .ai-layout { display: flex; gap: 20px; background: #ffffff; border: 1px solid #a2a9b1; border-radius: 8px; overflow: hidden; min-height: 580px; }
@@ -125,7 +122,7 @@
         .model-selector { padding: 6px 12px; border-radius: 4px; border: 1px solid #3366cc; background: #eaf3ff; font-weight: bold; color: #005a9c; cursor: pointer; }
         
         .ai-messages-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px; max-height: 420px; }
-        .ai-msg-bubble { max-width: 80%; padding: 12px 16px; border-radius: 10px; line-height: 1.5; font-size: 0.9rem; }
+        .ai-msg-bubble { max-width: 85%; padding: 12px 16px; border-radius: 10px; line-height: 1.5; font-size: 0.9rem; }
         .ai-msg-user { align-self: flex-end; background: #3366cc; color: white; border-bottom-right-radius: 2px; }
         .ai-msg-assistant { align-self: flex-start; background: #f8f9fa; border: 1px solid #a2a9b1; color: #202122; border-bottom-left-radius: 2px; }
         .ai-msg-assistant img { max-width: 100%; border-radius: 6px; margin-top: 8px; border: 1px solid #a2a9b1; }
@@ -133,7 +130,6 @@
         .ai-input-bar { display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #eaecf0; padding-top: 10px; }
         .ai-input-bar input { flex: 1; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-size: 0.9rem; }
         .ai-send-btn { background: #3366cc; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .ai-send-btn:hover { background: #2a4b8d; }
     </style>
 </head>
 <body>
@@ -226,9 +222,9 @@
                     <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
                 </ul>
 
-                <h3>Account</h3>
+                <h3>Account Settings</h3>
                 <ul>
-                    <li><a onclick="openSettings()">⚙️ Settings</a></li>
+                    <li><a onclick="openSettings()">⚙️ Profile & Privacy Settings</a></li>
                 </ul>
 
                 <h3>Staff / Team</h3>
@@ -250,7 +246,7 @@
                 <h1 id="pageTitle">Main Page</h1>
                 
                 <div id="pageContent">
-                    <p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases or access trade services.</p>
+                    <p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases, manage trade services, or chat with XDRG AI.</p>
                 </div>
             </div>
         </div>
@@ -371,6 +367,9 @@
                 const savedUser = safeGetJSON('app_current_user', null);
                 if (savedUser && savedUser.gmail) {
                     currentUser = savedUser;
+                    if (currentUser.isHistoryPublic === undefined) {
+                        currentUser.isHistoryPublic = false; // Default Private 🔒
+                    }
                     updateUserStatusHeader();
                     logDeviceConnection(currentUser);
                     showWiki();
@@ -426,7 +425,8 @@
                         level: 1,
                         voted: false,
                         desktop: false,
-                        isAdmin: isOwnerAccount
+                        isAdmin: isOwnerAccount,
+                        isHistoryPublic: false // Default Private
                     };
 
                     allUsers.push(currentUser);
@@ -459,6 +459,7 @@
                     }
 
                     currentUser = existingUser;
+                    if (currentUser.isHistoryPublic === undefined) currentUser.isHistoryPublic = false;
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
 
@@ -564,85 +565,160 @@
             renderQuestsPage();
         }
 
-        /* CLAIMS HISTORY PAGE */
-        async function openClaimsHistory() {
-            document.getElementById('pageTitle').innerText = "📜 Claim Delivery History";
-            document.getElementById('pageContent').innerHTML = `
-                <div style="text-align:center; padding: 40px;">
-                    <div class="loader"></div>
-                    <p>Fetching your claim history from auto-giver server...</p>
-                </div>
-            `;
+        /* ------------------------------------------------------------------
+           CLAIMS & DELIVERY HISTORY SYSTEM WITH LOCAL & FIREBASE REALTIME SYNC
+           ------------------------------------------------------------------ */
 
-            try {
-                const response = await fetch(FIREBASE_URL);
-                let claimsData = {};
-                if (response.ok) {
-                    claimsData = (await response.json()) || {};
-                }
+        function getLocalUserClaims(userId) {
+            return safeGetJSON(`user_claims_${userId}`, []);
+        }
 
-                let myClaims = [];
-                Object.keys(claimsData).forEach(key => {
-                    const c = claimsData[key];
-                    if (c && (
-                        (c.username || '').toLowerCase() === (currentUser.username || currentUser.name || '').toLowerCase() ||
-                        (c.email || '').toLowerCase() === (currentUser.gmail || '').toLowerCase()
-                    )) {
-                        myClaims.push({ ...c, id: key });
-                    }
-                });
+        function saveLocalUserClaims(userId, claims) {
+            localStorage.setItem(`user_claims_${userId}`, JSON.stringify(claims));
+        }
 
-                myClaims.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        async function markClaimAsReceived(claimId) {
+            if (!currentUser) return;
+            let claims = getLocalUserClaims(currentUser.rblxUserId);
+            
+            const idx = claims.findIndex(c => c.id === claimId);
+            if (idx !== -1) {
+                claims[idx].status = "successful"; // Mark as received / delivered
+                claims[idx].receivedAt = Date.now();
+                saveLocalUserClaims(currentUser.rblxUserId, claims);
 
-                let html = `
-                    <p style="color:#54595d;">View the delivery status of your requested trade items below. Auto-giver bots deliver items once you join the Roblox server.</p>
-                    <table class="wikitable">
-                        <tr>
-                            <th width="5%">#</th>
-                            <th width="25%">Reward Item</th>
-                            <th width="15%">Cost / Coins</th>
-                            <th width="25%">Delivery Status</th>
-                            <th width="30%">Timestamp</th>
-                        </tr>
-                `;
-
-                if (myClaims.length === 0) {
-                    html += `<tr><td colspan="5" style="text-align:center; padding:20px; color:#777;">No reward claims found for your account yet.</td></tr>`;
-                } else {
-                    myClaims.forEach((item, index) => {
-                        let rawStatus = (item.status || "pending").toLowerCase();
-                        let badgeHtml = `<span class="status-badge status-pending">⏳ Pending</span>`;
-
-                        if (rawStatus === "successful" || rawStatus === "delivered" || rawStatus === "success") {
-                            badgeHtml = `<span class="status-badge status-successful">✅ Successful</span>`;
-                        } else if (rawStatus === "unsuccessful" || rawStatus === "failed" || rawStatus === "rejected") {
-                            badgeHtml = `<span class="status-badge status-unsuccessful">❌ Unsuccessful</span>`;
-                        }
-
-                        let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString() : "N/A";
-
-                        html += `
-                            <tr>
-                                <td align="center">${index + 1}</td>
-                                <td><b>${item.reward || "Unknown Item"}</b></td>
-                                <td>${item.cost || 35} Coins</td>
-                                <td>${badgeHtml}</td>
-                                <td>${dateStr}</td>
-                            </tr>
-                        `;
+                // Sync with Firebase
+                try {
+                    await fetch(`${FIREBASE_BASE_URL}/claims/${claimId}/status.json`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify("successful")
                     });
+                } catch(e) {
+                    console.warn("Firebase sync failed, saved locally:", e);
                 }
 
-                html += `</table>`;
-                document.getElementById('pageContent').innerHTML = html;
-            } catch (err) {
-                console.error("Claims history error:", err);
-                document.getElementById('pageContent').innerHTML = `<p style="color:red;">Error loading claims history. Please try again later.</p>`;
+                alert("✅ Item status updated to Delivered / Received!");
+                openClaimsHistory();
             }
         }
 
+        async function openClaimsHistory(targetUser = null) {
+            const isViewingOwn = !targetUser || (currentUser && (targetUser.rblxUserId === currentUser.rblxUserId));
+            const accountOwner = isViewingOwn ? currentUser : targetUser;
+
+            document.getElementById('pageTitle').innerText = "📜 Claim Delivery History";
+
+            // Privacy Check: Only account owner can see, UNLESS isHistoryPublic is true
+            if (!isViewingOwn && (!accountOwner || !accountOwner.isHistoryPublic)) {
+                document.getElementById('pageContent').innerHTML = `
+                    <div style="text-align:center; padding: 50px; background:#f8f9fa; border:1px solid #a2a9b1; border-radius:8px;">
+                        <div style="font-size:3rem; margin-bottom:10px;">🔒</div>
+                        <h2>Private Delivery History</h2>
+                        <p style="color:#54595d;">This user's delivery history is set to <b>Private</b> by the account owner.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById('pageContent').innerHTML = `
+                <div style="text-align:center; padding: 40px;">
+                    <div class="loader"></div>
+                    <p>Fetching claims history and real-time delivery status...</p>
+                </div>
+            `;
+
+            let localClaims = accountOwner ? getLocalUserClaims(accountOwner.rblxUserId) : [];
+
+            try {
+                const response = await fetch(FIREBASE_URL);
+                if (response.ok) {
+                    const fbData = (await response.json()) || {};
+                    Object.keys(fbData).forEach(key => {
+                        const c = fbData[key];
+                        if (c && accountOwner && (
+                            (c.username || '').toLowerCase() === (accountOwner.username || accountOwner.name || '').toLowerCase() ||
+                            (c.email || '').toLowerCase() === (accountOwner.gmail || '').toLowerCase()
+                        )) {
+                            // Merge with local state prioritizing local status if marked received
+                            const existingLocal = localClaims.find(lc => lc.id === key);
+                            if (existingLocal && existingLocal.status === "successful") {
+                                // keep local received state
+                            } else {
+                                const newClaim = { ...c, id: key };
+                                if (!existingLocal) localClaims.push(newClaim);
+                                else existingLocal.status = c.status || existingLocal.status;
+                            }
+                        }
+                    });
+                    if (accountOwner) saveLocalUserClaims(accountOwner.rblxUserId, localClaims);
+                }
+            } catch (err) {
+                console.warn("Could not reach Firebase, relying on persistent local storage claims.", err);
+            }
+
+            localClaims.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+            const privacyBadge = accountOwner?.isHistoryPublic 
+                ? `<span style="color:#0d9488; font-weight:bold; font-size:0.85rem;">[ Public ✅ ]</span>` 
+                : `<span style="color:#c82333; font-weight:bold; font-size:0.85rem;">[ Private 🔒 ]</span>`;
+
+            let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <p style="color:#54595d; margin:0;">
+                        Showing delivery records for <b>${accountOwner?.displayName || accountOwner?.name || 'Account'}</b> ${privacyBadge}
+                    </p>
+                    ${isViewingOwn ? `
+                        <button onclick="openSettings()" class="btn-save" style="font-size:0.8rem;">Change Privacy</button>
+                    ` : ''}
+                </div>
+
+                <table class="wikitable">
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="25%">Reward Item</th>
+                        <th width="15%">Cost / Coins</th>
+                        <th width="25%">Delivery Status</th>
+                        <th width="30%">Timestamp / Action</th>
+                    </tr>
+            `;
+
+            if (localClaims.length === 0) {
+                html += `<tr><td colspan="5" style="text-align:center; padding:20px; color:#777;">No reward claims found for this account.</td></tr>`;
+            } else {
+                localClaims.forEach((item, index) => {
+                    let rawStatus = (item.status || "pending").toLowerCase();
+                    let badgeHtml = `<span class="status-badge status-pending">⏳ Pending Delivery</span>`;
+
+                    if (rawStatus === "successful" || rawStatus === "delivered" || rawStatus === "success" || rawStatus === "received") {
+                        badgeHtml = `<span class="status-badge status-successful">✅ Received / Delivered</span>`;
+                    } else if (rawStatus === "unsuccessful" || rawStatus === "failed" || rawStatus === "rejected") {
+                        badgeHtml = `<span class="status-badge status-unsuccessful">❌ Unsuccessful</span>`;
+                    }
+
+                    let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString() : "N/A";
+                    let actionBtn = (isViewingOwn && rawStatus === "pending") 
+                        ? `<br><button onclick="markClaimAsReceived('${item.id}')" class="btn-action-sm" style="margin-top:5px;">Mark Received</button>` 
+                        : '';
+
+                    html += `
+                        <tr>
+                            <td align="center">${index + 1}</td>
+                            <td><b>${item.reward || "Unknown Item"}</b></td>
+                            <td>${item.cost || 35} Coins</td>
+                            <td>${badgeHtml}</td>
+                            <td>${dateStr} ${actionBtn}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            html += `</table>`;
+            document.getElementById('pageContent').innerHTML = html;
+        }
+
         /* ------------------------------------------------------------------
-           XDRG AI ASSISTANT SYSTEM (WITH TAGALOG/ENGLISH REASONING & KNOWLEDGE)
+           ENHANCED XDRG AI ASSISTANT SYSTEM
            ------------------------------------------------------------------ */
 
         function getAIChats() {
@@ -665,7 +741,7 @@
                     title: "New Conversation",
                     messages: [{
                         role: "assistant",
-                        text: "Kumusta! I am **XDRG AI**, the intelligent assistant for RedGalaxy Studio & NebulaForge Studio. I know everything about game units, shop prices, quests, claim statuses, release schedules, and problem-solving in English and Tagalog! How can I help you today?"
+                        text: "Kumusta! I am **XDRG AI**, the official intelligent assistant for RedGalaxy Studio & NebulaForge Studio. I fully understand English, Tagalog, and Taglish! Ask me about unit values, shop calculations, delivery history, coding/scripts, or game releases."
                     }]
                 };
                 chats.push(newChat);
@@ -729,7 +805,6 @@
                     const isUser = msg.role === "user";
                     const bubbleClass = isUser ? "ai-msg-user" : "ai-msg-assistant";
                     const formattedText = msg.text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-                    
                     let imgHtml = msg.imageUrl ? `<br><img src="${msg.imageUrl}" alt="Generated graphic">` : "";
 
                     messagesHtml += `
@@ -747,9 +822,7 @@
                     <div class="ai-history-panel">
                         <h4>Search & Chat History</h4>
                         <button onclick="createNewAIChat()" class="btn-save" style="width:100%; margin-bottom:10px; font-size:0.8rem;">+ New Chat</button>
-                        <ul class="ai-chat-list">
-                            ${chatListHtml}
-                        </ul>
+                        <ul class="ai-chat-list">${chatListHtml}</ul>
                         <button onclick="deleteCurrentAIChat()" style="margin-top:15px; background:none; border:1px solid #f5c6cb; color:#721c24; cursor:pointer; padding:5px; border-radius:4px; font-size:0.75rem;">Delete Chat</button>
                     </div>
 
@@ -765,12 +838,10 @@
                             <span style="font-size:0.8rem; color:#54595d;">Language: Multilingual (English / Tagalog / Taglish)</span>
                         </div>
 
-                        <div class="ai-messages-container" id="aiMsgContainer">
-                            ${messagesHtml}
-                        </div>
+                        <div class="ai-messages-container" id="aiMsgContainer">${messagesHtml}</div>
 
                         <form onsubmit="handleAISend(event)" class="ai-input-bar">
-                            <input type="text" id="aiUserInput" placeholder="Ask XDRG AI about units, shop prices, claim status, code, math, or release dates..." autocomplete="off" required>
+                            <input type="text" id="aiUserInput" placeholder="Ask XDRG AI anything in English or Tagalog..." autocomplete="off" required>
                             <button type="submit" class="ai-send-btn">Send</button>
                         </form>
                     </div>
@@ -778,8 +849,6 @@
             `;
 
             document.getElementById('pageContent').innerHTML = html;
-
-            // Auto scroll chat
             const container = document.getElementById('aiMsgContainer');
             if (container) container.scrollTop = container.scrollHeight;
         }
@@ -794,127 +863,83 @@
             let activeChat = chats.find(c => c.id === activeAIChatId);
             if (!activeChat) return;
 
-            // Push User Message
             activeChat.messages.push({ role: "user", text: prompt });
             if (activeChat.title === "New Conversation") {
-                activeChat.title = prompt.substring(0, 25) + "...";
+                activeChat.title = prompt.substring(0, 22) + "...";
             }
 
             inputEl.value = "";
             renderAIPage();
 
-            // Generate AI Answer
-            setTimeout(async () => {
+            setTimeout(() => {
                 const aiResponse = generateXDRGAIResponse(prompt, currentAIModel);
                 activeChat.messages.push(aiResponse);
                 saveAIChats(chats);
                 renderAIPage();
-            }, 500);
+            }, 400);
         }
 
-        /* ADVANCED KNOWLEDGE-BASED AI ENGINE FOR REDGALAXY & NEBULAFORGE */
+        /* INTELLIGENT COMPREHENSIVE AI RESPONSE GENERATOR */
         function generateXDRGAIResponse(userPrompt, model) {
             const p = userPrompt.toLowerCase();
             let responseText = "";
             let generatedImage = null;
 
-            // 1. Units & Brainrots Inquiries
-            if (p.includes("unit") || p.includes("brainrot") || p.includes("price") || p.includes("magkano") || p.includes("cost") || p.includes("giraffa") || p.includes("elephant") || p.includes("summerini")) {
-                let foundUnits = [];
-                categories.forEach(cat => {
-                    cat.units.forEach(u => {
-                        if (p.includes(u.name.toLowerCase()) || p.includes(u.name.split(" ")[0].toLowerCase())) {
-                            foundUnits.push({ name: u.name, basePrice: u.price, rarity: cat.title, area: areaMapping[cat.title] });
-                        }
-                    });
-                });
-
-                if (foundUnits.length > 0) {
-                    responseText = `Here are the unit details from the official Wiki database:\n\n`;
-                    foundUnits.forEach(u => {
-                        responseText += `• **${u.name}**\n  - Rarity: ${u.rarity}\n  - Area: ${u.area}\n  - Base Price: $${u.basePrice.toLocaleString()}\n  - Gold (x5): $${(u.basePrice * 5).toLocaleString()}\n  - Diamond (x15): $${(u.basePrice * 15).toLocaleString()}\n  - Alien (x25): $${(u.basePrice * 25).toLocaleString()}\n\n`;
-                    });
-                } else {
-                    responseText = `In **Don't Crash the Train for Brainrots**, unit prices scale with Mutations:\n` +
-                        `• **Common:** Bananita Dolphinita ($250), Trippi Troppi ($200), Gangster Footera ($55)\n` +
-                        `• **Godly:** Giraffa Celestre ($3,000), Odin Din Din Din ($5,000), Six Seven ($6,700)\n` +
-                        `• **Limited:** Strawberry Elephant ($150,000), Summerini Fattini ($1,500,000)\n\n` +
-                        `Mutations multiply base price: Normal (x1), Gold (x5), Diamond (x15), Crab (x20), Alien (x25).`;
-                }
+            // Delivery Status & Claims Questions
+            if (p.includes("claim") || p.includes("pending") || p.includes("received") || p.includes("delivery") || p.includes("baking") || p.includes("kuha") || p.includes("makuha")) {
+                responseText = `📦 **Delivery History & Claim Status Help:**\n\n` +
+                    `1. **Why is my status 'Pending'?** Pending means your claim request is registered in the system. Once you join the Roblox game, the auto-giver bot delivers it to your backpack.\n` +
+                    `2. **How to mark as Received?** Go to **📜 Claim Delivery History** in the sidebar. Click the **'Mark Received'** button on your item to permanently record it as delivered!\n` +
+                    `3. **Privacy Control:** You can set your history to Private (🔒) or Public (✅) under **⚙️ Profile & Privacy Settings**.`;
             }
-            // 2. Shop Items
-            else if (p.includes("shop") || p.includes("per second") || p.includes("income") || p.includes("ambalabu") || p.includes("esok")) {
-                responseText = `🛒 **Shop Items Income & Prices:**\n\n` +
-                    `1. **Boneca Ambalabu:** $65,000 | +$25,000/s\n` +
-                    `2. **Job Job Job Sahur:** $155,000 | +$80,000/s\n` +
-                    `3. **Esok Sekolah:** $12,000,000 | +$125,000/s\n` +
-                    `4. **Karkerkar Kurkur:** $25,000,000,000 | +$115,000/s`;
+            // Units, Price & Mutation Inquiries
+            else if (p.includes("unit") || p.includes("brainrot") || p.includes("price") || p.includes("magkano") || p.includes("cost") || p.includes("strawberry") || p.includes("elephant") || p.includes("summerini")) {
+                responseText = `🏷️ **Unit Prices & Mutation Multipliers:**\n\n` +
+                    `• **Strawberry Elephant:** Base $150,000 (Claimable in Quests for 35 Coins)\n` +
+                    `• **Summerini Fattini:** Base $1,500,000 (Claimable in Quests for 35 Coins)\n` +
+                    `• **Giraffa Celestre:** $3,000 | **Odin Din Din Din:** $5,000\n\n` +
+                    `*Multipliers:* Normal (x1), Gold (x5), Diamond (x15), Crab (x20), Alien (x25).`;
             }
-            // 3. Claims & Trade Service Status
-            else if (p.includes("claim") || p.includes("deliver") || p.includes("status") || p.includes("item") || p.includes("successful") || p.includes("pending")) {
-                responseText = `📦 **Claim & Delivery System:**\n\n` +
-                    `• **Pending:** Your item is queued on Firebase and waiting for you to join the Roblox game.\n` +
-                    `• **Successful:** The auto-giver bot has delivered the item into your Roblox Backpack!\n` +
-                    `• **Unsuccessful:** Delivery failed or insufficient coin balance.\n\n` +
-                    `You can check your live history under the **📜 Claim Delivery History** page in the sidebar!`;
+            // Code & Scripting Questions
+            else if (p.includes("code") || p.includes("script") || p.includes("lua") || p.includes("function") || p.includes("roblox studio")) {
+                responseText = `💻 **Roblox Lua Scripting Assistant:**\n\n` +
+                    `Here is a basic template for giving items to a player on touch:\n\n` +
+                    `\`\`\`lua\nlocal part = script.Parent\npart.Touched:Connect(function(hit)\n` +
+                    `    local player = game.Players:GetPlayerFromCharacter(hit.Parent)\n` +
+                    `    if player then\n        print("Giving reward item to: " .. player.Name)\n    end\nend)\n\`\`\``;
             }
-            // 4. Release Dates & Crystal Collecting Simulator
-            else if (p.includes("crystal") || p.includes("release") || p.includes("kailan") || p.includes("launch") || p.includes("when")) {
+            // Release & Launch Dates
+            else if (p.includes("release") || p.includes("crystal") || p.includes("kailan") || p.includes("launch") || p.includes("date")) {
                 responseText = `📅 **Crystal Collecting Simulator Release Schedule:**\n\n` +
                     `• **Official Launch Date:** September 6, 2026 at 1:00 PM PST\n` +
-                    `• **Moderator Event:** Admin Abuse Event starts 30 minutes post-release!`;
-                generatedImage = "https://via.placeholder.com/600x250?text=Crystal+Collecting+Simulator+Release+Sept+6";
+                    `• **Admin Event:** Admin Abuse event starts 30 minutes post-release!`;
             }
-            // 5. Staff & Ownership
+            // Staff & Ownership
             else if (p.includes("owner") || p.includes("staff") || p.includes("admin") || p.includes("sino") || p.includes("who made")) {
-                responseText = `👑 **RedGalaxy / NebulaForge Studio Team:**\n\n` +
+                responseText = `👑 **Studio Team & Leadership:**\n\n` +
                     `• **Owner & Developer:** Dev_Xdragon / LumeCraftor\n` +
                     `• **Head Admin:** Vincent Magtolis\n` +
                     `• **Admins:** Jayson Areglo, Summere Castrence`;
             }
-            // 6. Image Generation Requests
-            else if (p.includes("image") || p.includes("picture") || p.includes("larawan") || p.includes("show me")) {
-                responseText = `🖼️ Here is an official concept preview generated for your request:`;
-                generatedImage = "https://via.placeholder.com/600x300?text=XDRG+AI+Generated+Concept+Art";
-            }
-            // 7. General Problem Solving / Scripting / Tagalog Conversation
+            // Conversational Response
             else {
-                if (p.includes("salamat") || p.includes("thank")) {
-                    responseText = `Walang anuman! I am always here to assist you with RedGalaxy Studio games, script mechanics, and trade services.`;
-                } else if (p.includes("hi") || p.includes("hello") || p.includes("kumusta")) {
-                    responseText = `Hello! How can I assist you today? Feel free to ask about game units, trade rewards, or technical questions.`;
-                } else {
-                    responseText = `🤖 **[${model} Engine Processing]**\n\n` +
-                        `I have analyzed your query: "*${userPrompt}*"\n\n` +
-                        `As **XDRG AI**, I am connected to all RedGalaxy Studio systems. I can assist you with:\n` +
-                        `1. Unit price scaling and mutation multipliers.\n` +
-                        `2. Item claim statuses (Pending, Successful, Unsuccessful).\n` +
-                        `3. Admin controls, quests, and point earned through referrals.\n` +
-                        `4. Custom Roblox Lua scripting & logic calculation.`;
-                }
+                responseText = `🤖 **[${model} Reasoning Engine]**\n\n` +
+                    `I understand your message regarding "*${userPrompt}*".\n\n` +
+                    `As the **XDRG AI Assistant**, I can directly help you with:\n` +
+                    `1. **Trade Claims:** Explaining delivery statuses & marking items as received.\n` +
+                    `2. **Wiki Databases:** Checking unit pricing across mutations.\n` +
+                    `3. **Account Privacy:** Toggling public/private delivery history settings.\n` +
+                    `4. **Scripting & Code:** Writing Lua scripts for Roblox Studio.`;
             }
 
-            // Adjust tone according to model
-            if (model === "Xdrg Flash") {
-                responseText = "⚡ [Flash Mode] " + responseText.split("\n\n")[0];
-            } else if (model === "Xdrg Lite") {
-                responseText = "💡 [Lite Summary] " + responseText;
-            }
-
-            return {
-                role: "assistant",
-                text: responseText,
-                imageUrl: generatedImage
-            };
+            return { role: "assistant", text: responseText, imageUrl: generatedImage };
         }
 
+        /* QUESTS AND CLAIM LOGIC */
         async function fetchVotingData() {
             try {
                 const res = await fetch(`${FIREBASE_BASE_URL}/votes.json`);
-                if (res.ok) {
-                    const data = await res.json();
-                    return data || {};
-                }
+                if (res.ok) return (await res.json()) || {};
             } catch (e) {
                 console.error("Error fetching votes:", e);
             }
@@ -951,7 +976,7 @@
                         Claim Item
                     </button>
                     <p style="font-size:0.8rem; color:#54595d; margin-top:6px;">
-                        * Works offline! Automatically delivered to your Backpack upon joining the Roblox game.
+                        * Delivered automatically to your Roblox backpack upon joining the game server.
                     </p>
                 </div>
 
@@ -984,7 +1009,7 @@
                     <div class="quest-box">
                         <h3>Quest 2: Image Leaks Voting (+5 Points)</h3>
                         <div class="status-open-text">
-                            🟢 Voting Unlocked! Choose your favorite leaked image below (5/5 Complete).
+                            🟢 Voting Unlocked! Choose your favorite leaked image below.
                         </div>
                         <div class="vote-grid">
                 `;
@@ -997,10 +1022,7 @@
                         </div>
                     `;
                 });
-                html += `
-                        </div>
-                    </div>
-                `;
+                html += `</div></div>`;
             }
 
             html += `
@@ -1013,58 +1035,6 @@
 
             document.getElementById('pageContent').innerHTML = html;
             initMiniGame();
-        }
-
-        async function saveVoteImages() {
-            const img1 = (document.getElementById('voteImg1').value || '').trim();
-            const img2 = (document.getElementById('voteImg2').value || '').trim();
-            const img3 = (document.getElementById('voteImg3').value || '').trim();
-            const img4 = (document.getElementById('voteImg4').value || '').trim();
-            const img5 = (document.getElementById('voteImg5').value || '').trim();
-
-            const imagesList = [img1, img2, img3, img4, img5].filter(url => url.length > 0);
-
-            try {
-                const res = await fetch(`${FIREBASE_BASE_URL}/votes.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ images: imagesList, updatedAt: new Date().toISOString() })
-                });
-
-                if (res.ok) {
-                    alert(`✅ Voting images saved successfully! (${imagesList.length}/5 uploaded)`);
-                    openSettings();
-                } else {
-                    alert("⚠️ Error saving vote images to Firebase.");
-                }
-            } catch (err) {
-                console.error("Save error:", err);
-                alert("Network error saving vote images.");
-            }
-        }
-
-        async function submitVote(optionIndex) {
-            if (currentUser.voted) {
-                alert("⚠️ You have already submitted your vote!");
-                return;
-            }
-
-            try {
-                await fetch(`${FIREBASE_BASE_URL}/votes/userVotes/${currentUser.rblxUserId}.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ option: optionIndex, user: currentUser.username, timestamp: new Date().toISOString() })
-                });
-
-                currentUser.voted = true;
-                currentUser.points += 5;
-                saveUserData();
-                alert(`🎉 Thank you for voting for Option ${optionIndex}! You earned +5 points.`);
-                renderQuestsPage();
-            } catch (err) {
-                console.error("Vote error:", err);
-                alert("Error recording your vote.");
-            }
         }
 
         async function claimRewardFirebase(robloxUsername, userEmail) {
@@ -1081,7 +1051,9 @@
                 return;
             }
 
+            const claimId = "CLAIM-" + Date.now();
             const claimData = {
+                id: claimId,
                 username: robloxUsername,
                 reward: rewardItem,
                 cost: requiredCost,
@@ -1091,28 +1063,30 @@
                 timestamp: Date.now()
             };
 
+            // 1. Save Locally
+            let localClaims = getLocalUserClaims(currentUser.rblxUserId);
+            localClaims.unshift(claimData);
+            saveLocalUserClaims(currentUser.rblxUserId, localClaims);
+
+            // 2. Save to Firebase
             try {
-                const response = await fetch(FIREBASE_URL, {
-                    method: "POST",
+                await fetch(`${FIREBASE_BASE_URL}/claims/${claimId}.json`, {
+                    method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(claimData)
                 });
-
-                if (response.ok) {
-                    if (!isFreeClaim) {
-                        currentUser.points -= requiredCost;
-                        if (currentUser.points < 0) currentUser.points = 0;
-                        saveUserData();
-                    }
-                    alert(`🎉 Claim request submitted for ${rewardItem}!\n\nLog into the Roblox Game anytime to receive your item.`);
-                    renderQuestsPage();
-                } else {
-                    alert("Error submitting claim request. Please try again.");
-                }
-            } catch (error) {
-                console.error("Firebase Error:", error);
-                alert("Network error connecting to Firebase database.");
+            } catch (err) {
+                console.warn("Saved to local storage, Firebase offline:", err);
             }
+
+            if (!isFreeClaim) {
+                currentUser.points -= requiredCost;
+                if (currentUser.points < 0) currentUser.points = 0;
+                saveUserData();
+            }
+
+            alert(`🎉 Claim request submitted for ${rewardItem}!\n\nYour status is saved as 'Pending'. You can view or mark it as 'Received' in Claim Delivery History.`);
+            openClaimsHistory();
         }
 
         function copyInviteLink() {
@@ -1177,19 +1151,33 @@
             initMiniGame();
         }
 
+        /* ------------------------------------------------------------------
+           SETTINGS & PRIVACY TOGGLE SYSTEM
+           ------------------------------------------------------------------ */
+
         function openSettings() {
-            document.getElementById('pageTitle').innerText = "⚙️ Settings";
+            document.getElementById('pageTitle').innerText = "⚙️ Profile & Privacy Settings";
+            renderSettingsPage();
+        }
+
+        function togglePrivacySetting() {
+            if (!currentUser) return;
+            currentUser.isHistoryPublic = !currentUser.isHistoryPublic;
+            saveUserData();
             renderSettingsPage();
         }
 
         async function renderSettingsPage() {
-            const user = currentUser || {name: 'Guest', username: 'Guest', password: '', desktop: false, gmail: '', isAdmin: false};
+            const user = currentUser || {name: 'Guest', username: 'Guest', password: '', desktop: false, gmail: '', isAdmin: false, isHistoryPublic: false};
             const isOwner = ((user.gmail || '').toLowerCase() === "xdrgxdragon@gmail.com");
             const canAccessAdmin = isOwner || user.isAdmin === true;
 
             const votingData = await fetchVotingData();
             const voteImages = votingData.images || [];
             const avatarUrl = getRobloxAvatarUrl(user.rblxUserId);
+
+            const privacyBtnClass = user.isHistoryPublic ? "privacy-public" : "privacy-private";
+            const privacyText = user.isHistoryPublic ? "✅ Public (Anyone can view)" : "❎ Private (Only You)";
 
             let html = `
                 <div class="settings-section">
@@ -1200,6 +1188,15 @@
                             <div style="color:#54595d;">@${user.username || 'username'} ${canAccessAdmin ? '<span class="badge-admin">ADMIN</span>' : ''}</div>
                             <div style="font-size:0.85rem; margin-top:4px;">Roblox User ID: <b>${user.rblxUserId || 'N/A'}</b></div>
                         </div>
+                    </div>
+
+                    <!-- HISTORY PRIVACY SWITCH -->
+                    <div class="settings-row" style="background:#eaf3ff; border:1px solid #a7d7f9; padding:12px; border-radius:6px; margin-bottom:20px;">
+                        <label style="margin-bottom:6px;">History Privacy 🔒</label>
+                        <p style="font-size:0.8rem; color:#54595d; margin-top:0; margin-bottom:10px;">Control who can view your Claim Delivery History records.</p>
+                        <button type="button" class="privacy-toggle-btn ${privacyBtnClass}" onclick="togglePrivacySetting()">
+                            ${privacyText}
+                        </button>
                     </div>
 
                     <div class="settings-row">
@@ -1220,79 +1217,46 @@
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
             `;
 
-            // ADMIN & OWNER CONTROLS (Accessible by Owner xdrgxdragon@gmail.com and Promoted Admins)
             if (canAccessAdmin) {
                 html += `
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
                     
-                    <!-- ADMIN COIN GIVER PANEL -->
                     <div class="admin-box" style="background:#e8f8f0; border-color:#b2d8d8;">
                         <h4>🪙 Admin Controls: Coin Giver Tool</h4>
-                        <p style="font-size:0.85rem; color:#54595d;">Enter a target user's <b>Roblox User ID</b> or <b>Gmail Address</b> to give them coins.</p>
-                        
                         <div style="margin-bottom:10px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID or Gmail:</label>
                             <input type="text" id="grantTargetIdentifier" placeholder="e.g. 9676166807 OR user@gmail.com" style="margin-top:4px;">
                         </div>
-                        
                         <div style="margin-bottom:12px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Amount of Coins / Points to Grant:</label>
                             <input type="number" id="grantCoinAmount" placeholder="e.g. 100" style="margin-top:4px;">
                         </div>
-                        
                         <button class="btn-save" style="background-color:#28a745; width:100%; font-size:0.95rem; padding:10px;" onclick="grantCoinsToUser()">
                             Confirm Grant Coins
                         </button>
                     </div>
 
-                    <!-- ADMIN ROLE MANAGEMENT PANEL -->
                     <div class="admin-box" style="background:#fff9e6; border-color:#ffe0b2;">
                         <h4>👑 Admin Controls: Promote User to Admin</h4>
-                        <p style="font-size:0.85rem; color:#54595d;">Enter a target user's <b>Roblox User ID</b> or <b>Gmail Address</b> to give them Admin status.</p>
-                        
                         <div style="margin-bottom:12px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID or Gmail:</label>
                             <input type="text" id="promoteTargetIdentifier" placeholder="e.g. 9676166807 OR user@gmail.com" style="margin-top:4px;">
                         </div>
-                        
                         <button class="btn-save" style="background-color:#f0ad4e; width:100%; font-size:0.95rem; padding:10px;" onclick="promoteUserToAdmin()">
                             Promote User to Admin
                         </button>
-                    </div>
-
-                    <!-- ADMIN QUEST 2 LEAKS PANEL -->
-                    <div class="admin-box">
-                        <h4>⚙️ Owner Controls: Manage Quest 2 Image Leaks</h4>
-                        <p style="font-size:0.85rem; color:#54595d;">Insert up to 5 image URLs for Quest 2 voting. Current status: <b>${voteImages.length}/5 Images Uploaded</b></p>
-                        <input type="text" id="voteImg1" placeholder="Image 1 URL" value="${voteImages[0] || ''}">
-                        <input type="text" id="voteImg2" placeholder="Image 2 URL" value="${voteImages[1] || ''}">
-                        <input type="text" id="voteImg3" placeholder="Image 3 URL" value="${voteImages[2] || ''}">
-                        <input type="text" id="voteImg4" placeholder="Image 4 URL" value="${voteImages[3] || ''}">
-                        <input type="text" id="voteImg5" placeholder="Image 5 URL" value="${voteImages[4] || ''}">
-                        <button class="btn-save" style="margin-top:5px;" onclick="saveVoteImages()">Save Image Leaks (${voteImages.length}/5)</button>
                     </div>
                 `;
             }
 
             html += `
                     <hr style="margin: 40px 0 20px 0; border: 0; border-top: 1px solid #c8ccd1;">
-
                     <h2>Socials</h2>
                     <ul class="social-links">
-                        <li>🟦 <a href="https://www.facebook.com/profile.php?id=61583174657283&mibextid=ZbWKwL" target="_blank">Facebook</a></li>
+                        <li>🟦 <a href="https://www.facebook.com/profile.php?id=61583174657283" target="_blank">Facebook</a></li>
                         <li>🎵 <a href="https://tiktok.com/@xdragon...1" target="_blank">TikTok</a></li>
                         <li>📺 <a href="https://www.youtube.com/@dev-xdragon" target="_blank">YouTube</a></li>
                     </ul>
-
-                    <hr style="margin: 40px 0 20px 0; border: 0; border-top: 1px solid #c8ccd1;">
-
-                    <h2>Downloads</h2>
-                    <p style="margin-top: 0;">Mobile APK Release:</p>
-                    <div class="copy-container">
-                        <input type="text" id="dlLinkInput" value="https://www.mediafire.com/file/rdi0pd085pgap9x/android_c0cf4d9c-47e6-48b2-9ba4-83c202421e13_1.0.0.apk/file" readonly>
-                        <button class="btn-copy" onclick="copyDownloadLink()">Copy Link</button>
-                        <span id="copyConfirm" style="color: #00af89; font-weight: bold; display: none;">Copied!</span>
-                    </div>
                 </div>
             `;
             
@@ -1303,83 +1267,39 @@
             const targetInput = (document.getElementById('grantTargetIdentifier').value || '').trim();
             const coinAmountInput = document.getElementById('grantCoinAmount').value;
 
-            if (!targetInput) {
-                alert("❌ Please enter a valid Target Roblox User ID or Gmail address!");
-                return;
-            }
-
+            if (!targetInput) { alert("❌ Enter target Roblox ID or Gmail!"); return; }
             const coinsToAdd = parseInt(coinAmountInput, 10);
-            if (isNaN(coinsToAdd) || coinsToAdd <= 0) {
-                alert("❌ Please enter a valid coin amount greater than 0!");
-                return;
-            }
+            if (isNaN(coinsToAdd) || coinsToAdd <= 0) { alert("❌ Invalid coin amount!"); return; }
 
             let allUsers = safeGetJSON('app_users_db', []);
-            const targetLower = targetInput.toLowerCase();
+            let foundIndex = allUsers.findIndex(u => String(u.rblxUserId).trim() === targetInput || (u.gmail||'').toLowerCase() === targetInput.toLowerCase());
 
-            let foundUserIndex = allUsers.findIndex(u => 
-                String(u.rblxUserId || '').trim() === targetInput ||
-                (u.gmail || '').toLowerCase() === targetLower
-            );
-
-            if (foundUserIndex !== -1) {
-                allUsers[foundUserIndex].points = (allUsers[foundUserIndex].points || 0) + coinsToAdd;
-
-                // Sync current session if modifying self
-                if (String(currentUser.rblxUserId).trim() === String(allUsers[foundUserIndex].rblxUserId).trim() ||
-                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundUserIndex].gmail || '').toLowerCase()) {
-                    currentUser.points = allUsers[foundUserIndex].points;
+            if (foundIndex !== -1) {
+                allUsers[foundIndex].points = (allUsers[foundIndex].points || 0) + coinsToAdd;
+                if (currentUser && (currentUser.rblxUserId === allUsers[foundIndex].rblxUserId)) {
+                    currentUser.points = allUsers[foundIndex].points;
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
-
                 localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                alert(`✅ Successfully granted ${coinsToAdd} coins to user:\n• Name: ${allUsers[foundUserIndex].displayName || allUsers[foundUserIndex].name}\n• User ID: ${allUsers[foundUserIndex].rblxUserId}\n• Gmail: ${allUsers[foundUserIndex].gmail}\n\nNew Total Points: ${allUsers[foundUserIndex].points}`);
-                
-                document.getElementById('grantTargetIdentifier').value = '';
-                document.getElementById('grantCoinAmount').value = '';
+                alert(`✅ Granted ${coinsToAdd} coins to ${allUsers[foundIndex].displayName || allUsers[foundIndex].name}!`);
             } else {
-                alert(`❌ User with Roblox User ID or Gmail "${targetInput}" was not found in the database!`);
+                alert("❌ User not found in local database.");
             }
         }
 
         function promoteUserToAdmin() {
             const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim();
-
-            if (!targetInput) {
-                alert("❌ Please enter a valid Target Roblox User ID or Gmail address!");
-                return;
-            }
+            if (!targetInput) return;
 
             let allUsers = safeGetJSON('app_users_db', []);
-            const targetLower = targetInput.toLowerCase();
+            let foundIndex = allUsers.findIndex(u => String(u.rblxUserId).trim() === targetInput || (u.gmail||'').toLowerCase() === targetInput.toLowerCase());
 
-            let foundUserIndex = allUsers.findIndex(u => 
-                String(u.rblxUserId || '').trim() === targetInput ||
-                (u.gmail || '').toLowerCase() === targetLower
-            );
-
-            if (foundUserIndex !== -1) {
-                if (allUsers[foundUserIndex].isAdmin) {
-                    alert(`ℹ️ User (${allUsers[foundUserIndex].username}) is already an Admin!`);
-                    return;
-                }
-
-                allUsers[foundUserIndex].isAdmin = true;
-
-                // Sync current session if promoting self
-                if (String(currentUser.rblxUserId).trim() === String(allUsers[foundUserIndex].rblxUserId).trim() ||
-                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundUserIndex].gmail || '').toLowerCase()) {
-                    currentUser.isAdmin = true;
-                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
-                }
-
+            if (foundIndex !== -1) {
+                allUsers[foundIndex].isAdmin = true;
                 localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                alert(`👑 Success! User promoted to Admin:\n• Name: ${allUsers[foundUserIndex].displayName || allUsers[foundUserIndex].name}\n• Username: @${allUsers[foundUserIndex].username}\n• Gmail: ${allUsers[foundUserIndex].gmail}`);
-                
-                document.getElementById('promoteTargetIdentifier').value = '';
-                updateUserStatusHeader();
+                alert(`👑 User @${allUsers[foundIndex].username} promoted to Admin!`);
             } else {
-                alert(`❌ User with Roblox User ID or Gmail "${targetInput}" was not found in the database!`);
+                alert("❌ User not found.");
             }
         }
 
@@ -1387,17 +1307,6 @@
             if (currentUser) {
                 const newUsername = (document.getElementById('setUserName').value || '').trim();
                 const newPassword = (document.getElementById('setUserPass').value || '').trim();
-
-                let allUsers = safeGetJSON('app_users_db', []);
-                const usernameExists = allUsers.some(u => 
-                    (u.username || '').toLowerCase() === newUsername.toLowerCase() && 
-                    String(u.rblxUserId || '') !== String(currentUser.rblxUserId)
-                );
-
-                if (usernameExists) {
-                    alert("❌ That username is already taken by another account!");
-                    return;
-                }
 
                 currentUser.username = newUsername;
                 currentUser.password = newPassword;
@@ -1407,17 +1316,6 @@
                 updateUserStatusHeader();
                 alert("Settings updated successfully!");
             }
-        }
-
-        function copyDownloadLink() {
-            const linkInput = document.getElementById("dlLinkInput");
-            linkInput.select();
-            linkInput.setSelectionRange(0, 99999); 
-            navigator.clipboard.writeText(linkInput.value);
-            
-            const confirmMsg = document.getElementById("copyConfirm");
-            confirmMsg.style.display = "inline";
-            setTimeout(() => { confirmMsg.style.display = "none"; }, 2000);
         }
 
         function changeMutation() {
@@ -1445,7 +1343,7 @@
 
             categories.forEach(cat => {
                 const areaName = areaMapping[cat.title];
-                html += `` + areaName + ` Area Units (` + cat.title + `)</h2>`;
+                html += `<h2>${areaName} Area Units (${cat.title})</h2>`;
                 html += `
                     <table class="wikitable">
                         <tr>
@@ -1473,70 +1371,22 @@
                 html += `</table>`;
             });
 
-            html += `<h2>Shop Items</h2>`;
-            html += `
-                <table class="wikitable">
-                    <tr>
-                        <th width="5%">#</th>
-                        <th width="25%">Name</th>
-                        <th width="15%">Base Rarity</th>
-                        <th width="15%">Mutation Status</th>
-                        <th width="20%">Cost / Price</th>
-                        <th width="20%">Income (Per/s)</th>
-                    </tr>
-            `;
-            shopItems.forEach((item, index) => {
-                const finalPrice = item.price * currentMutation;
-                const finalPerSec = item.perSecond * currentMutation;
-                html += `
-                    <tr>
-                        <td align="center">${index + 1}</td>
-                        <td><b>${item.name}</b></td>
-                        <td>${item.rarity}</td>
-                        <td>${mutationName} (x${currentMutation})</td>
-                        <td>$${finalPrice.toLocaleString()}</td>
-                        <td style="color: #0645ad; font-weight:bold;">+$${finalPerSec.toLocaleString()} /s</td>
-                    </tr>
-                `;
-            });
-            html += `</table>`;
-
             document.getElementById('pageContent').innerHTML = html;
         }
 
         function triggerReleaseSequence() {
-            document.getElementById('pageTitle').innerText = "Loading Asset...";
+            document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
             document.getElementById('pageContent').innerHTML = `
-                <div style="text-align:center; padding: 50px;">
-                    <div class="loader"></div>
-                    <p style="font-weight: bold; color: #54595d;">Fetching game server data...</p>
+                <div class="error-container">
+                    <img src="https://via.placeholder.com/600x250?text=Crystal+Collecting+Simulator+Release" alt="Game Release Announcement Banner">
+                    <div class="error-title">
+                        Official Launch Scheduled: September 6, 2026 at 1:00 PM PST.
+                    </div>
+                    <div class="error-mod">
+                        Moderator Event: Admin Abuse event starts 30 minutes post-release.
+                    </div>
                 </div>
             `;
-
-            setTimeout(() => {
-                document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
-                document.getElementById('pageContent').innerHTML = `
-                    <div class="error-container">
-                        <div style="margin-bottom: 25px;">
-                            <span class="try-again-btn" onclick="triggerReleaseSequence()">Refresh Status</span>
-                        </div>
-                        
-                        <img src="https://via.placeholder.com/600x300?text=Crystal+Collecting+Simulator+Release" alt="Game Release Announcement Banner">
-                        
-                        <div class="error-title">
-                            Official Release Announcement: Game scheduled to launch on September 6, 2026 at 1:00 PM PST.
-                        </div>
-                        
-                        <div class="error-mod">
-                            Moderator Event: Admin Abuse event starts 30 minutes post-release on September 6, 2026.
-                        </div>
-                        
-                        <div style="margin-top: 15px;">
-                            <span class="try-again-btn" onclick="triggerReleaseSequence()">Refresh Status</span>
-                        </div>
-                    </div>
-                `;
-            }, 2500);
         }
     </script>
 </body>
