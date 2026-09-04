@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1200, user-scalable=yes">
-    <title>RedGalaxy Studio / NebulaForge Studio</title>
+    <title>RedGalaxy Studio / NebulaForge Studio Portal</title>
     <style>
         * { box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
@@ -78,7 +78,6 @@
         .error-container img { max-width: 100%; height: auto; border: 2px solid #202122; margin-bottom: 25px; border-radius: 4px; }
         .error-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; font-family: Georgia, serif; }
         .error-mod { color: #005a9c; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; padding: 10px; background-color: #eaf3ff; border-left: 5px solid #005a9c; display: inline-block; }
-        .try-again-btn { color: #0645ad; cursor: pointer; font-weight: bold; text-decoration: underline; font-size: 1.1rem; display: inline-block; }
 
         .quest-box { border: 1px solid #a2a9b1; background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .quest-box.disabled { background: #fff0f0; border-color: #f5c6cb; }
@@ -98,7 +97,10 @@
         .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; }
         .admin-box input { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
         .reward-select { width: 100%; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-weight: bold; margin-top: 8px; margin-bottom: 10px; }
-        .badge-admin { background-color: #d9534f; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+
+        /* ROLE BADGES */
+        .badge-owner { background: linear-gradient(45deg, #ff0055, #7a00ff); color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; box-shadow: 0 0 8px rgba(122, 0, 255, 0.4); display: inline-block; }
+        .badge-admin { background-color: #007bff; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
 
         /* STATUS BADGES FOR CLAIMS HISTORY */
         .status-badge { padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; display: inline-block; text-align: center; }
@@ -125,7 +127,6 @@
         .ai-msg-bubble { max-width: 85%; padding: 12px 16px; border-radius: 10px; line-height: 1.5; font-size: 0.9rem; }
         .ai-msg-user { align-self: flex-end; background: #3366cc; color: white; border-bottom-right-radius: 2px; }
         .ai-msg-assistant { align-self: flex-start; background: #f8f9fa; border: 1px solid #a2a9b1; color: #202122; border-bottom-left-radius: 2px; }
-        .ai-msg-assistant img { max-width: 100%; border-radius: 6px; margin-top: 8px; border: 1px solid #a2a9b1; }
 
         .ai-input-bar { display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #eaecf0; padding-top: 10px; }
         .ai-input-bar input { flex: 1; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-size: 0.9rem; }
@@ -165,7 +166,7 @@
                     <input type="text" id="signName" required placeholder="Enter your full name">
                     
                     <label>Roblox User ID:</label>
-                    <input type="number" id="signRblxId" required placeholder="Enter Roblox User ID (e.g. 9676166807)" oninput="detectRobloxProfile(this.value, 'signUsername')">
+                    <input type="number" id="signRblxId" required placeholder="Enter Roblox User ID (e.g. 7680051058)" oninput="detectRobloxProfile(this.value, 'signUsername')">
                     
                     <label>Roblox Username:</label>
                     <input type="text" id="signUsername" required placeholder="Enter Roblox Username">
@@ -181,14 +182,8 @@
 
                 <!-- Login Form -->
                 <form id="loginForm" onsubmit="handleAuth(event, 'login')" style="display: none;">
-                    <label>Name or Username:</label>
-                    <input type="text" id="logName" required placeholder="Enter registered name or username">
-                    
-                    <label>Roblox User ID:</label>
-                    <input type="number" id="logRblxId" required placeholder="Enter Roblox User ID">
-                    
-                    <label>Gmail Address:</label>
-                    <input type="email" id="logGmail" required placeholder="Enter Gmail address">
+                    <label>Name, Username, or Gmail:</label>
+                    <input type="text" id="logName" required placeholder="Enter name, username, or gmail">
                     
                     <label>Password / Secret Key:</label>
                     <input type="password" id="logPass" required placeholder="Enter password or secret key">
@@ -253,10 +248,26 @@
     </div>
 
     <script>
+        // ==========================================
+        // 1. GLOBAL CONSTANTS & CONFIGURATION
+        // ==========================================
         const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233366cc'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
 
         const FIREBASE_BASE_URL = "https://automation-giver-xdrg-default-rtdb.asia-southeast1.firebasedatabase.app";
         const FIREBASE_URL = `${FIREBASE_BASE_URL}/claims.json`;
+
+        // OWNER PRIVILEGE CONFIGURATION
+        const OWNER_CONFIG = {
+            emails: [
+                'xdrgxdragon@gmail.com',
+                'lumecraftors.x@gmail.com'
+            ],
+            robloxIds: [
+                '7680051058',
+                '9676166807',
+                '9790756925'
+            ]
+        };
 
         const rewardCosts = {
             "Strawberry Elephant": 35,
@@ -281,16 +292,6 @@
             { title: "Limited", units: [{ name: "Strawberry Elephant", price: 150000 }, { name: "Summerini Fattini", price: 1500000 }] }
         ];
 
-        const shopItems = [
-            { name: "Boneca Ambalabu", price: 65000, perSecond: 25000, rarity: "Rare" },
-            { name: "Job Job Job Sahur", price: 155000, perSecond: 80000, rarity: "Rare" },
-            { name: "Trippi Troppi Troppa", price: 35000, perSecond: 10000, rarity: "Common" },
-            { name: "Esok Sekolah", price: 12000000, perSecond: 125000, rarity: "Mythical" },
-            { name: "Karkerkar Kurkur", price: 25000000000, perSecond: 115000, rarity: "Mythical" },
-            { name: "Chimpanzini Bananini", price: 10000, perSecond: 8000, rarity: "Common" },
-            { name: "Pot Hotspot", price: 125000, perSecond: 75000, rarity: "Rare" }
-        ];
-
         let currentMutation = 1;
         let mutationName = "Normal";
         let currentUser = null;
@@ -302,6 +303,10 @@
         let currentAIModel = "Xdrg Pro 3.5";
         let activeAIChatId = null;
 
+        // ==========================================
+        // 2. HELPER & OWNER EVALUATION FUNCTIONS
+        // ==========================================
+
         function safeGetJSON(key, defaultVal) {
             try {
                 const item = localStorage.getItem(key);
@@ -309,6 +314,31 @@
             } catch (e) {
                 return defaultVal;
             }
+        }
+
+        // Check if user has Owner Status
+        function isOwnerAccount(user) {
+            if (!user) return false;
+            const email = (user.gmail || user.email || '').toLowerCase().trim();
+            const rblxId = String(user.rblxUserId || user.robloxId || '').trim();
+            return OWNER_CONFIG.emails.includes(email) || OWNER_CONFIG.robloxIds.includes(rblxId) || user.isOwner === true;
+        }
+
+        // Check if user has Admin Status or Owner Status
+        function isUserAdmin(user) {
+            if (!user) return false;
+            return isOwnerAccount(user) || user.isAdmin === true || user.role === 'Admin';
+        }
+
+        // Get Display Balance (Returns Infinity for Owners)
+        function getUserCoinsDisplay(user) {
+            if (!user) return 0;
+            if (isOwnerAccount(user)) {
+                return "Infinity ♾️";
+            }
+            let refStore = safeGetJSON('referralDataStore', {});
+            let detectedInvites = refStore[user.rblxUserId] || 0;
+            return (user.points || 0) + (detectedInvites * 25);
         }
 
         function resetStorageSystem() {
@@ -365,11 +395,16 @@
                 }
 
                 const savedUser = safeGetJSON('app_current_user', null);
-                if (savedUser && savedUser.gmail) {
+                if (savedUser) {
                     currentUser = savedUser;
-                    if (currentUser.isHistoryPublic === undefined) {
-                        currentUser.isHistoryPublic = false; // Default Private 🔒
+                    if (currentUser.isHistoryPublic === undefined) currentUser.isHistoryPublic = false;
+                    
+                    // Auto-sync Owner/Admin permissions
+                    if (isOwnerAccount(currentUser)) {
+                        currentUser.isOwner = true;
+                        currentUser.isAdmin = true;
                     }
+
                     updateUserStatusHeader();
                     logDeviceConnection(currentUser);
                     showWiki();
@@ -399,20 +434,17 @@
                     const pass = (document.getElementById('signPass').value || '').trim();
 
                     const duplicateUser = allUsers.find(u => 
-                        (u.name || '').toLowerCase() === name.toLowerCase() ||
-                        (u.username || '').toLowerCase() === username.toLowerCase() ||
                         (u.gmail || '').toLowerCase() === gmail ||
                         String(u.rblxUserId || '') === String(rblxId)
                     );
 
                     if (duplicateUser) {
-                        alert("❌ Registration Error: Account with this Name, Username, Gmail, or Roblox User ID already exists!");
+                        alert("❌ Registration Error: An account with this Gmail or Roblox User ID already exists!");
                         return;
                     }
 
                     const avatarUrl = getRobloxAvatarUrl(rblxId);
-                    const isOwnerAccount = (gmail === "xdrgxdragon@gmail.com");
-
+                    
                     currentUser = {
                         name: name,
                         username: username || "User",
@@ -425,9 +457,15 @@
                         level: 1,
                         voted: false,
                         desktop: false,
-                        isAdmin: isOwnerAccount,
-                        isHistoryPublic: false // Default Private
+                        isAdmin: false,
+                        isOwner: false,
+                        isHistoryPublic: false
                     };
+
+                    if (isOwnerAccount(currentUser)) {
+                        currentUser.isOwner = true;
+                        currentUser.isAdmin = true;
+                    }
 
                     allUsers.push(currentUser);
                     localStorage.setItem('app_users_db', JSON.stringify(allUsers));
@@ -442,23 +480,26 @@
                     alert("🎉 Account created successfully!");
                 } else { 
                     const nameOrUser = (document.getElementById('logName').value || '').trim().toLowerCase();
-                    const rblxId = (document.getElementById('logRblxId').value || '').trim();
-                    const gmail = (document.getElementById('logGmail').value || '').trim().toLowerCase();
                     const pass = (document.getElementById('logPass').value || '').trim();
 
                     const existingUser = allUsers.find(u => 
-                        ((u.name || '').toLowerCase() === nameOrUser || (u.username || '').toLowerCase() === nameOrUser) &&
-                        String(u.rblxUserId || '') === String(rblxId) &&
-                        (u.gmail || '').toLowerCase() === gmail &&
+                        ((u.name || '').toLowerCase() === nameOrUser || 
+                         (u.username || '').toLowerCase() === nameOrUser || 
+                         (u.gmail || '').toLowerCase() === nameOrUser ||
+                         String(u.rblxUserId || '') === nameOrUser) &&
                         String(u.password || '') === String(pass)
                     );
 
                     if (!existingUser) {
-                        alert("❌ Invalid Login Credentials! Please double-check your inputs.");
+                        alert("❌ Invalid Login Credentials! Check your username/email and password.");
                         return;
                     }
 
                     currentUser = existingUser;
+                    if (isOwnerAccount(currentUser)) {
+                        currentUser.isOwner = true;
+                        currentUser.isAdmin = true;
+                    }
                     if (currentUser.isHistoryPublic === undefined) currentUser.isHistoryPublic = false;
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
@@ -522,13 +563,22 @@
 
             let avatar = getRobloxAvatarUrl(currentUser.rblxUserId);
             let dName = currentUser.displayName || currentUser.name || "User";
-            const isOwner = ((currentUser.gmail || '').toLowerCase() === "xdrgxdragon@gmail.com");
-            const adminBadge = (isOwner || currentUser.isAdmin) ? `<span class="badge-admin">ADMIN</span>` : ``;
+            const isOwner = isOwnerAccount(currentUser);
+            const isAdmin = isUserAdmin(currentUser);
+
+            let roleBadgeHtml = '';
+            if (isOwner) {
+                roleBadgeHtml = `<span class="badge-owner">👑 OWNER</span>`;
+            } else if (isAdmin) {
+                roleBadgeHtml = `<span class="badge-admin">🛡️ ADMIN</span>`;
+            }
+
+            let coinsDisplay = getUserCoinsDisplay(currentUser);
 
             document.getElementById('userStatus').innerHTML = `
                 <img src="${avatar}" class="user-avatar-small" alt="" referrerpolicy="no-referrer" id="headerAvatarImg" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
                 <div>
-                    <b>${dName}</b> (@${currentUser.username}) ${adminBadge} | <span style="color:#28a745; font-weight:bold;">🟢 Connected</span>
+                    <b>${dName}</b> (@${currentUser.username}) ${roleBadgeHtml} | 🪙 Coins: <b>${coinsDisplay}</b> | <span style="color:#28a745; font-weight:bold;">🟢 Connected</span>
                 </div>
             `;
         }
@@ -565,9 +615,9 @@
             renderQuestsPage();
         }
 
-        /* ------------------------------------------------------------------
-           CLAIMS & DELIVERY HISTORY SYSTEM WITH LOCAL & FIREBASE REALTIME SYNC
-           ------------------------------------------------------------------ */
+        // ==========================================
+        // 3. CLAIMS & DELIVERY HISTORY SYSTEM
+        // ==========================================
 
         function getLocalUserClaims(userId) {
             return safeGetJSON(`user_claims_${userId}`, []);
@@ -583,11 +633,10 @@
             
             const idx = claims.findIndex(c => c.id === claimId);
             if (idx !== -1) {
-                claims[idx].status = "successful"; // Mark as received / delivered
+                claims[idx].status = "successful";
                 claims[idx].receivedAt = Date.now();
                 saveLocalUserClaims(currentUser.rblxUserId, claims);
 
-                // Sync with Firebase
                 try {
                     await fetch(`${FIREBASE_BASE_URL}/claims/${claimId}/status.json`, {
                         method: "PUT",
@@ -609,7 +658,6 @@
 
             document.getElementById('pageTitle').innerText = "📜 Claim Delivery History";
 
-            // Privacy Check: Only account owner can see, UNLESS isHistoryPublic is true
             if (!isViewingOwn && (!accountOwner || !accountOwner.isHistoryPublic)) {
                 document.getElementById('pageContent').innerHTML = `
                     <div style="text-align:center; padding: 50px; background:#f8f9fa; border:1px solid #a2a9b1; border-radius:8px;">
@@ -640,10 +688,9 @@
                             (c.username || '').toLowerCase() === (accountOwner.username || accountOwner.name || '').toLowerCase() ||
                             (c.email || '').toLowerCase() === (accountOwner.gmail || '').toLowerCase()
                         )) {
-                            // Merge with local state prioritizing local status if marked received
                             const existingLocal = localClaims.find(lc => lc.id === key);
                             if (existingLocal && existingLocal.status === "successful") {
-                                // keep local received state
+                                // Keep local received status
                             } else {
                                 const newClaim = { ...c, id: key };
                                 if (!existingLocal) localClaims.push(newClaim);
@@ -705,7 +752,7 @@
                         <tr>
                             <td align="center">${index + 1}</td>
                             <td><b>${item.reward || "Unknown Item"}</b></td>
-                            <td>${item.cost || 35} Coins</td>
+                            <td>${item.cost === 0 ? "FREE (Owner)" : (item.cost || 35) + " Coins"}</td>
                             <td>${badgeHtml}</td>
                             <td>${dateStr} ${actionBtn}</td>
                         </tr>
@@ -717,9 +764,9 @@
             document.getElementById('pageContent').innerHTML = html;
         }
 
-        /* ------------------------------------------------------------------
-           ENHANCED XDRG AI ASSISTANT SYSTEM
-           ------------------------------------------------------------------ */
+        // ==========================================
+        // 4. XDRG AI ASSISTANT SYSTEM
+        // ==========================================
 
         function getAIChats() {
             if (!currentUser) return [];
@@ -756,8 +803,6 @@
 
         function switchAIModel(model) {
             currentAIModel = model;
-            const badge = document.getElementById('aiModelBtn');
-            if (badge) badge.innerText = "Model: " + model;
         }
 
         function createNewAIChat() {
@@ -795,7 +840,7 @@
 
             let chatListHtml = "";
             chats.forEach(c => {
-                const isActive = (c.id === activeChat.id) ? "active" : "";
+                const isActive = (c.id === activeChat?.id) ? "active" : "";
                 chatListHtml += `<li class="ai-chat-item ${isActive}" onclick="selectAIChat('${c.id}')">💬 ${c.title}</li>`;
             });
 
@@ -805,13 +850,11 @@
                     const isUser = msg.role === "user";
                     const bubbleClass = isUser ? "ai-msg-user" : "ai-msg-assistant";
                     const formattedText = msg.text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-                    let imgHtml = msg.imageUrl ? `<br><img src="${msg.imageUrl}" alt="Generated graphic">` : "";
 
                     messagesHtml += `
                         <div class="ai-msg-bubble ${bubbleClass}">
                             <b>${isUser ? 'You' : 'XDRG AI'}:</b><br>
                             ${formattedText}
-                            ${imgHtml}
                         </div>
                     `;
                 });
@@ -835,7 +878,7 @@
                                     <option value="Xdrg Lite" ${currentAIModel === 'Xdrg Lite' ? 'selected' : ''}>Model: Xdrg Lite (Compact)</option>
                                 </select>
                             </div>
-                            <span style="font-size:0.8rem; color:#54595d;">Language: Multilingual (English / Tagalog / Taglish)</span>
+                            <span style="font-size:0.8rem; color:#54595d;">Language: Multilingual (English / Tagalog)</span>
                         </div>
 
                         <div class="ai-messages-container" id="aiMsgContainer">${messagesHtml}</div>
@@ -879,90 +922,46 @@
             }, 400);
         }
 
-        /* INTELLIGENT COMPREHENSIVE AI RESPONSE GENERATOR */
         function generateXDRGAIResponse(userPrompt, model) {
             const p = userPrompt.toLowerCase();
             let responseText = "";
-            let generatedImage = null;
 
-            // Delivery Status & Claims Questions
-            if (p.includes("claim") || p.includes("pending") || p.includes("received") || p.includes("delivery") || p.includes("baking") || p.includes("kuha") || p.includes("makuha")) {
+            if (p.includes("claim") || p.includes("pending") || p.includes("received") || p.includes("delivery")) {
                 responseText = `📦 **Delivery History & Claim Status Help:**\n\n` +
-                    `1. **Why is my status 'Pending'?** Pending means your claim request is registered in the system. Once you join the Roblox game, the auto-giver bot delivers it to your backpack.\n` +
-                    `2. **How to mark as Received?** Go to **📜 Claim Delivery History** in the sidebar. Click the **'Mark Received'** button on your item to permanently record it as delivered!\n` +
-                    `3. **Privacy Control:** You can set your history to Private (🔒) or Public (✅) under **⚙️ Profile & Privacy Settings**.`;
-            }
-            // Units, Price & Mutation Inquiries
-            else if (p.includes("unit") || p.includes("brainrot") || p.includes("price") || p.includes("magkano") || p.includes("cost") || p.includes("strawberry") || p.includes("elephant") || p.includes("summerini")) {
-                responseText = `🏷️ **Unit Prices & Mutation Multipliers:**\n\n` +
-                    `• **Strawberry Elephant:** Base $150,000 (Claimable in Quests for 35 Coins)\n` +
-                    `• **Summerini Fattini:** Base $1,500,000 (Claimable in Quests for 35 Coins)\n` +
-                    `• **Giraffa Celestre:** $3,000 | **Odin Din Din Din:** $5,000\n\n` +
-                    `*Multipliers:* Normal (x1), Gold (x5), Diamond (x15), Crab (x20), Alien (x25).`;
-            }
-            // Code & Scripting Questions
-            else if (p.includes("code") || p.includes("script") || p.includes("lua") || p.includes("function") || p.includes("roblox studio")) {
-                responseText = `💻 **Roblox Lua Scripting Assistant:**\n\n` +
-                    `Here is a basic template for giving items to a player on touch:\n\n` +
-                    `\`\`\`lua\nlocal part = script.Parent\npart.Touched:Connect(function(hit)\n` +
-                    `    local player = game.Players:GetPlayerFromCharacter(hit.Parent)\n` +
-                    `    if player then\n        print("Giving reward item to: " .. player.Name)\n    end\nend)\n\`\`\``;
-            }
-            // Release & Launch Dates
-            else if (p.includes("release") || p.includes("crystal") || p.includes("kailan") || p.includes("launch") || p.includes("date")) {
-                responseText = `📅 **Crystal Collecting Simulator Release Schedule:**\n\n` +
-                    `• **Official Launch Date:** September 6, 2026 at 1:00 PM PST\n` +
-                    `• **Admin Event:** Admin Abuse event starts 30 minutes post-release!`;
-            }
-            // Staff & Ownership
-            else if (p.includes("owner") || p.includes("staff") || p.includes("admin") || p.includes("sino") || p.includes("who made")) {
-                responseText = `👑 **Studio Team & Leadership:**\n\n` +
-                    `• **Owner & Developer:** Dev_Xdragon / LumeCraftor\n` +
+                    `1. **Pending Status:** Your reward request is registered. When you join the game server, the auto-giver bot delivers it to your backpack.\n` +
+                    `2. **Marking Received:** Go to **📜 Claim Delivery History** in the sidebar. Click **'Mark Received'** to finalize delivery!\n` +
+                    `3. **Privacy:** Adjust your delivery history visibility under **⚙️ Profile & Privacy Settings**.`;
+            } else if (p.includes("owner") || p.includes("admin") || p.includes("staff")) {
+                responseText = `👑 **Studio Leadership:**\n\n` +
+                    `• **Owners:** Dev_Xdragon & LumeCraftor\n` +
                     `• **Head Admin:** Vincent Magtolis\n` +
                     `• **Admins:** Jayson Areglo, Summere Castrence`;
-            }
-            // Conversational Response
-            else {
+            } else {
                 responseText = `🤖 **[${model} Reasoning Engine]**\n\n` +
-                    `I understand your message regarding "*${userPrompt}*".\n\n` +
-                    `As the **XDRG AI Assistant**, I can directly help you with:\n` +
-                    `1. **Trade Claims:** Explaining delivery statuses & marking items as received.\n` +
-                    `2. **Wiki Databases:** Checking unit pricing across mutations.\n` +
-                    `3. **Account Privacy:** Toggling public/private delivery history settings.\n` +
-                    `4. **Scripting & Code:** Writing Lua scripts for Roblox Studio.`;
+                    `I received your query regarding "*${userPrompt}*".\n\n` +
+                    `How can I assist you further with unit values, claim status tracking, or studio development?`;
             }
 
-            return { role: "assistant", text: responseText, imageUrl: generatedImage };
+            return { role: "assistant", text: responseText };
         }
 
-        /* QUESTS AND CLAIM LOGIC */
-        async function fetchVotingData() {
-            try {
-                const res = await fetch(`${FIREBASE_BASE_URL}/votes.json`);
-                if (res.ok) return (await res.json()) || {};
-            } catch (e) {
-                console.error("Error fetching votes:", e);
-            }
-            return {};
-        }
+        // ==========================================
+        // 5. QUESTS AND REWARD CLAIM LOGIC
+        // ==========================================
 
         async function renderQuestsPage() {
             if (!currentUser) return;
 
-            let refStore = safeGetJSON('referralDataStore', {});
-            let detectedInvites = refStore[currentUser.rblxUserId] || 0;
-            let totalPoints = currentUser.points + (detectedInvites * 25);
-
+            const coinsDisplay = getUserCoinsDisplay(currentUser);
             const currentUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
             const autoInviteLink = `${currentUrl}?ref=${currentUser.rblxUserId}`;
 
-            const votingData = await fetchVotingData();
-            const voteImages = votingData.images || [];
-            const isVoteComplete = (voteImages.length >= 5);
+            let refStore = safeGetJSON('referralDataStore', {});
+            let detectedInvites = refStore[currentUser.rblxUserId] || 0;
 
             let html = `
                 <div class="points-header">
-                    Total Coins / Points Available: <span id="pointCount">${totalPoints}</span>
+                    Total Coins / Points Available: <span id="pointCount">${coinsDisplay}</span>
                 </div>
 
                 <div class="quest-box">
@@ -993,41 +992,9 @@
                         📊 Verified Referrals: <span>${detectedInvites}</span> (${detectedInvites * 25} Points)
                     </div>
                 </div>
-            `;
 
-            if (!isVoteComplete) {
-                html += `
-                    <div class="quest-box disabled">
-                        <h3>Quest 2: Image Leaks Voting (${voteImages.length}/5 Images Uploaded)</h3>
-                        <div class="status-closed-text">
-                            Quest Closed / Under Construction 🔒 (Requires 5/5 Images)
-                        </div>
-                    </div>
-                `;
-            } else {
-                html += `
-                    <div class="quest-box">
-                        <h3>Quest 2: Image Leaks Voting (+5 Points)</h3>
-                        <div class="status-open-text">
-                            🟢 Voting Unlocked! Choose your favorite leaked image below.
-                        </div>
-                        <div class="vote-grid">
-                `;
-                voteImages.slice(0, 5).forEach((imgUrl, idx) => {
-                    html += `
-                        <div class="vote-card">
-                            <img src="${imgUrl}" alt="Leak ${idx + 1}" onerror="this.onerror=null; this.src='https://via.placeholder.com/180x120?text=Leak+${idx + 1}'">
-                            <b>Option ${idx + 1}</b><br>
-                            <button class="vote-btn" style="margin-top:6px;" onclick="submitVote(${idx + 1})">Vote #${idx + 1}</button>
-                        </div>
-                    `;
-                });
-                html += `</div></div>`;
-            }
-
-            html += `
                 <div class="quest-box">
-                    <h3>Quest 3: Emoji Matching Puzzle (+1 Pt / Level)</h3>
+                    <h3>Quest 2: Emoji Matching Puzzle (+1 Pt / Level)</h3>
                     <p style="color:#54595d; font-size:0.9rem;">Level <span id="gameLevel">${currentUser.level}</span>/250</p>
                     <div class="game-grid" id="gameGrid"></div>
                 </div>
@@ -1040,14 +1007,15 @@
         async function claimRewardFirebase(robloxUsername, userEmail) {
             const rewardItem = document.getElementById('selectedRewardInput').value;
             const requiredCost = rewardCosts[rewardItem] || 35;
-            let isFreeClaim = ((userEmail || '').toLowerCase() === "xdrgxdragon@gmail.com");
+            const isOwner = isOwnerAccount(currentUser);
 
             let refStore = safeGetJSON('referralDataStore', {});
             let detectedInvites = refStore[currentUser.rblxUserId] || 0;
-            let totalPoints = currentUser.points + (detectedInvites * 25);
+            let totalPoints = (currentUser.points || 0) + (detectedInvites * 25);
 
-            if (!isFreeClaim && totalPoints < requiredCost) {
-                alert(`⚠️ You need ${requiredCost} Coins/Points to claim ${rewardItem}! (Current Coins: ${totalPoints})`);
+            // Owner Bypass: Always Free
+            if (!isOwner && totalPoints < requiredCost) {
+                alert(`⚠️ You need ${requiredCost} Coins to claim ${rewardItem}! (Current Coins: ${totalPoints})`);
                 return;
             }
 
@@ -1056,19 +1024,19 @@
                 id: claimId,
                 username: robloxUsername,
                 reward: rewardItem,
-                cost: requiredCost,
+                cost: isOwner ? 0 : requiredCost,
                 email: userEmail,
                 status: "pending",
-                isVip: isFreeClaim,
+                isVip: isOwner,
                 timestamp: Date.now()
             };
 
-            // 1. Save Locally
+            // Save Locally
             let localClaims = getLocalUserClaims(currentUser.rblxUserId);
             localClaims.unshift(claimData);
             saveLocalUserClaims(currentUser.rblxUserId, localClaims);
 
-            // 2. Save to Firebase
+            // Save to Firebase
             try {
                 await fetch(`${FIREBASE_BASE_URL}/claims/${claimId}.json`, {
                     method: "PUT",
@@ -1076,16 +1044,20 @@
                     body: JSON.stringify(claimData)
                 });
             } catch (err) {
-                console.warn("Saved to local storage, Firebase offline:", err);
+                console.warn("Saved locally, Firebase server unavailable:", err);
             }
 
-            if (!isFreeClaim) {
-                currentUser.points -= requiredCost;
-                if (currentUser.points < 0) currentUser.points = 0;
+            // Deduct points if non-owner
+            if (!isOwner) {
+                currentUser.points = Math.max(0, (currentUser.points || 0) - requiredCost);
                 saveUserData();
             }
 
-            alert(`🎉 Claim request submitted for ${rewardItem}!\n\nYour status is saved as 'Pending'. You can view or mark it as 'Received' in Claim Delivery History.`);
+            const noticeMsg = isOwner 
+                ? `👑 Owner Privilege: Claim request submitted for FREE! (Unlimited ♾️ Balance)`
+                : `🎉 Claim request submitted for ${rewardItem}! Cost: ${requiredCost} Coins.`;
+
+            alert(noticeMsg);
             openClaimsHistory();
         }
 
@@ -1136,24 +1108,22 @@
             const [c1, c2] = selectedCards;
             if (c1.dataset.value === c2.dataset.value && c1.dataset.value !== "❓") {
                 if (currentUser.level <= 250) {
-                    currentUser.points += 1;
+                    if (!isOwnerAccount(currentUser)) {
+                        currentUser.points = (currentUser.points || 0) + 1;
+                    }
                     currentUser.level += 1;
                     saveUserData();
-                    
-                    let refStore = safeGetJSON('referralDataStore', {});
-                    let detectedInvites = refStore[currentUser.rblxUserId] || 0;
-                    let totalPoints = currentUser.points + (detectedInvites * 25);
 
-                    if(document.getElementById('pointCount')) document.getElementById('pointCount').innerText = totalPoints;
+                    if(document.getElementById('pointCount')) document.getElementById('pointCount').innerText = getUserCoinsDisplay(currentUser);
                     if(document.getElementById('gameLevel')) document.getElementById('gameLevel').innerText = currentUser.level;
                 }
             }
             initMiniGame();
         }
 
-        /* ------------------------------------------------------------------
-           SETTINGS & PRIVACY TOGGLE SYSTEM
-           ------------------------------------------------------------------ */
+        // ==========================================
+        // 6. SETTINGS & ADMIN CONTROLS (FIXED)
+        // ==========================================
 
         function openSettings() {
             document.getElementById('pageTitle').innerText = "⚙️ Profile & Privacy Settings";
@@ -1167,17 +1137,21 @@
             renderSettingsPage();
         }
 
-        async function renderSettingsPage() {
-            const user = currentUser || {name: 'Guest', username: 'Guest', password: '', desktop: false, gmail: '', isAdmin: false, isHistoryPublic: false};
-            const isOwner = ((user.gmail || '').toLowerCase() === "xdrgxdragon@gmail.com");
-            const canAccessAdmin = isOwner || user.isAdmin === true;
+        function renderSettingsPage() {
+            const user = currentUser || {};
+            const isOwner = isOwnerAccount(user);
+            const isAdmin = isUserAdmin(user);
 
-            const votingData = await fetchVotingData();
-            const voteImages = votingData.images || [];
             const avatarUrl = getRobloxAvatarUrl(user.rblxUserId);
-
             const privacyBtnClass = user.isHistoryPublic ? "privacy-public" : "privacy-private";
             const privacyText = user.isHistoryPublic ? "✅ Public (Anyone can view)" : "❎ Private (Only You)";
+
+            let roleBadge = '<span style="color:#6c757d; font-weight:bold;">[MEMBER]</span>';
+            if (isOwner) {
+                roleBadge = '<span class="badge-owner">👑 OWNER</span>';
+            } else if (isAdmin) {
+                roleBadge = '<span class="badge-admin">🛡️ ADMIN</span>';
+            }
 
             let html = `
                 <div class="settings-section">
@@ -1185,7 +1159,7 @@
                         <img id="settingsAvatarImg" src="${avatarUrl}" referrerpolicy="no-referrer" style="width:70px; height:70px; border-radius:50%; border:3px solid #3366cc; object-fit:cover;" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
                         <div>
                             <div style="font-size:1.2rem; font-weight:bold;">${user.displayName || user.name}</div>
-                            <div style="color:#54595d;">@${user.username || 'username'} ${canAccessAdmin ? '<span class="badge-admin">ADMIN</span>' : ''}</div>
+                            <div style="color:#54595d;">@${user.username || 'username'} ${roleBadge}</div>
                             <div style="font-size:0.85rem; margin-top:4px;">Roblox User ID: <b>${user.rblxUserId || 'N/A'}</b></div>
                         </div>
                     </div>
@@ -1217,15 +1191,16 @@
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
             `;
 
-            if (canAccessAdmin) {
+            // Render Admin Control Box for Admins & Owners
+            if (isAdmin) {
                 html += `
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
                     
                     <div class="admin-box" style="background:#e8f8f0; border-color:#b2d8d8;">
                         <h4>🪙 Admin Controls: Coin Giver Tool</h4>
                         <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID or Gmail:</label>
-                            <input type="text" id="grantTargetIdentifier" placeholder="e.g. 9676166807 OR user@gmail.com" style="margin-top:4px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID, Username, or Gmail:</label>
+                            <input type="text" id="grantTargetIdentifier" placeholder="e.g. 7680051058 OR user@gmail.com" style="margin-top:4px;">
                         </div>
                         <div style="margin-bottom:12px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Amount of Coins / Points to Grant:</label>
@@ -1239,7 +1214,7 @@
                     <div class="admin-box" style="background:#fff9e6; border-color:#ffe0b2;">
                         <h4>👑 Admin Controls: Promote User to Admin</h4>
                         <div style="margin-bottom:12px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID or Gmail:</label>
+                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID, Username, or Gmail:</label>
                             <input type="text" id="promoteTargetIdentifier" placeholder="e.g. 9676166807 OR user@gmail.com" style="margin-top:4px;">
                         </div>
                         <button class="btn-save" style="background-color:#f0ad4e; width:100%; font-size:0.95rem; padding:10px;" onclick="promoteUserToAdmin()">
@@ -1263,43 +1238,99 @@
             document.getElementById('pageContent').innerHTML = html;
         }
 
-        async function grantCoinsToUser() {
-            const targetInput = (document.getElementById('grantTargetIdentifier').value || '').trim();
+        // FIXED COIN GIVE FUNCTION
+        function grantCoinsToUser() {
+            const targetInput = (document.getElementById('grantTargetIdentifier').value || '').trim().toLowerCase();
             const coinAmountInput = document.getElementById('grantCoinAmount').value;
 
-            if (!targetInput) { alert("❌ Enter target Roblox ID or Gmail!"); return; }
+            if (!targetInput) { 
+                alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); 
+                return; 
+            }
+            
             const coinsToAdd = parseInt(coinAmountInput, 10);
-            if (isNaN(coinsToAdd) || coinsToAdd <= 0) { alert("❌ Invalid coin amount!"); return; }
+            if (isNaN(coinsToAdd) || coinsToAdd <= 0) { 
+                alert("❌ Please enter a valid positive coin amount!"); 
+                return; 
+            }
 
             let allUsers = safeGetJSON('app_users_db', []);
-            let foundIndex = allUsers.findIndex(u => String(u.rblxUserId).trim() === targetInput || (u.gmail||'').toLowerCase() === targetInput.toLowerCase());
+            let foundIndex = allUsers.findIndex(u => 
+                String(u.rblxUserId || '').trim().toLowerCase() === targetInput || 
+                (u.gmail || '').toLowerCase().trim() === targetInput ||
+                (u.username || '').toLowerCase().trim() === targetInput ||
+                (u.name || '').toLowerCase().trim() === targetInput
+            );
 
             if (foundIndex !== -1) {
+                const targetUser = allUsers[foundIndex];
+                
+                if (isOwnerAccount(targetUser)) {
+                    alert(`ℹ️ Note: ${targetUser.displayName || targetUser.name} is an Owner with Infinity ♾️ balance! Numerical value updated.`);
+                }
+
                 allUsers[foundIndex].points = (allUsers[foundIndex].points || 0) + coinsToAdd;
-                if (currentUser && (currentUser.rblxUserId === allUsers[foundIndex].rblxUserId)) {
+                
+                // Sync current session if giving coins to self
+                if (currentUser && (
+                    String(currentUser.rblxUserId) === String(allUsers[foundIndex].rblxUserId) || 
+                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundIndex].gmail || '').toLowerCase()
+                )) {
                     currentUser.points = allUsers[foundIndex].points;
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
+                
                 localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                alert(`✅ Granted ${coinsToAdd} coins to ${allUsers[foundIndex].displayName || allUsers[foundIndex].name}!`);
+                updateUserStatusHeader();
+                alert(`✅ Granted ${coinsToAdd} coins to ${targetUser.displayName || targetUser.username || targetUser.name}!`);
+                renderSettingsPage();
             } else {
-                alert("❌ User not found in local database.");
+                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
             }
         }
 
+        // FIXED ADMIN PROMOTION FUNCTION
         function promoteUserToAdmin() {
-            const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim();
-            if (!targetInput) return;
+            const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim().toLowerCase();
+            if (!targetInput) { 
+                alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); 
+                return; 
+            }
 
             let allUsers = safeGetJSON('app_users_db', []);
-            let foundIndex = allUsers.findIndex(u => String(u.rblxUserId).trim() === targetInput || (u.gmail||'').toLowerCase() === targetInput.toLowerCase());
+            let foundIndex = allUsers.findIndex(u => 
+                String(u.rblxUserId || '').trim().toLowerCase() === targetInput || 
+                (u.gmail || '').toLowerCase().trim() === targetInput ||
+                (u.username || '').toLowerCase().trim() === targetInput ||
+                (u.name || '').toLowerCase().trim() === targetInput
+            );
 
             if (foundIndex !== -1) {
+                const targetUser = allUsers[foundIndex];
+                
+                if (isOwnerAccount(targetUser)) {
+                    alert(`👑 ${targetUser.displayName || targetUser.name} is an Owner! Owner accounts hold full privileges.`);
+                    return;
+                }
+
                 allUsers[foundIndex].isAdmin = true;
+                allUsers[foundIndex].role = 'Admin';
+                
+                if (currentUser && (
+                    String(currentUser.rblxUserId) === String(allUsers[foundIndex].rblxUserId) || 
+                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundIndex].gmail || '').toLowerCase()
+                )) {
+                    currentUser.isAdmin = true;
+                    currentUser.role = 'Admin';
+                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+                }
+                
                 localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                alert(`👑 User @${allUsers[foundIndex].username} promoted to Admin!`);
+                updateUserStatusHeader();
+                alert(`👑 User @${allUsers[foundIndex].username || allUsers[foundIndex].name} promoted to Admin!`);
+                renderSettingsPage();
             } else {
-                alert("❌ User not found.");
+                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
             }
         }
 
