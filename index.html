@@ -59,10 +59,13 @@
         .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; }
         .btn-claim:hover { background-color: #218838; }
         
-        .social-links { list-style: none; padding: 0; font-size: 1.1rem; line-height: 2; }
-        .social-links a { text-decoration: none; color: #0645ad; }
-        .social-links a:hover { text-decoration: underline; }
-        
+        /* SOCIAL MEDIA STYLES */
+        .social-links { list-style: none; padding: 0; font-size: 1rem; margin-top: 15px; }
+        .social-links li { margin-bottom: 12px; }
+        .social-links a { text-decoration: none; color: #202122; display: inline-flex; align-items: center; gap: 10px; font-weight: bold; padding: 8px 14px; border: 1px solid #a2a9b1; border-radius: 6px; background: #f8f9fa; transition: all 0.2s ease; width: 100%; max-width: 280px; }
+        .social-links a:hover { background: #eaf3ff; border-color: #3366cc; color: #0645ad; }
+        .social-icon { width: 22px; height: 22px; flex-shrink: 0; }
+
         .copy-container { display: flex; align-items: center; gap: 10px; max-width: 500px; margin-top: 10px; }
         .copy-container input { flex: 1; padding: 8px; border: 1px solid #a2a9b1; background-color: #eaecf0; color: #54595d; }
         .btn-copy { background-color: #00af89; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; }
@@ -82,16 +85,9 @@
         .quest-box { border: 1px solid #a2a9b1; background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .quest-box.disabled { background: #fff0f0; border-color: #f5c6cb; }
         .points-header { background: #eaf3ff; border: 1px solid #3366cc; padding: 12px; font-weight: bold; font-size: 1.1rem; color: #005a9c; text-align: center; border-radius: 6px; margin-bottom: 20px; }
-        .status-closed-text { color: #721c24; font-weight: bold; font-size: 1rem; text-align: center; padding: 10px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; margin-top: 10px; }
-        .status-open-text { color: #155724; font-weight: bold; font-size: 1rem; text-align: center; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; margin-top: 10px; }
         .game-grid { display: grid; grid-template-columns: repeat(2, 80px); gap: 10px; margin-top: 15px; justify-content: center; }
         .emoji-card { width: 80px; height: 80px; background: #eaecf0; border: 2px solid #a2a9b1; font-size: 2rem; display: flex; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer; user-select: none; }
         .alert-banner { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; text-align: center; font-weight: bold; }
-        
-        .vote-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
-        .vote-card { border: 1px solid #a2a9b1; background: #ffffff; padding: 10px; border-radius: 6px; text-align: center; }
-        .vote-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 4px; margin-bottom: 8px; }
-        .vote-btn { background-color: #3366cc; color: white; border: none; padding: 6px 12px; cursor: pointer; font-weight: bold; border-radius: 4px; width: 100%; }
         
         .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; }
@@ -131,9 +127,85 @@
         .ai-input-bar { display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #eaecf0; padding-top: 10px; }
         .ai-input-bar input { flex: 1; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-size: 0.9rem; }
         .ai-send-btn { background: #3366cc; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+
+        /* COOKIE BANNER STYLES */
+        .cookie-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #202122;
+            color: #ffffff;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            max-width: 90%;
+            width: 620px;
+            font-size: 0.9rem;
+            border: 1px solid #444;
+        }
+        .cookie-banner-btn {
+            color: #ffffff;
+            background-color: #3366cc;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            white-space: nowrap;
+            transition: background 0.2s ease;
+            border: none;
+        }
+        .cookie-banner-btn:hover {
+            background-color: #2a4b8d;
+        }
+
+        /* POLICY CARD STYLES */
+        .policy-card {
+            background: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 700px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .policy-list {
+            padding-left: 20px;
+            line-height: 1.9;
+            font-size: 1rem;
+            color: #202122;
+        }
+        .policy-list li {
+            margin-bottom: 8px;
+        }
+        .policy-back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            color: #0645ad;
+            font-weight: bold;
+            font-size: 1.05rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .policy-back-btn:hover {
+            color: #0b0080;
+        }
     </style>
 </head>
 <body>
+
+    <!-- COOKIE & AD CONSENT BANNER -->
+    <div id="cookieBanner" class="cookie-banner">
+        <div>
+            This website contain an ads also Cookies do you agree to developer of this Wiki Website?
+        </div>
+        <button class="cookie-banner-btn" onclick="acceptCookies()">I allowed cookies</button>
+    </div>
 
     <!-- AUTHENTICATION SCREEN -->
     <div id="loginScreen">
@@ -215,6 +287,7 @@
                     <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
                     <li><a onclick="openGame('brainrots')">Don't Crash the Train for Brainrots</a></li>
                     <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
+                    <li><a onclick="openPolicy()" style="font-weight:bold; color:#0645ad;">📜 Terms of Policy</a></li>
                 </ul>
 
                 <h3>Account Settings</h3>
@@ -306,6 +379,30 @@
         // ==========================================
         // 2. HELPER & OWNER EVALUATION FUNCTIONS
         // ==========================================
+
+        function acceptCookies() {
+            document.getElementById('cookieBanner').style.display = 'none';
+        }
+
+        function openPolicy() {
+            document.getElementById('pageTitle').innerText = "Terms of Policy";
+            document.getElementById('pageContent').innerHTML = `
+                <div class="policy-card">
+                    <h2 style="margin-top:0; color:#005a9c; border-bottom: 2px solid #3366cc; padding-bottom: 8px;">[Xdrg Policy]</h2>
+                    <ol class="policy-list">
+                        <li>Do not re-copy this website.</li>
+                        <li>Do not show your private information such as your Password, Secret Keys, etc.</li>
+                        <li>Don't share your Web IP or UID to keep your privacy safe.</li>
+                        <li>Credit the owners (Dev Xdragon, Lume Craftor).</li>
+                        <li>Respect all members including Admins and Moderators.</li>
+                        <li>Do not use XDRG AI to search up inaccurate or fake information from the game.</li>
+                    </ol>
+                    <div>
+                        <a onclick="openHome()" class="policy-back-btn">I follow all policy</a>
+                    </div>
+                </div>
+            `;
+        }
 
         function safeGetJSON(key, defaultVal) {
             try {
@@ -1122,7 +1219,7 @@
         }
 
         // ==========================================
-        // 6. SETTINGS & ADMIN CONTROLS (FIXED)
+        // 6. SETTINGS & ADMIN CONTROLS
         // ==========================================
 
         function openSettings() {
@@ -1228,9 +1325,30 @@
                     <hr style="margin: 40px 0 20px 0; border: 0; border-top: 1px solid #c8ccd1;">
                     <h2>Socials</h2>
                     <ul class="social-links">
-                        <li>🟦 <a href="https://www.facebook.com/profile.php?id=61583174657283" target="_blank">Facebook</a></li>
-                        <li>🎵 <a href="https://tiktok.com/@xdragon...1" target="_blank">TikTok</a></li>
-                        <li>📺 <a href="https://www.youtube.com/@dev-xdragon" target="_blank">YouTube</a></li>
+                        <li>
+                            <a href="https://www.facebook.com/profile.php?id=61583174657283" target="_blank">
+                                <svg class="social-icon" viewBox="0 0 24 24" fill="#1877F2">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                                Facebook Page
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://tiktok.com/@xdragon...1" target="_blank">
+                                <svg class="social-icon" viewBox="0 0 24 24" fill="#000000">
+                                    <path d="M12.525 0h3.08c.12 1.052.7 2.022 1.6 2.682 1.02.75 2.25 1.13 3.51 1.08V6.9a8.1 8.1 0 0 1-3.66-.88c-.54-.26-1.04-.6-1.48-1.01v8.83c0 1.25-.33 2.48-.96 3.57a7.07 7.07 0 0 1-2.61 2.58c-1.12.63-2.4 .96-3.7.95-1.3 0-2.58-.33-3.7-.96a7.07 7.07 0 0 1-2.61-2.58 7.2 7.2 0 0 1-.96-3.57c0-1.25.33-2.48.96-3.57a7.07 7.07 0 0 1 2.61-2.58c1.12-.63 2.4-.96 3.7-.95.42 0 .84.04 1.25.12V9.81a3.9 3.9 0 0 0-1.25-.2c-.7 0-1.39.18-2 .53-.61.35-1.11.85-1.46 1.46-.35.61-.53 1.3-.53 2s.18 1.39.53 2c.35.61.85 1.11 1.46 1.46.61.35 1.3.53 2 .53.7 0 1.39-.18 2-.53.61-.35 1.11-.85 1.46-1.46.35-.61.53-1.3.53-2V0z"/>
+                                </svg>
+                                TikTok Channel
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/@dev-xdragon" target="_blank">
+                                <svg class="social-icon" viewBox="0 0 24 24" fill="#FF0000">
+                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                </svg>
+                                YouTube Channel
+                            </a>
+                        </li>
                     </ul>
                 </div>
             `;
@@ -1238,7 +1356,6 @@
             document.getElementById('pageContent').innerHTML = html;
         }
 
-        // FIXED COIN GIVE FUNCTION
         function grantCoinsToUser() {
             const targetInput = (document.getElementById('grantTargetIdentifier').value || '').trim().toLowerCase();
             const coinAmountInput = document.getElementById('grantCoinAmount').value;
@@ -1289,7 +1406,6 @@
             }
         }
 
-        // FIXED ADMIN PROMOTION FUNCTION
         function promoteUserToAdmin() {
             const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim().toLowerCase();
             if (!targetInput) { 
@@ -1374,7 +1490,7 @@
 
             categories.forEach(cat => {
                 const areaName = areaMapping[cat.title];
-                html += `<h2>${areaName} Area Units (${cat.title})</h2>`;
+                html += `2>${areaName} Area Units (${cat.title})</h2>`;
                 html += `
                     <table class="wikitable">
                         <tr>
