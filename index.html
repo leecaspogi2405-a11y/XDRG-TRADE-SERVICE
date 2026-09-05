@@ -1754,18 +1754,16 @@
                     id: 'poll_' + Date.now(),
                     title: title,
                     description: desc,
-                    image: imgBase64,
+                    image: imgBase64 || null,
                     options: options
                 });
                 
                 localStorage.setItem('app_polls_db', JSON.stringify(polls));
                 alert("✅ Poll created successfully!");
-                // This will instantly redirect the admin to the Guest Poll / Quests section
-                openQuests(); 
+                openQuests();
             };
 
-            // If an image was uploaded, read it as a Base64 URL so it displays dynamically
-            if (imageInput.files && imageInput.files[0]) {
+            if (imageInput && imageInput.files && imageInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     saveAndRenderPoll(e.target.result);
@@ -1776,255 +1774,180 @@
             }
         }
 
-        function grantCoinsToUser() {
-            const targetInput = (document.getElementById('grantTargetIdentifier').value || '').trim().toLowerCase();
-            const coinAmountInput = document.getElementById('grantCoinAmount').value;
+        function saveSettings() {
+            if (!currentUser) return;
+            const newName = document.getElementById('setUserName').value.trim();
+            const newPass = document.getElementById('setUserPass').value.trim();
+            const desktopMode = document.getElementById('setDesktop').checked;
 
-            if (!targetInput) { 
-                alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); 
-                return; 
+            if (newName) currentUser.username = newName;
+            if (newPass) currentUser.password = newPass;
+            currentUser.desktop = desktopMode;
+
+            saveUserData();
+            updateUserStatusHeader();
+            alert("✅ Profile settings saved successfully!");
+            renderSettingsPage();
+        }
+
+        function grantCoinsToUser() {
+            if (!isUserAdmin(currentUser)) {
+                alert("❌ Unauthorized operation!");
+                return;
             }
-            
-            const coinsToAdd = parseInt(coinAmountInput, 10);
-            if (isNaN(coinsToAdd) || coinsToAdd <= 0) { 
-                alert("❌ Please enter a valid positive coin amount!"); 
-                return; 
+            const targetId = document.getElementById('grantTargetIdentifier').value.trim().toLowerCase();
+            const amount = parseInt(document.getElementById('grantCoinAmount').value.trim(), 10);
+
+            if (!targetId || isNaN(amount) || amount <= 0) {
+                alert("❌ Please enter a valid target identifier and positive coin amount.");
+                return;
             }
 
             let allUsers = safeGetJSON('app_users_db', []);
-            let foundIndex = allUsers.findIndex(u => 
-                String(u.rblxUserId || '').trim().toLowerCase() === targetInput || 
-                (u.gmail || '').toLowerCase().trim() === targetInput ||
-                (u.username || '').toLowerCase().trim() === targetInput ||
-                (u.name || '').toLowerCase().trim() === targetInput
+            const userIndex = allUsers.findIndex(u =>
+                String(u.rblxUserId || '').toLowerCase() === targetId ||
+                (u.username || '').toLowerCase() === targetId ||
+                (u.gmail || '').toLowerCase() === targetId ||
+                (u.name || '').toLowerCase() === targetId
             );
 
-            if (foundIndex !== -1) {
-                const targetUser = allUsers[foundIndex];
-                
-                if (isOwnerAccount(targetUser)) {
-                    alert(`ℹ️ Note: ${targetUser.displayName || targetUser.name} is an Owner with Infinity ♾️ balance! Numerical value updated.`);
-                }
-
-                allUsers[foundIndex].points = (allUsers[foundIndex].points || 0) + coinsToAdd;
-                
-                if (currentUser && (
-                    String(currentUser.rblxUserId) === String(allUsers[foundIndex].rblxUserId) || 
-                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundIndex].gmail || '').toLowerCase()
-                )) {
-                    currentUser.points = allUsers[foundIndex].points;
-                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
-                }
-                
-                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                updateUserStatusHeader();
-                alert(`✅ Granted ${coinsToAdd} coins to ${targetUser.displayName || targetUser.username || targetUser.name}!`);
-                renderSettingsPage();
-            } else {
-                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
+            if (userIndex === -1) {
+                alert("❌ Target user not found in local user database!");
+                return;
             }
+
+            allUsers[userIndex].points = (allUsers[userIndex].points || 0) + amount;
+            localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+
+            if (currentUser && (
+                String(currentUser.rblxUserId || '').toLowerCase() === targetId ||
+                (currentUser.username || '').toLowerCase() === targetId ||
+                (currentUser.gmail || '').toLowerCase() === targetId
+            )) {
+                currentUser.points = allUsers[userIndex].points;
+                saveUserData();
+                updateUserStatusHeader();
+            }
+
+            alert(`✅ Granted +${amount} Coins to user "${allUsers[userIndex].username || allUsers[userIndex].name}"!`);
+            document.getElementById('grantTargetIdentifier').value = "";
+            document.getElementById('grantCoinAmount').value = "";
         }
 
         function promoteUserToAdmin() {
-            const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim().toLowerCase();
-            if (!targetInput) { 
-                alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); 
-                return; 
+            if (!isOwnerAccount(currentUser)) {
+                alert("❌ Only Studio Owners can promote users to Admin status!");
+                return;
+            }
+            const targetId = document.getElementById('promoteTargetIdentifier').value.trim().toLowerCase();
+
+            if (!targetId) {
+                alert("❌ Please enter a valid target identifier.");
+                return;
             }
 
             let allUsers = safeGetJSON('app_users_db', []);
-            let foundIndex = allUsers.findIndex(u => 
-                String(u.rblxUserId || '').trim().toLowerCase() === targetInput || 
-                (u.gmail || '').toLowerCase().trim() === targetInput ||
-                (u.username || '').toLowerCase().trim() === targetInput ||
-                (u.name || '').toLowerCase().trim() === targetInput
+            const userIndex = allUsers.findIndex(u =>
+                String(u.rblxUserId || '').toLowerCase() === targetId ||
+                (u.username || '').toLowerCase() === targetId ||
+                (u.gmail || '').toLowerCase() === targetId ||
+                (u.name || '').toLowerCase() === targetId
             );
 
-            if (foundIndex !== -1) {
-                const targetUser = allUsers[foundIndex];
-                
-                if (isOwnerAccount(targetUser)) {
-                    alert(`👑 ${targetUser.displayName || targetUser.name} is an Owner! Owner accounts hold full privileges.`);
-                    return;
-                }
-
-                allUsers[foundIndex].isAdmin = true;
-                allUsers[foundIndex].role = 'Admin';
-                
-                if (currentUser && (
-                    String(currentUser.rblxUserId) === String(allUsers[foundIndex].rblxUserId) || 
-                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundIndex].gmail || '').toLowerCase()
-                )) {
-                    currentUser.isAdmin = true;
-                    currentUser.role = 'Admin';
-                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
-                }
-                
-                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                updateUserStatusHeader();
-                alert(`👑 User @${allUsers[foundIndex].username || allUsers[foundIndex].name} promoted to Admin!`);
-                renderSettingsPage();
-            } else {
-                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
+            if (userIndex === -1) {
+                alert("❌ Target user not found in local user database!");
+                return;
             }
-        }
 
-        function saveSettings() {
-            if (currentUser) {
-                const newUsername = (document.getElementById('setUserName').value || '').trim();
-                const newPassword = (document.getElementById('setUserPass').value || '').trim();
+            allUsers[userIndex].isAdmin = true;
+            allUsers[userIndex].role = "Admin";
+            localStorage.setItem('app_users_db', JSON.stringify(allUsers));
 
-                currentUser.username = newUsername;
-                currentUser.password = newPassword;
-                currentUser.desktop = document.getElementById('setDesktop').checked;
-                
+            if (currentUser && String(currentUser.rblxUserId) === String(allUsers[userIndex].rblxUserId)) {
+                currentUser.isAdmin = true;
+                currentUser.role = "Admin";
                 saveUserData();
                 updateUserStatusHeader();
-                alert("Settings updated successfully!");
             }
-        }
 
-        function changeMutation() {
-            const sel = document.getElementById('mutationSelect');
-            currentMutation = parseInt(sel.value);
-            mutationName = sel.options[sel.selectedIndex].text.split(" ")[0];
-            renderBrainrotsPage();
+            alert(`🛡️ Successfully promoted "${allUsers[userIndex].username || allUsers[userIndex].name}" to Studio Admin!`);
+            document.getElementById('promoteTargetIdentifier').value = "";
         }
 
         function renderBrainrotsPage() {
             let html = `
-                <div class="infobox">
-                    <b>Game Mechanics</b>
-                    <hr style="margin:5px 0;">
-                    <label style="font-size:0.85em;">Apply Mutation Multiplier:</label>
-                    <select id="mutationSelect" onchange="changeMutation()">
-                        <option value="1" ${currentMutation===1?'selected':''}>Normal (x1)</option>
-                        <option value="5" ${currentMutation===5?'selected':''}>Gold (x5)</option>
-                        <option value="15" ${currentMutation===15?'selected':''}>Diamond (x15)</option>
-                        <option value="20" ${currentMutation===20?'selected':''}>Crab (x20)</option>
-                        <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
-                    </select>
-                </div>
-                <p>This page documents the characters and shop items found in Don't Crash Train For Brainrots. Values shown reflect the current mutation modifier.</p>
+                <p>Welcome to <b>Don't Crash Train For Brainrots</b> database & unit shop reference!</p>
+                
+                <h2>Unit Rarity Categories</h2>
+                <p>Browse units, income generation rates, and area locations:</p>
             `;
 
             categories.forEach(cat => {
-                const areaName = areaMapping[cat.title];
-                html += `<h2>${cat.title} Units</h2>`;
+                const area = areaMapping[cat.title] || "General Area";
                 html += `
-                    <table class="wikitable">
-                        <tr>
-                            <th width="5%">#</th>
-                            <th width="25%">Name</th>
-                            <th width="20%">Area</th>
-                            <th width="15%">Rarity</th>
-                            <th width="20%">Mutation Status</th>
-                            <th width="15%">Cost / Price</th>
-                        </tr>
+                    <div class="quest-box" style="margin-bottom:20px;">
+                        <h3 style="margin-top:0; color:#005a9c; border-bottom:1px solid #a2a9b1; padding-bottom:5px;">
+                            ${cat.title} Units <span style="font-size:0.85rem; color:#54595d; font-weight:normal;">(${area})</span>
+                        </h3>
+                        <table class="wikitable" style="margin-top:10px;">
+                            <tr>
+                                <th>Unit Name</th>
+                                <th>Base Cost / Value</th>
+                                <th>Found In Area</th>
+                            </tr>
                 `;
-                cat.units.forEach((unit, index) => {
-                    const finalPrice = unit.price * currentMutation;
+                cat.units.forEach(u => {
                     html += `
                         <tr>
-                            <td align="center">${index + 1}</td>
-                            <td><b>${unit.name}</b></td>
-                            <td>${areaName}</td>
-                            <td>${cat.title}</td>
-                            <td>${mutationName} (x${currentMutation})</td>
-                            <td>${finalPrice.toLocaleString()}</td>
+                            <td><b>${u.name}</b></td>
+                            <td>🪙 ${u.price.toLocaleString()}</td>
+                            <td>${area}</td>
                         </tr>
                     `;
                 });
-                html += `</table>`;
+                html += `</table></div>`;
             });
 
-            // ADDING THE SHOP ITEMS SYSTEM HERE
-            html += `<h2>Shop Items</h2>`;
             html += `
+                <h2>Special In-Game Shop Items</h2>
                 <table class="wikitable">
                     <tr>
-                        <th width="5%">#</th>
-                        <th width="25%">Name</th>
-                        <th width="15%">Base Rarity</th>
-                        <th width="20%">Mutation Status</th>
-                        <th width="15%">Cost / Price</th>
-                        <th width="20%">Income (Per/s)</th>
+                        <th>Item Name</th>
+                        <th>Rarity</th>
+                        <th>Price</th>
+                        <th>Income Generation</th>
                     </tr>
             `;
 
-            shopItems.forEach((item, index) => {
-                const finalPrice = item.price * currentMutation;
+            shopItems.forEach(item => {
                 html += `
                     <tr>
-                        <td align="center">${index + 1}</td>
                         <td><b>${item.name}</b></td>
                         <td>${item.rarity}</td>
-                        <td>${mutationName} (x${currentMutation})</td>
-                        <td>${finalPrice.toLocaleString()}</td>
-                        <td style="color: #005a9c; font-weight: bold;">${item.income}</td>
+                        <td>🪙 ${item.price.toLocaleString()}</td>
+                        <td><span style="color:#28a745; font-weight:bold;">${item.income}</span></td>
                     </tr>
                 `;
             });
-            html += `</table>`;
 
+            html += `</table>`;
             document.getElementById('pageContent').innerHTML = html;
         }
 
         function triggerReleaseSequence() {
             document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
-            
-            const releaseDate = new Date("2026-09-06T13:00:00+08:00").getTime();
-            const now = Date.now();
-            
-            if (now < releaseDate) {
-                document.getElementById('pageContent').innerHTML = `
-                    <div class="error-container">
-                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-bottom:15px;">Try Again</button>
-                        <p style="font-weight:bold; color:#54595d;">Loading video...</p>
-                        <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" style="max-width:100%; border:2px solid #202122; border-radius:4px; margin-bottom:20px;">
-                        <div class="error-title" style="font-size:1.1rem; margin-bottom:15px; font-family:Georgia, serif;">
-                            (Lume Craftor announced that the game will be released on September 6, 2026, at 1:00 PM)
-                        </div>
-                        <div class="error-mod" style="font-size:1.05rem; color:#005a9c; margin-bottom:25px; padding:10px; background-color:#eaf3ff; border-left:5px solid #005a9c; display:inline-block; font-weight:bold;">
-                            (Moderator Action: Admin Abuse will start 30 minutes after the release. See y'all on September 6, 2026, at 1:00 PM)
-                        </div>
-                        <br>
-                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-top:15px;">Try Again</button>
+            document.getElementById('pageContent').innerHTML = `
+                <div style="text-align:center; padding:40px; background:#f8f9fa; border:1px solid #a2a9b1; border-radius:8px;">
+                    <div style="font-size:3rem; margin-bottom:10px;">🔮</div>
+                    <h2>Crystal Collecting Simulator</h2>
+                    <p style="color:#54595d; font-size:1.1rem; max-width:600px; margin:0 auto 20px auto;">
+                        Gather rare elemental crystals, upgrade your harvesting tools, and unlock galaxy portals!
+                    </p>
+                    <div style="background:#eaf3ff; border:1px solid #3366cc; padding:15px; border-radius:6px; display:inline-block; font-weight:bold; color:#005a9c;">
+                        🚀 Status: Under Active Studio Development by RedGalaxy & NebulaForge
                     </div>
-                `;
-            } else {
-                document.getElementById('pageContent').innerHTML = `
-                    <h2>[Pickaxes]</h2>
-                    <table class="wikitable">
-                        <tr>
-                            <th width="25%">Pickaxe Name</th>
-                            <th width="25%">Hold Change</th>
-                            <th width="25%">Durability</th>
-                            <th width="25%">Price</th>
-                        </tr>
-                        <tr><td><b>wooden pickaxe</b></td><td>2</td><td>100</td><td>100</td></tr>
-                        <tr><td><b>copper pickaxe</b></td><td>4</td><td>350</td><td>500</td></tr>
-                        <tr><td><b>stone pickaxe</b></td><td>2</td><td>200</td><td>1500</td></tr>
-                        <tr><td><b>iron pickaxe</b></td><td>5</td><td>500</td><td>3950</td></tr>
-                        <tr><td><b>emerald pickaxe</b></td><td>6</td><td>750</td><td>5500</td></tr>
-                        <tr><td><b>Harder pickaxe</b></td><td>7</td><td>1000</td><td>8500</td></tr>
-                    </table>
-
-                    <h2>[Crystals]</h2>
-                    <table class="wikitable">
-                        <tr>
-                            <th width="25%">Crystal Name</th>
-                            <th width="25%">Hold</th>
-                            <th width="25%">Damage</th>
-                            <th width="25%">Price</th>
-                        </tr>
-                        <tr><td><b>wooden crystal</b></td><td>7</td><td>8</td><td>80</td></tr>
-                        <tr><td><b>acorn crystal</b></td><td>10</td><td>20</td><td>240</td></tr>
-                        <tr><td><b>rocks crystal</b></td><td>14</td><td>39</td><td>349</td></tr>
-                        <tr><td><b>mushroom crystal</b></td><td>8</td><td>14</td><td>200</td></tr>
-                    </table>
-                `;
-            }
+                </div>
+            `;
         }
     </script>
 </body>
