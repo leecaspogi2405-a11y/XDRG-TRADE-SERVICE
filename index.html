@@ -195,10 +195,6 @@
         .policy-back-btn:hover {
             color: #0b0080;
         }
-
-        /* MUTATION SELECTOR & CALCULATOR */
-        .mutation-bar { display: flex; align-items: center; gap: 10px; background: #eaf3ff; border: 1px solid #a7d7f9; padding: 12px; border-radius: 6px; margin-bottom: 20px; }
-        .mutation-bar select { padding: 6px 12px; font-weight: bold; border-radius: 4px; border: 1px solid #3366cc; }
     </style>
 </head>
 <body>
@@ -288,6 +284,7 @@
                     <li><a onclick="openHome()">Main Page</a></li>
                     <li><a onclick="openXdrgAI()" style="font-weight:bold; color:#005a9c;">🤖 XDRG AI Assistant</a></li>
                     <li><a onclick="openQuests()">🎯 Quests & Trade Service</a></li>
+                    <li><a onclick="openVoting()">🗳️ Community Voting System</a></li>
                     <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
                     <li><a onclick="openGame('brainrots')">Don't Crash the Train for Brainrots</a></li>
                     <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
@@ -1462,71 +1459,63 @@
                 currentUser.username = newUsername;
                 currentUser.password = newPassword;
                 currentUser.desktop = document.getElementById('setDesktop').checked;
-
+                
                 saveUserData();
                 updateUserStatusHeader();
-                alert("✅ Settings saved successfully!");
-                renderSettingsPage();
+                alert("Settings updated successfully!");
             }
         }
 
-        // ==========================================
-        // 7. GAME DATABASE & RELEASE SEQUENCES
-        // ==========================================
-
-        function setMutationMultiplier(val, name) {
-            currentMutation = parseFloat(val);
-            mutationName = name;
+        function changeMutation() {
+            const sel = document.getElementById('mutationSelect');
+            currentMutation = parseInt(sel.value);
+            mutationName = sel.options[sel.selectedIndex].text.split(" ")[0];
             renderBrainrotsPage();
         }
 
         function renderBrainrotsPage() {
             let html = `
                 <div class="infobox">
-                    <b>Game Quick Info</b><br>
-                    Developer: Dev_Xdragon<br>
-                    Genre: Simulator / Tycoon<br>
-                    Status: <span style="color:#28a745; font-weight:bold;">Active</span>
-                </div>
-
-                <p>Welcome to the official database for <b>Don't Crash the Train for Brainrots</b>. Select a mutation multiplier below to calculate unit values across different rarities.</p>
-
-                <div class="mutation-bar">
-                    <label><b>Select Mutation:</b></label>
-                    <select onchange="setMutationMultiplier(this.value, this.options[this.selectedIndex].text)">
-                        <option value="1" ${currentMutation === 1 ? 'selected' : ''}>Normal (1x)</option>
-                        <option value="1.5" ${currentMutation === 1.5 ? 'selected' : ''}>Shiny (1.5x)</option>
-                        <option value="2" ${currentMutation === 2 ? 'selected' : ''}>Golden (2x)</option>
-                        <option value="5" ${currentMutation === 5 ? 'selected' : ''}>Rainbow (5x)</option>
-                        <option value="10" ${currentMutation === 10 ? 'selected' : ''}>Void (10x)</option>
+                    <b>Game Mechanics</b>
+                    <hr style="margin:5px 0;">
+                    <label style="font-size:0.85em;">Apply Mutation Multiplier:</label>
+                    <select id="mutationSelect" onchange="changeMutation()">
+                        <option value="1" ${currentMutation===1?'selected':''}>Normal (x1)</option>
+                        <option value="5" ${currentMutation===5?'selected':''}>Gold (x5)</option>
+                        <option value="15" ${currentMutation===15?'selected':''}>Diamond (x15)</option>
+                        <option value="20" ${currentMutation===20?'selected':''}>Crab (x20)</option>
+                        <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
                     </select>
-                    <span style="font-size:0.85rem; color:#005a9c;">Active Mutation: <b>${mutationName}</b></span>
                 </div>
             `;
 
             categories.forEach(cat => {
-                const area = areaMapping[cat.title] || "General Area";
+                const areaName = areaMapping[cat.title];
+                html += `<h2>${areaName} Area Units (${cat.title})</h2>`;
                 html += `
-                    <h2>${cat.title} Rarity (Spawn Location: ${area})</h2>
                     <table class="wikitable">
                         <tr>
-                            <th width="40%">Unit Name</th>
-                            <th width="30%">Base Value</th>
-                            <th width="30%">Calculated Value (${mutationName})</th>
+                            <th width="5%">#</th>
+                            <th width="25%">Name</th>
+                            <th width="20%">Area</th>
+                            <th width="15%">Rarity</th>
+                            <th width="20%">Mutation Status</th>
+                            <th width="15%">Cost / Price</th>
                         </tr>
                 `;
-
-                cat.units.forEach(u => {
-                    const calcVal = Math.round(u.price * currentMutation);
+                cat.units.forEach((unit, index) => {
+                    const finalPrice = unit.price * currentMutation;
                     html += `
                         <tr>
-                            <td><b>${u.name}</b></td>
-                            <td>🪙 ${u.price.toLocaleString()}</td>
-                            <td><b style="color:#005a9c;">🪙 ${calcVal.toLocaleString()}</b></td>
+                            <td align="center">${index + 1}</td>
+                            <td><b>${unit.name}</b></td>
+                            <td>${areaName}</td>
+                            <td>${cat.title}</td>
+                            <td>${mutationName} (x${currentMutation})</td>
+                            <td>$${finalPrice.toLocaleString()}</td>
                         </tr>
                     `;
                 });
-
                 html += `</table>`;
             });
 
@@ -1535,16 +1524,177 @@
 
         function triggerReleaseSequence() {
             document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
-            document.getElementById('pageContent').innerHTML = `
-                <div class="error-container">
-                    <div class="error-title">✨ Upcoming Release: Crystal Collecting Simulator</div>
-                    <div class="error-mod">STATUS: IN DEVELOPMENT / COMING SOON</div>
-                    <p style="max-width: 600px; margin: 0 auto 20px auto; color: #54595d; line-height: 1.6;">
-                        RedGalaxy Studio & NebulaForge Studio are actively developing <b>Crystal Collecting Simulator</b>. Features will include dynamic crystal mining, automated backpacks, trade markets, and rare mutations.
-                    </p>
-                    <button class="btn-save" onclick="openHome()">Return to Main Page</button>
-                </div>
+            
+            // Checking Manila Release Time (UTC+8): September 6, 2026, 1:00 PM
+            const releaseDate = new Date("2026-09-06T13:00:00+08:00").getTime();
+            const now = Date.now();
+            
+            if (now < releaseDate) {
+                // Pre-Release Page
+                document.getElementById('pageContent').innerHTML = `
+                    <div class="error-container">
+                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-bottom:15px;">Try Again</button>
+                        <p style="font-weight:bold; color:#54595d;">Loading video...</p>
+                        <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" style="max-width:100%; border:2px solid #202122; border-radius:4px; margin-bottom:20px;">
+                        <div class="error-title" style="font-size:1.1rem; margin-bottom:15px; font-family:Georgia, serif;">
+                            (Lume Craftor announce that the game will be Release at September 6, 2026, 1:00PM)
+                        </div>
+                        <div class="error-mod" style="font-size:1.05rem; color:#005a9c; margin-bottom:25px; padding:10px; background-color:#eaf3ff; border-left:5px solid #005a9c; display:inline-block; font-weight:bold;">
+                            (Moderator Action: Admin Abuse will be Starting 30 minutes after the release, see y'all at September 6, 2026, 1:00PM)
+                        </div>
+                        <br>
+                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-top:15px;">Try Again</button>
+                    </div>
+                `;
+            } else {
+                // Game Released Content
+                document.getElementById('pageContent').innerHTML = `
+                    <h2>[Pickaxes]</h2>
+                    <table class="wikitable">
+                        <tr>
+                            <th width="25%">Pickaxe Name</th>
+                            <th width="25%">Hold Change</th>
+                            <th width="25%">Durability</th>
+                            <th width="25%">Price</th>
+                        </tr>
+                        <tr><td><b>wooden pickaxe</b></td><td>2</td><td>100</td><td>100</td></tr>
+                        <tr><td><b>copper pickaxe</b></td><td>4</td><td>350</td><td>500</td></tr>
+                        <tr><td><b>stone pickaxe</b></td><td>2</td><td>200</td><td>1500</td></tr>
+                        <tr><td><b>iron pickaxe</b></td><td>5</td><td>500</td><td>3950</td></tr>
+                        <tr><td><b>emerald pickaxe</b></td><td>6</td><td>750</td><td>5500</td></tr>
+                        <tr><td><b>Harder pickaxe</b></td><td>7</td><td>1000</td><td>8500</td></tr>
+                    </table>
+
+                    <h2>[Crystals]</h2>
+                    <table class="wikitable">
+                        <tr>
+                            <th width="25%">Crystal Name</th>
+                            <th width="25%">Hold</th>
+                            <th width="25%">Damage</th>
+                            <th width="25%">Price</th>
+                        </tr>
+                        <tr><td><b>wooden crystal</b></td><td>7</td><td>8</td><td>80</td></tr>
+                        <tr><td><b>acorn crystal</b></td><td>10</td><td>20</td><td>240</td></tr>
+                        <tr><td><b>rocks crystal</b></td><td>14</td><td>39</td><td>349</td></tr>
+                        <tr><td><b>mushroom crystal</b></td><td>8</td><td>14</td><td>200</td></tr>
+                    </table>
+                `;
+            }
+        }
+
+        // ==========================================
+        // 7. COMMUNITY VOTING SYSTEM
+        // ==========================================
+
+        function openVoting() {
+            document.getElementById('pageTitle').innerText = "🗳️ Community Voting System";
+            renderVotingPage();
+        }
+
+        function renderVotingPage() {
+            const isAdmin = isUserAdmin(currentUser);
+            let polls = safeGetJSON('app_polls_db', []);
+            
+            let html = `
+                <p>Welcome to the Community Voting System! Registered users can vote once every 1 hour.</p>
             `;
+
+            if (isAdmin) {
+                html += `
+                    <div class="admin-box" style="margin-bottom:20px; background:#fff3cd; border-color:#ffeeba;">
+                        <h4>🛠️ Admin: Create New Vote/Poll</h4>
+                        <input type="text" id="newPollTitle" placeholder="Poll Title (e.g. What should we add next?)">
+                        <input type="text" id="newPollOptions" placeholder="Comma-separated options (e.g. Map, Crystals, Pets)">
+                        <button class="btn-save" style="background-color:#28a745; margin-top:5px;" onclick="createPoll()">Create Poll</button>
+                    </div>
+                `;
+            }
+
+            if (polls.length === 0) {
+                html += `<div style="padding:20px; text-align:center; color:#777; border:1px solid #a2a9b1; border-radius:6px; background:#f8f9fa;">No active votes currently available.</div>`;
+            } else {
+                polls.forEach(poll => {
+                    html += `
+                        <div class="quest-box">
+                            <h3 style="margin-top:0; border-bottom:1px solid #c8ccd1; padding-bottom:10px; color:#005a9c;">${poll.title}</h3>
+                            <div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
+                    `;
+                    poll.options.forEach((opt, index) => {
+                        html += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; background:#eaecf0; padding:12px; border-radius:4px; border:1px solid #c8ccd1;">
+                                <span style="font-size:1rem;"><b>${opt.name}</b> <span style="color:#54595d; font-size:0.85rem;">(${opt.votes} votes)</span></span>
+                                <button class="btn-save" onclick="castVote('${poll.id}', ${index})">Vote</button>
+                            </div>
+                        `;
+                    });
+                    html += `</div></div>`;
+                });
+            }
+
+            document.getElementById('pageContent').innerHTML = html;
+        }
+
+        function createPoll() {
+            const title = document.getElementById('newPollTitle').value.trim();
+            const optionsStr = document.getElementById('newPollOptions').value.trim();
+            
+            if(!title || !optionsStr) {
+                alert("Please enter both a title and options for the poll!");
+                return;
+            }
+            
+            const options = optionsStr.split(',').map(o => ({ name: o.trim(), votes: 0 })).filter(o => o.name !== "");
+            if(options.length < 2) {
+                alert("Please provide at least 2 valid options separated by commas.");
+                return;
+            }
+
+            let polls = safeGetJSON('app_polls_db', []);
+            polls.unshift({
+                id: 'poll_' + Date.now(),
+                title: title,
+                options: options
+            });
+            
+            localStorage.setItem('app_polls_db', JSON.stringify(polls));
+            alert("✅ Poll created successfully!");
+            renderVotingPage();
+        }
+
+        function castVote(pollId, optionIndex) {
+            if(!currentUser) {
+                alert("❌ You must be logged in to cast a vote!");
+                return;
+            }
+            
+            const now = Date.now();
+            const lastVoteTime = currentUser.lastVoteTime || 0;
+            const oneHourInMs = 60 * 60 * 1000;
+            
+            if (now - lastVoteTime < oneHourInMs) {
+                const remainingMinutes = Math.ceil((oneHourInMs - (now - lastVoteTime)) / 60000);
+                alert(`⏳ Cooldown Active: You can only vote once every hour! Please wait ${remainingMinutes} more minute(s).`);
+                return;
+            }
+
+            let polls = safeGetJSON('app_polls_db', []);
+            const poll = polls.find(p => p.id === pollId);
+            
+            if(poll) {
+                poll.options[optionIndex].votes += 1;
+                
+                // Save poll updates globally
+                localStorage.setItem('app_polls_db', JSON.stringify(polls));
+                
+                // Update the user's specific cooldown
+                currentUser.lastVoteTime = now;
+                saveUserData();
+                
+                alert("✅ Vote successfully cast! Thank you for participating.");
+                renderVotingPage();
+            } else {
+                alert("❌ Error: Poll not found.");
+            }
         }
     </script>
 </body>
