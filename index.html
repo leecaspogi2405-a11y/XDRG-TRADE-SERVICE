@@ -90,7 +90,7 @@
         .alert-banner { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; text-align: center; font-weight: bold; }
         
         .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-        .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; margin-bottom: 10px; }
+        .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; }
         .admin-box input { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
         .reward-select { width: 100%; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-weight: bold; margin-top: 8px; margin-bottom: 10px; }
 
@@ -202,7 +202,7 @@
     <!-- COOKIE & AD CONSENT BANNER -->
     <div id="cookieBanner" class="cookie-banner">
         <div>
-            This website contains ads and uses Cookies. Do you agree to the developer's terms for this Wiki Website?
+            This website contains ads and Cookies, do you agree to allow them from the developer of this Wiki Website?
         </div>
         <button class="cookie-banner-btn" onclick="acceptCookies()">I allow cookies</button>
     </div>
@@ -356,6 +356,7 @@
             "Limited": "Unknown / Event Area"
         };
 
+        // Standard Units Array
         const categories = [
             { title: "Common", units: [{ name: "Bananita Dolphinita", price: 250 }, { name: "Trippi Troppi", price: 200 }, { name: "Gangster Footera", price: 55 }] },
             { title: "Rare", units: [{ name: "Ballerina Cappuccina", price: 400 }, { name: "Svinina Bombardino", price: 150 }, { name: "Bombombini Gusini", price: 100 }] },
@@ -365,6 +366,7 @@
             { title: "Limited", units: [{ name: "Strawberry Elephant", price: 150000 }, { name: "Summerini Fattini", price: 1500000 }] }
         ];
 
+        // Shop Items Array
         const shopItems = [
             { name: "Boneca Ambelabu", rarity: "Rare", price: 65000, income: "25,000 /s" },
             { name: "Job Job Job Sahur", rarity: "Rare", price: 155000, income: "80,000 /s" },
@@ -381,7 +383,6 @@
         let selectedCards = [];
         const emojis = ["🐱", "🐶", "🦊", "🐸", "🐵", "🦁"];
         let robloxDebounceTimer = null;
-        let activePollTimerInterval = null;
 
         /* AI GLOBAL STATE */
         let currentAIModel = "Xdrg Pro 3.5";
@@ -396,21 +397,20 @@
         }
 
         function openPolicy() {
-            clearInterval(activePollTimerInterval);
             document.getElementById('pageTitle').innerText = "Terms of Policy";
             document.getElementById('pageContent').innerHTML = `
                 <div class="policy-card">
                     <h2 style="margin-top:0; color:#005a9c; border-bottom: 2px solid #3366cc; padding-bottom: 8px;">[Xdrg Policy]</h2>
                     <ol class="policy-list">
-                        <li>Do not copy or clone this website.</li>
-                        <li>Do not reveal your private information such as your Password or Secret Keys.</li>
+                        <li>Do not re-copy this website.</li>
+                        <li>Do not show your private information such as your Password, Secret Keys, etc.</li>
                         <li>Don't share your Web IP or UID to keep your privacy safe.</li>
-                        <li>Credit the original owners (Dev Xdragon, Lume Craftor).</li>
+                        <li>Credit the owners (Dev Xdragon, Lume Craftor).</li>
                         <li>Respect all members including Admins and Moderators.</li>
                         <li>Do not use XDRG AI to search up inaccurate or fake information from the game.</li>
                     </ol>
                     <div>
-                        <a onclick="openHome()" class="policy-back-btn">I agree and follow all policies</a>
+                        <a onclick="openHome()" class="policy-back-btn">I follow all policy</a>
                     </div>
                 </div>
             `;
@@ -564,8 +564,7 @@
                         desktop: false,
                         isAdmin: false,
                         isOwner: false,
-                        isHistoryPublic: false,
-                        lastVoteTime: 0
+                        isHistoryPublic: false
                     };
 
                     if (isOwnerAccount(currentUser)) {
@@ -690,7 +689,6 @@
         }
 
         function logout() {
-            clearInterval(activePollTimerInterval);
             localStorage.removeItem('app_current_user');
             currentUser = null;
             document.getElementById('loginScreen').style.display = 'block';
@@ -704,19 +702,22 @@
         }
 
         function openHome() {
-            clearInterval(activePollTimerInterval);
             document.getElementById('pageTitle').innerText = "Main Page";
             document.getElementById('pageContent').innerHTML = "<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases, chat with XDRG AI, or access trade services.</p>";
         }
 
         function openGame(game) {
-            clearInterval(activePollTimerInterval);
             if(game === 'crystal') {
                 triggerReleaseSequence();
                 return;
             }
             document.getElementById('pageTitle').innerText = "Don't Crash Train For Brainrots";
             renderBrainrotsPage();
+        }
+
+        function openQuests() {
+            document.getElementById('pageTitle').innerText = "🎯 Quests & Trade Service Dashboard";
+            renderQuestsPage();
         }
 
         // ==========================================
@@ -757,7 +758,6 @@
         }
 
         async function openClaimsHistory(targetUser = null) {
-            clearInterval(activePollTimerInterval);
             const isViewingOwn = !targetUser || (currentUser && (targetUser.rblxUserId === currentUser.rblxUserId));
             const accountOwner = isViewingOwn ? currentUser : targetUser;
 
@@ -884,7 +884,6 @@
         }
 
         function openXdrgAI() {
-            clearInterval(activePollTimerInterval);
             document.getElementById('pageTitle').innerText = "🤖 XDRG AI Assistant";
             let chats = getAIChats();
 
@@ -1052,36 +1051,11 @@
         }
 
         // ==========================================
-        // 5. QUESTS, COMMUNITY POLLS AND REWARD CLAIM
+        // 5. QUESTS, POLLS AND REWARD CLAIM LOGIC
         // ==========================================
-
-        function startPollTimer(timeRemainingMs) {
-            clearInterval(activePollTimerInterval);
-            let remaining = timeRemainingMs;
-            
-            activePollTimerInterval = setInterval(() => {
-                remaining -= 1000;
-                const timerEl = document.getElementById('voteTimerCountdown');
-                
-                if(!timerEl) {
-                    clearInterval(activePollTimerInterval);
-                    return;
-                }
-                
-                if (remaining <= 0) {
-                    clearInterval(activePollTimerInterval);
-                    renderQuestsPage(); 
-                } else {
-                    const minutes = Math.floor(remaining / 60000);
-                    const seconds = Math.floor((remaining % 60000) / 1000);
-                    timerEl.innerText = `${minutes}m ${seconds}s`;
-                }
-            }, 1000);
-        }
 
         async function renderQuestsPage() {
             if (!currentUser) return;
-            clearInterval(activePollTimerInterval);
 
             const coinsDisplay = getUserCoinsDisplay(currentUser);
             const currentUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
@@ -1131,93 +1105,69 @@
                 </div>
             `;
 
-            // === POLLS INTEGRATION SECTION ===
-            html += `<div class="quest-box" id="communityPollsBox">
-                        <h3 style="margin-top:0; color:#005a9c;">Quest 3: Community Polls (+5 Coins / Vote)</h3>
-                        <p style="font-size:0.85rem; color:#54595d;">Help us decide the next updates! You can cast a vote once every hour to earn rewards.</p>`;
-
+            // Quest 3: COMMUNITY VOTING
+            let polls = safeGetJSON('app_polls_db', []);
+            let pollHtml = ``;
             const now = Date.now();
             const lastVoteTime = currentUser.lastVoteTime || 0;
-            const cooldownMs = 60 * 60 * 1000; // 1 Hour
-            const timeRemaining = cooldownMs - (now - lastVoteTime);
-            const isCooldownActive = timeRemaining > 0;
-
-            if (isCooldownActive) {
-                html += `
-                    <div class="alert-banner" style="background-color:#fff3cd; color:#856404; border-color:#ffeeba;">
-                        ⏳ <b>Cooldown Active:</b> You have already voted! Next vote available in <span id="voteTimerCountdown">--:--</span>
-                    </div>
-                `;
-            }
-
-            let polls = safeGetJSON('app_polls_db', []);
+            const oneHourInMs = 60 * 60 * 1000;
             
             if (polls.length === 0) {
-                html += `<div style="padding:15px; text-align:center; color:#777; border:1px solid #c8ccd1; border-radius:4px; background:#eaecf0;">No active votes currently available.</div>`;
+                pollHtml = `<div style="padding:15px; text-align:center; color:#777; border:1px solid #c8ccd1; border-radius:4px; background:#eaecf0;">No active community votes currently available. Check back later!</div>`;
             } else {
-                polls.forEach(poll => {
-                    html += `<div style="margin-top:15px; border:1px solid #a2a9b1; border-radius:6px; padding:15px; background:#ffffff;">
-                        <h4 style="margin-top:0; border-bottom:1px solid #eaecf0; padding-bottom:8px;">${poll.title}</h4>
-                        <div style="display:flex; flex-direction:column; gap:8px;">
+                if (now - lastVoteTime < oneHourInMs) {
+                    const remainingMinutes = Math.ceil((oneHourInMs - (now - lastVoteTime)) / 60000);
+                    pollHtml = `
+                        <div class="alert-banner" style="background:#fff3cd; color:#856404; border-color:#ffeeba;">
+                            ⏳ You have already voted! You can vote again in <b>${remainingMinutes}</b> minute(s).
+                        </div>
                     `;
-                    poll.options.forEach((opt, index) => {
-                        const btnDisabled = isCooldownActive ? "disabled" : "";
-                        const btnStyle = isCooldownActive ? "background-color:#c8ccd1; cursor:not-allowed;" : "background-color:#3366cc;";
-                        
-                        html += `
-                            <div style="display:flex; justify-content:space-between; align-items:center; background:#f8f9fa; padding:10px; border-radius:4px; border:1px solid #eaecf0;">
-                                <span style="font-size:0.95rem;"><b>${opt.name}</b> <span style="color:#54595d; font-size:0.8rem;">(${opt.votes} votes)</span></span>
-                                <button class="btn-save" style="${btnStyle} padding:6px 12px;" ${btnDisabled} onclick="castVote('${poll.id}', ${index})">
-                                    Vote
-                                </button>
-                            </div>
+                    polls.forEach(poll => {
+                        pollHtml += `
+                            <div style="margin-bottom:15px; background:#eaecf0; padding:12px; border-radius:4px; border:1px solid #c8ccd1;">
+                                <h4 style="margin-top:0; color:#005a9c; margin-bottom:10px;">${poll.title}</h4>
+                                <div style="display:flex; flex-direction:column; gap:8px;">
                         `;
+                        poll.options.forEach(opt => {
+                            pollHtml += `
+                                <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; padding:10px; border-radius:4px; border:1px solid #a2a9b1;">
+                                    <span><b>${opt.name}</b></span>
+                                    <span style="color:#54595d; font-weight:bold;">${opt.votes} votes</span>
+                                </div>
+                            `;
+                        });
+                        pollHtml += `</div></div>`;
                     });
-                    html += `</div></div>`;
-                });
+                } else {
+                    pollHtml += `<p style="font-size:0.9rem; color:#54595d; margin-bottom:15px;">Vote on active polls below. Voting grants <b>+5 Coins</b> every hour!</p>`;
+                    polls.forEach(poll => {
+                        pollHtml += `
+                            <div style="margin-bottom:15px; background:#eaecf0; padding:12px; border-radius:4px; border:1px solid #c8ccd1;">
+                                <h4 style="margin-top:0; color:#005a9c; margin-bottom:10px;">${poll.title}</h4>
+                                <div style="display:flex; flex-direction:column; gap:8px;">
+                        `;
+                        poll.options.forEach((opt, index) => {
+                            pollHtml += `
+                                <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; padding:10px; border-radius:4px; border:1px solid #a2a9b1;">
+                                    <span><b>${opt.name}</b> <span style="color:#54595d; font-size:0.85rem;">(${opt.votes} votes)</span></span>
+                                    <button class="btn-save" style="background-color:#005a9c;" onclick="castVote('${poll.id}', ${index})">Vote (+5 Coins)</button>
+                                </div>
+                            `;
+                        });
+                        pollHtml += `</div></div>`;
+                    });
+                }
             }
 
-            html += `</div>`; // End Quest Box for polls
+            html += `
+                <div class="quest-box">
+                    <h3>Quest 3: Community Voting (+5 Points)</h3>
+                    ${pollHtml}
+                </div>
+            `;
 
             document.getElementById('pageContent').innerHTML = html;
-            
-            if (isCooldownActive) {
-                startPollTimer(timeRemaining);
-            }
             initMiniGame();
-        }
-
-        function castVote(pollId, optionIndex) {
-            if (!currentUser) return alert("❌ You must be logged in to cast a vote!");
-            
-            const now = Date.now();
-            const lastVoteTime = currentUser.lastVoteTime || 0;
-            const cooldownMs = 60 * 60 * 1000;
-            const timeRemaining = cooldownMs - (now - lastVoteTime);
-            
-            if (timeRemaining > 0) {
-                const remainingMinutes = Math.ceil(timeRemaining / 60000);
-                return alert(`⏳ Cooldown Active: Please wait ${remainingMinutes} more minute(s) before voting again!`);
-            }
-
-            let polls = safeGetJSON('app_polls_db', []);
-            const poll = polls.find(p => p.id === pollId);
-            
-            if (poll) {
-                poll.options[optionIndex].votes += 1;
-                localStorage.setItem('app_polls_db', JSON.stringify(polls));
-                
-                currentUser.lastVoteTime = now;
-                currentUser.points = (currentUser.points || 0) + 5;
-                saveUserData();
-                
-                alert("✅ Vote successfully cast! You have earned +5 Coins.");
-                
-                updateUserStatusHeader();
-                renderQuestsPage();
-            } else {
-                alert("❌ Error: Poll not found.");
-            }
         }
 
         async function claimRewardFirebase(robloxUsername, userEmail) {
@@ -1333,8 +1283,47 @@
             initMiniGame();
         }
 
+        function castVote(pollId, optionIndex) {
+            if(!currentUser) {
+                alert("❌ You must be logged in to cast a vote!");
+                return;
+            }
+            
+            const now = Date.now();
+            const lastVoteTime = currentUser.lastVoteTime || 0;
+            const oneHourInMs = 60 * 60 * 1000;
+            
+            if (now - lastVoteTime < oneHourInMs) {
+                const remainingMinutes = Math.ceil((oneHourInMs - (now - lastVoteTime)) / 60000);
+                alert(`⏳ Cooldown Active: You can only vote once every hour! Please wait ${remainingMinutes} more minute(s).`);
+                return;
+            }
+
+            let polls = safeGetJSON('app_polls_db', []);
+            const poll = polls.find(p => p.id === pollId);
+            
+            if(poll) {
+                poll.options[optionIndex].votes += 1;
+                
+                localStorage.setItem('app_polls_db', JSON.stringify(polls));
+                
+                currentUser.lastVoteTime = now;
+                currentUser.points = (currentUser.points || 0) + 5; // Grant +5 Coins for voting
+                saveUserData();
+                updateUserStatusHeader(); // Live update the header coin amount
+                
+                alert("✅ Vote successfully cast! You received +5 Coins.");
+                renderQuestsPage();
+            } else {
+                alert("❌ Error: Poll not found.");
+            }
+        }
+
+        // ==========================================
+        // 6. SETTINGS & ADMIN CONTROLS
+        // ==========================================
+
         function openSettings() {
-            clearInterval(activePollTimerInterval);
             document.getElementById('pageTitle').innerText = "⚙️ Profile & Privacy Settings";
             renderSettingsPage();
         }
@@ -1403,22 +1392,22 @@
             if (isAdmin) {
                 html += `
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
-                    
-                    <div class="admin-box" style="background:#fff3cd; border-color:#ffeeba;">
-                        <h4>🗳️ Admin Controls: Create New Poll</h4>
+
+                    <div class="admin-box" style="margin-bottom:20px; background:#fff3cd; border-color:#ffeeba;">
+                        <h4>🛠️ Admin Controls: Create New Vote/Poll</h4>
                         <div style="margin-bottom:10px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Poll Title:</label>
-                            <input type="text" id="newPollTitle" placeholder="e.g. What game mode should we add next?">
+                            <input type="text" id="newPollTitle" placeholder="e.g. What should we add next?" style="margin-top:4px;">
                         </div>
                         <div style="margin-bottom:12px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Options (Comma-Separated):</label>
-                            <input type="text" id="newPollOptions" placeholder="e.g. Map, Crystals, New Pets">
+                            <label style="font-weight:bold; font-size:0.85rem;">Comma-separated options:</label>
+                            <input type="text" id="newPollOptions" placeholder="e.g. Map, Crystals, Pets" style="margin-top:4px;">
                         </div>
                         <button class="btn-save" style="background-color:#28a745; width:100%; font-size:0.95rem; padding:10px;" onclick="createPoll()">
                             Create Poll
                         </button>
                     </div>
-
+                    
                     <div class="admin-box" style="background:#e8f8f0; border-color:#b2d8d8;">
                         <h4>🪙 Admin Controls: Coin Giver Tool</h4>
                         <div style="margin-bottom:10px;">
@@ -1481,19 +1470,19 @@
             
             document.getElementById('pageContent').innerHTML = html;
         }
-
+        
         function createPoll() {
             const title = document.getElementById('newPollTitle').value.trim();
             const optionsStr = document.getElementById('newPollOptions').value.trim();
             
             if(!title || !optionsStr) {
-                alert("Please enter both a title and options for the poll!");
+                alert("❌ Please enter both a title and options for the poll!");
                 return;
             }
             
             const options = optionsStr.split(',').map(o => ({ name: o.trim(), votes: 0 })).filter(o => o.name !== "");
             if(options.length < 2) {
-                alert("Please provide at least 2 valid options separated by commas.");
+                alert("❌ Please provide at least 2 valid options separated by commas.");
                 return;
             }
 
@@ -1505,12 +1494,8 @@
             });
             
             localStorage.setItem('app_polls_db', JSON.stringify(polls));
-            alert("✅ Poll created successfully! It will now appear on the Quests page.");
-            
-            // Clear fields
-            document.getElementById('newPollTitle').value = '';
-            document.getElementById('newPollOptions').value = '';
-            renderSettingsPage();
+            alert("✅ Poll created successfully!");
+            renderSettingsPage(); 
         }
 
         function grantCoinsToUser() {
@@ -1675,6 +1660,7 @@
                 html += `</table>`;
             });
 
+            // ADDING THE SHOP ITEMS SYSTEM HERE
             html += `<h2>Shop Items</h2>`;
             html += `
                 <table class="wikitable">
