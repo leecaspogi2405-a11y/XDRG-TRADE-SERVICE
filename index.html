@@ -195,6 +195,10 @@
         .policy-back-btn:hover {
             color: #0b0080;
         }
+
+        /* MUTATION SELECTOR & CALCULATOR */
+        .mutation-bar { display: flex; align-items: center; gap: 10px; background: #eaf3ff; border: 1px solid #a7d7f9; padding: 12px; border-radius: 6px; margin-bottom: 20px; }
+        .mutation-bar select { padding: 6px 12px; font-weight: bold; border-radius: 4px; border: 1px solid #3366cc; }
     </style>
 </head>
 <body>
@@ -1458,63 +1462,71 @@
                 currentUser.username = newUsername;
                 currentUser.password = newPassword;
                 currentUser.desktop = document.getElementById('setDesktop').checked;
-                
+
                 saveUserData();
                 updateUserStatusHeader();
-                alert("Settings updated successfully!");
+                alert("✅ Settings saved successfully!");
+                renderSettingsPage();
             }
         }
 
-        function changeMutation() {
-            const sel = document.getElementById('mutationSelect');
-            currentMutation = parseInt(sel.value);
-            mutationName = sel.options[sel.selectedIndex].text.split(" ")[0];
+        // ==========================================
+        // 7. GAME DATABASE & RELEASE SEQUENCES
+        // ==========================================
+
+        function setMutationMultiplier(val, name) {
+            currentMutation = parseFloat(val);
+            mutationName = name;
             renderBrainrotsPage();
         }
 
         function renderBrainrotsPage() {
             let html = `
                 <div class="infobox">
-                    <b>Game Mechanics</b>
-                    <hr style="margin:5px 0;">
-                    <label style="font-size:0.85em;">Apply Mutation Multiplier:</label>
-                    <select id="mutationSelect" onchange="changeMutation()">
-                        <option value="1" ${currentMutation===1?'selected':''}>Normal (x1)</option>
-                        <option value="5" ${currentMutation===5?'selected':''}>Gold (x5)</option>
-                        <option value="15" ${currentMutation===15?'selected':''}>Diamond (x15)</option>
-                        <option value="20" ${currentMutation===20?'selected':''}>Crab (x20)</option>
-                        <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
+                    <b>Game Quick Info</b><br>
+                    Developer: Dev_Xdragon<br>
+                    Genre: Simulator / Tycoon<br>
+                    Status: <span style="color:#28a745; font-weight:bold;">Active</span>
+                </div>
+
+                <p>Welcome to the official database for <b>Don't Crash the Train for Brainrots</b>. Select a mutation multiplier below to calculate unit values across different rarities.</p>
+
+                <div class="mutation-bar">
+                    <label><b>Select Mutation:</b></label>
+                    <select onchange="setMutationMultiplier(this.value, this.options[this.selectedIndex].text)">
+                        <option value="1" ${currentMutation === 1 ? 'selected' : ''}>Normal (1x)</option>
+                        <option value="1.5" ${currentMutation === 1.5 ? 'selected' : ''}>Shiny (1.5x)</option>
+                        <option value="2" ${currentMutation === 2 ? 'selected' : ''}>Golden (2x)</option>
+                        <option value="5" ${currentMutation === 5 ? 'selected' : ''}>Rainbow (5x)</option>
+                        <option value="10" ${currentMutation === 10 ? 'selected' : ''}>Void (10x)</option>
                     </select>
+                    <span style="font-size:0.85rem; color:#005a9c;">Active Mutation: <b>${mutationName}</b></span>
                 </div>
             `;
 
             categories.forEach(cat => {
-                const areaName = areaMapping[cat.title];
-                html += `2>${areaName} Area Units (${cat.title})</h2>`;
+                const area = areaMapping[cat.title] || "General Area";
                 html += `
+                    <h2>${cat.title} Rarity (Spawn Location: ${area})</h2>
                     <table class="wikitable">
                         <tr>
-                            <th width="5%">#</th>
-                            <th width="25%">Name</th>
-                            <th width="20%">Area</th>
-                            <th width="15%">Rarity</th>
-                            <th width="20%">Mutation Status</th>
-                            <th width="15%">Cost / Price</th>
+                            <th width="40%">Unit Name</th>
+                            <th width="30%">Base Value</th>
+                            <th width="30%">Calculated Value (${mutationName})</th>
                         </tr>
                 `;
-                cat.units.forEach((unit, index) => {
-                    const finalPrice = unit.price * currentMutation;
+
+                cat.units.forEach(u => {
+                    const calcVal = Math.round(u.price * currentMutation);
                     html += `
                         <tr>
-                            <td align="center">${index + 1}</td>
-                            <td><b>${unit.name}</b></td>
-                            <td>${areaName}</td>
-                            <td>${cat.title}</td>
-                            <td>${mutationName} (x${currentMutation})</td>
-                            <td>$${finalPrice.toLocaleString()}</td>
+                            <td><b>${u.name}</b></td>
+                            <td>🪙 ${u.price.toLocaleString()}</td>
+                            <td><b style="color:#005a9c;">🪙 ${calcVal.toLocaleString()}</b></td>
                         </tr>
                     `;
                 });
+
                 html += `</table>`;
             });
 
@@ -1525,13 +1537,12 @@
             document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
             document.getElementById('pageContent').innerHTML = `
                 <div class="error-container">
-                    <img src="https://via.placeholder.com/600x250?text=Crystal+Collecting+Simulator+Release" alt="Game Release Announcement Banner">
-                    <div class="error-title">
-                        Official Launch Scheduled: September 6, 2026 at 1:00 PM PST.
-                    </div>
-                    <div class="error-mod">
-                        Moderator Event: Admin Abuse event starts 30 minutes post-release.
-                    </div>
+                    <div class="error-title">✨ Upcoming Release: Crystal Collecting Simulator</div>
+                    <div class="error-mod">STATUS: IN DEVELOPMENT / COMING SOON</div>
+                    <p style="max-width: 600px; margin: 0 auto 20px auto; color: #54595d; line-height: 1.6;">
+                        RedGalaxy Studio & NebulaForge Studio are actively developing <b>Crystal Collecting Simulator</b>. Features will include dynamic crystal mining, automated backpacks, trade markets, and rare mutations.
+                    </p>
+                    <button class="btn-save" onclick="openHome()">Return to Main Page</button>
                 </div>
             `;
         }
