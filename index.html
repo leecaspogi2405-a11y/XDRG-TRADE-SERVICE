@@ -282,12 +282,12 @@
                 <h3>Navigation</h3>
                 <ul>
                     <li><a onclick="openHome()">Main Page</a></li>
+                    <li><a onclick="openGame('brainrots')">Don't Crash Train For Brainrots</a></li>
+                    <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
                     <li><a onclick="openXdrgAI()" style="font-weight:bold; color:#005a9c;">🤖 XDRG AI Assistant</a></li>
                     <li><a onclick="openQuests()">🎯 Quests & Trade Service</a></li>
                     <li><a onclick="openVoting()">🗳️ Community Voting System</a></li>
                     <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
-                    <li><a onclick="openGame('brainrots')">Don't Crash the Train for Brainrots</a></li>
-                    <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
                     <li><a onclick="openPolicy()" style="font-weight:bold; color:#0645ad;">📜 Terms of Policy</a></li>
                 </ul>
 
@@ -299,8 +299,8 @@
                 <h3>Staff / Team</h3>
                 <ul>
                     <li><b>Owner:</b><br>Dev_Xdragon / LumeCraftor</li>
-                    <li style="margin-top:8px;"><b>Head Admin:</b><br>Vincent Magtolis</li>
-                    <li style="margin-top:8px;"><b>Admins:</b><br>Jayson Areglo<br>Summere Castrence</li>
+                    <li style="margin-top:8px;"><b>Head-Admin:</b><br>Vincent Magtolis</li>
+                    <li style="margin-top:8px;"><b>Admin:</b><br>Jayson Areglo<br>Summere Castrence</li>
                 </ul>
             </div>
             
@@ -357,6 +357,7 @@
             "Limited": "Unknown / Event Area"
         };
 
+        // Standard Units Array
         const categories = [
             { title: "Common", units: [{ name: "Bananita Dolphinita", price: 250 }, { name: "Trippi Troppi", price: 200 }, { name: "Gangster Footera", price: 55 }] },
             { title: "Rare", units: [{ name: "Ballerina Cappuccina", price: 400 }, { name: "Svinina Bombardino", price: 150 }, { name: "Bombombini Gusini", price: 100 }] },
@@ -364,6 +365,17 @@
             { title: "Mythic", units: [{ name: "Crab Chef", price: 1300 }, { name: "Matteo", price: 1500 }, { name: "Tralalero Tralala", price: 1800 }] },
             { title: "Godly", units: [{ name: "Giraffa Celestre", price: 3000 }, { name: "Odin Din Din Din", price: 5000 }, { name: "Six Seven", price: 6700 }] },
             { title: "Limited", units: [{ name: "Strawberry Elephant", price: 150000 }, { name: "Summerini Fattini", price: 1500000 }] }
+        ];
+
+        // Shop Items Array from reference image
+        const shopItems = [
+            { name: "Boneca Ambelabu", rarity: "Rare", price: 65000, income: "25,000 /s" },
+            { name: "Job Job Job Sahur", rarity: "Rare", price: 155000, income: "80,000 /s" },
+            { name: "Trippi Troppi Troppa", rarity: "Common", price: 35000, income: "10,000 /s" },
+            { name: "Esok Sekolah", rarity: "Mythical", price: 12000000, income: "125,000 /s" },
+            { name: "Karkerkar Kurkur", rarity: "Mythical", price: 25000000000, income: "115,000 /s" },
+            { name: "Chimpanzini Bananini", rarity: "Common", price: 10000, income: "8,000 /s" },
+            { name: "Pot Hotspot", rarity: "Rare", price: 125000, income: "75,000 /s" }
         ];
 
         let currentMutation = 1;
@@ -414,7 +426,6 @@
             }
         }
 
-        // Check if user has Owner Status
         function isOwnerAccount(user) {
             if (!user) return false;
             const email = (user.gmail || user.email || '').toLowerCase().trim();
@@ -422,13 +433,11 @@
             return OWNER_CONFIG.emails.includes(email) || OWNER_CONFIG.robloxIds.includes(rblxId) || user.isOwner === true;
         }
 
-        // Check if user has Admin Status or Owner Status
         function isUserAdmin(user) {
             if (!user) return false;
             return isOwnerAccount(user) || user.isAdmin === true || user.role === 'Admin';
         }
 
-        // Get Display Balance (Returns Infinity for Owners)
         function getUserCoinsDisplay(user) {
             if (!user) return 0;
             if (isOwnerAccount(user)) {
@@ -497,7 +506,6 @@
                     currentUser = savedUser;
                     if (currentUser.isHistoryPublic === undefined) currentUser.isHistoryPublic = false;
                     
-                    // Auto-sync Owner/Admin permissions
                     if (isOwnerAccount(currentUser)) {
                         currentUser.isOwner = true;
                         currentUser.isAdmin = true;
@@ -704,7 +712,7 @@
                 triggerReleaseSequence();
                 return;
             }
-            document.getElementById('pageTitle').innerText = "Don't Crash the Train for Brainrots";
+            document.getElementById('pageTitle').innerText = "Don't Crash Train For Brainrots";
             renderBrainrotsPage();
         }
 
@@ -1032,8 +1040,8 @@
             } else if (p.includes("owner") || p.includes("admin") || p.includes("staff")) {
                 responseText = `👑 **Studio Leadership:**\n\n` +
                     `• **Owners:** Dev_Xdragon & LumeCraftor\n` +
-                    `• **Head Admin:** Vincent Magtolis\n` +
-                    `• **Admins:** Jayson Areglo, Summere Castrence`;
+                    `• **Head-Admin:** Vincent Magtolis\n` +
+                    `• **Admin:** Jayson Areglo, Summere Castrence`;
             } else {
                 responseText = `🤖 **[${model} Reasoning Engine]**\n\n` +
                     `I received your query regarding "*${userPrompt}*".\n\n` +
@@ -1111,7 +1119,6 @@
             let detectedInvites = refStore[currentUser.rblxUserId] || 0;
             let totalPoints = (currentUser.points || 0) + (detectedInvites * 25);
 
-            // Owner Bypass: Always Free
             if (!isOwner && totalPoints < requiredCost) {
                 alert(`⚠️ You need ${requiredCost} Coins to claim ${rewardItem}! (Current Coins: ${totalPoints})`);
                 return;
@@ -1129,12 +1136,10 @@
                 timestamp: Date.now()
             };
 
-            // Save Locally
             let localClaims = getLocalUserClaims(currentUser.rblxUserId);
             localClaims.unshift(claimData);
             saveLocalUserClaims(currentUser.rblxUserId, localClaims);
 
-            // Save to Firebase
             try {
                 await fetch(`${FIREBASE_BASE_URL}/claims/${claimId}.json`, {
                     method: "PUT",
@@ -1145,7 +1150,6 @@
                 console.warn("Saved locally, Firebase server unavailable:", err);
             }
 
-            // Deduct points if non-owner
             if (!isOwner) {
                 currentUser.points = Math.max(0, (currentUser.points || 0) - requiredCost);
                 saveUserData();
@@ -1289,7 +1293,6 @@
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
             `;
 
-            // Render Admin Control Box for Admins & Owners
             if (isAdmin) {
                 html += `
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
@@ -1389,7 +1392,6 @@
 
                 allUsers[foundIndex].points = (allUsers[foundIndex].points || 0) + coinsToAdd;
                 
-                // Sync current session if giving coins to self
                 if (currentUser && (
                     String(currentUser.rblxUserId) === String(allUsers[foundIndex].rblxUserId) || 
                     (currentUser.gmail || '').toLowerCase() === (allUsers[foundIndex].gmail || '').toLowerCase()
@@ -1487,11 +1489,12 @@
                         <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
                     </select>
                 </div>
+                <p>This page documents the characters and shop items found in Don't Crash Train For Brainrots. Values shown reflect the current mutation modifier.</p>
             `;
 
             categories.forEach(cat => {
                 const areaName = areaMapping[cat.title];
-                html += `<h2>${areaName} Area Units (${cat.title})</h2>`;
+                html += `<h2>${cat.title} Units</h2>`;
                 html += `
                     <table class="wikitable">
                         <tr>
@@ -1512,12 +1515,41 @@
                             <td>${areaName}</td>
                             <td>${cat.title}</td>
                             <td>${mutationName} (x${currentMutation})</td>
-                            <td>$${finalPrice.toLocaleString()}</td>
+                            <td>${finalPrice.toLocaleString()}</td>
                         </tr>
                     `;
                 });
                 html += `</table>`;
             });
+
+            // ADDING THE SHOP ITEMS SYSTEM HERE
+            html += `<h2>Shop Items</h2>`;
+            html += `
+                <table class="wikitable">
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="25%">Name</th>
+                        <th width="15%">Base Rarity</th>
+                        <th width="20%">Mutation Status</th>
+                        <th width="15%">Cost / Price</th>
+                        <th width="20%">Income (Per/s)</th>
+                    </tr>
+            `;
+
+            shopItems.forEach((item, index) => {
+                const finalPrice = item.price * currentMutation;
+                html += `
+                    <tr>
+                        <td align="center">${index + 1}</td>
+                        <td><b>${item.name}</b></td>
+                        <td>${item.rarity}</td>
+                        <td>${mutationName} (x${currentMutation})</td>
+                        <td>${finalPrice.toLocaleString()}</td>
+                        <td style="color: #005a9c; font-weight: bold;">${item.income}</td>
+                    </tr>
+                `;
+            });
+            html += `</table>`;
 
             document.getElementById('pageContent').innerHTML = html;
         }
@@ -1525,12 +1557,10 @@
         function triggerReleaseSequence() {
             document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
             
-            // Checking Manila Release Time (UTC+8): September 6, 2026, 1:00 PM
             const releaseDate = new Date("2026-09-06T13:00:00+08:00").getTime();
             const now = Date.now();
             
             if (now < releaseDate) {
-                // Pre-Release Page
                 document.getElementById('pageContent').innerHTML = `
                     <div class="error-container">
                         <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-bottom:15px;">Try Again</button>
@@ -1547,7 +1577,6 @@
                     </div>
                 `;
             } else {
-                // Game Released Content
                 document.getElementById('pageContent').innerHTML = `
                     <h2>[Pickaxes]</h2>
                     <table class="wikitable">
@@ -1683,10 +1712,8 @@
             if(poll) {
                 poll.options[optionIndex].votes += 1;
                 
-                // Save poll updates globally
                 localStorage.setItem('app_polls_db', JSON.stringify(polls));
                 
-                // Update the user's specific cooldown
                 currentUser.lastVoteTime = now;
                 saveUserData();
                 
