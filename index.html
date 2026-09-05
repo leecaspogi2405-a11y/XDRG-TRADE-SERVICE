@@ -32,7 +32,7 @@
         
         .form-box { max-width: 450px; margin: 30px auto; border: 1px solid #a2a9b1; padding: 30px; background: #f8f9fa; border-radius: 6px; }
         .form-box label { display: block; font-weight: bold; margin-bottom: 3px; font-size: 0.85rem; }
-        .form-box input[type="text"], .form-box input[type="email"], .form-box input[type="password"], .form-box input[type="number"] { width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid #a2a9b1; box-sizing: border-box; border-radius: 4px; }
+        .form-box input[type="text"], .form-box input[type="email"], .form-box input[type="password"], .form-box input[type="number"], .form-box input[type="file"] { width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid #a2a9b1; box-sizing: border-box; border-radius: 4px; }
         .form-box button { background-color: #3366cc; color: white; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; width: 100%; border-radius: 4px; }
         .form-box button:hover { background-color: #2a4b8d; }
         
@@ -202,9 +202,9 @@
     <!-- COOKIE & AD CONSENT BANNER -->
     <div id="cookieBanner" class="cookie-banner">
         <div>
-            This website contains ads and Cookies, do you agree to allow them from the developer of this Wiki Website?
+            This website contain an ads also Cookies do you agree to developer of this Wiki Website?
         </div>
-        <button class="cookie-banner-btn" onclick="acceptCookies()">I allow cookies</button>
+        <button class="cookie-banner-btn" onclick="acceptCookies()">I allowed cookies</button>
     </div>
 
     <!-- AUTHENTICATION SCREEN -->
@@ -410,7 +410,7 @@
                         <li>Do not use XDRG AI to search up inaccurate or fake information from the game.</li>
                     </ol>
                     <div>
-                        <a onclick="openHome()" class="policy-back-btn">I follow all policy</a>
+                        <a onclick="openHome()" class="policy-back-btn">I follow all policies</a>
                     </div>
                 </div>
             `;
@@ -1125,9 +1125,16 @@
                     polls.forEach(poll => {
                         pollHtml += `
                             <div style="margin-bottom:15px; background:#eaecf0; padding:12px; border-radius:4px; border:1px solid #c8ccd1;">
-                                <h4 style="margin-top:0; color:#005a9c; margin-bottom:10px;">${poll.title}</h4>
-                                <div style="display:flex; flex-direction:column; gap:8px;">
+                                <h4 style="margin-top:0; color:#005a9c; margin-bottom:5px;">${poll.title}</h4>
                         `;
+                        if (poll.description) {
+                            pollHtml += `<p style="font-size:0.9rem; color:#54595d; margin-top:0; margin-bottom:10px;">${poll.description}</p>`;
+                        }
+                        if (poll.image) {
+                            pollHtml += `<img src="${poll.image}" alt="Poll Image" style="max-width:100%; border-radius:4px; margin-bottom:10px; border: 1px solid #a2a9b1;">`;
+                        }
+                        pollHtml += `<div style="display:flex; flex-direction:column; gap:8px;">`;
+                        
                         poll.options.forEach(opt => {
                             pollHtml += `
                                 <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; padding:10px; border-radius:4px; border:1px solid #a2a9b1;">
@@ -1143,9 +1150,16 @@
                     polls.forEach(poll => {
                         pollHtml += `
                             <div style="margin-bottom:15px; background:#eaecf0; padding:12px; border-radius:4px; border:1px solid #c8ccd1;">
-                                <h4 style="margin-top:0; color:#005a9c; margin-bottom:10px;">${poll.title}</h4>
-                                <div style="display:flex; flex-direction:column; gap:8px;">
+                                <h4 style="margin-top:0; color:#005a9c; margin-bottom:5px;">${poll.title}</h4>
                         `;
+                        if (poll.description) {
+                            pollHtml += `<p style="font-size:0.9rem; color:#54595d; margin-top:0; margin-bottom:10px;">${poll.description}</p>`;
+                        }
+                        if (poll.image) {
+                            pollHtml += `<img src="${poll.image}" alt="Poll Image" style="max-width:100%; border-radius:4px; margin-bottom:10px; border: 1px solid #a2a9b1;">`;
+                        }
+                        pollHtml += `<div style="display:flex; flex-direction:column; gap:8px;">`;
+                        
                         poll.options.forEach((opt, index) => {
                             pollHtml += `
                                 <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; padding:10px; border-radius:4px; border:1px solid #a2a9b1;">
@@ -1399,6 +1413,14 @@
                             <label style="font-weight:bold; font-size:0.85rem;">Poll Title:</label>
                             <input type="text" id="newPollTitle" placeholder="e.g. What should we add next?" style="margin-top:4px;">
                         </div>
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Description:</label>
+                            <input type="text" id="newPollDesc" placeholder="e.g. Vote for the upcoming changes!" style="margin-top:4px;">
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Poll Image:</label>
+                            <input type="file" id="newPollImage" accept="image/*" style="margin-top:4px; padding: 4px; background: #fff;">
+                        </div>
                         <div style="margin-bottom:12px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Comma-separated options:</label>
                             <input type="text" id="newPollOptions" placeholder="e.g. Map, Crystals, Pets" style="margin-top:4px;">
@@ -1473,7 +1495,9 @@
         
         function createPoll() {
             const title = document.getElementById('newPollTitle').value.trim();
+            const desc = document.getElementById('newPollDesc').value.trim();
             const optionsStr = document.getElementById('newPollOptions').value.trim();
+            const imageInput = document.getElementById('newPollImage');
             
             if(!title || !optionsStr) {
                 alert("❌ Please enter both a title and options for the poll!");
@@ -1486,16 +1510,31 @@
                 return;
             }
 
-            let polls = safeGetJSON('app_polls_db', []);
-            polls.unshift({
-                id: 'poll_' + Date.now(),
-                title: title,
-                options: options
-            });
-            
-            localStorage.setItem('app_polls_db', JSON.stringify(polls));
-            alert("✅ Poll created successfully!");
-            renderSettingsPage(); 
+            const saveAndRenderPoll = (imgBase64) => {
+                let polls = safeGetJSON('app_polls_db', []);
+                polls.unshift({
+                    id: 'poll_' + Date.now(),
+                    title: title,
+                    description: desc,
+                    image: imgBase64,
+                    options: options
+                });
+                
+                localStorage.setItem('app_polls_db', JSON.stringify(polls));
+                alert("✅ Poll created successfully!");
+                renderSettingsPage(); 
+            };
+
+            // If an image was uploaded, read it as a Base64 URL so it displays dynamically
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveAndRenderPoll(e.target.result);
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                saveAndRenderPoll(null);
+            }
         }
 
         function grantCoinsToUser() {
@@ -1705,10 +1744,10 @@
                         <p style="font-weight:bold; color:#54595d;">Loading video...</p>
                         <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" style="max-width:100%; border:2px solid #202122; border-radius:4px; margin-bottom:20px;">
                         <div class="error-title" style="font-size:1.1rem; margin-bottom:15px; font-family:Georgia, serif;">
-                            (Lume Craftor announce that the game will be Release at September 6, 2026, 1:00PM)
+                            (Lume Craftor announced that the game will be released on September 6, 2026, at 1:00 PM)
                         </div>
                         <div class="error-mod" style="font-size:1.05rem; color:#005a9c; margin-bottom:25px; padding:10px; background-color:#eaf3ff; border-left:5px solid #005a9c; display:inline-block; font-weight:bold;">
-                            (Moderator Action: Admin Abuse will be Starting 30 minutes after the release, see y'all at September 6, 2026, 1:00PM)
+                            (Moderator Action: Admin Abuse will start 30 minutes after the release. See y'all on September 6, 2026, at 1:00 PM)
                         </div>
                         <br>
                         <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-top:15px;">Try Again</button>
