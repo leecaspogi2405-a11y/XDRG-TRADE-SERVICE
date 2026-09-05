@@ -1522,7 +1522,8 @@
                 
                 localStorage.setItem('app_polls_db', JSON.stringify(polls));
                 alert("✅ Poll created successfully!");
-                renderSettingsPage(); 
+                // This will instantly redirect the admin to the Guest Poll / Quests section
+                openQuests(); 
             };
 
             // If an image was uploaded, read it as a Base64 URL so it displays dynamically
