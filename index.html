@@ -196,50 +196,46 @@
             color: #0b0080;
         }
 
-        /* TOAST NOTIFICATION STYLES */
-        .toast-container {
+        /* GLOBAL NOTIFICATION BANNER / TOAST STYLES */
+        #globalNotifBanner {
+            display: none;
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 999999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 380px;
-        }
-        .toast-notification {
             background: #202122;
             color: #ffffff;
-            padding: 14px 18px;
-            border-radius: 6px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideIn 0.3s ease, fadeOut 0.4s ease 3.6s forwards;
-            border-left: 5px solid #3366cc;
-            line-height: 1.4;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border-left: 5px solid #dc3545;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            max-width: 380px;
+            width: 90%;
+            animation: slideInRight 0.3s ease-out;
         }
-        .toast-success { border-left-color: #28a745; background: #1e3a29; }
-        .toast-error { border-left-color: #dc3545; background: #3a1e22; }
-        .toast-info { border-left-color: #17a2b8; background: #1e333a; }
-        .toast-warning { border-left-color: #ffc107; background: #3a331e; }
-        @keyframes slideIn { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- TOAST NOTIFICATIONS CONTAINER -->
-    <div id="toastContainer" class="toast-container"></div>
+    <!-- GLOBAL IN-APP NOTIFICATION BANNER -->
+    <div id="globalNotifBanner">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <strong id="notifBannerTitle" style="color:#ff6b6b; font-size:1rem;">📢 Global Announcement</strong>
+            <span onclick="closeNotifBanner()" style="cursor:pointer; font-weight:bold; padding:0 5px; color:#aaa; font-size:1.1rem;">✕</span>
+        </div>
+        <div id="notifBannerMsg" style="font-size:0.88rem; line-height:1.4; color:#e0e0e0;"></div>
+    </div>
 
     <!-- COOKIE & AD CONSENT BANNER -->
     <div id="cookieBanner" class="cookie-banner">
         <div>
-            This website uses cookies and displays advertisements. Do you agree to the terms set by the developers of this Wiki portal?
+            This website contain an ads also Cookies do you agree to developer of this Wiki Website?
         </div>
-        <button class="cookie-banner-btn" onclick="acceptCookies()">I Allow Cookies</button>
+        <button class="cookie-banner-btn" onclick="acceptCookies()">I allowed cookies</button>
     </div>
 
     <!-- AUTHENTICATION SCREEN -->
@@ -300,7 +296,7 @@
                 
                 <div style="text-align: center; margin-top: 15px;">
                     <button type="button" onclick="resetStorageSystem()" style="background:none; border:none; color:#721c24; cursor:pointer; text-decoration:underline; font-size:0.8rem;">
-                        ⚠️ Reset / Clear Local Cached Data
+                        ⚠️ Reset / Clear Cached Data
                     </button>
                 </div>
             </div>
@@ -423,50 +419,148 @@
         let currentAIModel = "Xdrg Pro 3.5";
         let activeAIChatId = null;
 
+        /* PUSH NOTIFICATION SYSTEM STATE */
+        let lastHandledNotifId = localStorage.getItem('last_handled_notif_id') || '';
+
         // ==========================================
-        // 2. HELPER & NOTIFICATION SYSTEM
+        // 2. HELPER & GLOBAL NOTIFICATION FUNCTIONS
         // ==========================================
-
-        function showNotification(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            if (!container) return;
-
-            const toast = document.createElement('div');
-            toast.className = `toast-notification toast-${type}`;
-            
-            let icon = 'ℹ️';
-            if (type === 'success') icon = '✅';
-            if (type === 'error') icon = '❌';
-            if (type === 'warning') icon = '⚠️';
-
-            toast.innerHTML = `<span style="font-size: 1.2rem;">${icon}</span> <div>${message}</div>`;
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                if (toast.parentNode) toast.parentNode.removeChild(toast);
-            }, 4000);
-        }
 
         function acceptCookies() {
             document.getElementById('cookieBanner').style.display = 'none';
-            showNotification("Cookies and preferences saved!", "success");
+        }
+
+        // Prompt user for browser system notification permissions
+        function requestNotificationPermission() {
+            if ("Notification" in window) {
+                if (Notification.permission === "default") {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === "granted") {
+                            console.log("Notification permission granted!");
+                        }
+                    });
+                }
+            }
+        }
+
+        // Show in-app banner toast
+        function showInAppNotificationBanner(title, message) {
+            const banner = document.getElementById('globalNotifBanner');
+            const titleEl = document.getElementById('notifBannerTitle');
+            const msgEl = document.getElementById('notifBannerMsg');
+            
+            if (banner && titleEl && msgEl) {
+                titleEl.innerText = "📢 " + title;
+                msgEl.innerText = message;
+                banner.style.display = 'block';
+                
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 8000);
+            }
+        }
+
+        function closeNotifBanner() {
+            const banner = document.getElementById('globalNotifBanner');
+            if (banner) banner.style.display = 'none';
+        }
+
+        // Triggers OS/Device Native System Notification (Android Top Bar Shade / Desktop)
+        function triggerSystemNotification(title, message, iconUrl) {
+            showInAppNotificationBanner(title, message);
+
+            if ("Notification" in window && Notification.permission === "granted") {
+                try {
+                    const options = {
+                        body: message,
+                        icon: iconUrl || DEFAULT_AVATAR,
+                        badge: iconUrl || DEFAULT_AVATAR,
+                        tag: 'xdrg-global-notification',
+                        renotify: true,
+                        vibrate: [200, 100, 200]
+                    };
+                    
+                    new Notification(title, options);
+                } catch (e) {
+                    console.warn("System Notification Error:", e);
+                }
+            }
+        }
+
+        // Polls Firebase for incoming real-time push announcements from the Owner
+        async function checkGlobalNotifications() {
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/notifications/latest.json`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.id && data.id !== lastHandledNotifId) {
+                        lastHandledNotifId = data.id;
+                        localStorage.setItem('last_handled_notif_id', data.id);
+                        triggerSystemNotification(data.title, data.message, data.icon);
+                    }
+                }
+            } catch (e) {
+                // Silently handle fetch issue
+            }
+        }
+
+        // Owner action: Send global notification to all connected users
+        async function sendGlobalNotification() {
+            const titleInput = document.getElementById('notifTitle');
+            const msgInput = document.getElementById('notifMessage');
+            
+            if (!titleInput || !msgInput) return;
+            
+            const title = titleInput.value.trim();
+            const message = msgInput.value.trim();
+            
+            if (!title || !message) {
+                alert("❌ Please enter both a Notification Title and Message!");
+                return;
+            }
+            
+            const notifId = "NOTIF-" + Date.now();
+            const notifPayload = {
+                id: notifId,
+                title: title,
+                message: message,
+                sender: currentUser ? (currentUser.username || currentUser.name) : "Owner",
+                icon: currentUser ? getRobloxAvatarUrl(currentUser.rblxUserId) : DEFAULT_AVATAR,
+                timestamp: Date.now()
+            };
+            
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/notifications/latest.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(notifPayload)
+                });
+                
+                triggerSystemNotification(title, message, notifPayload.icon);
+                
+                titleInput.value = "";
+                msgInput.value = "";
+                alert("🚀 Global Push Notification sent to all users successfully!");
+            } catch (err) {
+                alert("❌ Failed to send global notification: " + err.message);
+            }
         }
 
         function openPolicy() {
             document.getElementById('pageTitle').innerText = "Terms of Policy";
             document.getElementById('pageContent').innerHTML = `
                 <div class="policy-card">
-                    <h2 style="margin-top:0; color:#005a9c; border-bottom: 2px solid #3366cc; padding-bottom: 8px;">[XDRG Studio Policy]</h2>
+                    <h2 style="margin-top:0; color:#005a9c; border-bottom: 2px solid #3366cc; padding-bottom: 8px;">[Xdrg Policy]</h2>
                     <ol class="policy-list">
-                        <li>Do not copy, re-upload, or mirror this website without explicit authorization.</li>
-                        <li>Do not reveal sensitive credentials, passwords, or secret keys publicly.</li>
-                        <li>Do not share your personal Web IP or User ID to maintain security.</li>
-                        <li>Always credit the studio owners (Dev Xdragon, LumeCraftor).</li>
-                        <li>Maintain respect towards all community members, Admins, and Moderators.</li>
-                        <li>Do not misuse XDRG AI to query fake or misleading game data.</li>
+                        <li>Do not re-copy this website.</li>
+                        <li>Do not show your private information such as your Password, Secret Keys, etc.</li>
+                        <li>Don't share your Web IP or UID to keep your privacy safe.</li>
+                        <li>Credit the owners (Dev Xdragon, Lume Craftor).</li>
+                        <li>Respect all members including Admins and Moderators.</li>
+                        <li>Do not use XDRG AI to search up inaccurate or fake information from the game.</li>
                     </ol>
                     <div>
-                        <a onclick="openHome()" class="policy-back-btn">I Agree & Follow All Policies</a>
+                        <a onclick="openHome()" class="policy-back-btn">I follow all policies</a>
                     </div>
                 </div>
             `;
@@ -505,8 +599,8 @@
 
         function resetStorageSystem() {
             localStorage.clear();
-            showNotification("Storage cleared! Reloading system...", "warning");
-            setTimeout(() => window.location.reload(), 1000);
+            alert("Storage cleared! Page will now reload.");
+            window.location.reload();
         }
 
         function getRobloxAvatarUrl(userId) {
@@ -531,7 +625,7 @@
                 if (previewBox) {
                     previewBox.style.display = 'flex';
                     document.getElementById('robloxPreviewImg').src = avatarUrl;
-                    document.getElementById('robloxPreviewDisplayName').innerText = "Roblox ID Verified: " + cleanId;
+                    document.getElementById('robloxPreviewDisplayName').innerText = "Roblox ID: " + cleanId;
                     document.getElementById('robloxPreviewUsername').innerText = "@roblox_user";
                 }
 
@@ -544,6 +638,12 @@
 
         window.onload = () => {
             try {
+                // Prompt for push notification permissions
+                requestNotificationPermission();
+
+                // Start polling real-time notification listener every 4 seconds
+                setInterval(checkGlobalNotifications, 4000);
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const referrerId = urlParams.get('ref');
                 
@@ -551,7 +651,7 @@
                     localStorage.setItem('activeReferrer', referrerId);
                     const alertBanner = document.getElementById('refDetectAlert');
                     if (alertBanner) {
-                        alertBanner.innerText = `🔗 Referral Link Detected! (Roblox ID: ${referrerId}) Register to grant +25 points to your inviter.`;
+                        alertBanner.innerText = `🔗 Referral Link Detected! (RblxID: ${referrerId}) Register to grant +25 points to your inviter.`;
                         alertBanner.style.display = 'block';
                     }
                 }
@@ -600,7 +700,7 @@
                     );
 
                     if (duplicateUser) {
-                        showNotification("An account with this Gmail or Roblox User ID already exists!", "error");
+                        alert("❌ Registration Error: An account with this Gmail or Roblox User ID already exists!");
                         return;
                     }
 
@@ -638,7 +738,7 @@
                         localStorage.removeItem('activeReferrer');
                     }
 
-                    showNotification("Account created successfully!", "success");
+                    alert("🎉 Account created successfully!");
                 } else { 
                     const nameOrUser = (document.getElementById('logName').value || '').trim().toLowerCase();
                     const pass = (document.getElementById('logPass').value || '').trim();
@@ -652,7 +752,7 @@
                     );
 
                     if (!existingUser) {
-                        showNotification("Invalid credentials! Check your username/email and password.", "error");
+                        alert("❌ Invalid Login Credentials! Check your username/email and password.");
                         return;
                     }
 
@@ -663,15 +763,15 @@
                     }
                     if (currentUser.isHistoryPublic === undefined) currentUser.isHistoryPublic = false;
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
-                    showNotification("Logged in successfully!", "success");
                 }
 
+                requestNotificationPermission();
                 updateUserStatusHeader();
                 logDeviceConnection(currentUser);
                 showWiki();
             } catch (err) {
                 console.error("Auth Exception:", err);
-                showNotification("System error during authentication.", "error");
+                alert("⚠️ System error during authentication: " + err.message);
             }
         }
 
@@ -718,7 +818,6 @@
             let refStore = safeGetJSON('referralDataStore', {});
             refStore[referrerId] = (refStore[referrerId] || 0) + 1;
             localStorage.setItem('referralDataStore', JSON.stringify(refStore));
-            showNotification("Referral credited to inviter!", "info");
         }
 
         function updateUserStatusHeader() {
@@ -751,7 +850,6 @@
             currentUser = null;
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('wikiScreen').style.display = 'none';
-            showNotification("You have been logged out.", "info");
         }
 
         function showWiki() {
@@ -811,7 +909,7 @@
                     console.warn("Firebase sync failed, saved locally:", e);
                 }
 
-                showNotification("Item status updated to Delivered / Received!", "success");
+                alert("✅ Item status updated to Delivered / Received!");
                 openClaimsHistory();
             }
         }
@@ -967,7 +1065,6 @@
 
         function switchAIModel(model) {
             currentAIModel = model;
-            showNotification(`Switched AI Model to ${model}`, "info");
         }
 
         function createNewAIChat() {
@@ -996,7 +1093,6 @@
             chats = chats.filter(c => c.id !== activeAIChatId);
             saveAIChats(chats);
             activeAIChatId = chats.length > 0 ? chats[0].id : null;
-            showNotification("Chat session deleted.", "info");
             openXdrgAI();
         }
 
@@ -1044,7 +1140,7 @@
                                     <option value="Xdrg Lite" ${currentAIModel === 'Xdrg Lite' ? 'selected' : ''}>Model: Xdrg Lite (Compact)</option>
                                 </select>
                             </div>
-                            <span style="font-size:0.8rem; color:#54595d;">Language: Multilingual (English / Tagalog / Taglish)</span>
+                            <span style="font-size:0.8rem; color:#54595d;">Language: Multilingual (English / Tagalog)</span>
                         </div>
 
                         <div class="ai-messages-container" id="aiMsgContainer">${messagesHtml}</div>
@@ -1255,7 +1351,7 @@
             let totalPoints = (currentUser.points || 0) + (detectedInvites * 25);
 
             if (!isOwner && totalPoints < requiredCost) {
-                showNotification(`You need ${requiredCost} Coins to claim ${rewardItem}!`, "error");
+                alert(`⚠️ You need ${requiredCost} Coins to claim ${rewardItem}! (Current Coins: ${totalPoints})`);
                 return;
             }
 
@@ -1291,10 +1387,10 @@
             }
 
             const noticeMsg = isOwner 
-                ? `Owner Privilege: Claim request submitted for FREE!`
-                : `Claim request submitted for ${rewardItem}! Cost: ${requiredCost} Coins.`;
+                ? `👑 Owner Privilege: Claim request submitted for FREE! (Unlimited ♾️ Balance)`
+                : `🎉 Claim request submitted for ${rewardItem}! Cost: ${requiredCost} Coins.`;
 
-            showNotification(noticeMsg, "success");
+            alert(noticeMsg);
             openClaimsHistory();
         }
 
@@ -1304,12 +1400,9 @@
             linkInput.setSelectionRange(0, 99999); 
             navigator.clipboard.writeText(linkInput.value);
             
-            showNotification("Referral link copied to clipboard!", "success");
             const confirmMsg = document.getElementById("inviteCopyMsg");
-            if (confirmMsg) {
-                confirmMsg.style.display = "inline";
-                setTimeout(() => { confirmMsg.style.display = "none"; }, 2000);
-            }
+            confirmMsg.style.display = "inline";
+            setTimeout(() => { confirmMsg.style.display = "none"; }, 2000);
         }
 
         function initMiniGame() {
@@ -1354,7 +1447,6 @@
                     currentUser.level += 1;
                     saveUserData();
 
-                    showNotification("Match found! +1 Coin added.", "success");
                     if(document.getElementById('pointCount')) document.getElementById('pointCount').innerText = getUserCoinsDisplay(currentUser);
                     if(document.getElementById('gameLevel')) document.getElementById('gameLevel').innerText = currentUser.level;
                 }
@@ -1364,7 +1456,7 @@
 
         function castVote(pollId, optionIndex) {
             if(!currentUser) {
-                showNotification("You must be logged in to cast a vote!", "error");
+                alert("❌ You must be logged in to cast a vote!");
                 return;
             }
             
@@ -1374,7 +1466,7 @@
             
             if (now - lastVoteTime < oneHourInMs) {
                 const remainingMinutes = Math.ceil((oneHourInMs - (now - lastVoteTime)) / 60000);
-                showNotification(`Cooldown active! Wait ${remainingMinutes} more minute(s).`, "warning");
+                alert(`⏳ Cooldown Active: You can only vote once every hour! Please wait ${remainingMinutes} more minute(s).`);
                 return;
             }
 
@@ -1383,6 +1475,7 @@
             
             if(poll) {
                 poll.options[optionIndex].votes += 1;
+                
                 localStorage.setItem('app_polls_db', JSON.stringify(polls));
                 
                 currentUser.lastVoteTime = now;
@@ -1390,15 +1483,15 @@
                 saveUserData();
                 updateUserStatusHeader();
                 
-                showNotification("Vote cast successfully! +5 Coins earned.", "success");
+                alert("✅ Vote successfully cast! You received +5 Coins.");
                 renderQuestsPage();
             } else {
-                showNotification("Poll not found.", "error");
+                alert("❌ Error: Poll not found.");
             }
         }
 
         // ==========================================
-        // 6. SETTINGS & ADMIN CONTROLS
+        // 6. SETTINGS, OWNER NOTIFICATIONS & ADMIN
         // ==========================================
 
         function openSettings() {
@@ -1410,7 +1503,6 @@
             if (!currentUser) return;
             currentUser.isHistoryPublic = !currentUser.isHistoryPublic;
             saveUserData();
-            showNotification(`Delivery History privacy set to: ${currentUser.isHistoryPublic ? 'Public' : 'Private'}`, "info");
             renderSettingsPage();
         }
 
@@ -1468,6 +1560,33 @@
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
             `;
 
+            // RED BOX: OWNER GLOBAL PUSH NOTIFICATION SENDER
+            if (isOwner) {
+                html += `
+                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
+
+                    <div class="admin-box" style="background:#fff0f0; border:2px solid #dc3545; margin-bottom:25px;">
+                        <h4 style="color:#c82333; margin-top:0; display:flex; align-items:center; gap:8px;">
+                            📢 Owner Global Push Notification Sender
+                        </h4>
+                        <p style="font-size:0.82rem; color:#54595d; margin-top:0; margin-bottom:12px;">
+                            Broadcast a system push notification & banner alert instantly to all active visitors across all devices.
+                        </p>
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Notification Title:</label>
+                            <input type="text" id="notifTitle" placeholder="e.g. 🚀 Major System Update Released!" style="margin-top:4px;">
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Notification Message:</label>
+                            <input type="text" id="notifMessage" placeholder="e.g. Crystal Collecting Simulator is live now!" style="margin-top:4px;">
+                        </div>
+                        <button class="btn-save" style="background-color:#dc3545; width:100%; font-size:0.95rem; padding:10px;" onclick="sendGlobalNotification()">
+                            Send Notification to All Users
+                        </button>
+                    </div>
+                `;
+            }
+
             if (isAdmin) {
                 html += `
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
@@ -1476,11 +1595,11 @@
                         <h4>🛠️ Admin Controls: Create New Vote/Poll</h4>
                         <div style="margin-bottom:10px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Poll Title:</label>
-                            <input type="text" id="newPollTitle" placeholder="e.g. What feature should we add next?" style="margin-top:4px;">
+                            <input type="text" id="newPollTitle" placeholder="e.g. What should we add next?" style="margin-top:4px;">
                         </div>
                         <div style="margin-bottom:10px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Description:</label>
-                            <input type="text" id="newPollDesc" placeholder="e.g. Vote for upcoming features!" style="margin-top:4px;">
+                            <input type="text" id="newPollDesc" placeholder="e.g. Vote for the upcoming changes!" style="margin-top:4px;">
                         </div>
                         <div style="margin-bottom:10px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Poll Image:</label>
@@ -1565,13 +1684,13 @@
             const imageInput = document.getElementById('newPollImage');
             
             if(!title || !optionsStr) {
-                showNotification("Please enter both a title and options for the poll!", "error");
+                alert("❌ Please enter both a title and options for the poll!");
                 return;
             }
             
             const options = optionsStr.split(',').map(o => ({ name: o.trim(), votes: 0 })).filter(o => o.name !== "");
             if(options.length < 2) {
-                showNotification("Please provide at least 2 valid options separated by commas.", "warning");
+                alert("❌ Please provide at least 2 valid options separated by commas.");
                 return;
             }
 
@@ -1586,7 +1705,7 @@
                 });
                 
                 localStorage.setItem('app_polls_db', JSON.stringify(polls));
-                showNotification("Poll created successfully!", "success");
+                alert("✅ Poll created successfully!");
                 openQuests(); 
             };
 
@@ -1606,49 +1725,13 @@
             const coinAmountInput = document.getElementById('grantCoinAmount').value;
 
             if (!targetInput) { 
-                showNotification("Please enter a target Roblox ID, Username, or Gmail address!", "warning"); 
+                alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); 
                 return; 
             }
             
             const coinsToAdd = parseInt(coinAmountInput, 10);
             if (isNaN(coinsToAdd) || coinsToAdd <= 0) { 
-                showNotification("Please enter a valid positive coin amount!", "warning"); 
-                return; 
-            }
-
-            let allUsers = safeGetJSON('app_users_db', []);
-            let foundIndex = allUsers.findIndex(u => 
-                String(u.rblxUserId || '').trim().toLowerCase() === targetInput || 
-                (u.gmail || '').toLowerCase().trim() === targetInput ||
-                (u.username || '').toLowerCase().trim() === targetInput ||
-                (u.name || '').toLowerCase().trim() === targetInput
-            );
-
-            if (foundIndex !== -1) {
-                const targetUser = allUsers[foundIndex];
-                allUsers[foundIndex].points = (allUsers[foundIndex].points || 0) + coinsToAdd;
-                
-                if (currentUser && (
-                    String(currentUser.rblxUserId) === String(allUsers[foundIndex].rblxUserId) || 
-                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundIndex].gmail || '').toLowerCase()
-                )) {
-                    currentUser.points = allUsers[foundIndex].points;
-                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
-                }
-                
-                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                updateUserStatusHeader();
-                showNotification(`Granted ${coinsToAdd} coins to @${targetUser.username || targetUser.name}!`, "success");
-                renderSettingsPage();
-            } else {
-                showNotification("Target user not found in local database.", "error");
-            }
-        }
-
-        function promoteUserToAdmin() {
-            const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim().toLowerCase();
-            if (!targetInput) { 
-                showNotification("Please enter a target Roblox ID, Username, or Gmail address!", "warning"); 
+                alert("❌ Please enter a valid positive coin amount!"); 
                 return; 
             }
 
@@ -1664,7 +1747,48 @@
                 const targetUser = allUsers[foundIndex];
                 
                 if (isOwnerAccount(targetUser)) {
-                    showNotification(`${targetUser.displayName || targetUser.name} is an Owner!`, "info");
+                    alert(`ℹ️ Note: ${targetUser.displayName || targetUser.name} is an Owner with Infinity ♾️ balance! Numerical value updated.`);
+                }
+
+                allUsers[foundIndex].points = (allUsers[foundIndex].points || 0) + coinsToAdd;
+                
+                if (currentUser && (
+                    String(currentUser.rblxUserId) === String(allUsers[foundIndex].rblxUserId) || 
+                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundIndex].gmail || '').toLowerCase()
+                )) {
+                    currentUser.points = allUsers[foundIndex].points;
+                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+                }
+                
+                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+                updateUserStatusHeader();
+                alert(`✅ Granted ${coinsToAdd} coins to ${targetUser.displayName || targetUser.username || targetUser.name}!`);
+                renderSettingsPage();
+            } else {
+                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
+            }
+        }
+
+        function promoteUserToAdmin() {
+            const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim().toLowerCase();
+            if (!targetInput) { 
+                alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); 
+                return; 
+            }
+
+            let allUsers = safeGetJSON('app_users_db', []);
+            let foundIndex = allUsers.findIndex(u => 
+                String(u.rblxUserId || '').trim().toLowerCase() === targetInput || 
+                (u.gmail || '').toLowerCase().trim() === targetInput ||
+                (u.username || '').toLowerCase().trim() === targetInput ||
+                (u.name || '').toLowerCase().trim() === targetInput
+            );
+
+            if (foundIndex !== -1) {
+                const targetUser = allUsers[foundIndex];
+                
+                if (isOwnerAccount(targetUser)) {
+                    alert(`👑 ${targetUser.displayName || targetUser.name} is an Owner! Owner accounts hold full privileges.`);
                     return;
                 }
 
@@ -1682,10 +1806,10 @@
                 
                 localStorage.setItem('app_users_db', JSON.stringify(allUsers));
                 updateUserStatusHeader();
-                showNotification(`User @${allUsers[foundIndex].username || allUsers[foundIndex].name} promoted to Admin!`, "success");
+                alert(`👑 User @${allUsers[foundIndex].username || allUsers[foundIndex].name} promoted to Admin!`);
                 renderSettingsPage();
             } else {
-                showNotification("Target user not found in local database.", "error");
+                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
             }
         }
 
@@ -1700,7 +1824,7 @@
                 
                 saveUserData();
                 updateUserStatusHeader();
-                showNotification("Profile settings updated successfully!", "success");
+                alert("Settings updated successfully!");
             }
         }
 
@@ -1799,13 +1923,13 @@
                 document.getElementById('pageContent').innerHTML = `
                     <div class="error-container">
                         <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-bottom:15px;">Try Again</button>
-                        <p style="font-weight:bold; color:#54595d;">Loading release status...</p>
+                        <p style="font-weight:bold; color:#54595d;">Loading video...</p>
                         <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" style="max-width:100%; border:2px solid #202122; border-radius:4px; margin-bottom:20px;">
                         <div class="error-title" style="font-size:1.1rem; margin-bottom:15px; font-family:Georgia, serif;">
-                            (LumeCraftor announced that the game will be released on September 6, 2026, at 1:00 PM)
+                            (Lume Craftor announced that the game will be released on September 6, 2026, at 1:00 PM)
                         </div>
                         <div class="error-mod" style="font-size:1.05rem; color:#005a9c; margin-bottom:25px; padding:10px; background-color:#eaf3ff; border-left:5px solid #005a9c; display:inline-block; font-weight:bold;">
-                            (Moderator Action: Admin Abuse event will start 30 minutes after release. See you all on September 6, 2026, at 1:00 PM)
+                            (Moderator Action: Admin Abuse will start 30 minutes after the release. See y'all on September 6, 2026, at 1:00 PM)
                         </div>
                         <br>
                         <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-top:15px;">Try Again</button>
