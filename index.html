@@ -9,9 +9,9 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
-        .mw-sidebar { width: 230px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
+        .mw-sidebar { width: 240px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
         .mw-logo { display: block; font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
-        .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
+        .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; text-transform: uppercase; letter-spacing: 0.5px; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
         .mw-sidebar li { margin-bottom: 6px; font-size: 0.85rem; }
         .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; }
@@ -22,6 +22,13 @@
         
         .user-badge { display: flex; align-items: center; gap: 10px; }
         .user-avatar-small { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #3366cc; object-fit: cover; background: #eaf3ff; display: block; flex-shrink: 0; }
+
+        /* NOTIFICATION SVG ICON & INBOX STYLES */
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .notif-bell-btn { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border: 1px solid #a2a9b1; padding: 6px; border-radius: 50%; transition: all 0.2s ease; width: 36px; height: 36px; }
+        .notif-bell-btn:hover { background: #eaf3ff; border-color: #3366cc; }
+        .notif-svg-icon { width: 20px; height: 20px; fill: #202122; }
+        .notif-badge { position: absolute; top: -4px; right: -4px; background-color: #dc3545; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold; border: 2px solid #ffffff; }
 
         h1 { font-family: 'Georgia', serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
         h2 { font-family: 'Georgia', serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
@@ -43,12 +50,10 @@
         .auth-toggle button { background: #eaecf0; color: #202122; border: 1px solid #a2a9b1; padding: 8px; font-weight: bold; width: 50%; cursor: pointer; }
         .auth-toggle button.active { background: #3366cc; color: white; border-color: #3366cc; }
 
-        .settings-section { max-width: 600px; margin-top: 20px; }
+        .settings-section { max-width: 650px; margin-top: 20px; }
         .settings-row { margin-bottom: 15px; }
         .settings-row label { display: block; font-weight: bold; margin-bottom: 5px; }
-        .settings-row input[type="text"], .settings-row input[type="password"], .settings-row input[type="number"] { width: 100%; max-width: 300px; padding: 8px; border: 1px solid #a2a9b1; border-radius: 4px; }
-        .settings-row.checkbox-row { display: flex; align-items: center; gap: 10px; }
-        .settings-row.checkbox-row label { margin-bottom: 0; }
+        .settings-row input[type="text"], .settings-row input[type="password"], .settings-row input[type="number"] { width: 100%; max-width: 350px; padding: 8px; border: 1px solid #a2a9b1; border-radius: 4px; }
         
         .privacy-toggle-btn { padding: 8px 16px; font-weight: bold; border-radius: 6px; border: 1px solid #a2a9b1; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .privacy-private { background-color: #fff0f0; color: #c82333; border-color: #f5c6cb; }
@@ -56,9 +61,16 @@
 
         .btn-save { background-color: #3366cc; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; border-radius: 4px; }
         .btn-save:hover { background-color: #2a4b8d; }
-        .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; }
+        .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; text-decoration: none; display: inline-block; }
         .btn-claim:hover { background-color: #218838; }
         
+        /* OWNER PUSH NOTIFICATION RED BOX */
+        .owner-push-box { background-color: #fff0f0; border: 2px solid #dc3545; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(220, 53, 69, 0.15); }
+        .owner-push-box h4 { margin-top: 0; color: #c82333; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .owner-push-box input, .owner-push-box textarea { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #f5c6cb; border-radius: 4px; font-family: inherit; box-sizing: border-box; }
+        .btn-owner-push { background-color: #dc3545; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; width: 100%; font-size: 0.95rem; }
+        .btn-owner-push:hover { background-color: #bd2130; }
+
         /* SOCIAL MEDIA STYLES */
         .social-links { list-style: none; padding: 0; font-size: 1rem; margin-top: 15px; }
         .social-links li { margin-bottom: 12px; }
@@ -83,7 +95,6 @@
         .error-mod { color: #005a9c; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; padding: 10px; background-color: #eaf3ff; border-left: 5px solid #005a9c; display: inline-block; }
 
         .quest-box { border: 1px solid #a2a9b1; background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-        .quest-box.disabled { background: #fff0f0; border-color: #f5c6cb; }
         .points-header { background: #eaf3ff; border: 1px solid #3366cc; padding: 12px; font-weight: bold; font-size: 1.1rem; color: #005a9c; text-align: center; border-radius: 6px; margin-bottom: 20px; }
         .game-grid { display: grid; grid-template-columns: repeat(2, 80px); gap: 10px; margin-top: 15px; justify-content: center; }
         .emoji-card { width: 80px; height: 80px; background: #eaecf0; border: 2px solid #a2a9b1; font-size: 2rem; display: flex; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer; user-select: none; }
@@ -97,15 +108,12 @@
         /* ROLE BADGES */
         .badge-owner { background: linear-gradient(45deg, #ff0055, #7a00ff); color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; box-shadow: 0 0 8px rgba(122, 0, 255, 0.4); display: inline-block; }
         .badge-admin { background-color: #007bff; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
+        .badge-mod { background-color: #17a2b8; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
 
-        /* STATUS BADGES FOR CLAIMS HISTORY */
+        /* STATUS BADGES */
         .status-badge { padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; display: inline-block; text-align: center; }
         .status-successful { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .status-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .status-unsuccessful { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-
-        .btn-action-sm { padding: 4px 10px; font-size: 0.8rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn-action-sm:hover { background-color: #218838; }
 
         /* XDRG AI STYLES */
         .ai-layout { display: flex; gap: 20px; background: #ffffff; border: 1px solid #a2a9b1; border-radius: 8px; overflow: hidden; min-height: 580px; }
@@ -128,114 +136,31 @@
         .ai-input-bar input { flex: 1; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-size: 0.9rem; }
         .ai-send-btn { background: #3366cc; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; }
 
-        /* COOKIE BANNER STYLES */
-        .cookie-banner {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #202122;
-            color: #ffffff;
-            padding: 16px 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            max-width: 90%;
-            width: 620px;
-            font-size: 0.9rem;
-            border: 1px solid #444;
-        }
-        .cookie-banner-btn {
-            color: #ffffff;
-            background-color: #3366cc;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            white-space: nowrap;
-            transition: background 0.2s ease;
-            border: none;
-        }
-        .cookie-banner-btn:hover {
-            background-color: #2a4b8d;
-        }
+        /* COOKIE BANNER */
+        .cookie-banner { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #202122; color: #ffffff; padding: 16px 24px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); z-index: 99999; display: flex; align-items: center; justify-content: space-between; gap: 20px; max-width: 90%; width: 620px; font-size: 0.9rem; border: 1px solid #444; }
+        .cookie-banner-btn { color: #ffffff; background-color: #3366cc; font-weight: bold; cursor: pointer; padding: 8px 16px; border-radius: 4px; white-space: nowrap; transition: background 0.2s ease; border: none; }
+        .cookie-banner-btn:hover { background-color: #2a4b8d; }
 
-        /* POLICY CARD STYLES */
-        .policy-card {
-            background: #f8f9fa;
-            border: 1px solid #a2a9b1;
-            padding: 25px;
-            border-radius: 8px;
-            max-width: 700px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .policy-list {
-            padding-left: 20px;
-            line-height: 1.9;
-            font-size: 1rem;
-            color: #202122;
-        }
-        .policy-list li {
-            margin-bottom: 8px;
-        }
-        .policy-back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            color: #0645ad;
-            font-weight: bold;
-            font-size: 1.05rem;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        .policy-back-btn:hover {
-            color: #0b0080;
-        }
-
-        /* GLOBAL NOTIFICATION BANNER / TOAST STYLES */
-        #globalNotifBanner {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 999999;
-            background: #202122;
-            color: #ffffff;
-            padding: 16px 20px;
-            border-radius: 8px;
-            border-left: 5px solid #dc3545;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-            max-width: 380px;
-            width: 90%;
-            animation: slideInRight 0.3s ease-out;
-        }
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
+        /* POLICY CARD */
+        .policy-card { background: #f8f9fa; border: 1px solid #a2a9b1; padding: 25px; border-radius: 8px; max-width: 700px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .policy-list { padding-left: 20px; line-height: 1.9; font-size: 1rem; color: #202122; }
+        .policy-list li { margin-bottom: 8px; }
+        .policy-back-btn { display: inline-block; margin-top: 20px; color: #0645ad; font-weight: bold; font-size: 1.05rem; cursor: pointer; text-decoration: underline; }
+        
+        /* NOTIFICATION INBOX LIST STYLES */
+        .notif-item { background: #ffffff; border: 1px solid #a2a9b1; padding: 12px 16px; border-radius: 6px; margin-bottom: 10px; transition: all 0.2s ease; }
+        .notif-item.unread { border-left: 5px solid #3366cc; background: #eaf3ff; }
+        .notif-item .notif-title { font-weight: bold; font-size: 0.95rem; color: #005a9c; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .notif-item .notif-body { font-size: 0.88rem; color: #202122; line-height: 1.4; }
+        .notif-item .notif-time { font-size: 0.75rem; color: #777; margin-top: 6px; }
     </style>
 </head>
 <body>
 
-    <!-- GLOBAL IN-APP NOTIFICATION BANNER -->
-    <div id="globalNotifBanner">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <strong id="notifBannerTitle" style="color:#ff6b6b; font-size:1rem;">📢 Global Announcement</strong>
-            <span onclick="closeNotifBanner()" style="cursor:pointer; font-weight:bold; padding:0 5px; color:#aaa; font-size:1.1rem;">✕</span>
-        </div>
-        <div id="notifBannerMsg" style="font-size:0.88rem; line-height:1.4; color:#e0e0e0;"></div>
-    </div>
-
     <!-- COOKIE & AD CONSENT BANNER -->
     <div id="cookieBanner" class="cookie-banner">
-        <div>
-            This website contain an ads also Cookies do you agree to developer of this Wiki Website?
-        </div>
-        <button class="cookie-banner-btn" onclick="acceptCookies()">I allowed cookies</button>
+        <div>This website contains ads and cookies. Do you agree with the developer policies for this Studio Wiki Portal?</div>
+        <button class="cookie-banner-btn" onclick="acceptCookies()">I accept cookies</button>
     </div>
 
     <!-- AUTHENTICATION SCREEN -->
@@ -310,27 +235,32 @@
             <div class="mw-sidebar">
                 <a class="mw-logo" onclick="openHome()">RedGalaxy Studio<br>NebulaForge Studio</a>
                 
-                <h3>Navigation</h3>
+                <h3>[Navigation]</h3>
                 <ul>
                     <li><a onclick="openHome()">Main Page</a></li>
-                    <li><a onclick="openGame('brainrots')">Don't Crash Train For Brainrots</a></li>
+                    <li><a onclick="openGame('brainrots')">Don't Crash By Train For Brainrots</a></li>
                     <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
+                </ul>
+
+                <h3>[Help]</h3>
+                <ul>
                     <li><a onclick="openXdrgAI()" style="font-weight:bold; color:#005a9c;">🤖 XDRG AI Assistant</a></li>
-                    <li><a onclick="openQuests()">🎯 Quests & Trade Service</a></li>
+                    <li><a onclick="openQuests()">🎯 Quest and Trade Service</a></li>
                     <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
                     <li><a onclick="openPolicy()" style="font-weight:bold; color:#0645ad;">📜 Terms of Policy</a></li>
                 </ul>
 
-                <h3>Account Settings</h3>
+                <h3>[Account Settings]</h3>
                 <ul>
                     <li><a onclick="openSettings()">⚙️ Profile & Privacy Settings</a></li>
                 </ul>
 
-                <h3>Staff / Team</h3>
+                <h3>[Staff / Team]</h3>
                 <ul>
                     <li><b>Owner:</b><br>Dev_Xdragon / LumeCraftor</li>
                     <li style="margin-top:8px;"><b>Head-Admin:</b><br>Vincent Magtolis</li>
-                    <li style="margin-top:8px;"><b>Admin:</b><br>Jayson Areglo<br>Summere Castrence</li>
+                    <li style="margin-top:8px;"><b>Admins:</b><br>Jayson Areglo<br>Summere Castrence<br>Jeric Caido<br>Han Christian</li>
+                    <li style="margin-top:8px;"><b>Moderators:</b><br>Liam Platon<br>Nielo Armas</li>
                 </ul>
             </div>
             
@@ -339,7 +269,18 @@
                     <div id="userStatus" class="user-badge">
                         <span>Not logged in</span>
                     </div>
-                    <span><a onclick="logout()" style="color:#0645ad; cursor:pointer;">Log out</a></span>
+
+                    <div class="header-actions">
+                        <!-- REAL SVG NOTIFICATION BELL ICON -->
+                        <div class="notif-bell-btn" onclick="openNotificationInbox()" title="Notification Inbox">
+                            <svg class="notif-svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                            </svg>
+                            <span id="notifBadge" class="notif-badge" style="display:none;">0</span>
+                        </div>
+
+                        <span><a onclick="logout()" style="color:#0645ad; cursor:pointer; font-weight:bold;">Log out</a></span>
+                    </div>
                 </div>
                 
                 <h1 id="pageTitle">Main Page</h1>
@@ -359,6 +300,7 @@
 
         const FIREBASE_BASE_URL = "https://automation-giver-xdrg-default-rtdb.asia-southeast1.firebasedatabase.app";
         const FIREBASE_URL = `${FIREBASE_BASE_URL}/claims.json`;
+        const FIREBASE_NOTIFS_URL = `${FIREBASE_BASE_URL}/global_notifications.json`;
 
         // OWNER PRIVILEGE CONFIGURATION
         const OWNER_CONFIG = {
@@ -387,7 +329,6 @@
             "Limited": "Unknown / Event Area"
         };
 
-        // Standard Units Array
         const categories = [
             { title: "Common", units: [{ name: "Bananita Dolphinita", price: 250 }, { name: "Trippi Troppi", price: 200 }, { name: "Gangster Footera", price: 55 }] },
             { title: "Rare", units: [{ name: "Ballerina Cappuccina", price: 400 }, { name: "Svinina Bombardino", price: 150 }, { name: "Bombombini Gusini", price: 100 }] },
@@ -397,7 +338,6 @@
             { title: "Limited", units: [{ name: "Strawberry Elephant", price: 150000 }, { name: "Summerini Fattini", price: 1500000 }] }
         ];
 
-        // Shop Items Array
         const shopItems = [
             { name: "Boneca Ambelabu", rarity: "Rare", price: 65000, income: "25,000 /s" },
             { name: "Job Job Job Sahur", rarity: "Rare", price: 155000, income: "80,000 /s" },
@@ -419,131 +359,16 @@
         let currentAIModel = "Xdrg Pro 3.5";
         let activeAIChatId = null;
 
-        /* PUSH NOTIFICATION SYSTEM STATE */
-        let lastHandledNotifId = localStorage.getItem('last_handled_notif_id') || '';
+        /* NOTIFICATION STATE */
+        let localNotifications = [];
+        let notifPollInterval = null;
 
         // ==========================================
-        // 2. HELPER & GLOBAL NOTIFICATION FUNCTIONS
+        // 2. HELPER & OWNER EVALUATION FUNCTIONS
         // ==========================================
 
         function acceptCookies() {
             document.getElementById('cookieBanner').style.display = 'none';
-        }
-
-        // Prompt user for browser system notification permissions
-        function requestNotificationPermission() {
-            if ("Notification" in window) {
-                if (Notification.permission === "default") {
-                    Notification.requestPermission().then(permission => {
-                        if (permission === "granted") {
-                            console.log("Notification permission granted!");
-                        }
-                    });
-                }
-            }
-        }
-
-        // Show in-app banner toast
-        function showInAppNotificationBanner(title, message) {
-            const banner = document.getElementById('globalNotifBanner');
-            const titleEl = document.getElementById('notifBannerTitle');
-            const msgEl = document.getElementById('notifBannerMsg');
-            
-            if (banner && titleEl && msgEl) {
-                titleEl.innerText = "📢 " + title;
-                msgEl.innerText = message;
-                banner.style.display = 'block';
-                
-                setTimeout(() => {
-                    banner.style.display = 'none';
-                }, 8000);
-            }
-        }
-
-        function closeNotifBanner() {
-            const banner = document.getElementById('globalNotifBanner');
-            if (banner) banner.style.display = 'none';
-        }
-
-        // Triggers OS/Device Native System Notification (Android Top Bar Shade / Desktop)
-        function triggerSystemNotification(title, message, iconUrl) {
-            showInAppNotificationBanner(title, message);
-
-            if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    const options = {
-                        body: message,
-                        icon: iconUrl || DEFAULT_AVATAR,
-                        badge: iconUrl || DEFAULT_AVATAR,
-                        tag: 'xdrg-global-notification',
-                        renotify: true,
-                        vibrate: [200, 100, 200]
-                    };
-                    
-                    new Notification(title, options);
-                } catch (e) {
-                    console.warn("System Notification Error:", e);
-                }
-            }
-        }
-
-        // Polls Firebase for incoming real-time push announcements from the Owner
-        async function checkGlobalNotifications() {
-            try {
-                const res = await fetch(`${FIREBASE_BASE_URL}/notifications/latest.json`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.id && data.id !== lastHandledNotifId) {
-                        lastHandledNotifId = data.id;
-                        localStorage.setItem('last_handled_notif_id', data.id);
-                        triggerSystemNotification(data.title, data.message, data.icon);
-                    }
-                }
-            } catch (e) {
-                // Silently handle fetch issue
-            }
-        }
-
-        // Owner action: Send global notification to all connected users
-        async function sendGlobalNotification() {
-            const titleInput = document.getElementById('notifTitle');
-            const msgInput = document.getElementById('notifMessage');
-            
-            if (!titleInput || !msgInput) return;
-            
-            const title = titleInput.value.trim();
-            const message = msgInput.value.trim();
-            
-            if (!title || !message) {
-                alert("❌ Please enter both a Notification Title and Message!");
-                return;
-            }
-            
-            const notifId = "NOTIF-" + Date.now();
-            const notifPayload = {
-                id: notifId,
-                title: title,
-                message: message,
-                sender: currentUser ? (currentUser.username || currentUser.name) : "Owner",
-                icon: currentUser ? getRobloxAvatarUrl(currentUser.rblxUserId) : DEFAULT_AVATAR,
-                timestamp: Date.now()
-            };
-            
-            try {
-                await fetch(`${FIREBASE_BASE_URL}/notifications/latest.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(notifPayload)
-                });
-                
-                triggerSystemNotification(title, message, notifPayload.icon);
-                
-                titleInput.value = "";
-                msgInput.value = "";
-                alert("🚀 Global Push Notification sent to all users successfully!");
-            } catch (err) {
-                alert("❌ Failed to send global notification: " + err.message);
-            }
         }
 
         function openPolicy() {
@@ -552,15 +377,15 @@
                 <div class="policy-card">
                     <h2 style="margin-top:0; color:#005a9c; border-bottom: 2px solid #3366cc; padding-bottom: 8px;">[Xdrg Policy]</h2>
                     <ol class="policy-list">
-                        <li>Do not re-copy this website.</li>
-                        <li>Do not show your private information such as your Password, Secret Keys, etc.</li>
-                        <li>Don't share your Web IP or UID to keep your privacy safe.</li>
-                        <li>Credit the owners (Dev Xdragon, Lume Craftor).</li>
-                        <li>Respect all members including Admins and Moderators.</li>
-                        <li>Do not use XDRG AI to search up inaccurate or fake information from the game.</li>
+                        <li>Do not copy or re-distribute this website.</li>
+                        <li>Do not reveal sensitive private information such as Passwords, Secret Keys, or Session tokens.</li>
+                        <li>Do not share your Web IP or User IDs to keep your account safe.</li>
+                        <li>Give credit to the studio developers (Dev Xdragon, LumeCraftor).</li>
+                        <li>Respect all studio members, Admins, and Moderators.</li>
+                        <li>Do not use XDRG AI to generate false or fraudulent in-game information.</li>
                     </ol>
                     <div>
-                        <a onclick="openHome()" class="policy-back-btn">I follow all policies</a>
+                        <a onclick="openHome()" class="policy-back-btn">I Agree & Follow All Policies</a>
                     </div>
                 </div>
             `;
@@ -636,13 +461,191 @@
             }, 300);
         }
 
+        // ==========================================
+        // 3. SYSTEM PUSH & BROWSER NOTIFICATION ENGINE
+        // ==========================================
+
+        function requestNotificationPermission() {
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission().then(permission => {
+                    console.log("Notification permission result:", permission);
+                });
+            }
+        }
+
+        function initNotificationEngine() {
+            localNotifications = safeGetJSON('app_notifications_inbox', []);
+            updateNotifBadge();
+            
+            // Poll Firebase for real-time global push notifications every 6 seconds
+            syncGlobalPushNotifications();
+            if (notifPollInterval) clearInterval(notifPollInterval);
+            notifPollInterval = setInterval(syncGlobalPushNotifications, 6000);
+        }
+
+        async function syncGlobalPushNotifications() {
+            try {
+                const res = await fetch(FIREBASE_NOTIFS_URL);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (!data) return;
+
+                let hasNew = false;
+                Object.keys(data).forEach(key => {
+                    const notif = data[key];
+                    const exists = localNotifications.find(n => n.id === key);
+                    if (!exists) {
+                        hasNew = true;
+                        const newNotif = {
+                            id: key,
+                            title: notif.title || "Studio Announcement",
+                            message: notif.message || "",
+                            timestamp: notif.timestamp || Date.now(),
+                            sender: notif.sender || "Studio Owner",
+                            read: false
+                        };
+                        localNotifications.unshift(newNotif);
+
+                        // Trigger Native Browser System Push Notification (App-Style System Tray)
+                        triggerNativeSystemNotification(newNotif.title, newNotif.message);
+                    }
+                });
+
+                if (hasNew) {
+                    localStorage.setItem('app_notifications_inbox', JSON.stringify(localNotifications));
+                    updateNotifBadge();
+                }
+            } catch (err) {
+                console.warn("Notification sync error:", err);
+            }
+        }
+
+        function triggerNativeSystemNotification(title, message) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                try {
+                    new Notification(title, {
+                        body: message,
+                        icon: 'https://www.roblox.com/headshot-thumbnail/image?userId=7680051058&width=150&height=150&format=png',
+                        tag: 'xdrg-global-push'
+                    });
+                } catch(e) {
+                    console.warn("Native Notification trigger error:", e);
+                }
+            }
+        }
+
+        function updateNotifBadge() {
+            const badge = document.getElementById('notifBadge');
+            if (!badge) return;
+            const unreadCount = localNotifications.filter(n => !n.read).length;
+            if (unreadCount > 0) {
+                badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        async function sendGlobalPushNotificationFromOwner() {
+            if (!isOwnerAccount(currentUser)) {
+                alert("❌ Unauthorized: Only Studio Owners can send global push notifications!");
+                return;
+            }
+
+            const titleInput = document.getElementById('pushTitleInput');
+            const msgInput = document.getElementById('pushMessageInput');
+
+            const title = (titleInput ? titleInput.value : '').trim();
+            const message = (msgInput ? msgInput.value : '').trim();
+
+            if (!title || !message) {
+                alert("❌ Please provide both a Notification Title and Message!");
+                return;
+            }
+
+            const notifId = "NOTIF-" + Date.now();
+            const notifPayload = {
+                id: notifId,
+                title: title,
+                message: message,
+                timestamp: Date.now(),
+                sender: currentUser.displayName || currentUser.name || "Owner"
+            };
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/global_notifications/${notifId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(notifPayload)
+                });
+
+                alert("🚀 Global Push Notification sent successfully to all users!");
+                if (titleInput) titleInput.value = "";
+                if (msgInput) msgInput.value = "";
+
+                syncGlobalPushNotifications();
+            } catch (err) {
+                alert("❌ Failed to broadcast push notification: " + err.message);
+            }
+        }
+
+        function openNotificationInbox() {
+            document.getElementById('pageTitle').innerText = "📥 Notification Inbox";
+            
+            // Mark all notifications as read when opening inbox
+            localNotifications.forEach(n => n.read = true);
+            localStorage.setItem('app_notifications_inbox', JSON.stringify(localNotifications));
+            updateNotifBadge();
+
+            let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <p style="color:#54595d; margin:0;">Real-time announcements, update alerts, and system notifications.</p>
+                    <button class="btn-save" onclick="clearNotificationInbox()" style="background:#dc3545;">Clear Inbox</button>
+                </div>
+            `;
+
+            if (localNotifications.length === 0) {
+                html += `
+                    <div style="text-align:center; padding:50px; background:#f8f9fa; border:1px solid #a2a9b1; border-radius:8px;">
+                        <div style="font-size:2.5rem; margin-bottom:10px;">🔔</div>
+                        <h3>Your Notification Inbox is Empty</h3>
+                        <p style="color:#777;">New update alerts and global notifications from developers will appear here.</p>
+                    </div>
+                `;
+            } else {
+                localNotifications.forEach(notif => {
+                    const dateStr = new Date(notif.timestamp).toLocaleString();
+                    html += `
+                        <div class="notif-item">
+                            <div class="notif-title">
+                                <span>📣 ${notif.title}</span>
+                                <span style="font-size:0.75rem; color:#005a9c;">By: ${notif.sender || 'Studio Admin'}</span>
+                            </div>
+                            <div class="notif-body">${notif.message.replace(/\n/g, '<br>')}</div>
+                            <div class="notif-time">⏱️ ${dateStr}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('pageContent').innerHTML = html;
+        }
+
+        function clearNotificationInbox() {
+            localNotifications = [];
+            localStorage.setItem('app_notifications_inbox', JSON.stringify([]));
+            updateNotifBadge();
+            openNotificationInbox();
+        }
+
+        // ==========================================
+        // 4. AUTHENTICATION & APP INITIALIZATION
+        // ==========================================
+
         window.onload = () => {
             try {
-                // Prompt for push notification permissions
+                // Request Browser Notification Permission on site entry
                 requestNotificationPermission();
-
-                // Start polling real-time notification listener every 4 seconds
-                setInterval(checkGlobalNotifications, 4000);
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const referrerId = urlParams.get('ref');
@@ -668,6 +671,7 @@
 
                     updateUserStatusHeader();
                     logDeviceConnection(currentUser);
+                    initNotificationEngine();
                     showWiki();
                 }
             } catch (err) {
@@ -765,9 +769,9 @@
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
 
-                requestNotificationPermission();
                 updateUserStatusHeader();
                 logDeviceConnection(currentUser);
+                initNotificationEngine();
                 showWiki();
             } catch (err) {
                 console.error("Auth Exception:", err);
@@ -848,6 +852,7 @@
         function logout() {
             localStorage.removeItem('app_current_user');
             currentUser = null;
+            if (notifPollInterval) clearInterval(notifPollInterval);
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('wikiScreen').style.display = 'none';
         }
@@ -868,17 +873,17 @@
                 triggerReleaseSequence();
                 return;
             }
-            document.getElementById('pageTitle').innerText = "Don't Crash Train For Brainrots";
+            document.getElementById('pageTitle').innerText = "Don't Crash By Train For Brainrots";
             renderBrainrotsPage();
         }
 
         function openQuests() {
-            document.getElementById('pageTitle').innerText = "🎯 Quests & Trade Service Dashboard";
+            document.getElementById('pageTitle').innerText = "🎯 Quest and Trade Service";
             renderQuestsPage();
         }
 
         // ==========================================
-        // 3. CLAIMS & DELIVERY HISTORY SYSTEM
+        // 5. CLAIMS & DELIVERY HISTORY SYSTEM
         // ==========================================
 
         function getLocalUserClaims(userId) {
@@ -1001,13 +1006,11 @@
 
                     if (rawStatus === "successful" || rawStatus === "delivered" || rawStatus === "success" || rawStatus === "received") {
                         badgeHtml = `<span class="status-badge status-successful">✅ Received / Delivered</span>`;
-                    } else if (rawStatus === "unsuccessful" || rawStatus === "failed" || rawStatus === "rejected") {
-                        badgeHtml = `<span class="status-badge status-unsuccessful">❌ Unsuccessful</span>`;
                     }
 
                     let dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString() : "N/A";
                     let actionBtn = (isViewingOwn && rawStatus === "pending") 
-                        ? `<br><button onclick="markClaimAsReceived('${item.id}')" class="btn-action-sm" style="margin-top:5px;">Mark Received</button>` 
+                        ? `<br><button onclick="markClaimAsReceived('${item.id}')" class="btn-save" style="margin-top:5px; padding:4px 8px; font-size:0.8rem; background:#28a745;">Mark Received</button>` 
                         : '';
 
                     html += `
@@ -1027,7 +1030,7 @@
         }
 
         // ==========================================
-        // 4. XDRG AI ASSISTANT SYSTEM
+        // 6. XDRG AI ASSISTANT SYSTEM
         // ==========================================
 
         function getAIChats() {
@@ -1050,7 +1053,7 @@
                     title: "New Conversation",
                     messages: [{
                         role: "assistant",
-                        text: "Kumusta! I am **XDRG AI**, the official intelligent assistant for RedGalaxy Studio & NebulaForge Studio. I fully understand English, Tagalog, and Taglish! Ask me about unit values, shop calculations, delivery history, coding/scripts, or game releases."
+                        text: "Hello! I am **XDRG AI**, the official intelligent assistant for RedGalaxy Studio & NebulaForge Studio. Ask me about unit values, shop calculations, delivery history, coding/scripts, or game releases."
                     }]
                 };
                 chats.push(newChat);
@@ -1074,7 +1077,7 @@
                 title: "New Conversation",
                 messages: [{
                     role: "assistant",
-                    text: "Kumusta! Ask me anything about our games, unit values, claim history, calculations, or coding!"
+                    text: "Hello! Ask me anything about our studio games, unit values, claim history, calculations, or coding!"
                 }]
             };
             chats.unshift(newChat);
@@ -1140,13 +1143,13 @@
                                     <option value="Xdrg Lite" ${currentAIModel === 'Xdrg Lite' ? 'selected' : ''}>Model: Xdrg Lite (Compact)</option>
                                 </select>
                             </div>
-                            <span style="font-size:0.8rem; color:#54595d;">Language: Multilingual (English / Tagalog)</span>
+                            <span style="font-size:0.8rem; color:#54595d;">Language: Multilingual Assistant</span>
                         </div>
 
                         <div class="ai-messages-container" id="aiMsgContainer">${messagesHtml}</div>
 
                         <form onsubmit="handleAISend(event)" class="ai-input-bar">
-                            <input type="text" id="aiUserInput" placeholder="Ask XDRG AI anything in English or Tagalog..." autocomplete="off" required>
+                            <input type="text" id="aiUserInput" placeholder="Ask XDRG AI anything about our games, scripts, or trade system..." autocomplete="off" required>
                             <button type="submit" class="ai-send-btn">Send</button>
                         </form>
                     </div>
@@ -1191,24 +1194,25 @@
             if (p.includes("claim") || p.includes("pending") || p.includes("received") || p.includes("delivery")) {
                 responseText = `📦 **Delivery History & Claim Status Help:**\n\n` +
                     `1. **Pending Status:** Your reward request is registered. When you join the game server, the auto-giver bot delivers it to your backpack.\n` +
-                    `2. **Marking Received:** Go to **📜 Claim Delivery History** in the sidebar. Click **'Mark Received'** to finalize delivery!\n` +
+                    `2. **Marking Received:** Go to **📜 Claim Delivery History** under **[Help]** in the sidebar. Click **'Mark Received'** to finalize delivery!\n` +
                     `3. **Privacy:** Adjust your delivery history visibility under **⚙️ Profile & Privacy Settings**.`;
-            } else if (p.includes("owner") || p.includes("admin") || p.includes("staff")) {
-                responseText = `👑 **Studio Leadership:**\n\n` +
+            } else if (p.includes("owner") || p.includes("admin") || p.includes("staff") || p.includes("mod")) {
+                responseText = `👑 **Studio Leadership & Staff Team:**\n\n` +
                     `• **Owners:** Dev_Xdragon & LumeCraftor\n` +
                     `• **Head-Admin:** Vincent Magtolis\n` +
-                    `• **Admin:** Jayson Areglo, Summere Castrence`;
+                    `• **Admins:** Jayson Areglo, Summere Castrence, Jeric Caido, Han Christian\n` +
+                    `• **Moderators:** Liam Platon, Nielo Armas`;
             } else {
                 responseText = `🤖 **[${model} Reasoning Engine]**\n\n` +
                     `I received your query regarding "*${userPrompt}*".\n\n` +
-                    `How can I assist you further with unit values, claim status tracking, or studio development?`;
+                    `How can I assist you further with unit values, claim status tracking, or game releases?`;
             }
 
             return { role: "assistant", text: responseText };
         }
 
         // ==========================================
-        // 5. QUESTS, POLLS AND REWARD CLAIM LOGIC
+        // 7. QUESTS, POLLS AND REWARD CLAIM LOGIC
         // ==========================================
 
         async function renderQuestsPage() {
@@ -1287,9 +1291,6 @@
                         if (poll.description) {
                             pollHtml += `<p style="font-size:0.9rem; color:#54595d; margin-top:0; margin-bottom:10px;">${poll.description}</p>`;
                         }
-                        if (poll.image) {
-                            pollHtml += `<img src="${poll.image}" alt="Poll Image" style="max-width:100%; border-radius:4px; margin-bottom:10px; border: 1px solid #a2a9b1;">`;
-                        }
                         pollHtml += `<div style="display:flex; flex-direction:column; gap:8px;">`;
                         
                         poll.options.forEach(opt => {
@@ -1311,9 +1312,6 @@
                         `;
                         if (poll.description) {
                             pollHtml += `<p style="font-size:0.9rem; color:#54595d; margin-top:0; margin-bottom:10px;">${poll.description}</p>`;
-                        }
-                        if (poll.image) {
-                            pollHtml += `<img src="${poll.image}" alt="Poll Image" style="max-width:100%; border-radius:4px; margin-bottom:10px; border: 1px solid #a2a9b1;">`;
                         }
                         pollHtml += `<div style="display:flex; flex-direction:column; gap:8px;">`;
                         
@@ -1475,7 +1473,6 @@
             
             if(poll) {
                 poll.options[optionIndex].votes += 1;
-                
                 localStorage.setItem('app_polls_db', JSON.stringify(polls));
                 
                 currentUser.lastVoteTime = now;
@@ -1491,7 +1488,7 @@
         }
 
         // ==========================================
-        // 6. SETTINGS, OWNER NOTIFICATIONS & ADMIN
+        // 8. SETTINGS & ADMIN CONTROLS
         // ==========================================
 
         function openSettings() {
@@ -1524,6 +1521,26 @@
 
             let html = `
                 <div class="settings-section">
+            `;
+
+            // OWNER GLOBAL PUSH NOTIFICATION RED BOX
+            if (isOwner) {
+                html += `
+                    <div class="owner-push-box">
+                        <h4>🔴 Owner Global Push Notification Sender</h4>
+                        <p style="font-size:0.85rem; color:#721c24; margin-top:2px; margin-bottom:12px;">
+                            Send real-time system alerts & native device push notifications directly to all site visitors.
+                        </p>
+                        <input type="text" id="pushTitleInput" placeholder="Notification Title (e.g. 🚀 Game Update Announcement)">
+                        <textarea id="pushMessageInput" rows="3" placeholder="Notification Message (e.g. New units and features are live now!)"></textarea>
+                        <button type="button" class="btn-owner-push" onclick="sendGlobalPushNotificationFromOwner()">
+                            Send Notification to All Users
+                        </button>
+                    </div>
+                `;
+            }
+
+            html += `
                     <div style="display:flex; align-items:center; gap:15px; margin-bottom: 20px; background:#f8f9fa; border:1px solid #a2a9b1; padding:15px; border-radius:6px;">
                         <img id="settingsAvatarImg" src="${avatarUrl}" referrerpolicy="no-referrer" style="width:70px; height:70px; border-radius:50%; border:3px solid #3366cc; object-fit:cover;" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
                         <div>
@@ -1552,40 +1569,8 @@
                         <input type="password" id="setUserPass" value="${user.password || ''}">
                     </div>
                     
-                    <div class="settings-row checkbox-row" style="margin-bottom: 25px;">
-                        <input type="checkbox" id="setDesktop" ${user.desktop ? 'checked' : ''}> 
-                        <label for="setDesktop">Desktop View Mode</label>
-                    </div>
-                    
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
             `;
-
-            // RED BOX: OWNER GLOBAL PUSH NOTIFICATION SENDER
-            if (isOwner) {
-                html += `
-                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
-
-                    <div class="admin-box" style="background:#fff0f0; border:2px solid #dc3545; margin-bottom:25px;">
-                        <h4 style="color:#c82333; margin-top:0; display:flex; align-items:center; gap:8px;">
-                            📢 Owner Global Push Notification Sender
-                        </h4>
-                        <p style="font-size:0.82rem; color:#54595d; margin-top:0; margin-bottom:12px;">
-                            Broadcast a system push notification & banner alert instantly to all active visitors across all devices.
-                        </p>
-                        <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Notification Title:</label>
-                            <input type="text" id="notifTitle" placeholder="e.g. 🚀 Major System Update Released!" style="margin-top:4px;">
-                        </div>
-                        <div style="margin-bottom:12px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Notification Message:</label>
-                            <input type="text" id="notifMessage" placeholder="e.g. Crystal Collecting Simulator is live now!" style="margin-top:4px;">
-                        </div>
-                        <button class="btn-save" style="background-color:#dc3545; width:100%; font-size:0.95rem; padding:10px;" onclick="sendGlobalNotification()">
-                            Send Notification to All Users
-                        </button>
-                    </div>
-                `;
-            }
 
             if (isAdmin) {
                 html += `
@@ -1595,19 +1580,15 @@
                         <h4>🛠️ Admin Controls: Create New Vote/Poll</h4>
                         <div style="margin-bottom:10px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Poll Title:</label>
-                            <input type="text" id="newPollTitle" placeholder="e.g. What should we add next?" style="margin-top:4px;">
+                            <input type="text" id="newPollTitle" placeholder="e.g. What game update should we add next?" style="margin-top:4px;">
                         </div>
                         <div style="margin-bottom:10px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Description:</label>
-                            <input type="text" id="newPollDesc" placeholder="e.g. Vote for the upcoming changes!" style="margin-top:4px;">
-                        </div>
-                        <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Poll Image:</label>
-                            <input type="file" id="newPollImage" accept="image/*" style="margin-top:4px; padding: 4px; background: #fff;">
+                            <input type="text" id="newPollDesc" placeholder="e.g. Vote for upcoming features!" style="margin-top:4px;">
                         </div>
                         <div style="margin-bottom:12px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Comma-separated options:</label>
-                            <input type="text" id="newPollOptions" placeholder="e.g. Map, Crystals, Pets" style="margin-top:4px;">
+                            <input type="text" id="newPollOptions" placeholder="e.g. New Map, Crystals, Pets" style="margin-top:4px;">
                         </div>
                         <button class="btn-save" style="background-color:#28a745; width:100%; font-size:0.95rem; padding:10px;" onclick="createPoll()">
                             Create Poll
@@ -1626,17 +1607,6 @@
                         </div>
                         <button class="btn-save" style="background-color:#28a745; width:100%; font-size:0.95rem; padding:10px;" onclick="grantCoinsToUser()">
                             Confirm Grant Coins
-                        </button>
-                    </div>
-
-                    <div class="admin-box" style="background:#fff9e6; border-color:#ffe0b2;">
-                        <h4>👑 Admin Controls: Promote User to Admin</h4>
-                        <div style="margin-bottom:12px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID, Username, or Gmail:</label>
-                            <input type="text" id="promoteTargetIdentifier" placeholder="e.g. 9676166807 OR user@gmail.com" style="margin-top:4px;">
-                        </div>
-                        <button class="btn-save" style="background-color:#f0ad4e; width:100%; font-size:0.95rem; padding:10px;" onclick="promoteUserToAdmin()">
-                            Promote User to Admin
                         </button>
                     </div>
                 `;
@@ -1681,7 +1651,6 @@
             const title = document.getElementById('newPollTitle').value.trim();
             const desc = document.getElementById('newPollDesc').value.trim();
             const optionsStr = document.getElementById('newPollOptions').value.trim();
-            const imageInput = document.getElementById('newPollImage');
             
             if(!title || !optionsStr) {
                 alert("❌ Please enter both a title and options for the poll!");
@@ -1694,30 +1663,17 @@
                 return;
             }
 
-            const saveAndRenderPoll = (imgBase64) => {
-                let polls = safeGetJSON('app_polls_db', []);
-                polls.unshift({
-                    id: 'poll_' + Date.now(),
-                    title: title,
-                    description: desc,
-                    image: imgBase64,
-                    options: options
-                });
-                
-                localStorage.setItem('app_polls_db', JSON.stringify(polls));
-                alert("✅ Poll created successfully!");
-                openQuests(); 
-            };
-
-            if (imageInput.files && imageInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    saveAndRenderPoll(e.target.result);
-                };
-                reader.readAsDataURL(imageInput.files[0]);
-            } else {
-                saveAndRenderPoll(null);
-            }
+            let polls = safeGetJSON('app_polls_db', []);
+            polls.unshift({
+                id: 'poll_' + Date.now(),
+                title: title,
+                description: desc,
+                options: options
+            });
+            
+            localStorage.setItem('app_polls_db', JSON.stringify(polls));
+            alert("✅ Poll created successfully!");
+            openQuests(); 
         }
 
         function grantCoinsToUser() {
@@ -1745,11 +1701,6 @@
 
             if (foundIndex !== -1) {
                 const targetUser = allUsers[foundIndex];
-                
-                if (isOwnerAccount(targetUser)) {
-                    alert(`ℹ️ Note: ${targetUser.displayName || targetUser.name} is an Owner with Infinity ♾️ balance! Numerical value updated.`);
-                }
-
                 allUsers[foundIndex].points = (allUsers[foundIndex].points || 0) + coinsToAdd;
                 
                 if (currentUser && (
@@ -1765,51 +1716,7 @@
                 alert(`✅ Granted ${coinsToAdd} coins to ${targetUser.displayName || targetUser.username || targetUser.name}!`);
                 renderSettingsPage();
             } else {
-                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
-            }
-        }
-
-        function promoteUserToAdmin() {
-            const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim().toLowerCase();
-            if (!targetInput) { 
-                alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); 
-                return; 
-            }
-
-            let allUsers = safeGetJSON('app_users_db', []);
-            let foundIndex = allUsers.findIndex(u => 
-                String(u.rblxUserId || '').trim().toLowerCase() === targetInput || 
-                (u.gmail || '').toLowerCase().trim() === targetInput ||
-                (u.username || '').toLowerCase().trim() === targetInput ||
-                (u.name || '').toLowerCase().trim() === targetInput
-            );
-
-            if (foundIndex !== -1) {
-                const targetUser = allUsers[foundIndex];
-                
-                if (isOwnerAccount(targetUser)) {
-                    alert(`👑 ${targetUser.displayName || targetUser.name} is an Owner! Owner accounts hold full privileges.`);
-                    return;
-                }
-
-                allUsers[foundIndex].isAdmin = true;
-                allUsers[foundIndex].role = 'Admin';
-                
-                if (currentUser && (
-                    String(currentUser.rblxUserId) === String(allUsers[foundIndex].rblxUserId) || 
-                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundIndex].gmail || '').toLowerCase()
-                )) {
-                    currentUser.isAdmin = true;
-                    currentUser.role = 'Admin';
-                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
-                }
-                
-                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                updateUserStatusHeader();
-                alert(`👑 User @${allUsers[foundIndex].username || allUsers[foundIndex].name} promoted to Admin!`);
-                renderSettingsPage();
-            } else {
-                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
+                alert("❌ Target user not found in database.");
             }
         }
 
@@ -1820,7 +1727,6 @@
 
                 currentUser.username = newUsername;
                 currentUser.password = newPassword;
-                currentUser.desktop = document.getElementById('setDesktop').checked;
                 
                 saveUserData();
                 updateUserStatusHeader();
@@ -1835,8 +1741,22 @@
             renderBrainrotsPage();
         }
 
+        // ==========================================
+        // 9. GAME WIKI PAGES WITH PLAY LINKS
+        // ==========================================
+
         function renderBrainrotsPage() {
             let html = `
+                <div style="background:#eaf3ff; border:1px solid #a7d7f9; padding:15px; border-radius:6px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h3 style="margin:0; color:#005a9c;">🎮 Play Don't Crash By Train For Brainrots</h3>
+                        <p style="margin:4px 0 0 0; color:#54595d; font-size:0.85rem;">Click the button to join the Roblox experience directly.</p>
+                    </div>
+                    <a href="https://www.roblox.com/share?code=1483f284c605034c99ef45593524c6f9&type=ExperienceDetails&stamp=1789062103029" target="_blank" class="btn-claim" style="margin:0;">
+                        Play Game on Roblox 🚀
+                    </a>
+                </div>
+
                 <div class="infobox">
                     <b>Game Mechanics</b>
                     <hr style="margin:5px 0;">
@@ -1849,7 +1769,7 @@
                         <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
                     </select>
                 </div>
-                <p>This page documents the characters and shop items found in Don't Crash Train For Brainrots. Values shown reflect the current mutation modifier.</p>
+                <p>This page documents the characters and shop items found in <b>Don't Crash By Train For Brainrots</b>. Values reflect current mutation modifiers.</p>
             `;
 
             categories.forEach(cat => {
@@ -1919,24 +1839,33 @@
             const releaseDate = new Date("2026-09-06T13:00:00+08:00").getTime();
             const now = Date.now();
             
+            let gameLinkHtml = `
+                <div style="background:#eaf3ff; border:1px solid #a7d7f9; padding:15px; border-radius:6px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h3 style="margin:0; color:#005a9c;">🎮 Play Crystal Collecting Simulator</h3>
+                        <p style="margin:4px 0 0 0; color:#54595d; font-size:0.85rem;">Click to join the Roblox experience directly.</p>
+                    </div>
+                    <a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" class="btn-claim" style="margin:0;">
+                        Play Game on Roblox 🚀
+                    </a>
+                </div>
+            `;
+
             if (now < releaseDate) {
-                document.getElementById('pageContent').innerHTML = `
+                document.getElementById('pageContent').innerHTML = gameLinkHtml + `
                     <div class="error-container">
-                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-bottom:15px;">Try Again</button>
-                        <p style="font-weight:bold; color:#54595d;">Loading video...</p>
+                        <p style="font-weight:bold; color:#54595d;">Release Status:</p>
                         <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" style="max-width:100%; border:2px solid #202122; border-radius:4px; margin-bottom:20px;">
-                        <div class="error-title" style="font-size:1.1rem; margin-bottom:15px; font-family:Georgia, serif;">
-                            (Lume Craftor announced that the game will be released on September 6, 2026, at 1:00 PM)
+                        <div class="error-title" style="font-size:1.1rem; margin-bottom:15px;">
+                            LumeCraftor announced that the game will be released on September 6, 2026, at 1:00 PM.
                         </div>
-                        <div class="error-mod" style="font-size:1.05rem; color:#005a9c; margin-bottom:25px; padding:10px; background-color:#eaf3ff; border-left:5px solid #005a9c; display:inline-block; font-weight:bold;">
-                            (Moderator Action: Admin Abuse will start 30 minutes after the release. See y'all on September 6, 2026, at 1:00 PM)
+                        <div class="error-mod" style="font-size:1.05rem;">
+                            Moderator Action: Admin Abuse event will start 30 minutes after official release!
                         </div>
-                        <br>
-                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-top:15px;">Try Again</button>
                     </div>
                 `;
             } else {
-                document.getElementById('pageContent').innerHTML = `
+                document.getElementById('pageContent').innerHTML = gameLinkHtml + `
                     <h2>[Pickaxes]</h2>
                     <table class="wikitable">
                         <tr>
@@ -1945,12 +1874,12 @@
                             <th width="25%">Durability</th>
                             <th width="25%">Price</th>
                         </tr>
-                        <tr><td><b>wooden pickaxe</b></td><td>2</td><td>100</td><td>100</td></tr>
-                        <tr><td><b>copper pickaxe</b></td><td>4</td><td>350</td><td>500</td></tr>
-                        <tr><td><b>stone pickaxe</b></td><td>2</td><td>200</td><td>1500</td></tr>
-                        <tr><td><b>iron pickaxe</b></td><td>5</td><td>500</td><td>3950</td></tr>
-                        <tr><td><b>emerald pickaxe</b></td><td>6</td><td>750</td><td>5500</td></tr>
-                        <tr><td><b>Harder pickaxe</b></td><td>7</td><td>1000</td><td>8500</td></tr>
+                        <tr><td><b>Wooden Pickaxe</b></td><td>2</td><td>100</td><td>100</td></tr>
+                        <tr><td><b>Copper Pickaxe</b></td><td>4</td><td>350</td><td>500</td></tr>
+                        <tr><td><b>Stone Pickaxe</b></td><td>2</td><td>200</td><td>1,500</td></tr>
+                        <tr><td><b>Iron Pickaxe</b></td><td>5</td><td>500</td><td>3,950</td></tr>
+                        <tr><td><b>Emerald Pickaxe</b></td><td>6</td><td>750</td><td>5,500</td></tr>
+                        <tr><td><b>Harder Pickaxe</b></td><td>7</td><td>1,000</td><td>8,500</td></tr>
                     </table>
 
                     <h2>[Crystals]</h2>
@@ -1961,10 +1890,10 @@
                             <th width="25%">Damage</th>
                             <th width="25%">Price</th>
                         </tr>
-                        <tr><td><b>wooden crystal</b></td><td>7</td><td>8</td><td>80</td></tr>
-                        <tr><td><b>acorn crystal</b></td><td>10</td><td>20</td><td>240</td></tr>
-                        <tr><td><b>rocks crystal</b></td><td>14</td><td>39</td><td>349</td></tr>
-                        <tr><td><b>mushroom crystal</b></td><td>8</td><td>14</td><td>200</td></tr>
+                        <tr><td><b>Wooden Crystal</b></td><td>7</td><td>8</td><td>80</td></tr>
+                        <tr><td><b>Acorn Crystal</b></td><td>10</td><td>20</td><td>240</td></tr>
+                        <tr><td><b>Rocks Crystal</b></td><td>14</td><td>39</td><td>349</td></tr>
+                        <tr><td><b>Mushroom Crystal</b></td><td>8</td><td>14</td><td>200</td></tr>
                     </table>
                 `;
             }
