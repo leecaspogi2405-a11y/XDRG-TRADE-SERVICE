@@ -40,6 +40,7 @@
         .notif-item.unread { background: #eaf3ff; font-weight: 500; }
         .notif-item .notif-title { font-weight: bold; color: #005a9c; margin-bottom: 2px; }
         .notif-item .notif-time { font-size: 0.72rem; color: #72777d; margin-top: 4px; }
+        .notif-msg a { color: #005a9c; font-weight: bold; text-decoration: underline; word-break: break-all; }
 
         h1 { font-family: 'Georgia', serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
         h2 { font-family: 'Georgia', serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
@@ -106,7 +107,7 @@
         
         .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; }
-        .admin-box input, .admin-box textarea { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; font-family: inherit; }
+        .admin-box input, .admin-box textarea, .admin-box select { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; font-family: inherit; }
         .reward-select { width: 100%; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-weight: bold; margin-top: 8px; margin-bottom: 10px; }
 
         /* ROLE BADGES */
@@ -121,6 +122,8 @@
 
         .btn-action-sm { padding: 4px 10px; font-size: 0.8rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-action-sm:hover { background-color: #218838; }
+        .btn-action-sm.paid { background-color: #6c757d; cursor: default; }
+        .btn-action-sm.paid:hover { background-color: #6c757d; }
 
         /* CASH OUT & MONETIZATION STYLES */
         .cashout-card { background: #f8f9fa; border: 1px solid #a2a9b1; padding: 20px; border-radius: 8px; max-width: 500px; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
@@ -469,6 +472,14 @@
             }, 300);
         }
 
+        function linkify(text) {
+            if (!text) return '';
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, function(url) {
+                return `<a href="${url}" target="_blank">${url}</a>`;
+            });
+        }
+
         window.onload = () => {
             try {
                 // Request Push Notification Permissions
@@ -524,33 +535,71 @@
 
         async function syncRealtimeDatabase() {
             try {
-                // 1. Sync Notifications
+                let newNotifList = [];
+
+                // 1. Fetch Global Notifications
                 const notifRes = await fetch(`${FIREBASE_BASE_URL}/notifications.json`);
                 if (notifRes.ok) {
                     const notifData = await notifRes.json();
-                    let newNotifList = [];
                     if (notifData) {
                         Object.keys(notifData).forEach(id => {
                             newNotifList.push({ id, ...notifData[id] });
                         });
-                        newNotifList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
                     }
+                }
 
-                    // Check for newly pushed notifications to trigger native Browser Push
-                    if (globalNotifications.length > 0 && newNotifList.length > globalNotifications.length) {
-                        const latest = newNotifList[0];
-                        if ("Notification" in window && Notification.permission === "granted") {
-                            new Notification(latest.title || "New Update", {
-                                body: latest.message || "New activity recorded!",
-                                icon: DEFAULT_AVATAR
+                // 2. Fetch User-Specific Notifications if logged in
+                if (currentUser) {
+                    const identifiers = [
+                        String(currentUser.rblxUserId || '').toLowerCase(),
+                        (currentUser.gmail || '').toLowerCase(),
+                        (currentUser.username || '').toLowerCase()
+                    ];
+                    for (const id of identifiers) {
+                        if (!id) continue;
+                        const safeId = encodeURIComponent(id);
+                        const uRes = await fetch(`${FIREBASE_BASE_URL}/user_notifications/${safeId}.json`);
+                        if (uRes.ok) {
+                            const uData = await uRes.json();
+                            if (uData) {
+                                Object.keys(uData).forEach(key => {
+                                    newNotifList.push({ id: key, ...uData[key] });
+                                });
+                            }
+                        }
+                    }
+                }
+
+                // 3. Fetch Owner Alerts (Cash Out Requests) if user is Owner
+                if (currentUser && isOwnerAccount(currentUser)) {
+                    const ownerAlertRes = await fetch(`${FIREBASE_BASE_URL}/owner_alerts.json`);
+                    if (ownerAlertRes.ok) {
+                        const alertData = await ownerAlertRes.json();
+                        if (alertData) {
+                            Object.keys(alertData).forEach(id => {
+                                newNotifList.push({ id, ...alertData[id], isOwnerAlert: true });
                             });
                         }
                     }
-                    globalNotifications = newNotifList;
-                    renderNotificationDropdown();
                 }
 
-                // 2. Sync Polls
+                // Sort combined by timestamp descending
+                newNotifList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                // Check for newly pushed notifications to trigger native Browser Push
+                if (globalNotifications.length > 0 && newNotifList.length > globalNotifications.length) {
+                    const latest = newNotifList[0];
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification(latest.title || "New Update", {
+                            body: latest.message || "New activity recorded!",
+                            icon: DEFAULT_AVATAR
+                        });
+                    }
+                }
+                globalNotifications = newNotifList;
+                renderNotificationDropdown();
+
+                // 4. Sync Polls
                 const pollRes = await fetch(`${FIREBASE_BASE_URL}/polls.json`);
                 if (pollRes.ok) {
                     const pollData = await pollRes.json();
@@ -564,7 +613,7 @@
                     localStorage.setItem('app_polls_db', JSON.stringify(globalPolls));
                 }
 
-                // 3. Sync Cash Outs (For Owner Alerts)
+                // 5. Sync Cash Outs (For Owner Dashboard)
                 if (currentUser && isOwnerAccount(currentUser)) {
                     const cashRes = await fetch(`${FIREBASE_BASE_URL}/cashouts.json`);
                     if (cashRes.ok) {
@@ -576,6 +625,11 @@
                             });
                         }
                         globalCashOuts = cashList;
+
+                        // Auto-refresh Owner Cash Out page if it's currently open
+                        if (document.getElementById('pageTitle').innerText.includes('Cash Out')) {
+                            renderCashOutPage();
+                        }
                     }
                 }
             } catch (e) {
@@ -612,7 +666,7 @@
                 html += `
                     <li class="notif-item ${isRead ? '' : 'unread'}">
                         <div class="notif-title">${n.title || 'Studio Update'}</div>
-                        <div>${n.message || ''}</div>
+                        <div class="notif-msg">${linkify(n.message || '')}</div>
                         <div class="notif-time">${dateStr}</div>
                     </li>
                 `;
@@ -641,9 +695,16 @@
 
             const title = document.getElementById('ownerNotifTitle').value.trim();
             const message = document.getElementById('ownerNotifMsg').value.trim();
+            const audience = document.getElementById('ownerNotifAudience').value;
+            const targetInput = document.getElementById('ownerNotifTarget').value.trim().toLowerCase();
 
             if (!title || !message) {
                 alert("❌ Please fill in both the notification Title and Message!");
+                return;
+            }
+
+            if (audience === 'specific' && !targetInput) {
+                alert("❌ Please enter a target Email, Roblox ID, or Username for specific audience!");
                 return;
             }
 
@@ -656,18 +717,46 @@
                 timestamp: Date.now()
             };
 
+            let endpoint = `${FIREBASE_BASE_URL}/notifications/${notifId}.json`;
+            if (audience === 'specific') {
+                const safeTarget = encodeURIComponent(targetInput);
+                endpoint = `${FIREBASE_BASE_URL}/user_notifications/${safeTarget}/${notifId}.json`;
+            }
+
             try {
-                await fetch(`${FIREBASE_BASE_URL}/notifications/${notifId}.json`, {
+                await fetch(endpoint, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(notifData)
                 });
-                alert("📢 Global Push Notification broadcasted to all users!");
+                
+                const successMsg = audience === 'specific' 
+                    ? `📢 Notification sent to ${targetInput} successfully!` 
+                    : "📢 Global Push Notification broadcasted to all users!";
+                
+                alert(successMsg);
                 document.getElementById('ownerNotifTitle').value = "";
                 document.getElementById('ownerNotifMsg').value = "";
+                document.getElementById('ownerNotifTarget').value = "";
                 syncRealtimeDatabase();
             } catch (e) {
                 alert("❌ Failed to push notification. Check network connection.");
+            }
+        }
+
+        async function updateCashOutStatus(cashOutId, newStatus) {
+            if (!currentUser || !isOwnerAccount(currentUser)) return;
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/cashouts/${cashOutId}/status.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(newStatus)
+                });
+                alert(`✅ Cash out marked as ${newStatus}!`);
+                syncRealtimeDatabase(); // Refresh data
+                renderCashOutPage();
+            } catch(e) {
+                alert("❌ Error updating cash out status.");
             }
         }
 
@@ -1007,17 +1096,36 @@
                                 <th>Holder Name</th>
                                 <th>Account Number</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                 `;
                 globalCashOuts.forEach(c => {
+                    let statusBadge = `<span class="status-badge status-pending">${c.status || 'Pending Review'}</span>`;
+                    let actionBtn = '';
+
+                    if ((c.status || '').toLowerCase() === 'completed') {
+                        statusBadge = `<span class="status-badge status-successful">✅ Completed</span>`;
+                        actionBtn = `<span style="color:#28a745; font-weight:bold;">Paid</span>`;
+                    } else {
+                        actionBtn = `<button class="btn-action-sm" onclick="updateCashOutStatus('${c.id}', 'Completed')">Mark as Done</button>`;
+                    }
+
+                    // Safely handle undefined values from legacy DB records
+                    // Mapped to the exact keys present in your Firebase screenshot
+                    const displayAmount = c.amount !== undefined ? c.amount : (c.amountPHP !== undefined ? c.amountPHP : 'Not Provided');
+                    const displayMethod = c.method || c.provider || 'Not Provided';
+                    const displayHolder = c.holderName || c.accountName || 'Not Provided';
+                    const displayAccount = c.accountNumber || 'Not Provided';
+
                     html += `
                         <tr>
                             <td><b>${c.username || 'User'}</b></td>
-                            <td>₱${c.amount}</td>
-                            <td>${c.method}</td>
-                            <td>${c.holderName}</td>
-                            <td><code>${c.accountNumber}</code></td>
-                            <td><span class="status-badge status-pending">${c.status || 'Pending Review'}</span></td>
+                            <td>₱${displayAmount}</td>
+                            <td>${displayMethod}</td>
+                            <td>${displayHolder}</td>
+                            <td><code>${displayAccount}</code></td>
+                            <td>${statusBadge}</td>
+                            <td>${actionBtn}</td>
                         </tr>
                     `;
                 });
@@ -1033,23 +1141,34 @@
 
             const holderName = document.getElementById('cashOutName').value.trim();
             const accountNumber = document.getElementById('cashOutNumber').value.trim();
-            const requiredCoins = selectedCashOutAmount * 10000;
+            const amountToCashOut = parseInt(selectedCashOutAmount) || 3;
+            const methodToUse = selectedPaymentMethod || 'GCash';
+
+            if (!holderName || !accountNumber) {
+                alert("❌ Please fill in your Account Holder Name and Account Number!");
+                return;
+            }
+            
+            const requiredCoins = amountToCashOut * 10000;
             const isOwner = isOwnerAccount(currentUser);
 
             if (!isOwner && (currentUser.points || 0) < requiredCoins) {
-                alert(`❌ Insufficient Coins! You need ${requiredCoins.toLocaleString()} Coins to cash out ₱${selectedCashOutAmount}. Current Coins: ${(currentUser.points || 0).toLocaleString()}`);
+                alert(`❌ Insufficient Coins! You need ${requiredCoins.toLocaleString()} Coins to cash out ₱${amountToCashOut}. Current Coins: ${(currentUser.points || 0).toLocaleString()}`);
                 return;
             }
 
             const cashOutId = "CASHOUT-" + Date.now();
+            
+            // Using the EXACT keys from your Firebase screenshot structure
             const cashOutData = {
                 id: cashOutId,
                 username: currentUser.username || currentUser.name,
                 rblxUserId: currentUser.rblxUserId,
-                amount: selectedCashOutAmount,
-                method: selectedPaymentMethod,
-                holderName: holderName,
+                amountPHP: amountToCashOut,
+                provider: methodToUse,
+                accountName: holderName,
                 accountNumber: accountNumber,
+                requiredCoins: requiredCoins,
                 status: "Pending",
                 timestamp: Date.now()
             };
@@ -1069,20 +1188,20 @@
                     body: JSON.stringify(cashOutData)
                 });
 
-                // Trigger Owner Global Alert Notification on Firebase
-                const ownerNotifId = "NOTIF-CASH-" + Date.now();
-                await fetch(`${FIREBASE_BASE_URL}/notifications/${ownerNotifId}.json`, {
+                // Trigger Owner-Only Alert Notification on Firebase
+                const ownerNotifId = "OWNER-ALERT-" + Date.now();
+                await fetch(`${FIREBASE_BASE_URL}/owner_alerts/${ownerNotifId}.json`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         id: ownerNotifId,
                         title: "💰 New Cash Out Request",
-                        message: `@${currentUser.username} requested ₱${selectedCashOutAmount} via ${selectedPaymentMethod} (${accountNumber})`,
+                        message: `@${currentUser.username} requested ₱${amountToCashOut} via ${methodToUse}. Name: ${holderName}, Number: ${accountNumber}`,
                         timestamp: Date.now()
                     })
                 });
 
-                alert(`✅ Cash Out Request Submitted! ₱${selectedCashOutAmount} routed to Studio Owners for payout.`);
+                alert(`✅ Cash Out Request Submitted! ₱${amountToCashOut} routed to Studio Owners for payout.`);
                 renderCashOutPage();
             } catch (e) {
                 alert("❌ Request submission error. Check internet connection.");
@@ -1775,18 +1894,32 @@
                 html += `
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
                     <div class="admin-box" style="background:#fff0f0; border-color:#f5c6cb;">
-                        <h4 style="color:#c82333;">🔴 Owner Global Push Notification Sender</h4>
-                        <p style="font-size:0.8rem; color:#54595d; margin-top:0;">Broadcast a live browser push notification and banner alert to all online users.</p>
+                        <h4 style="color:#c82333;">🔴 Owner Notification Creator</h4>
+                        <p style="font-size:0.8rem; color:#54595d; margin-top:0;">Broadcast a live browser push notification and banner alert. You can send to Everyone or a Specific User.</p>
+                        
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Audience:</label>
+                            <select id="ownerNotifAudience" onchange="document.getElementById('ownerNotifTargetBox').style.display = this.value === 'specific' ? 'block' : 'none'">
+                                <option value="everyone">Everyone (Global)</option>
+                                <option value="specific">Specific User (Email/ID/Username)</option>
+                            </select>
+                        </div>
+
+                        <div id="ownerNotifTargetBox" style="display:none; margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Target User (Email, ID, or Username):</label>
+                            <input type="text" id="ownerNotifTarget" placeholder="e.g. user@gmail.com or 7680051058" style="margin-top:4px;">
+                        </div>
+
                         <div style="margin-bottom:10px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Notification Title:</label>
                             <input type="text" id="ownerNotifTitle" placeholder="e.g. Major Game Update Released!" style="margin-top:4px;">
                         </div>
                         <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Notification Message:</label>
+                            <label style="font-weight:bold; font-size:0.85rem;">Notification Message (Links will be clickable):</label>
                             <textarea id="ownerNotifMsg" rows="3" placeholder="Enter notification message text..." style="margin-top:4px;"></textarea>
                         </div>
                         <button class="btn-save" style="background-color:#dc3545; width:100%; font-size:0.95rem; padding:10px;" onclick="sendGlobalOwnerNotification()">
-                            Send Notification to All Users
+                            Send Notification
                         </button>
                     </div>
                 `;
