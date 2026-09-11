@@ -9,12 +9,12 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
-        .mw-sidebar { width: 230px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
+        .mw-sidebar { width: 240px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
         .mw-logo { display: block; font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
         .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; text-transform: uppercase; letter-spacing: 0.5px; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
-        .mw-sidebar li { margin-bottom: 8px; font-size: 0.85rem; }
-        .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .mw-sidebar li { margin-bottom: 6px; font-size: 0.85rem; }
+        .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; display: inline-block; }
         .mw-sidebar a:hover { text-decoration: underline; }
         
         .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; min-width: 800px; }
@@ -22,6 +22,12 @@
         
         .user-badge { display: flex; align-items: center; gap: 10px; }
         .user-avatar-small { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #3366cc; object-fit: cover; background: #eaf3ff; display: block; flex-shrink: 0; }
+
+        /* WIKIPEDIA NOTIFICATION BELL & BADGE STYLES */
+        .notif-bell-wrapper { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 4px; border: 1px solid #a2a9b1; background: #f8f9fa; transition: background 0.2s; }
+        .notif-bell-wrapper:hover { background: #eaf3ff; border-color: #3366cc; }
+        .notif-bell-svg { width: 20px; height: 20px; fill: #202122; }
+        .notif-badge-number { position: absolute; top: -5px; right: -5px; background-color: #d33; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.7rem; font-weight: bold; border: 2px solid #ffffff; line-height: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
         h1 { font-family: 'Georgia', serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
         h2 { font-family: 'Georgia', serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
@@ -46,7 +52,7 @@
         .settings-section { max-width: 600px; margin-top: 20px; }
         .settings-row { margin-bottom: 15px; }
         .settings-row label { display: block; font-weight: bold; margin-bottom: 5px; }
-        .settings-row input[type="text"], .settings-row input[type="password"], .settings-row input[type="number"], .settings-row textarea { width: 100%; max-width: 450px; padding: 8px; border: 1px solid #a2a9b1; border-radius: 4px; }
+        .settings-row input[type="text"], .settings-row input[type="password"], .settings-row input[type="number"] { width: 100%; max-width: 300px; padding: 8px; border: 1px solid #a2a9b1; border-radius: 4px; }
         .settings-row.checkbox-row { display: flex; align-items: center; gap: 10px; }
         .settings-row.checkbox-row label { margin-bottom: 0; }
         
@@ -59,68 +65,8 @@
         .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; }
         .btn-claim:hover { background-color: #218838; }
         
-        /* OWNER PUSH NOTIFICATION BOX */
-        .owner-push-box {
-            background-color: #fff0f0;
-            border: 2px solid #dc3545;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.15);
-        }
-        .owner-push-box h4 {
-            margin-top: 0;
-            color: #c82333;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* NOTIFICATION BADGE & INBOX STYLES */
-        .notif-badge-pill {
-            background-color: #dc3545;
-            color: #ffffff;
-            font-size: 0.75rem;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 10px;
-            line-height: 1;
-            display: inline-block;
-        }
-        .notif-card {
-            background: #ffffff;
-            border: 1px solid #a2a9b1;
-            border-left: 5px solid #3366cc;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            transition: all 0.2s ease;
-        }
-        .notif-card.unread {
-            background: #eaf3ff;
-            border-left-color: #dc3545;
-        }
-        .notif-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-        .notif-title {
-            font-weight: bold;
-            font-size: 1rem;
-            color: #202122;
-        }
-        .notif-time {
-            font-size: 0.75rem;
-            color: #72777d;
-        }
-        .notif-body {
-            color: #54595d;
-            line-height: 1.4;
-            font-size: 0.9rem;
-        }
+        .btn-roblox-play { display: inline-flex; align-items: center; gap: 8px; background-color: #00a2ff; color: white; font-weight: bold; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 0.95rem; margin-bottom: 15px; transition: background 0.2s; }
+        .btn-roblox-play:hover { background-color: #0082cc; color: white; }
 
         /* SOCIAL MEDIA STYLES */
         .social-links { list-style: none; padding: 0; font-size: 1rem; margin-top: 15px; }
@@ -153,8 +99,11 @@
         .alert-banner { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; text-align: center; font-weight: bold; }
         
         .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .owner-push-box { background: #fff0f0; border: 2px solid #dc3545; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .owner-push-box h4 { margin-top: 0; color: #bd2130; font-size: 1.05rem; }
+        
         .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; }
-        .admin-box input { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
+        .admin-box input, .owner-push-box input, .owner-push-box textarea { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
         .reward-select { width: 100%; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-weight: bold; margin-top: 8px; margin-bottom: 10px; }
 
         /* ROLE BADGES */
@@ -190,6 +139,12 @@
         .ai-input-bar { display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #eaecf0; padding-top: 10px; }
         .ai-input-bar input { flex: 1; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-size: 0.9rem; }
         .ai-send-btn { background: #3366cc; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+
+        /* WIKIPEDIA NOTIFICATION LIST STYLES */
+        .wiki-notif-card { background: #ffffff; border: 1px solid #a2a9b1; border-left: 4px solid #3366cc; padding: 12px 15px; border-radius: 4px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .wiki-notif-card.unread { background: #eaf3ff; border-left-color: #005a9c; font-weight: 500; }
+        .wiki-notif-title { font-weight: bold; font-size: 0.95rem; color: #202122; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .wiki-notif-time { font-size: 0.75rem; color: #54595d; font-weight: normal; }
 
         /* COOKIE BANNER STYLES */
         .cookie-banner {
@@ -265,7 +220,7 @@
     <!-- COOKIE & AD CONSENT BANNER -->
     <div id="cookieBanner" class="cookie-banner">
         <div>
-            This website contains advertisements and cookies. Do you consent to the developers of this Wiki Portal?
+            This website contains advertisements and uses cookies. Do you agree to allow them for this developer wiki website?
         </div>
         <button class="cookie-banner-btn" onclick="acceptCookies()">I Allow Cookies</button>
     </div>
@@ -345,33 +300,25 @@
                 <h3>Navigation</h3>
                 <ul>
                     <li><a onclick="openHome()">Main Page</a></li>
-                    <li><a onclick="openGame('brainrots')">Don't Crash Train For Brainrots</a></li>
                     <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
+                    <li><a onclick="openGame('brainrots')">Don't Crash By Train For Brainrots</a></li>
                 </ul>
 
                 <h3>Help</h3>
                 <ul>
-                    <li><a onclick="openXdrgAI()" style="font-weight:bold; color:#005a9c;">🤖 XDRG AI Assistant</a></li>
+                    <li><a onclick="openXdrgAI()" style="font-weight:bold; color:#005a9c;">🤖 XDRG AI ASSISTANT</a></li>
                     <li><a onclick="openQuests()">🎯 Quest and Trade Service</a></li>
                     <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
-                    <li><a onclick="openPolicy()" style="font-weight:bold; color:#0645ad;">📜 Terms of Policy</a></li>
+                    <li><a onclick="openPolicy()" style="font-weight:bold; color:#0645ad;">📜 Term of Policy</a></li>
+                    <li><a onclick="openNotificationInbox()">🔔 Notification Inbox</a></li>
                 </ul>
 
                 <h3>Account Settings</h3>
                 <ul>
                     <li><a onclick="openSettings()">⚙️ Profile & Privacy Settings</a></li>
-                    <li>
-                        <a onclick="openNotificationInbox()" style="font-weight:bold; color:#202122;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
-                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h10v2H7zm0-3h10v2H7zm0 6h7v2H7z"/>
-                            </svg>
-                            Notification Inbox
-                            <span id="sidebarNotifBadge" class="notif-badge-pill" style="display:none; margin-left: auto;">0</span>
-                        </a>
-                    </li>
                 </ul>
 
-                <h3>Staff / Team</h3>
+                <h3>Staff / Team's</h3>
                 <ul>
                     <li><b>Owner:</b><br>Dev_Xdragon / LumeCraftor</li>
                     <li style="margin-top:8px;"><b>Head-Admin:</b><br>Vincent Magtolis</li>
@@ -385,13 +332,16 @@
                     <div id="userStatus" class="user-badge">
                         <span>Not logged in</span>
                     </div>
+
                     <div style="display:flex; align-items:center; gap:15px;">
-                        <a onclick="openNotificationInbox()" style="cursor:pointer; display:flex; align-items:center; gap:5px; text-decoration:none; color:#202122; font-weight:bold;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#3366cc">
+                        <!-- REAL WIKIPEDIA BELL NOTIFICATION BUTTON WITH DYNAMIC BADGE NUMBER -->
+                        <div class="notif-bell-wrapper" onclick="openNotificationInbox()" title="Notification Inbox">
+                            <svg class="notif-bell-svg" viewBox="0 0 24 24">
                                 <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
                             </svg>
-                            <span id="topNotifBadge" class="notif-badge-pill" style="display:none;">0</span>
-                        </a>
+                            <span id="notifBadge" class="notif-badge-number" style="display:none;">0</span>
+                        </div>
+
                         <span><a onclick="logout()" style="color:#0645ad; cursor:pointer;">Log out</a></span>
                     </div>
                 </div>
@@ -413,7 +363,6 @@
 
         const FIREBASE_BASE_URL = "https://automation-giver-xdrg-default-rtdb.asia-southeast1.firebasedatabase.app";
         const FIREBASE_URL = `${FIREBASE_BASE_URL}/claims.json`;
-        const FIREBASE_NOTIFS_URL = `${FIREBASE_BASE_URL}/notifications.json`;
 
         // OWNER PRIVILEGE CONFIGURATION
         const OWNER_CONFIG = {
@@ -469,35 +418,62 @@
         let selectedCards = [];
         const emojis = ["🐱", "🐶", "🦊", "🐸", "🐵", "🦁"];
         let robloxDebounceTimer = null;
-        let notifPollInterval = null;
 
         /* AI GLOBAL STATE */
         let currentAIModel = "Xdrg Pro 3.5";
         let activeAIChatId = null;
 
         // ==========================================
-        // 2. HELPER & OWNER EVALUATION FUNCTIONS
+        // 2. HELPER & BROWSER NOTIFICATION FUNCTIONS
         // ==========================================
 
         function acceptCookies() {
             document.getElementById('cookieBanner').style.display = 'none';
         }
 
+        // REQUEST BROWSER PUSH NOTIFICATION PERMISSIONS
+        function requestNotificationPermission() {
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        console.log("Browser push notifications enabled!");
+                    }
+                });
+            }
+        }
+
+        // TRIGGER SYSTEM TOP-BAR / ANDROID PUSH NOTIFICATION
+        function triggerNativePushNotification(title, message) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                try {
+                    new Notification(title, {
+                        body: message,
+                        icon: "https://www.roblox.com/headshot-thumbnail/image?userId=7680051058&width=150&height=150&format=png",
+                        badge: "https://www.roblox.com/headshot-thumbnail/image?userId=7680051058&width=150&height=150&format=png",
+                        tag: "xdrg-global-announcement",
+                        renotify: true
+                    });
+                } catch(e) {
+                    console.warn("System Notification Dispatch Error:", e);
+                }
+            }
+        }
+
         function openPolicy() {
-            document.getElementById('pageTitle').innerText = "Terms of Policy";
+            document.getElementById('pageTitle').innerText = "Term of Policy";
             document.getElementById('pageContent').innerHTML = `
                 <div class="policy-card">
                     <h2 style="margin-top:0; color:#005a9c; border-bottom: 2px solid #3366cc; padding-bottom: 8px;">[Xdrg Policy]</h2>
                     <ol class="policy-list">
-                        <li>Do not copy or clone this website.</li>
-                        <li>Do not reveal private information such as Passwords or Secret Keys.</li>
-                        <li>Do not share your IP address or User ID to keep your privacy safe.</li>
-                        <li>Credit the official owners (Dev Xdragon, LumeCraftor).</li>
-                        <li>Respect all community members, Admins, and Moderators.</li>
-                        <li>Do not use XDRG AI to generate or query fake or inaccurate game details.</li>
+                        <li>Do not re-copy this website.</li>
+                        <li>Do not show your private information such as your Password, Secret Keys, etc.</li>
+                        <li>Don't share your Web IP or UID to keep your privacy safe.</li>
+                        <li>Credit the owners (Dev Xdragon, Lume Craftor).</li>
+                        <li>Respect all members including Admins and Moderators.</li>
+                        <li>Do not use XDRG AI to search up inaccurate or fake information from the game.</li>
                     </ol>
                     <div>
-                        <a onclick="openHome()" class="policy-back-btn">I Agree & Accept All Policies</a>
+                        <a onclick="openHome()" class="policy-back-btn">I follow all policies</a>
                     </div>
                 </div>
             `;
@@ -573,198 +549,10 @@
             }, 300);
         }
 
-        // ==========================================
-        // 3. PUSH NOTIFICATION & INBOX SYSTEM
-        // ==========================================
-
-        function requestNotificationPermission() {
-            if ("Notification" in window) {
-                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-                    Notification.requestPermission().then(permission => {
-                        console.log("Browser Notification Permission:", permission);
-                    });
-                }
-            }
-        }
-
-        function triggerNativePushNotification(title, body) {
-            if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    new Notification(title, {
-                        body: body,
-                        icon: 'https://cdn-icons-png.flaticon.com/512/1827/1827504.png',
-                        badge: 'https://cdn-icons-png.flaticon.com/512/1827/1827504.png'
-                    });
-                } catch (e) {
-                    console.warn("Mobile / ServiceWorker notification fallback:", e);
-                }
-            }
-        }
-
-        function getUserNotifications() {
-            if (!currentUser) return [];
-            return safeGetJSON(`user_notifications_${currentUser.rblxUserId}`, []);
-        }
-
-        function saveUserNotifications(notifications) {
-            if (!currentUser) return;
-            localStorage.setItem(`user_notifications_${currentUser.rblxUserId}`, JSON.stringify(notifications));
-            updateNotificationBadges();
-        }
-
-        function updateNotificationBadges() {
-            const notifs = getUserNotifications();
-            const unreadCount = notifs.filter(n => !n.read).length;
-            
-            const sidebarBadge = document.getElementById('sidebarNotifBadge');
-            const topBadge = document.getElementById('topNotifBadge');
-
-            if (sidebarBadge) {
-                sidebarBadge.innerText = unreadCount;
-                sidebarBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
-            }
-            if (topBadge) {
-                topBadge.innerText = unreadCount;
-                topBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
-            }
-        }
-
-        async function pollGlobalNotifications() {
-            if (!currentUser) return;
-            try {
-                const res = await fetch(FIREBASE_NOTIFS_URL);
-                if (res.ok) {
-                    const data = (await res.json()) || {};
-                    let localNotifs = getUserNotifications();
-                    let newArrivalCount = 0;
-
-                    Object.keys(data).forEach(id => {
-                        const item = data[id];
-                        if (item && !localNotifs.some(n => n.id === id)) {
-                            const newNotif = {
-                                id: id,
-                                title: item.title || "Studio Announcement",
-                                message: item.message || "",
-                                timestamp: item.timestamp || Date.now(),
-                                read: false
-                            };
-                            localNotifs.unshift(newNotif);
-                            newArrivalCount++;
-                            triggerNativePushNotification(newNotif.title, newNotif.message);
-                        }
-                    });
-
-                    if (newArrivalCount > 0) {
-                        saveUserNotifications(localNotifs);
-                    }
-                }
-            } catch (err) {
-                console.warn("Notification polling offline:", err);
-            }
-        }
-
-        function startNotificationListener() {
-            requestNotificationPermission();
-            pollGlobalNotifications();
-            if (notifPollInterval) clearInterval(notifPollInterval);
-            notifPollInterval = setInterval(pollGlobalNotifications, 10000); // Check every 10 seconds
-        }
-
-        async function sendGlobalPushNotification() {
-            if (!isOwnerAccount(currentUser)) {
-                alert("❌ Permission Denied: Only Studio Owners can broadcast notifications!");
-                return;
-            }
-
-            const title = document.getElementById('ownerPushTitle').value.trim();
-            const message = document.getElementById('ownerPushMsg').value.trim();
-
-            if (!title || !message) {
-                alert("❌ Please fill in both the Title and Message fields!");
-                return;
-            }
-
-            const notifId = "NOTIF-" + Date.now();
-            const notifPayload = {
-                title: title,
-                message: message,
-                timestamp: Date.now(),
-                sender: currentUser.username || currentUser.name
-            };
-
-            try {
-                await fetch(`${FIREBASE_BASE_URL}/notifications/${notifId}.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(notifPayload)
-                });
-
-                document.getElementById('ownerPushTitle').value = "";
-                document.getElementById('ownerPushMsg').value = "";
-
-                alert("🚀 Global Notification sent to all users!");
-                pollGlobalNotifications();
-            } catch (err) {
-                alert("❌ Failed to broadcast notification: " + err.message);
-            }
-        }
-
-        function openNotificationInbox() {
-            document.getElementById('pageTitle').innerText = "📥 Notification Inbox";
-            let notifs = getUserNotifications();
-
-            // Mark all as read when opening inbox
-            notifs.forEach(n => n.read = true);
-            saveUserNotifications(notifs);
-
-            let html = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <p style="color:#54595d; margin:0;">Important announcements, game updates, and trade delivery alerts.</p>
-                    <button class="btn-save" onclick="clearNotificationInbox()" style="background:#dc3545;">Clear Inbox</button>
-                </div>
-            `;
-
-            if (notifs.length === 0) {
-                html += `
-                    <div style="text-align:center; padding: 50px; background:#f8f9fa; border:1px solid #a2a9b1; border-radius:8px;">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="#a2a9b1" style="margin-bottom:10px;">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h10v2H7zm0-3h10v2H7zm0 6h7v2H7z"/>
-                        </svg>
-                        <h3>Your inbox is empty</h3>
-                        <p style="color:#72777d;">New notifications from developers and system alerts will appear here.</p>
-                    </div>
-                `;
-            } else {
-                notifs.forEach(item => {
-                    const timeStr = new Date(item.timestamp).toLocaleString();
-                    html += `
-                        <div class="notif-card">
-                            <div class="notif-header">
-                                <span class="notif-title">📢 ${item.title}</span>
-                                <span class="notif-time">${timeStr}</span>
-                            </div>
-                            <div class="notif-body">${item.message}</div>
-                        </div>
-                    `;
-                });
-            }
-
-            document.getElementById('pageContent').innerHTML = html;
-        }
-
-        function clearNotificationInbox() {
-            if (confirm("Are you sure you want to clear your notification inbox?")) {
-                saveUserNotifications([]);
-                openNotificationInbox();
-            }
-        }
-
-        // ==========================================
-        // 4. AUTHENTICATION & APP LIFECYCLE
-        // ==========================================
-
         window.onload = () => {
             try {
+                requestNotificationPermission();
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const referrerId = urlParams.get('ref');
                 
@@ -789,8 +577,8 @@
 
                     updateUserStatusHeader();
                     logDeviceConnection(currentUser);
+                    checkRealtimeNotifications();
                     showWiki();
-                    startNotificationListener();
                 }
             } catch (err) {
                 console.error("Initialization error:", err);
@@ -887,10 +675,11 @@
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
 
+                requestNotificationPermission();
                 updateUserStatusHeader();
                 logDeviceConnection(currentUser);
+                checkRealtimeNotifications();
                 showWiki();
-                startNotificationListener();
             } catch (err) {
                 console.error("Auth Exception:", err);
                 alert("⚠️ System error during authentication: " + err.message);
@@ -965,11 +754,9 @@
                     <b>${dName}</b> (@${currentUser.username}) ${roleBadgeHtml} | 🪙 Coins: <b>${coinsDisplay}</b> | <span style="color:#28a745; font-weight:bold;">🟢 Connected</span>
                 </div>
             `;
-            updateNotificationBadges();
         }
 
         function logout() {
-            if (notifPollInterval) clearInterval(notifPollInterval);
             localStorage.removeItem('app_current_user');
             currentUser = null;
             document.getElementById('loginScreen').style.display = 'block';
@@ -992,7 +779,7 @@
                 triggerReleaseSequence();
                 return;
             }
-            document.getElementById('pageTitle').innerText = "Don't Crash Train For Brainrots";
+            document.getElementById('pageTitle').innerText = "Don't Crash By Train For Brainrots";
             renderBrainrotsPage();
         }
 
@@ -1002,7 +789,150 @@
         }
 
         // ==========================================
-        // 5. CLAIMS & DELIVERY HISTORY SYSTEM
+        // 3. GLOBAL PUSH NOTIFICATION & INBOX SYSTEM
+        // ==========================================
+
+        async function sendGlobalPushNotification() {
+            const titleInput = document.getElementById('pushNotifTitle');
+            const msgInput = document.getElementById('pushNotifMsg');
+            
+            const title = (titleInput?.value || '').trim();
+            const message = (msgInput?.value || '').trim();
+
+            if (!title || !message) {
+                alert("❌ Please enter both a Notification Title and Message!");
+                return;
+            }
+
+            const notifId = "NOTIF-" + Date.now();
+            const notificationObj = {
+                id: notifId,
+                title: title,
+                message: message,
+                sender: currentUser ? (currentUser.displayName || currentUser.name) : "Owner",
+                timestamp: Date.now()
+            };
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/notifications/${notifId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(notificationObj)
+                });
+            } catch(e) {
+                console.warn("Firebase notification sync warning:", e);
+            }
+
+            // Save locally
+            let localNotifs = safeGetJSON('app_notifications_db', []);
+            localNotifs.unshift(notificationObj);
+            localStorage.setItem('app_notifications_db', JSON.stringify(localNotifs));
+
+            // Trigger system / browser notification immediately for sender/active session
+            triggerNativePushNotification(title, message);
+
+            alert("🔔 Global Notification sent to all users successfully!");
+            titleInput.value = "";
+            msgInput.value = "";
+            checkRealtimeNotifications();
+        }
+
+        async function checkRealtimeNotifications() {
+            let localNotifs = safeGetJSON('app_notifications_db', []);
+            let readIds = safeGetJSON('app_read_notif_ids', []);
+
+            try {
+                const response = await fetch(`${FIREBASE_BASE_URL}/notifications.json`);
+                if (response.ok) {
+                    const fbData = (await response.json()) || {};
+                    Object.keys(fbData).forEach(key => {
+                        const item = fbData[key];
+                        if (item && !localNotifs.some(n => n.id === key)) {
+                            localNotifs.unshift({ ...item, id: key });
+                            // Trigger system notification for newly fetched remote notifications
+                            triggerNativePushNotification(item.title, item.message);
+                        }
+                    });
+                    localStorage.setItem('app_notifications_db', JSON.stringify(localNotifs));
+                }
+            } catch(err) {
+                console.warn("Could not sync remote notifications:", err);
+            }
+
+            const unreadCount = localNotifs.filter(n => !readIds.includes(n.id)).length;
+            const badgeEl = document.getElementById('notifBadge');
+            
+            if (badgeEl) {
+                if (unreadCount > 0) {
+                    badgeEl.innerText = unreadCount;
+                    badgeEl.style.display = 'block';
+                } else {
+                    badgeEl.style.display = 'none';
+                }
+            }
+        }
+
+        function openNotificationInbox() {
+            document.getElementById('pageTitle').innerText = "🔔 Notification Inbox";
+            
+            let notifications = safeGetJSON('app_notifications_db', []);
+            let readIds = safeGetJSON('app_read_notif_ids', []);
+
+            // Mark all as read when opening inbox
+            const allIds = notifications.map(n => n.id);
+            localStorage.setItem('app_read_notif_ids', JSON.stringify(allIds));
+            
+            const badgeEl = document.getElementById('notifBadge');
+            if (badgeEl) badgeEl.style.display = 'none';
+
+            let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <p style="color:#54595d; margin:0;">Real-time announcements and studio notifications.</p>
+                    <button class="btn-save" style="background-color:#d33;" onclick="clearNotificationInbox()">Clear Inbox</button>
+                </div>
+            `;
+
+            if (notifications.length === 0) {
+                html += `
+                    <div style="text-align:center; padding: 50px; background:#f8f9fa; border:1px solid #a2a9b1; border-radius:6px;">
+                        <svg style="width:48px; height:48px; fill:#a2a9b1; margin-bottom:10px;" viewBox="0 0 24 24">
+                            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                        </svg>
+                        <h3 style="margin:0; color:#54595d;">No Notifications Yet</h3>
+                        <p style="color:#777; font-size:0.85rem;">You are all caught up!</p>
+                    </div>
+                `;
+            } else {
+                notifications.forEach(item => {
+                    const isUnread = !readIds.includes(item.id);
+                    const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString() : "Just now";
+                    
+                    html += `
+                        <div class="wiki-notif-card ${isUnread ? 'unread' : ''}">
+                            <div class="wiki-notif-title">
+                                <span>📢 ${item.title}</span>
+                                <span class="wiki-notif-time">${timeStr}</span>
+                            </div>
+                            <div style="color:#202122; font-size:0.9rem; line-height:1.4;">${item.message}</div>
+                            <div style="font-size:0.75rem; color:#005a9c; margin-top:6px;">Sender: ${item.sender || 'Studio Owner'}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('pageContent').innerHTML = html;
+        }
+
+        function clearNotificationInbox() {
+            if (confirm("Are you sure you want to clear your notification inbox?")) {
+                localStorage.setItem('app_notifications_db', JSON.stringify([]));
+                localStorage.setItem('app_read_notif_ids', JSON.stringify([]));
+                openNotificationInbox();
+            }
+        }
+
+        // ==========================================
+        // 4. CLAIMS & DELIVERY HISTORY SYSTEM
         // ==========================================
 
         function getLocalUserClaims(userId) {
@@ -1151,7 +1081,7 @@
         }
 
         // ==========================================
-        // 6. XDRG AI ASSISTANT SYSTEM
+        // 5. XDRG AI ASSISTANT SYSTEM
         // ==========================================
 
         function getAIChats() {
@@ -1165,7 +1095,7 @@
         }
 
         function openXdrgAI() {
-            document.getElementById('pageTitle').innerText = "🤖 XDRG AI Assistant";
+            document.getElementById('pageTitle').innerText = "🤖 XDRG AI ASSISTANT";
             let chats = getAIChats();
 
             if (chats.length === 0) {
@@ -1174,7 +1104,7 @@
                     title: "New Conversation",
                     messages: [{
                         role: "assistant",
-                        text: "Hello! I am **XDRG AI**, the official intelligent assistant for RedGalaxy Studio & NebulaForge Studio. I fully understand English, Tagalog, and Taglish! Ask me about unit values, shop calculations, delivery history, coding/scripts, or game releases."
+                        text: "Kumusta! I am **XDRG AI**, the official intelligent assistant for RedGalaxy Studio & NebulaForge Studio. I fully understand English, Tagalog, and Taglish! Ask me about unit values, shop calculations, delivery history, coding/scripts, or game releases."
                     }]
                 };
                 chats.push(newChat);
@@ -1198,7 +1128,7 @@
                 title: "New Conversation",
                 messages: [{
                     role: "assistant",
-                    text: "Hello! Ask me anything about our games, unit values, claim status, calculations, or coding!"
+                    text: "Kumusta! Ask me anything about our games, unit values, claim history, calculations, or coding!"
                 }]
             };
             chats.unshift(newChat);
@@ -1317,9 +1247,9 @@
                     `1. **Pending Status:** Your reward request is registered. When you join the game server, the auto-giver bot delivers it to your backpack.\n` +
                     `2. **Marking Received:** Go to **📜 Claim Delivery History** in the sidebar. Click **'Mark Received'** to finalize delivery!\n` +
                     `3. **Privacy:** Adjust your delivery history visibility under **⚙️ Profile & Privacy Settings**.`;
-            } else if (p.includes("owner") || p.includes("admin") || p.includes("staff") || p.includes("team")) {
-                responseText = `👑 **Studio Leadership:**\n\n` +
-                    `• **Owners:** Dev_Xdragon & LumeCraftor\n` +
+            } else if (p.includes("owner") || p.includes("admin") || p.includes("staff")) {
+                responseText = `👑 **Studio Leadership & Staff Team:**\n\n` +
+                    `• **Owner:** Dev_Xdragon / LumeCraftor\n` +
                     `• **Head-Admin:** Vincent Magtolis\n` +
                     `• **Admin:** Jayson Areglo, Summere Castrence, Jeric Caido, Han Christian\n` +
                     `• **Moderator:** Liam Platon, Nielo Armas, Deann Mark N. Tan`;
@@ -1333,7 +1263,7 @@
         }
 
         // ==========================================
-        // 7. QUESTS, POLLS AND REWARD CLAIM LOGIC
+        // 6. QUESTS, POLLS AND REWARD CLAIM LOGIC
         // ==========================================
 
         async function renderQuestsPage() {
@@ -1604,9 +1534,9 @@
                 localStorage.setItem('app_polls_db', JSON.stringify(polls));
                 
                 currentUser.lastVoteTime = now;
-                currentUser.points = (currentUser.points || 0) + 5; // Grant +5 Coins for voting
+                currentUser.points = (currentUser.points || 0) + 5; 
                 saveUserData();
-                updateUserStatusHeader();
+                updateUserStatusHeader(); 
                 
                 alert("✅ Vote successfully cast! You received +5 Coins.");
                 renderQuestsPage();
@@ -1616,7 +1546,7 @@
         }
 
         // ==========================================
-        // 8. SETTINGS & ADMIN CONTROLS
+        // 7. SETTINGS & ADMIN CONTROLS
         // ==========================================
 
         function openSettings() {
@@ -1647,37 +1577,8 @@
                 roleBadge = '<span class="badge-admin">🛡️ ADMIN</span>';
             }
 
-            let html = `<div class="settings-section">`;
-
-            // RED BOX FOR OWNER GLOBAL PUSH NOTIFICATION SENDER
-            if (isOwner) {
-                html += `
-                    <div class="owner-push-box">
-                        <h4>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#dc3545">
-                                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
-                            </svg>
-                            Owner Global Push Notification Sender
-                        </h4>
-                        <p style="font-size:0.85rem; color:#721c24; margin-top:0; margin-bottom:12px;">
-                            Broadcast instant push notifications and banner alerts to all active visitors and app users.
-                        </p>
-                        <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem; color:#721c24;">Notification Title:</label>
-                            <input type="text" id="ownerPushTitle" placeholder="e.g. 🔥 New Game Update Released!" style="margin-top:4px;">
-                        </div>
-                        <div style="margin-bottom:12px;">
-                            <label style="font-weight:bold; font-size:0.85rem; color:#721c24;">Notification Message:</label>
-                            <textarea id="ownerPushMsg" rows="3" placeholder="Enter full notification announcement message here..." style="margin-top:4px;"></textarea>
-                        </div>
-                        <button class="btn-save" style="background-color:#dc3545; width:100%; font-size:0.95rem; padding:10px;" onclick="sendGlobalPushNotification()">
-                            🚀 Send Notification to All Users
-                        </button>
-                    </div>
-                `;
-            }
-
-            html += `
+            let html = `
+                <div class="settings-section">
                     <div style="display:flex; align-items:center; gap:15px; margin-bottom: 20px; background:#f8f9fa; border:1px solid #a2a9b1; padding:15px; border-radius:6px;">
                         <img id="settingsAvatarImg" src="${avatarUrl}" referrerpolicy="no-referrer" style="width:70px; height:70px; border-radius:50%; border:3px solid #3366cc; object-fit:cover;" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}';">
                         <div>
@@ -1713,6 +1614,31 @@
                     
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
             `;
+
+            // OWNER GLOBAL PUSH NOTIFICATION SENDER BOX
+            if (isOwner) {
+                html += `
+                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
+
+                    <div class="owner-push-box">
+                        <h4>📢 Owner Global Push Notification Sender</h4>
+                        <p style="font-size:0.85rem; color:#721c24; margin-top:0; margin-bottom:12px;">
+                            Broadcast instant push notifications and system alert popups to all connected visitors and users.
+                        </p>
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Notification Title:</label>
+                            <input type="text" id="pushNotifTitle" placeholder="e.g. 🚀 Major Update Released!" style="margin-top:4px;">
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Notification Message:</label>
+                            <textarea id="pushNotifMsg" rows="3" placeholder="Enter message details here..." style="margin-top:4px; font-family:inherit;"></textarea>
+                        </div>
+                        <button class="btn-save" style="background-color:#dc3545; width:100%; font-size:0.95rem; padding:10px;" onclick="sendGlobalPushNotification()">
+                            Send Notification to All Users
+                        </button>
+                    </div>
+                `;
+            }
 
             if (isAdmin) {
                 html += `
@@ -1963,16 +1889,12 @@
         }
 
         function renderBrainrotsPage() {
+            const brainrotsGameUrl = "https://www.roblox.com/share?code=1483f284c605034c99ef45593524c6f9&type=ExperienceDetails&stamp=1789062103029";
+
             let html = `
-                <div style="margin-bottom: 20px; background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <h3 style="margin:0; color:#005a9c;">🎮 Don't Crash Train For Brainrots</h3>
-                        <p style="margin:4px 0 0 0; color:#54595d; font-size:0.85rem;">Official Roblox Game Experience</p>
-                    </div>
-                    <a href="https://www.roblox.com/share?code=1483f284c605034c99ef45593524c6f9&type=ExperienceDetails&stamp=1789062103029" target="_blank" class="btn-claim" style="text-decoration:none; width:auto; margin:0;">
-                        🚀 Play on Roblox
-                    </a>
-                </div>
+                <a href="${brainrotsGameUrl}" target="_blank" class="btn-roblox-play">
+                    🎮 Play Don't Crash By Train For Brainrots on Roblox
+                </a>
 
                 <div class="infobox">
                     <b>Game Mechanics</b>
@@ -1986,12 +1908,12 @@
                         <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
                     </select>
                 </div>
-                <p>This page documents characters and shop items in Don't Crash Train For Brainrots. Values update dynamically based on mutation levels.</p>
+                <p>This page documents the characters and shop items found in <b>Don't Crash By Train For Brainrots</b>. Values shown reflect the current mutation modifier.</p>
             `;
 
             categories.forEach(cat => {
                 const areaName = areaMapping[cat.title];
-                html += `<h2>${cat.title} Units</h2>`;
+                html += `2>${cat.title} Units</h2>`;
                 html += `
                     <table class="wikitable">
                         <tr>
@@ -2052,42 +1974,37 @@
 
         function triggerReleaseSequence() {
             document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
+            const crystalGameUrl = "https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785";
             
             const releaseDate = new Date("2026-09-06T13:00:00+08:00").getTime();
             const now = Date.now();
-
-            let playBannerHtml = `
-                <div style="margin-bottom: 20px; background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <h3 style="margin:0; color:#005a9c;">🎮 Crystal Collecting Simulator</h3>
-                        <p style="margin:4px 0 0 0; color:#54595d; font-size:0.85rem;">Official Roblox Game Experience</p>
-                    </div>
-                    <a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" class="btn-claim" style="text-decoration:none; width:auto; margin:0;">
-                        🚀 Play on Roblox
-                    </a>
-                </div>
-            `;
             
             if (now < releaseDate) {
                 document.getElementById('pageContent').innerHTML = `
-                    ${playBannerHtml}
                     <div class="error-container">
-                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-bottom:15px;">Refresh Status</button>
-                        <p style="font-weight:bold; color:#54595d;">Loading details...</p>
+                        <a href="${crystalGameUrl}" target="_blank" class="btn-roblox-play">
+                            🎮 Play Crystal Collecting Simulator on Roblox
+                        </a>
+                        <br><br>
+                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-bottom:15px;">Try Again</button>
+                        <p style="font-weight:bold; color:#54595d;">Loading video...</p>
                         <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" style="max-width:100%; border:2px solid #202122; border-radius:4px; margin-bottom:20px;">
                         <div class="error-title" style="font-size:1.1rem; margin-bottom:15px; font-family:Georgia, serif;">
-                            (LumeCraftor announced that the game will be released on September 6, 2026, at 1:00 PM)
+                            (Lume Craftor announced that the game will be released on September 6, 2026, at 1:00 PM)
                         </div>
                         <div class="error-mod" style="font-size:1.05rem; color:#005a9c; margin-bottom:25px; padding:10px; background-color:#eaf3ff; border-left:5px solid #005a9c; display:inline-block; font-weight:bold;">
-                            (Moderator Action: Admin Abuse event starts 30 minutes after release. See y'all on September 6, 2026, at 1:00 PM)
+                            (Moderator Action: Admin Abuse will start 30 minutes after the release. See y'all on September 6, 2026, at 1:00 PM)
                         </div>
                         <br>
-                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-top:15px;">Refresh Status</button>
+                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-top:15px;">Try Again</button>
                     </div>
                 `;
             } else {
                 document.getElementById('pageContent').innerHTML = `
-                    ${playBannerHtml}
+                    <a href="${crystalGameUrl}" target="_blank" class="btn-roblox-play">
+                        🎮 Play Crystal Collecting Simulator on Roblox
+                    </a>
+
                     <h2>[Pickaxes]</h2>
                     <table class="wikitable">
                         <tr>
@@ -2096,12 +2013,12 @@
                             <th width="25%">Durability</th>
                             <th width="25%">Price</th>
                         </tr>
-                        <tr><td><b>Wooden Pickaxe</b></td><td>2</td><td>100</td><td>100</td></tr>
-                        <tr><td><b>Copper Pickaxe</b></td><td>4</td><td>350</td><td>500</td></tr>
-                        <tr><td><b>Stone Pickaxe</b></td><td>2</td><td>200</td><td>1500</td></tr>
-                        <tr><td><b>Iron Pickaxe</b></td><td>5</td><td>500</td><td>3950</td></tr>
-                        <tr><td><b>Emerald Pickaxe</b></td><td>6</td><td>750</td><td>5500</td></tr>
-                        <tr><td><b>Harder Pickaxe</b></td><td>7</td><td>1000</td><td>8500</td></tr>
+                        <tr><td><b>wooden pickaxe</b></td><td>2</td><td>100</td><td>100</td></tr>
+                        <tr><td><b>copper pickaxe</b></td><td>4</td><td>350</td><td>500</td></tr>
+                        <tr><td><b>stone pickaxe</b></td><td>2</td><td>200</td><td>1500</td></tr>
+                        <tr><td><b>iron pickaxe</b></td><td>5</td><td>500</td><td>3950</td></tr>
+                        <tr><td><b>emerald pickaxe</b></td><td>6</td><td>750</td><td>5500</td></tr>
+                        <tr><td><b>Harder pickaxe</b></td><td>7</td><td>1000</td><td>8500</td></tr>
                     </table>
 
                     <h2>[Crystals]</h2>
@@ -2112,10 +2029,10 @@
                             <th width="25%">Damage</th>
                             <th width="25%">Price</th>
                         </tr>
-                        <tr><td><b>Wooden Crystal</b></td><td>7</td><td>8</td><td>80</td></tr>
-                        <tr><td><b>Acorn Crystal</b></td><td>10</td><td>20</td><td>240</td></tr>
-                        <tr><td><b>Rocks Crystal</b></td><td>14</td><td>39</td><td>349</td></tr>
-                        <tr><td><b>Mushroom Crystal</b></td><td>8</td><td>14</td><td>200</td></tr>
+                        <tr><td><b>wooden crystal</b></td><td>7</td><td>8</td><td>80</td></tr>
+                        <tr><td><b>acorn crystal</b></td><td>10</td><td>20</td><td>240</td></tr>
+                        <tr><td><b>rocks crystal</b></td><td>14</td><td>39</td><td>349</td></tr>
+                        <tr><td><b>mushroom crystal</b></td><td>8</td><td>14</td><td>200</td></tr>
                     </table>
                 `;
             }
