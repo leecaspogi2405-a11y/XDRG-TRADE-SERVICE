@@ -9,12 +9,12 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
-        .mw-sidebar { width: 240px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
+        .mw-sidebar { width: 230px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
         .mw-logo { display: block; font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
-        .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; text-transform: uppercase; letter-spacing: 0.5px; }
+        .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
         .mw-sidebar li { margin-bottom: 6px; font-size: 0.85rem; }
-        .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; display: inline-block; }
+        .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; }
         .mw-sidebar a:hover { text-decoration: underline; }
         
         .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; min-width: 800px; }
@@ -23,11 +23,74 @@
         .user-badge { display: flex; align-items: center; gap: 10px; }
         .user-avatar-small { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #3366cc; object-fit: cover; background: #eaf3ff; display: block; flex-shrink: 0; }
 
-        /* WIKIPEDIA NOTIFICATION BELL & BADGE STYLES */
-        .notif-bell-wrapper { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 4px; border: 1px solid #a2a9b1; background: #f8f9fa; transition: background 0.2s; }
-        .notif-bell-wrapper:hover { background: #eaf3ff; border-color: #3366cc; }
-        .notif-bell-svg { width: 20px; height: 20px; fill: #202122; }
-        .notif-badge-number { position: absolute; top: -5px; right: -5px; background-color: #d33; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.7rem; font-weight: bold; border: 2px solid #ffffff; line-height: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        /* WIKIPEDIA REAL NOTIFICATION BELL STYLES */
+        .notification-bell-container {
+            position: relative;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            user-select: none;
+        }
+        .bell-badge {
+            position: absolute;
+            top: -2px;
+            right: -4px;
+            background-color: #d9534f;
+            color: #ffffff;
+            font-size: 0.65rem;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 1px 4px;
+            min-width: 15px;
+            text-align: center;
+            line-height: 11px;
+            box-shadow: 0 0 2px rgba(0,0,0,0.3);
+        }
+        .notif-dropdown {
+            display: none;
+            position: absolute;
+            top: 32px;
+            right: 0;
+            width: 320px;
+            background: #ffffff;
+            border: 1px solid #a2a9b1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 6px;
+            z-index: 10000;
+            text-align: left;
+        }
+        .notif-dropdown.show { display: block; }
+        .notif-header {
+            background: #f8f9fa;
+            padding: 10px 12px;
+            font-weight: bold;
+            border-bottom: 1px solid #a2a9b1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        .notif-clear-btn {
+            background: none;
+            border: none;
+            color: #0645ad;
+            cursor: pointer;
+            font-size: 0.75rem;
+            text-decoration: underline;
+        }
+        .notif-list { max-height: 280px; overflow-y: auto; }
+        .notif-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eaecf0;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .notif-item:hover { background: #eaf3ff; }
+        .notif-item.unread { background: #f0f7ff; font-weight: bold; }
+        .notif-item-title { color: #005a9c; margin-bottom: 3px; }
+        .notif-item-time { font-size: 0.75rem; color: #72777d; margin-top: 4px; }
 
         h1 { font-family: 'Georgia', serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
         h2 { font-family: 'Georgia', serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
@@ -65,9 +128,6 @@
         .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; }
         .btn-claim:hover { background-color: #218838; }
         
-        .btn-roblox-play { display: inline-flex; align-items: center; gap: 8px; background-color: #00a2ff; color: white; font-weight: bold; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 0.95rem; margin-bottom: 15px; transition: background 0.2s; }
-        .btn-roblox-play:hover { background-color: #0082cc; color: white; }
-
         /* SOCIAL MEDIA STYLES */
         .social-links { list-style: none; padding: 0; font-size: 1rem; margin-top: 15px; }
         .social-links li { margin-bottom: 12px; }
@@ -99,11 +159,8 @@
         .alert-banner { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; text-align: center; font-weight: bold; }
         
         .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-        .owner-push-box { background: #fff0f0; border: 2px solid #dc3545; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-        .owner-push-box h4 { margin-top: 0; color: #bd2130; font-size: 1.05rem; }
-        
         .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; }
-        .admin-box input, .owner-push-box input, .owner-push-box textarea { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
+        .admin-box input { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
         .reward-select { width: 100%; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-weight: bold; margin-top: 8px; margin-bottom: 10px; }
 
         /* ROLE BADGES */
@@ -140,12 +197,6 @@
         .ai-input-bar input { flex: 1; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-size: 0.9rem; }
         .ai-send-btn { background: #3366cc; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; }
 
-        /* WIKIPEDIA NOTIFICATION LIST STYLES */
-        .wiki-notif-card { background: #ffffff; border: 1px solid #a2a9b1; border-left: 4px solid #3366cc; padding: 12px 15px; border-radius: 4px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .wiki-notif-card.unread { background: #eaf3ff; border-left-color: #005a9c; font-weight: 500; }
-        .wiki-notif-title { font-weight: bold; font-size: 0.95rem; color: #202122; margin-bottom: 4px; display: flex; justify-content: space-between; }
-        .wiki-notif-time { font-size: 0.75rem; color: #54595d; font-weight: normal; }
-
         /* COOKIE BANNER STYLES */
         .cookie-banner {
             position: fixed;
@@ -179,9 +230,7 @@
             transition: background 0.2s ease;
             border: none;
         }
-        .cookie-banner-btn:hover {
-            background-color: #2a4b8d;
-        }
+        .cookie-banner-btn:hover { background-color: #2a4b8d; }
 
         /* POLICY CARD STYLES */
         .policy-card {
@@ -192,15 +241,8 @@
             max-width: 700px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .policy-list {
-            padding-left: 20px;
-            line-height: 1.9;
-            font-size: 1rem;
-            color: #202122;
-        }
-        .policy-list li {
-            margin-bottom: 8px;
-        }
+        .policy-list { padding-left: 20px; line-height: 1.9; font-size: 1rem; color: #202122; }
+        .policy-list li { margin-bottom: 8px; }
         .policy-back-btn {
             display: inline-block;
             margin-top: 20px;
@@ -210,9 +252,7 @@
             cursor: pointer;
             text-decoration: underline;
         }
-        .policy-back-btn:hover {
-            color: #0b0080;
-        }
+        .policy-back-btn:hover { color: #0b0080; }
     </style>
 </head>
 <body>
@@ -220,9 +260,9 @@
     <!-- COOKIE & AD CONSENT BANNER -->
     <div id="cookieBanner" class="cookie-banner">
         <div>
-            This website contains advertisements and uses cookies. Do you agree to allow them for this developer wiki website?
+            This website contain an ads also Cookies do you agree to developer of this Wiki Website?
         </div>
-        <button class="cookie-banner-btn" onclick="acceptCookies()">I Allow Cookies</button>
+        <button class="cookie-banner-btn" onclick="acceptCookies()">I allowed cookies</button>
     </div>
 
     <!-- AUTHENTICATION SCREEN -->
@@ -300,17 +340,16 @@
                 <h3>Navigation</h3>
                 <ul>
                     <li><a onclick="openHome()">Main Page</a></li>
-                    <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
                     <li><a onclick="openGame('brainrots')">Don't Crash By Train For Brainrots</a></li>
+                    <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
                 </ul>
 
                 <h3>Help</h3>
                 <ul>
-                    <li><a onclick="openXdrgAI()" style="font-weight:bold; color:#005a9c;">🤖 XDRG AI ASSISTANT</a></li>
-                    <li><a onclick="openQuests()">🎯 Quest and Trade Service</a></li>
+                    <li><a onclick="openXdrgAI()" style="font-weight:bold; color:#005a9c;">🤖 XDRG AI Assistant</a></li>
+                    <li><a onclick="openQuests()">🎯 Quests & Trade Service</a></li>
                     <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
-                    <li><a onclick="openPolicy()" style="font-weight:bold; color:#0645ad;">📜 Term of Policy</a></li>
-                    <li><a onclick="openNotificationInbox()">🔔 Notification Inbox</a></li>
+                    <li><a onclick="openPolicy()" style="font-weight:bold; color:#0645ad;">📜 Terms of Policy</a></li>
                 </ul>
 
                 <h3>Account Settings</h3>
@@ -318,7 +357,7 @@
                     <li><a onclick="openSettings()">⚙️ Profile & Privacy Settings</a></li>
                 </ul>
 
-                <h3>Staff / Team's</h3>
+                <h3>Staff / Team</h3>
                 <ul>
                     <li><b>Owner:</b><br>Dev_Xdragon / LumeCraftor</li>
                     <li style="margin-top:8px;"><b>Head-Admin:</b><br>Vincent Magtolis</li>
@@ -332,14 +371,23 @@
                     <div id="userStatus" class="user-badge">
                         <span>Not logged in</span>
                     </div>
-
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <!-- REAL WIKIPEDIA BELL NOTIFICATION BUTTON WITH DYNAMIC BADGE NUMBER -->
-                        <div class="notif-bell-wrapper" onclick="openNotificationInbox()" title="Notification Inbox">
-                            <svg class="notif-bell-svg" viewBox="0 0 24 24">
-                                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                    <div style="display: flex; align-items: center; gap: 18px;">
+                        <!-- Wikipedia-Style Notification Bell & Inbox Dropdown -->
+                        <div class="notification-bell-container" onclick="toggleNotificationInbox(event)">
+                            <svg class="bell-svg" viewBox="0 0 24 24" width="22" height="22">
+                                <path fill="#202122" d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-7c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v7z"/>
                             </svg>
-                            <span id="notifBadge" class="notif-badge-number" style="display:none;">0</span>
+                            <span id="notifBadge" class="bell-badge" style="display:none;">0</span>
+                            
+                            <div id="notifDropdown" class="notif-dropdown" onclick="event.stopPropagation()">
+                                <div class="notif-header">
+                                    <span>Notification Inbox</span>
+                                    <button onclick="markAllNotifsRead()" class="notif-clear-btn">Mark as Read</button>
+                                </div>
+                                <div id="notifList" class="notif-list">
+                                    <!-- Notifications dynamically rendered -->
+                                </div>
+                            </div>
                         </div>
 
                         <span><a onclick="logout()" style="color:#0645ad; cursor:pointer;">Log out</a></span>
@@ -391,7 +439,6 @@
             "Limited": "Unknown / Event Area"
         };
 
-        // Standard Units Array
         const categories = [
             { title: "Common", units: [{ name: "Bananita Dolphinita", price: 250 }, { name: "Trippi Troppi", price: 200 }, { name: "Gangster Footera", price: 55 }] },
             { title: "Rare", units: [{ name: "Ballerina Cappuccina", price: 400 }, { name: "Svinina Bombardino", price: 150 }, { name: "Bombombini Gusini", price: 100 }] },
@@ -401,7 +448,6 @@
             { title: "Limited", units: [{ name: "Strawberry Elephant", price: 150000 }, { name: "Summerini Fattini", price: 1500000 }] }
         ];
 
-        // Shop Items Array
         const shopItems = [
             { name: "Boneca Ambelabu", rarity: "Rare", price: 65000, income: "25,000 /s" },
             { name: "Job Job Job Sahur", rarity: "Rare", price: 155000, income: "80,000 /s" },
@@ -423,44 +469,205 @@
         let currentAIModel = "Xdrg Pro 3.5";
         let activeAIChatId = null;
 
+        /* NOTIFICATION STATE */
+        let seenNotifIds = new Set(safeGetJSON('seen_notif_ids', []));
+
         // ==========================================
-        // 2. HELPER & BROWSER NOTIFICATION FUNCTIONS
+        // 2. REAL-TIME PUSH NOTIFICATION SYSTEM
+        // ==========================================
+
+        function requestNotificationPermission() {
+            if ("Notification" in window) {
+                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                    Notification.requestPermission().then(permission => {
+                        console.log("Web Notification Permission:", permission);
+                    });
+                }
+            }
+        }
+
+        async function sendOwnerGlobalNotification() {
+            if (!isOwnerAccount(currentUser)) return;
+
+            const title = (document.getElementById('notifTitleInput').value || '').trim();
+            const message = (document.getElementById('notifMsgInput').value || '').trim();
+
+            if (!title || !message) {
+                alert("❌ Please enter both a Notification Title and Message!");
+                return;
+            }
+
+            const notifData = {
+                id: "NOTIF_" + Date.now(),
+                title: title,
+                message: message,
+                sender: currentUser.displayName || currentUser.name || "Owner",
+                timestamp: Date.now()
+            };
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/global_notifications/${notifData.id}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(notifData)
+                });
+                
+                receiveNewNotification(notifData);
+                alert("🚀 Global Push Notification broadcasted to all users!");
+                document.getElementById('notifTitleInput').value = "";
+                document.getElementById('notifMsgInput').value = "";
+            } catch (err) {
+                console.error("Firebase broadcast failed, processing locally:", err);
+                receiveNewNotification(notifData);
+                alert("🚀 Global Push Notification dispatched locally!");
+            }
+        }
+
+        async function checkGlobalNotifications() {
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/global_notifications.json`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data) {
+                        Object.keys(data).forEach(id => {
+                            if (!seenNotifIds.has(id)) {
+                                seenNotifIds.add(id);
+                                localStorage.setItem('seen_notif_ids', JSON.stringify(Array.from(seenNotifIds)));
+                                receiveNewNotification(data[id]);
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                // Network silently caught
+            }
+        }
+
+        function receiveNewNotification(notif) {
+            let inbox = safeGetJSON('user_notif_inbox', []);
+            if (!inbox.some(n => n.id === notif.id)) {
+                inbox.unshift({ ...notif, read: false });
+                localStorage.setItem('user_notif_inbox', JSON.stringify(inbox));
+                updateNotificationUI();
+
+                if ("Notification" in window && Notification.permission === "granted") {
+                    try {
+                        new Notification(notif.title, {
+                            body: notif.message,
+                            icon: getRobloxAvatarUrl('7680051058')
+                        });
+                    } catch (e) {
+                        console.log("Mobile/System Push error:", e);
+                    }
+                }
+
+                showNotificationBanner(notif);
+            }
+        }
+
+        function showNotificationBanner(notif) {
+            let banner = document.getElementById('liveNotifBanner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'liveNotifBanner';
+                banner.style.cssText = 'position:fixed; top:20px; right:20px; background:#ffffff; border:2px solid #3366cc; padding:15px; border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,0.25); z-index:999999; max-width:340px; font-family:sans-serif; border-left:6px solid #3366cc;';
+                document.body.appendChild(banner);
+            }
+            banner.innerHTML = `
+                <div style="font-weight:bold; color:#005a9c; font-size:0.95rem; margin-bottom:4px;">📢 ${notif.title}</div>
+                <div style="font-size:0.85rem; color:#202122; margin-bottom:8px; line-height:1.4;">${notif.message}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.75rem; color:#54595d;">From: ${notif.sender || 'Studio Admin'}</span>
+                    <button onclick="document.getElementById('liveNotifBanner').remove()" style="background:#3366cc; color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer; font-weight:bold;">Dismiss</button>
+                </div>
+            `;
+            setTimeout(() => {
+                if (document.getElementById('liveNotifBanner')) {
+                    document.getElementById('liveNotifBanner').remove();
+                }
+            }, 10000);
+        }
+
+        function updateNotificationUI() {
+            let inbox = safeGetJSON('user_notif_inbox', []);
+            let unreadCount = inbox.filter(n => !n.read).length;
+            let badgeEl = document.getElementById('notifBadge');
+            
+            if (badgeEl) {
+                if (unreadCount > 0) {
+                    badgeEl.innerText = unreadCount > 99 ? '99+' : unreadCount;
+                    badgeEl.style.display = 'inline-block';
+                } else {
+                    badgeEl.style.display = 'none';
+                }
+            }
+
+            let listEl = document.getElementById('notifList');
+            if (listEl) {
+                if (inbox.length === 0) {
+                    listEl.innerHTML = `<div style="padding:20px; text-align:center; color:#777; font-size:0.85rem;">No notifications in inbox.</div>`;
+                } else {
+                    let html = "";
+                    inbox.forEach((item, idx) => {
+                        const unreadClass = item.read ? '' : 'unread';
+                        const dateStr = item.timestamp ? new Date(item.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+                        html += `
+                            <div class="notif-item ${unreadClass}" onclick="markNotifItemRead(${idx})">
+                                <div class="notif-item-title"><b>${item.title}</b></div>
+                                <div>${item.message}</div>
+                                <div class="notif-item-time">${dateStr} • From ${item.sender || 'Admin'}</div>
+                            </div>
+                        `;
+                    });
+                    listEl.innerHTML = html;
+                }
+            }
+        }
+
+        function toggleNotificationInbox(event) {
+            if (event) event.stopPropagation();
+            let dropdown = document.getElementById('notifDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+            }
+        }
+
+        function markAllNotifsRead() {
+            let inbox = safeGetJSON('user_notif_inbox', []);
+            inbox.forEach(n => n.read = true);
+            localStorage.setItem('user_notif_inbox', JSON.stringify(inbox));
+            updateNotificationUI();
+        }
+
+        function markNotifItemRead(idx) {
+            let inbox = safeGetJSON('user_notif_inbox', []);
+            if (inbox[idx]) {
+                inbox[idx].read = true;
+                localStorage.setItem('user_notif_inbox', JSON.stringify(inbox));
+                updateNotificationUI();
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            let dropdown = document.getElementById('notifDropdown');
+            let bell = document.querySelector('.notification-bell-container');
+            if (dropdown && dropdown.classList.contains('show')) {
+                if (bell && !bell.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+
+        // ==========================================
+        // 3. HELPER & ACCOUNT EVALUATION FUNCTIONS
         // ==========================================
 
         function acceptCookies() {
             document.getElementById('cookieBanner').style.display = 'none';
         }
 
-        // REQUEST BROWSER PUSH NOTIFICATION PERMISSIONS
-        function requestNotificationPermission() {
-            if ("Notification" in window && Notification.permission === "default") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        console.log("Browser push notifications enabled!");
-                    }
-                });
-            }
-        }
-
-        // TRIGGER SYSTEM TOP-BAR / ANDROID PUSH NOTIFICATION
-        function triggerNativePushNotification(title, message) {
-            if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    new Notification(title, {
-                        body: message,
-                        icon: "https://www.roblox.com/headshot-thumbnail/image?userId=7680051058&width=150&height=150&format=png",
-                        badge: "https://www.roblox.com/headshot-thumbnail/image?userId=7680051058&width=150&height=150&format=png",
-                        tag: "xdrg-global-announcement",
-                        renotify: true
-                    });
-                } catch(e) {
-                    console.warn("System Notification Dispatch Error:", e);
-                }
-            }
-        }
-
         function openPolicy() {
-            document.getElementById('pageTitle').innerText = "Term of Policy";
+            document.getElementById('pageTitle').innerText = "Terms of Policy";
             document.getElementById('pageContent').innerHTML = `
                 <div class="policy-card">
                     <h2 style="margin-top:0; color:#005a9c; border-bottom: 2px solid #3366cc; padding-bottom: 8px;">[Xdrg Policy]</h2>
@@ -552,6 +759,8 @@
         window.onload = () => {
             try {
                 requestNotificationPermission();
+                checkGlobalNotifications();
+                setInterval(checkGlobalNotifications, 12000);
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const referrerId = urlParams.get('ref');
@@ -577,7 +786,6 @@
 
                     updateUserStatusHeader();
                     logDeviceConnection(currentUser);
-                    checkRealtimeNotifications();
                     showWiki();
                 }
             } catch (err) {
@@ -675,10 +883,8 @@
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
 
-                requestNotificationPermission();
                 updateUserStatusHeader();
                 logDeviceConnection(currentUser);
-                checkRealtimeNotifications();
                 showWiki();
             } catch (err) {
                 console.error("Auth Exception:", err);
@@ -754,6 +960,7 @@
                     <b>${dName}</b> (@${currentUser.username}) ${roleBadgeHtml} | 🪙 Coins: <b>${coinsDisplay}</b> | <span style="color:#28a745; font-weight:bold;">🟢 Connected</span>
                 </div>
             `;
+            updateNotificationUI();
         }
 
         function logout() {
@@ -784,151 +991,8 @@
         }
 
         function openQuests() {
-            document.getElementById('pageTitle').innerText = "🎯 Quest and Trade Service";
+            document.getElementById('pageTitle').innerText = "🎯 Quests & Trade Service Dashboard";
             renderQuestsPage();
-        }
-
-        // ==========================================
-        // 3. GLOBAL PUSH NOTIFICATION & INBOX SYSTEM
-        // ==========================================
-
-        async function sendGlobalPushNotification() {
-            const titleInput = document.getElementById('pushNotifTitle');
-            const msgInput = document.getElementById('pushNotifMsg');
-            
-            const title = (titleInput?.value || '').trim();
-            const message = (msgInput?.value || '').trim();
-
-            if (!title || !message) {
-                alert("❌ Please enter both a Notification Title and Message!");
-                return;
-            }
-
-            const notifId = "NOTIF-" + Date.now();
-            const notificationObj = {
-                id: notifId,
-                title: title,
-                message: message,
-                sender: currentUser ? (currentUser.displayName || currentUser.name) : "Owner",
-                timestamp: Date.now()
-            };
-
-            try {
-                await fetch(`${FIREBASE_BASE_URL}/notifications/${notifId}.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(notificationObj)
-                });
-            } catch(e) {
-                console.warn("Firebase notification sync warning:", e);
-            }
-
-            // Save locally
-            let localNotifs = safeGetJSON('app_notifications_db', []);
-            localNotifs.unshift(notificationObj);
-            localStorage.setItem('app_notifications_db', JSON.stringify(localNotifs));
-
-            // Trigger system / browser notification immediately for sender/active session
-            triggerNativePushNotification(title, message);
-
-            alert("🔔 Global Notification sent to all users successfully!");
-            titleInput.value = "";
-            msgInput.value = "";
-            checkRealtimeNotifications();
-        }
-
-        async function checkRealtimeNotifications() {
-            let localNotifs = safeGetJSON('app_notifications_db', []);
-            let readIds = safeGetJSON('app_read_notif_ids', []);
-
-            try {
-                const response = await fetch(`${FIREBASE_BASE_URL}/notifications.json`);
-                if (response.ok) {
-                    const fbData = (await response.json()) || {};
-                    Object.keys(fbData).forEach(key => {
-                        const item = fbData[key];
-                        if (item && !localNotifs.some(n => n.id === key)) {
-                            localNotifs.unshift({ ...item, id: key });
-                            // Trigger system notification for newly fetched remote notifications
-                            triggerNativePushNotification(item.title, item.message);
-                        }
-                    });
-                    localStorage.setItem('app_notifications_db', JSON.stringify(localNotifs));
-                }
-            } catch(err) {
-                console.warn("Could not sync remote notifications:", err);
-            }
-
-            const unreadCount = localNotifs.filter(n => !readIds.includes(n.id)).length;
-            const badgeEl = document.getElementById('notifBadge');
-            
-            if (badgeEl) {
-                if (unreadCount > 0) {
-                    badgeEl.innerText = unreadCount;
-                    badgeEl.style.display = 'block';
-                } else {
-                    badgeEl.style.display = 'none';
-                }
-            }
-        }
-
-        function openNotificationInbox() {
-            document.getElementById('pageTitle').innerText = "🔔 Notification Inbox";
-            
-            let notifications = safeGetJSON('app_notifications_db', []);
-            let readIds = safeGetJSON('app_read_notif_ids', []);
-
-            // Mark all as read when opening inbox
-            const allIds = notifications.map(n => n.id);
-            localStorage.setItem('app_read_notif_ids', JSON.stringify(allIds));
-            
-            const badgeEl = document.getElementById('notifBadge');
-            if (badgeEl) badgeEl.style.display = 'none';
-
-            let html = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <p style="color:#54595d; margin:0;">Real-time announcements and studio notifications.</p>
-                    <button class="btn-save" style="background-color:#d33;" onclick="clearNotificationInbox()">Clear Inbox</button>
-                </div>
-            `;
-
-            if (notifications.length === 0) {
-                html += `
-                    <div style="text-align:center; padding: 50px; background:#f8f9fa; border:1px solid #a2a9b1; border-radius:6px;">
-                        <svg style="width:48px; height:48px; fill:#a2a9b1; margin-bottom:10px;" viewBox="0 0 24 24">
-                            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                        </svg>
-                        <h3 style="margin:0; color:#54595d;">No Notifications Yet</h3>
-                        <p style="color:#777; font-size:0.85rem;">You are all caught up!</p>
-                    </div>
-                `;
-            } else {
-                notifications.forEach(item => {
-                    const isUnread = !readIds.includes(item.id);
-                    const timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString() : "Just now";
-                    
-                    html += `
-                        <div class="wiki-notif-card ${isUnread ? 'unread' : ''}">
-                            <div class="wiki-notif-title">
-                                <span>📢 ${item.title}</span>
-                                <span class="wiki-notif-time">${timeStr}</span>
-                            </div>
-                            <div style="color:#202122; font-size:0.9rem; line-height:1.4;">${item.message}</div>
-                            <div style="font-size:0.75rem; color:#005a9c; margin-top:6px;">Sender: ${item.sender || 'Studio Owner'}</div>
-                        </div>
-                    `;
-                });
-            }
-
-            document.getElementById('pageContent').innerHTML = html;
-        }
-
-        function clearNotificationInbox() {
-            if (confirm("Are you sure you want to clear your notification inbox?")) {
-                localStorage.setItem('app_notifications_db', JSON.stringify([]));
-                localStorage.setItem('app_read_notif_ids', JSON.stringify([]));
-                openNotificationInbox();
-            }
         }
 
         // ==========================================
@@ -1095,7 +1159,7 @@
         }
 
         function openXdrgAI() {
-            document.getElementById('pageTitle').innerText = "🤖 XDRG AI ASSISTANT";
+            document.getElementById('pageTitle').innerText = "🤖 XDRG AI Assistant";
             let chats = getAIChats();
 
             if (chats.length === 0) {
@@ -1128,7 +1192,7 @@
                 title: "New Conversation",
                 messages: [{
                     role: "assistant",
-                    text: "Kumusta! Ask me anything about our games, unit values, claim history, calculations, or coding!"
+                    text: "Kumusta! Ask me anything about our games, unit values, claim status, calculations, or coding!"
                 }]
             };
             chats.unshift(newChat);
@@ -1248,11 +1312,11 @@
                     `2. **Marking Received:** Go to **📜 Claim Delivery History** in the sidebar. Click **'Mark Received'** to finalize delivery!\n` +
                     `3. **Privacy:** Adjust your delivery history visibility under **⚙️ Profile & Privacy Settings**.`;
             } else if (p.includes("owner") || p.includes("admin") || p.includes("staff")) {
-                responseText = `👑 **Studio Leadership & Staff Team:**\n\n` +
-                    `• **Owner:** Dev_Xdragon / LumeCraftor\n` +
+                responseText = `👑 **Studio Leadership & Team:**\n\n` +
+                    `• **Owners:** Dev_Xdragon & LumeCraftor\n` +
                     `• **Head-Admin:** Vincent Magtolis\n` +
-                    `• **Admin:** Jayson Areglo, Summere Castrence, Jeric Caido, Han Christian\n` +
-                    `• **Moderator:** Liam Platon, Nielo Armas, Deann Mark N. Tan`;
+                    `• **Admins:** Jayson Areglo, Summere Castrence, Jeric Caido, Han Christian\n` +
+                    `• **Moderators:** Liam Platon, Nielo Armas, Deann Mark N. Tan`;
             } else {
                 responseText = `🤖 **[${model} Reasoning Engine]**\n\n` +
                     `I received your query regarding "*${userPrompt}*".\n\n` +
@@ -1317,7 +1381,6 @@
                 </div>
             `;
 
-            // Quest 3: COMMUNITY VOTING
             let polls = safeGetJSON('app_polls_db', []);
             let pollHtml = ``;
             const now = Date.now();
@@ -1534,9 +1597,9 @@
                 localStorage.setItem('app_polls_db', JSON.stringify(polls));
                 
                 currentUser.lastVoteTime = now;
-                currentUser.points = (currentUser.points || 0) + 5; 
+                currentUser.points = (currentUser.points || 0) + 5;
                 saveUserData();
-                updateUserStatusHeader(); 
+                updateUserStatusHeader();
                 
                 alert("✅ Vote successfully cast! You received +5 Coins.");
                 renderQuestsPage();
@@ -1588,6 +1651,26 @@
                         </div>
                     </div>
 
+                    <!-- OWNER PUSH NOTIFICATION SENDER (RED BOX) -->
+                    ${isOwner ? `
+                        <div class="admin-box" style="background:#fff0f0; border:2px solid #dc3545; margin-bottom:25px;">
+                            <h4 style="color:#dc3545; font-size:1.1rem; margin-bottom:6px;">🚨 Owner Global Push Notification Sender</h4>
+                            <p style="font-size:0.85rem; color:#54595d; margin-top:0; margin-bottom:12px;">Send real-time web browser notifications and inbox alerts to all portal users immediately.</p>
+                            
+                            <div style="margin-bottom:10px;">
+                                <label style="font-weight:bold; font-size:0.85rem;">Notification Title:</label>
+                                <input type="text" id="notifTitleInput" placeholder="e.g. 📢 Game Update Released!" style="margin-top:4px;">
+                            </div>
+                            <div style="margin-bottom:12px;">
+                                <label style="font-weight:bold; font-size:0.85rem;">Notification Message:</label>
+                                <input type="text" id="notifMsgInput" placeholder="e.g. New units and trade items are now available!" style="margin-top:4px;">
+                            </div>
+                            <button class="btn-save" style="background-color:#dc3545; width:100%; font-size:0.95rem; padding:10px;" onclick="sendOwnerGlobalNotification()">
+                                Send Notification to All Users 🚀
+                            </button>
+                        </div>
+                    ` : ''}
+
                     <!-- HISTORY PRIVACY SWITCH -->
                     <div class="settings-row" style="background:#eaf3ff; border:1px solid #a7d7f9; padding:12px; border-radius:6px; margin-bottom:20px;">
                         <label style="margin-bottom:6px;">History Privacy 🔒</label>
@@ -1614,31 +1697,6 @@
                     
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
             `;
-
-            // OWNER GLOBAL PUSH NOTIFICATION SENDER BOX
-            if (isOwner) {
-                html += `
-                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
-
-                    <div class="owner-push-box">
-                        <h4>📢 Owner Global Push Notification Sender</h4>
-                        <p style="font-size:0.85rem; color:#721c24; margin-top:0; margin-bottom:12px;">
-                            Broadcast instant push notifications and system alert popups to all connected visitors and users.
-                        </p>
-                        <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Notification Title:</label>
-                            <input type="text" id="pushNotifTitle" placeholder="e.g. 🚀 Major Update Released!" style="margin-top:4px;">
-                        </div>
-                        <div style="margin-bottom:12px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Notification Message:</label>
-                            <textarea id="pushNotifMsg" rows="3" placeholder="Enter message details here..." style="margin-top:4px; font-family:inherit;"></textarea>
-                        </div>
-                        <button class="btn-save" style="background-color:#dc3545; width:100%; font-size:0.95rem; padding:10px;" onclick="sendGlobalPushNotification()">
-                            Send Notification to All Users
-                        </button>
-                    </div>
-                `;
-            }
 
             if (isAdmin) {
                 html += `
@@ -1889,12 +1947,15 @@
         }
 
         function renderBrainrotsPage() {
-            const brainrotsGameUrl = "https://www.roblox.com/share?code=1483f284c605034c99ef45593524c6f9&type=ExperienceDetails&stamp=1789062103029";
-
             let html = `
-                <a href="${brainrotsGameUrl}" target="_blank" class="btn-roblox-play">
-                    🎮 Play Don't Crash By Train For Brainrots on Roblox
-                </a>
+                <!-- DIRECT ROBLOX GAME PLAY LINK -->
+                <div style="background:#eaf3ff; border:1px solid #3366cc; padding:15px; border-radius:6px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h3 style="margin:0; color:#005a9c;">🎮 Play Don't Crash By Train For Brainrots on Roblox</h3>
+                        <p style="margin:5px 0 0 0; font-size:0.85rem; color:#54595d;">Join the server directly to explore units, mutations, and trade items!</p>
+                    </div>
+                    <a href="https://www.roblox.com/share?code=1483f284c605034c99ef45593524c6f9&type=ExperienceDetails&stamp=1789062103029" target="_blank" style="background:#28a745; color:white; text-decoration:none; padding:10px 18px; border-radius:4px; font-weight:bold; white-space:nowrap;">Play Game 🚀</a>
+                </div>
 
                 <div class="infobox">
                     <b>Game Mechanics</b>
@@ -1908,12 +1969,12 @@
                         <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
                     </select>
                 </div>
-                <p>This page documents the characters and shop items found in <b>Don't Crash By Train For Brainrots</b>. Values shown reflect the current mutation modifier.</p>
+                <p>This page documents the characters and shop items found in Don't Crash By Train For Brainrots. Values shown reflect the current mutation modifier.</p>
             `;
 
             categories.forEach(cat => {
                 const areaName = areaMapping[cat.title];
-                html += `2>${cat.title} Units</h2>`;
+                html += `<h2>${cat.title} Units</h2>`;
                 html += `
                     <table class="wikitable">
                         <tr>
@@ -1974,18 +2035,22 @@
 
         function triggerReleaseSequence() {
             document.getElementById('pageTitle').innerText = "Crystal Collecting Simulator";
-            const crystalGameUrl = "https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785";
             
             const releaseDate = new Date("2026-09-06T13:00:00+08:00").getTime();
             const now = Date.now();
             
             if (now < releaseDate) {
                 document.getElementById('pageContent').innerHTML = `
+                    <!-- DIRECT ROBLOX GAME PLAY LINK -->
+                    <div style="background:#eaf3ff; border:1px solid #3366cc; padding:15px; border-radius:6px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h3 style="margin:0; color:#005a9c;">🎮 Play Crystal Collecting Simulator on Roblox</h3>
+                            <p style="margin:5px 0 0 0; font-size:0.85rem; color:#54595d;">Join the game directly on Roblox to experience crystal mining!</p>
+                        </div>
+                        <a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" style="background:#28a745; color:white; text-decoration:none; padding:10px 18px; border-radius:4px; font-weight:bold; white-space:nowrap;">Play Game 🚀</a>
+                    </div>
+
                     <div class="error-container">
-                        <a href="${crystalGameUrl}" target="_blank" class="btn-roblox-play">
-                            🎮 Play Crystal Collecting Simulator on Roblox
-                        </a>
-                        <br><br>
                         <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-bottom:15px;">Try Again</button>
                         <p style="font-weight:bold; color:#54595d;">Loading video...</p>
                         <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" style="max-width:100%; border:2px solid #202122; border-radius:4px; margin-bottom:20px;">
@@ -2001,9 +2066,14 @@
                 `;
             } else {
                 document.getElementById('pageContent').innerHTML = `
-                    <a href="${crystalGameUrl}" target="_blank" class="btn-roblox-play">
-                        🎮 Play Crystal Collecting Simulator on Roblox
-                    </a>
+                    <!-- DIRECT ROBLOX GAME PLAY LINK -->
+                    <div style="background:#eaf3ff; border:1px solid #3366cc; padding:15px; border-radius:6px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h3 style="margin:0; color:#005a9c;">🎮 Play Crystal Collecting Simulator on Roblox</h3>
+                            <p style="margin:5px 0 0 0; font-size:0.85rem; color:#54595d;">Join the game directly on Roblox to experience crystal mining!</p>
+                        </div>
+                        <a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" style="background:#28a745; color:white; text-decoration:none; padding:10px 18px; border-radius:4px; font-weight:bold; white-space:nowrap;">Play Game 🚀</a>
+                    </div>
 
                     <h2>[Pickaxes]</h2>
                     <table class="wikitable">
