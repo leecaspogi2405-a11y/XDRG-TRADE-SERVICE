@@ -9,19 +9,37 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
-        .mw-sidebar { width: 230px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
+        /* SIDEBAR STYLES */
+        .mw-sidebar { width: 240px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
         .mw-logo { display: block; font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
-        .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; }
+        .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; text-transform: uppercase; letter-spacing: 0.5px; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
         .mw-sidebar li { margin-bottom: 6px; font-size: 0.85rem; }
-        .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; }
+        .mw-sidebar a { color: #0645ad; text-decoration: none; cursor: pointer; display: inline-block; padding: 2px 0; }
         .mw-sidebar a:hover { text-decoration: underline; }
         
-        .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; min-width: 800px; }
-        .mw-top-tools { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 20px; border-bottom: 1px solid #eaecf0; padding-bottom: 10px; position: relative; }
+        /* CONTENT STYLES */
+        .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; min-width: 800px; position: relative; }
+        .mw-top-tools { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 20px; border-bottom: 1px solid #eaecf0; padding-bottom: 10px; }
         
         .user-badge { display: flex; align-items: center; gap: 10px; }
         .user-avatar-small { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #3366cc; object-fit: cover; background: #eaf3ff; display: block; flex-shrink: 0; }
+
+        /* FLOATING NOTIFICATION BELL & DROPDOWN */
+        .top-right-tools { display: flex; align-items: center; gap: 15px; position: relative; }
+        .notif-bell-btn { position: relative; cursor: pointer; background: none; border: none; padding: 4px; display: flex; align-items: center; justify-content: center; }
+        .notif-bell-icon { width: 22px; height: 22px; fill: #202122; transition: fill 0.2s; }
+        .notif-bell-btn:hover .notif-bell-icon { fill: #3366cc; }
+        .notif-badge { position: absolute; top: -3px; right: -4px; background-color: #cc0000; color: white; border-radius: 10px; padding: 1px 5px; font-size: 0.7rem; font-weight: bold; line-height: 1; border: 1.5px solid #ffffff; }
+        
+        .notif-dropdown { position: absolute; top: 35px; right: 0; width: 340px; background: #ffffff; border: 1px solid #a2a9b1; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10000; display: none; }
+        .notif-dropdown.active { display: block; }
+        .notif-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #eaecf0; border-bottom: 1px solid #a2a9b1; font-weight: bold; font-size: 0.85rem; }
+        .notif-list { max-height: 320px; overflow-y: auto; list-style: none; padding: 0; margin: 0; }
+        .notif-item { padding: 10px 12px; border-bottom: 1px solid #eaecf0; font-size: 0.82rem; }
+        .notif-item.unread { background: #eaf3ff; font-weight: 500; }
+        .notif-item .notif-title { font-weight: bold; color: #005a9c; margin-bottom: 2px; }
+        .notif-item .notif-time { font-size: 0.72rem; color: #72777d; margin-top: 4px; }
 
         h1 { font-family: 'Georgia', serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
         h2 { font-family: 'Georgia', serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
@@ -32,7 +50,7 @@
         
         .form-box { max-width: 450px; margin: 30px auto; border: 1px solid #a2a9b1; padding: 30px; background: #f8f9fa; border-radius: 6px; }
         .form-box label { display: block; font-weight: bold; margin-bottom: 3px; font-size: 0.85rem; }
-        .form-box input[type="text"], .form-box input[type="email"], .form-box input[type="password"], .form-box input[type="number"], .form-box input[type="file"] { width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid #a2a9b1; box-sizing: border-box; border-radius: 4px; }
+        .form-box input[type="text"], .form-box input[type="email"], .form-box input[type="password"], .form-box input[type="number"] { width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid #a2a9b1; box-sizing: border-box; border-radius: 4px; }
         .form-box button { background-color: #3366cc; color: white; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; width: 100%; border-radius: 4px; }
         .form-box button:hover { background-color: #2a4b8d; }
         
@@ -43,10 +61,10 @@
         .auth-toggle button { background: #eaecf0; color: #202122; border: 1px solid #a2a9b1; padding: 8px; font-weight: bold; width: 50%; cursor: pointer; }
         .auth-toggle button.active { background: #3366cc; color: white; border-color: #3366cc; }
 
-        .settings-section { max-width: 600px; margin-top: 20px; }
+        .settings-section { max-width: 650px; margin-top: 20px; }
         .settings-row { margin-bottom: 15px; }
         .settings-row label { display: block; font-weight: bold; margin-bottom: 5px; }
-        .settings-row input[type="text"], .settings-row input[type="password"], .settings-row input[type="number"], .settings-row textarea { width: 100%; max-width: 100%; padding: 8px; border: 1px solid #a2a9b1; border-radius: 4px; box-sizing: border-box; }
+        .settings-row input[type="text"], .settings-row input[type="password"], .settings-row input[type="number"] { width: 100%; max-width: 320px; padding: 8px; border: 1px solid #a2a9b1; border-radius: 4px; }
         .settings-row.checkbox-row { display: flex; align-items: center; gap: 10px; }
         .settings-row.checkbox-row label { margin-bottom: 0; }
         
@@ -59,6 +77,9 @@
         .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; }
         .btn-claim:hover { background-color: #218838; }
         
+        .roblox-btn { display: inline-flex; align-items: center; gap: 10px; background-color: #000000; color: #ffffff; padding: 10px 20px; font-weight: bold; border-radius: 6px; text-decoration: none; margin: 15px 0; transition: background 0.2s; }
+        .roblox-btn:hover { background-color: #333333; color: #ffffff; text-decoration: none; }
+
         /* SOCIAL MEDIA STYLES */
         .social-links { list-style: none; padding: 0; font-size: 1rem; margin-top: 15px; }
         .social-links li { margin-bottom: 12px; }
@@ -76,14 +97,8 @@
 
         .loader { border: 8px solid #eaecf0; border-top: 8px solid #3366cc; border-radius: 50%; width: 50px; height: 50px; animation: spin 1.5s linear infinite; margin: 40px auto 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .error-container { text-align: center; margin-top: 30px; background-color: #f8f9fa; border: 1px solid #eaecf0; padding: 30px; }
-        .error-container img { max-width: 100%; height: auto; border: 2px solid #202122; margin-bottom: 25px; border-radius: 4px; }
-        .error-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; font-family: Georgia, serif; }
-        .error-mod { color: #005a9c; font-weight: bold; font-size: 1.1rem; margin-bottom: 25px; padding: 10px; background-color: #eaf3ff; border-left: 5px solid #005a9c; display: inline-block; }
 
         .quest-box { border: 1px solid #a2a9b1; background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-        .quest-box.disabled { background: #fff0f0; border-color: #f5c6cb; }
         .points-header { background: #eaf3ff; border: 1px solid #3366cc; padding: 12px; font-weight: bold; font-size: 1.1rem; color: #005a9c; text-align: center; border-radius: 6px; margin-bottom: 20px; }
         .game-grid { display: grid; grid-template-columns: repeat(2, 80px); gap: 10px; margin-top: 15px; justify-content: center; }
         .emoji-card { width: 80px; height: 80px; background: #eaecf0; border: 2px solid #a2a9b1; font-size: 2rem; display: flex; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer; user-select: none; }
@@ -91,7 +106,7 @@
         
         .admin-box { background: #eaf3ff; border: 1px solid #a7d7f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .admin-box h4 { margin-top: 0; color: #005a9c; font-size: 1.05rem; }
-        .admin-box input { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; }
+        .admin-box input, .admin-box textarea { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #a2a9b1; border-radius: 4px; font-family: inherit; }
         .reward-select { width: 100%; padding: 10px; border: 1px solid #a2a9b1; border-radius: 4px; font-weight: bold; margin-top: 8px; margin-bottom: 10px; }
 
         /* ROLE BADGES */
@@ -106,6 +121,18 @@
 
         .btn-action-sm { padding: 4px 10px; font-size: 0.8rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-action-sm:hover { background-color: #218838; }
+
+        /* CASH OUT & MONETIZATION STYLES */
+        .cashout-card { background: #f8f9fa; border: 1px solid #a2a9b1; padding: 20px; border-radius: 8px; max-width: 500px; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .balance-box { background: #eaf3ff; border: 1px solid #3366cc; padding: 12px 16px; border-radius: 6px; font-size: 0.95rem; margin-bottom: 20px; font-family: monospace; }
+        .balance-box div { font-weight: bold; color: #005a9c; }
+        .amount-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .amount-btn { padding: 10px; border: 1px solid #a2a9b1; background: #ffffff; border-radius: 6px; font-weight: bold; cursor: pointer; text-align: center; font-size: 1rem; transition: all 0.2s; }
+        .amount-btn:hover, .amount-btn.active { background: #3366cc; color: white; border-color: #3366cc; }
+        .payment-selection { display: flex; gap: 15px; margin-bottom: 20px; }
+        .payment-option { flex: 1; border: 2px solid #a2a9b1; border-radius: 6px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; background: #ffffff; transition: all 0.2s; }
+        .payment-option.active { border-color: #3366cc; background: #eaf3ff; }
+        .payment-logo { height: 26px; width: auto; }
 
         /* XDRG AI STYLES */
         .ai-layout { display: flex; gap: 20px; background: #ffffff; border: 1px solid #a2a9b1; border-radius: 8px; overflow: hidden; min-height: 580px; }
@@ -129,250 +156,24 @@
         .ai-send-btn { background: #3366cc; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; }
 
         /* COOKIE BANNER STYLES */
-        .cookie-banner {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #202122;
-            color: #ffffff;
-            padding: 16px 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            max-width: 90%;
-            width: 620px;
-            font-size: 0.9rem;
-            border: 1px solid #444;
-        }
-        .cookie-banner-btn {
-            color: #ffffff;
-            background-color: #3366cc;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            white-space: nowrap;
-            transition: background 0.2s ease;
-            border: none;
-        }
-        .cookie-banner-btn:hover {
-            background-color: #2a4b8d;
-        }
+        .cookie-banner { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #202122; color: #ffffff; padding: 16px 24px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); z-index: 99999; display: flex; align-items: center; justify-content: space-between; gap: 20px; max-width: 90%; width: 620px; font-size: 0.9rem; border: 1px solid #444; }
+        .cookie-banner-btn { color: #ffffff; background-color: #3366cc; font-weight: bold; cursor: pointer; text-decoration: none; padding: 8px 16px; border-radius: 4px; white-space: nowrap; transition: background 0.2s ease; border: none; }
+        .cookie-banner-btn:hover { background-color: #2a4b8d; }
 
         /* POLICY CARD STYLES */
-        .policy-card {
-            background: #f8f9fa;
-            border: 1px solid #a2a9b1;
-            padding: 25px;
-            border-radius: 8px;
-            max-width: 700px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .policy-list {
-            padding-left: 20px;
-            line-height: 1.9;
-            font-size: 1rem;
-            color: #202122;
-        }
-        .policy-list li {
-            margin-bottom: 8px;
-        }
-        .policy-back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            color: #0645ad;
-            font-weight: bold;
-            font-size: 1.05rem;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        .policy-back-btn:hover {
-            color: #0b0080;
-        }
-
-        /* NOTIFICATION BELL & FLOATING DROPDOWN PANEL */
-        .notification-bell-btn {
-            position: relative;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            outline: none;
-        }
-        .notification-bell-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: #3366cc;
-            transition: transform 0.2s ease;
-        }
-        .notification-bell-btn:hover svg {
-            transform: scale(1.1);
-        }
-        .notification-badge-number {
-            position: absolute;
-            top: 0px;
-            right: 0px;
-            background-color: #d9534f;
-            color: #ffffff;
-            font-size: 0.7rem;
-            font-weight: bold;
-            border-radius: 10px;
-            padding: 1px 5px;
-            min-width: 16px;
-            text-align: center;
-            line-height: 14px;
-        }
-        .notification-dropdown-panel {
-            position: absolute;
-            top: 45px;
-            right: 0;
-            width: 340px;
-            max-height: 420px;
-            background: #ffffff;
-            border: 1px solid #a2a9b1;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-            border-radius: 6px;
-            z-index: 9999;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .notification-dropdown-header {
-            background-color: #eaecf0;
-            padding: 10px 14px;
-            border-bottom: 1px solid #a2a9b1;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #202122;
-        }
-        .notification-dropdown-body {
-            overflow-y: auto;
-            max-height: 350px;
-            padding: 0;
-        }
-        .notif-item {
-            padding: 12px;
-            border-bottom: 1px solid #eaecf0;
-            font-size: 0.85rem;
-            background: #ffffff;
-            transition: background 0.2s ease;
-        }
-        .notif-item.unread {
-            background: #eaf3ff;
-            font-weight: 500;
-        }
-        .notif-item-title {
-            font-weight: bold;
-            color: #005a9c;
-            margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .notif-item-time {
-            font-size: 0.75rem;
-            color: #72777d;
-        }
-        .btn-mark-read {
-            background: none;
-            border: none;
-            color: #0645ad;
-            cursor: pointer;
-            font-size: 0.75rem;
-            padding: 0;
-            text-decoration: underline;
-        }
-
-        /* MONETIZATION / REWARDS CARD STYLES */
-        .money-card-box {
-            background: #f8f9fa;
-            border: 1px solid #a2a9b1;
-            border-radius: 8px;
-            padding: 20px;
-            max-width: 520px;
-            margin-top: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .money-est-header {
-            background: #ffffff;
-            border: 1px solid #a2a9b1;
-            border-radius: 6px;
-            padding: 12px 16px;
-            font-family: monospace;
-            font-size: 1.1rem;
-            color: #202122;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        .amount-options-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .btn-amount-opt {
-            background: #ffffff;
-            border: 2px solid #a2a9b1;
-            padding: 10px;
-            font-weight: bold;
-            font-size: 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            color: #202122;
-            transition: all 0.2s ease;
-        }
-        .btn-amount-opt.active, .btn-amount-opt:hover {
-            border-color: #3366cc;
-            background: #eaf3ff;
-            color: #005a9c;
-        }
-        .payment-method-selector {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .payment-card-opt {
-            flex: 1;
-            border: 2px solid #a2a9b1;
-            border-radius: 6px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            background: #ffffff;
-            transition: all 0.2s ease;
-        }
-        .payment-card-opt.active {
-            border-color: #28a745;
-            background: #e8f8f0;
-        }
-        .payment-logo-svg {
-            height: 28px;
-            width: auto;
-            object-fit: contain;
-        }
+        .policy-card { background: #f8f9fa; border: 1px solid #a2a9b1; padding: 25px; border-radius: 8px; max-width: 700px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .policy-list { padding-left: 20px; line-height: 1.9; font-size: 1rem; color: #202122; }
+        .policy-list li { margin-bottom: 8px; }
+        .policy-back-btn { display: inline-block; margin-top: 20px; color: #0645ad; font-weight: bold; font-size: 1.05rem; cursor: pointer; text-decoration: underline; }
+        .policy-back-btn:hover { color: #0b0080; }
     </style>
 </head>
 <body>
 
-    <!-- COOKIE & AD CONSENT BANNER -->
+    <!-- COOKIE BANNER -->
     <div id="cookieBanner" class="cookie-banner">
-        <div>
-            This website contains ads and cookies. Do you consent to the developer of this Wiki Website?
-        </div>
-        <button class="cookie-banner-btn" onclick="acceptCookies()">I Allow Cookies</button>
+        <div>This website contains ads and cookies. Do you agree to the developers of this Wiki website?</div>
+        <button class="cookie-banner-btn" onclick="acceptCookies()">I allow cookies</button>
     </div>
 
     <!-- AUTHENTICATION SCREEN -->
@@ -391,7 +192,6 @@
                     <button id="btnTabLog" onclick="switchAuthTab('login')">Log In</button>
                 </div>
 
-                <!-- Live Roblox Profile Preview Card -->
                 <div id="robloxPreviewBox" class="roblox-preview-card" style="display: none;">
                     <img id="robloxPreviewImg" src="" alt="" referrerpolicy="no-referrer">
                     <div>
@@ -444,23 +244,24 @@
     <div id="wikiScreen" style="display: none;">
         <div class="mw-page-container">
             
+            <!-- SIDEBAR NAVIGATION -->
             <div class="mw-sidebar">
                 <a class="mw-logo" onclick="openHome()">RedGalaxy Studio<br>NebulaForge Studio</a>
                 
                 <h3>Navigation</h3>
                 <ul>
                     <li><a onclick="openHome()">Main Page</a></li>
-                    <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
                     <li><a onclick="openGame('brainrots')">Don't Crash By Train For Brainrots</a></li>
+                    <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
                 </ul>
 
                 <h3>Help</h3>
                 <ul>
                     <li><a onclick="openXdrgAI()" style="font-weight:bold; color:#005a9c;">🤖 XDRG AI Assistant</a></li>
-                    <li><a onclick="openQuests()">🎯 Quests & Trade Service</a></li>
+                    <li><a onclick="openQuests()">🎯 Quest and Trade Service</a></li>
                     <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
+                    <li><a onclick="openCashOutPage()" style="font-weight:bold; color:#28a745;">💰 Money Rewards & Cash Out</a></li>
                     <li><a onclick="openPolicy()">📜 Terms of Policy</a></li>
-                    <li><a onclick="openMonetization()" style="font-weight:bold; color:#28a745;">💸 Money Rewards</a></li>
                 </ul>
 
                 <h3>Account Settings</h3>
@@ -470,49 +271,48 @@
 
                 <h3>Staff / Team</h3>
                 <ul>
-                    <li><b>Owner:</b><br>Dev_Xdragon / LumeCraftor</li>
-                    <li style="margin-top:8px;"><b>Head-Admin:</b><br>Vincent Magtolis</li>
-                    <li style="margin-top:8px;"><b>Admin:</b><br>Jayson Areglo<br>Summere Castrence<br>Jeric Caido<br>Han Christian</li>
-                    <li style="margin-top:8px;"><b>Moderator:</b><br>Liam Platon<br>Nielo Armas<br>Deann Mark N. Tan</li>
+                    <li><b>Owners:</b><br>Dev_Xdragon / LumeCraftor</li>
+                    <li style="margin-top:6px;"><b>Head-Admin:</b><br>Vincent Magtolis</li>
+                    <li style="margin-top:6px;"><b>Admins:</b><br>Jayson Areglo<br>Summere Castrence<br>Jeric Caido<br>Han Christian</li>
+                    <li style="margin-top:6px;"><b>Moderators:</b><br>Liam Platon<br>Nielo Armas<br>Deann Mark N. Tan</li>
                 </ul>
             </div>
             
+            <!-- CONTENT AREA -->
             <div class="mw-content-container">
                 <div class="mw-top-tools">
                     <div id="userStatus" class="user-badge">
                         <span>Not logged in</span>
                     </div>
-
-                    <div style="display:flex; align-items:center; gap:20px;">
-                        <!-- FLOATING NOTIFICATION BELL BUTTON -->
-                        <div style="position:relative;">
-                            <button class="notification-bell-btn" onclick="toggleNotificationDropdown()" title="Notifications Inbox">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                                </svg>
-                                <span class="notification-badge-number" id="notifBadgeCount" style="display:none;">0</span>
-                            </button>
-
-                            <!-- FLOATING NOTIFICATION DROPDOWN PANEL -->
-                            <div class="notification-dropdown-panel" id="notificationDropdown">
-                                <div class="notification-dropdown-header">
-                                    <span>Notifications Inbox</span>
-                                    <button class="btn-mark-read" onclick="markAllNotificationsRead()">Mark all as read</button>
+                    
+                    <div class="top-right-tools">
+                        <!-- REAL WIKIPEDIA STYLE FLOATING BELL NOTIFICATION -->
+                        <div class="notif-bell-btn" onclick="toggleNotifDropdown(event)" title="Notifications">
+                            <svg class="notif-bell-icon" viewBox="0 0 24 24">
+                                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                            </svg>
+                            <span id="notifUnreadBadge" class="notif-badge" style="display:none;">0</span>
+                            
+                            <!-- FLOATING NOTIFICATION DROPDOWN -->
+                            <div id="notifDropdown" class="notif-dropdown" onclick="event.stopPropagation()">
+                                <div class="notif-header">
+                                    <span>Notifications</span>
+                                    <button onclick="markAllNotificationsAsRead()" class="btn-action-sm" style="font-size:0.75rem;">Mark as Read</button>
                                 </div>
-                                <div class="notification-dropdown-body" id="notificationListContainer">
-                                    <div style="padding:20px; text-align:center; color:#72777d;">No notifications yet</div>
-                                </div>
+                                <ul id="notifList" class="notif-list">
+                                    <li class="notif-item" style="text-align:center; color:#777; padding:15px;">No notifications yet.</li>
+                                </ul>
                             </div>
                         </div>
 
-                        <span><a onclick="logout()" style="color:#0645ad; cursor:pointer; font-weight:bold;">Log out</a></span>
+                        <span><a onclick="logout()" style="color:#0645ad; cursor:pointer;">Log out</a></span>
                     </div>
                 </div>
                 
                 <h1 id="pageTitle">Main Page</h1>
                 
                 <div id="pageContent">
-                    <p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases, manage trade services, or chat with XDRG AI.</p>
+                    <p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases, manage trade services, request cash outs, or chat with XDRG AI.</p>
                 </div>
             </div>
         </div>
@@ -520,14 +320,12 @@
 
     <script>
         // ==========================================
-        // 1. GLOBAL CONSTANTS & CONFIGURATION
+        // GLOBAL CONSTANTS & CONFIGURATION
         // ==========================================
         const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233366cc'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
 
         const FIREBASE_BASE_URL = "https://automation-giver-xdrg-default-rtdb.asia-southeast1.firebasedatabase.app";
-        const FIREBASE_URL = `${FIREBASE_BASE_URL}/claims.json`;
 
-        // OWNER PRIVILEGE CONFIGURATION
         const OWNER_CONFIG = {
             emails: [
                 'xdrgxdragon@gmail.com',
@@ -554,7 +352,6 @@
             "Limited": "Unknown / Event Area"
         };
 
-        // Standard Units Array
         const categories = [
             { title: "Common", units: [{ name: "Bananita Dolphinita", price: 250 }, { name: "Trippi Troppi", price: 200 }, { name: "Gangster Footera", price: 55 }] },
             { title: "Rare", units: [{ name: "Ballerina Cappuccina", price: 400 }, { name: "Svinina Bombardino", price: 150 }, { name: "Bombombini Gusini", price: 100 }] },
@@ -564,7 +361,6 @@
             { title: "Limited", units: [{ name: "Strawberry Elephant", price: 150000 }, { name: "Summerini Fattini", price: 1500000 }] }
         ];
 
-        // Shop Items Array
         const shopItems = [
             { name: "Boneca Ambelabu", rarity: "Rare", price: 65000, income: "25,000 /s" },
             { name: "Job Job Job Sahur", rarity: "Rare", price: 155000, income: "80,000 /s" },
@@ -582,40 +378,25 @@
         const emojis = ["🐱", "🐶", "🦊", "🐸", "🐵", "🦁"];
         let robloxDebounceTimer = null;
 
+        /* CASH OUT GLOBAL STATE */
+        let selectedCashOutAmount = 3; // ₱3 default
+        let selectedPaymentMethod = 'GCash';
+
         /* AI GLOBAL STATE */
         let currentAIModel = "Xdrg Pro 3.5";
         let activeAIChatId = null;
 
-        /* MONETIZATION SELECTION STATE */
-        let selectedCashAmount = 3;
-        let selectedPaymentMethod = 'GCash';
+        /* REALTIME SYNC STATE */
+        let globalNotifications = [];
+        let globalPolls = [];
+        let globalCashOuts = [];
 
         // ==========================================
-        // 2. HELPER & OWNER EVALUATION FUNCTIONS
+        // HELPER & INITIALIZATION FUNCTIONS
         // ==========================================
 
         function acceptCookies() {
             document.getElementById('cookieBanner').style.display = 'none';
-        }
-
-        function openPolicy() {
-            document.getElementById('pageTitle').innerText = "Terms of Policy";
-            document.getElementById('pageContent').innerHTML = `
-                <div class="policy-card">
-                    <h2 style="margin-top:0; color:#005a9c; border-bottom: 2px solid #3366cc; padding-bottom: 8px;">[Xdrg Policy]</h2>
-                    <ol class="policy-list">
-                        <li>Do not re-copy this website.</li>
-                        <li>Do not show your private information such as your Password, Secret Keys, etc.</li>
-                        <li>Don't share your Web IP or UID to keep your privacy safe.</li>
-                        <li>Credit the owners (Dev Xdragon, Lume Craftor).</li>
-                        <li>Respect all members including Admins and Moderators.</li>
-                        <li>Do not use XDRG AI to search up inaccurate or fake information from the game.</li>
-                    </ol>
-                    <div>
-                        <a onclick="openHome()" class="policy-back-btn">I follow all policies</a>
-                    </div>
-                </div>
-            `;
         }
 
         function safeGetJSON(key, defaultVal) {
@@ -690,7 +471,7 @@
 
         window.onload = () => {
             try {
-                // Request Push Notification Permission
+                // Request Push Notification Permissions
                 if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                     Notification.requestPermission();
                 }
@@ -721,11 +502,178 @@
                     logDeviceConnection(currentUser);
                     showWiki();
                 }
-                updateNotificationBadgeUI();
+
+                // Close notification dropdown when clicking outside
+                document.addEventListener('click', () => {
+                    const dropdown = document.getElementById('notifDropdown');
+                    if (dropdown) dropdown.classList.remove('active');
+                });
+
+                // Start real-time sync loop (polls Firebase every 5 seconds)
+                setInterval(syncRealtimeDatabase, 5000);
+                syncRealtimeDatabase();
+
             } catch (err) {
                 console.error("Initialization error:", err);
             }
         };
+
+        // ==========================================
+        // REAL-TIME FIREBASE SYNC & NOTIFICATION ENGINE
+        // ==========================================
+
+        async function syncRealtimeDatabase() {
+            try {
+                // 1. Sync Notifications
+                const notifRes = await fetch(`${FIREBASE_BASE_URL}/notifications.json`);
+                if (notifRes.ok) {
+                    const notifData = await notifRes.json();
+                    let newNotifList = [];
+                    if (notifData) {
+                        Object.keys(notifData).forEach(id => {
+                            newNotifList.push({ id, ...notifData[id] });
+                        });
+                        newNotifList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                    }
+
+                    // Check for newly pushed notifications to trigger native Browser Push
+                    if (globalNotifications.length > 0 && newNotifList.length > globalNotifications.length) {
+                        const latest = newNotifList[0];
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification(latest.title || "New Update", {
+                                body: latest.message || "New activity recorded!",
+                                icon: DEFAULT_AVATAR
+                            });
+                        }
+                    }
+                    globalNotifications = newNotifList;
+                    renderNotificationDropdown();
+                }
+
+                // 2. Sync Polls
+                const pollRes = await fetch(`${FIREBASE_BASE_URL}/polls.json`);
+                if (pollRes.ok) {
+                    const pollData = await pollRes.json();
+                    let newPolls = [];
+                    if (pollData) {
+                        Object.keys(pollData).forEach(id => {
+                            newPolls.push({ id, ...pollData[id] });
+                        });
+                    }
+                    globalPolls = newPolls;
+                    localStorage.setItem('app_polls_db', JSON.stringify(globalPolls));
+                }
+
+                // 3. Sync Cash Outs (For Owner Alerts)
+                if (currentUser && isOwnerAccount(currentUser)) {
+                    const cashRes = await fetch(`${FIREBASE_BASE_URL}/cashouts.json`);
+                    if (cashRes.ok) {
+                        const cashData = await cashRes.json();
+                        let cashList = [];
+                        if (cashData) {
+                            Object.keys(cashData).forEach(id => {
+                                cashList.push({ id, ...cashData[id] });
+                            });
+                        }
+                        globalCashOuts = cashList;
+                    }
+                }
+            } catch (e) {
+                console.warn("Real-time sync pause / offline mode:", e);
+            }
+        }
+
+        function toggleNotifDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('notifDropdown');
+            if (dropdown) dropdown.classList.toggle('active');
+        }
+
+        function renderNotificationDropdown() {
+            const listEl = document.getElementById('notifList');
+            const badgeEl = document.getElementById('notifUnreadBadge');
+            if (!listEl) return;
+
+            let readIds = safeGetJSON('read_notif_ids', []);
+            let unreadCount = 0;
+
+            if (globalNotifications.length === 0) {
+                listEl.innerHTML = `<li class="notif-item" style="text-align:center; color:#777; padding:15px;">No notifications yet.</li>`;
+                if (badgeEl) badgeEl.style.display = "none";
+                return;
+            }
+
+            let html = "";
+            globalNotifications.forEach(n => {
+                const isRead = readIds.includes(n.id);
+                if (!isRead) unreadCount++;
+
+                const dateStr = n.timestamp ? new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                html += `
+                    <li class="notif-item ${isRead ? '' : 'unread'}">
+                        <div class="notif-title">${n.title || 'Studio Update'}</div>
+                        <div>${n.message || ''}</div>
+                        <div class="notif-time">${dateStr}</div>
+                    </li>
+                `;
+            });
+
+            listEl.innerHTML = html;
+
+            if (badgeEl) {
+                if (unreadCount > 0) {
+                    badgeEl.innerText = unreadCount > 99 ? '99+' : unreadCount;
+                    badgeEl.style.display = "block";
+                } else {
+                    badgeEl.style.display = "none";
+                }
+            }
+        }
+
+        function markAllNotificationsAsRead() {
+            let allIds = globalNotifications.map(n => n.id);
+            localStorage.setItem('read_notif_ids', JSON.stringify(allIds));
+            renderNotificationDropdown();
+        }
+
+        async function sendGlobalOwnerNotification() {
+            if (!currentUser || !isOwnerAccount(currentUser)) return;
+
+            const title = document.getElementById('ownerNotifTitle').value.trim();
+            const message = document.getElementById('ownerNotifMsg').value.trim();
+
+            if (!title || !message) {
+                alert("❌ Please fill in both the notification Title and Message!");
+                return;
+            }
+
+            const notifId = "NOTIF-" + Date.now();
+            const notifData = {
+                id: notifId,
+                title: title,
+                message: message,
+                sender: currentUser.displayName || currentUser.name || "Owner",
+                timestamp: Date.now()
+            };
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/notifications/${notifId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(notifData)
+                });
+                alert("📢 Global Push Notification broadcasted to all users!");
+                document.getElementById('ownerNotifTitle').value = "";
+                document.getElementById('ownerNotifMsg').value = "";
+                syncRealtimeDatabase();
+            } catch (e) {
+                alert("❌ Failed to push notification. Check network connection.");
+            }
+        }
+
+        // ==========================================
+        // AUTHENTICATION LOGIC
+        // ==========================================
 
         function switchAuthTab(type) {
             document.getElementById('signInForm').style.display = type === 'signin' ? 'block' : 'none';
@@ -840,6 +788,13 @@
                 allUsers.push(currentUser);
             }
             localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+
+            // Sync user to global Firebase Realtime DB
+            fetch(`${FIREBASE_BASE_URL}/users/${currentUser.rblxUserId || 'guest'}.json`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(currentUser)
+            }).catch(e => console.warn(e));
         }
 
         async function logDeviceConnection(user) {
@@ -861,7 +816,7 @@
                     body: JSON.stringify(deviceData)
                 });
             } catch (err) {
-                console.error("Device connection logging error:", err);
+                console.error("Device logging error:", err);
             }
         }
 
@@ -909,9 +864,13 @@
             openHome();
         }
 
+        // ==========================================
+        // NAVIGATION HANDLERS
+        // ==========================================
+
         function openHome() {
             document.getElementById('pageTitle').innerText = "Main Page";
-            document.getElementById('pageContent').innerHTML = "<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases, chat with XDRG AI, or access trade services.</p>";
+            document.getElementById('pageContent').innerHTML = "<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases, chat with XDRG AI, access trade services, or cash out rewards.</p>";
         }
 
         function openGame(game) {
@@ -924,12 +883,214 @@
         }
 
         function openQuests() {
-            document.getElementById('pageTitle').innerText = "🎯 Quests & Trade Service Dashboard";
+            document.getElementById('pageTitle').innerText = "🎯 Quest and Trade Service Dashboard";
             renderQuestsPage();
         }
 
+        function openPolicy() {
+            document.getElementById('pageTitle').innerText = "Terms of Policy";
+            document.getElementById('pageContent').innerHTML = `
+                <div class="policy-card">
+                    <h2 style="margin-top:0; color:#005a9c; border-bottom: 2px solid #3366cc; padding-bottom: 8px;">[Xdrg Policy]</h2>
+                    <ol class="policy-list">
+                        <li>Do not copy or clone this website.</li>
+                        <li>Do not reveal sensitive credentials such as Passwords, Secret Keys, etc.</li>
+                        <li>Do not share your Web IP or User ID to keep your account safe.</li>
+                        <li>Give proper credit to the owners (Dev Xdragon, LumeCraftor).</li>
+                        <li>Respect all community members including Admins and Moderators.</li>
+                        <li>Do not use XDRG AI to query inaccurate or illegal information.</li>
+                    </ol>
+                    <div>
+                        <a onclick="openHome()" class="policy-back-btn">I follow all policies</a>
+                    </div>
+                </div>
+            `;
+        }
+
         // ==========================================
-        // 3. CLAIMS & DELIVERY HISTORY SYSTEM
+        // MONETIZATION & CASH OUT SYSTEM
+        // ==========================================
+
+        function openCashOutPage() {
+            document.getElementById('pageTitle').innerText = "💰 Money Rewards & Cash Out";
+            renderCashOutPage();
+        }
+
+        function selectCashAmount(amount) {
+            selectedCashOutAmount = amount;
+            renderCashOutPage();
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            renderCashOutPage();
+        }
+
+        function renderCashOutPage() {
+            if (!currentUser) return;
+
+            let coins = (currentUser.points || 0);
+            let estPhp = (coins / 10000).toFixed(2);
+
+            if (isOwnerAccount(currentUser)) {
+                estPhp = "999,999.00";
+            }
+
+            const reqCoins = selectedCashOutAmount * 10000;
+
+            let html = `
+                <div class="cashout-card">
+                    <h2 style="margin-top:0; text-align:center; color:#005a9c; border:none; margin-bottom:15px;">Cash Out Money Rewards</h2>
+                    
+                    <div class="balance-box">
+                        <div>Est: ₱${estPhp}</div>
+                        <div style="margin-top:4px;">Coins: ${isOwnerAccount(currentUser) ? 'Infinity ♾️' : coins.toLocaleString()}</div>
+                    </div>
+
+                    <label style="font-weight:bold; margin-bottom:8px; display:block;">Select Amount to Cash Out:</label>
+                    <div class="amount-grid">
+                        <button class="amount-btn ${selectedCashOutAmount === 3 ? 'active' : ''}" onclick="selectCashAmount(3)">₱3</button>
+                        <button class="amount-btn ${selectedCashOutAmount === 5 ? 'active' : ''}" onclick="selectCashAmount(5)">₱5</button>
+                        <button class="amount-btn ${selectedCashOutAmount === 15 ? 'active' : ''}" onclick="selectCashAmount(15)">₱15</button>
+                        <button class="amount-btn ${selectedCashOutAmount === 30 ? 'active' : ''}" onclick="selectCashAmount(30)">₱30</button>
+                    </div>
+
+                    <label style="font-weight:bold; margin-bottom:8px; display:block;">Select Payment Option:</label>
+                    <div class="payment-selection">
+                        <!-- GCASH VECTOR LOGO -->
+                        <div class="payment-option ${selectedPaymentMethod === 'GCash' ? 'active' : ''}" onclick="selectPaymentMethod('GCash')">
+                            <svg class="payment-logo" viewBox="0 0 100 30" fill="none">
+                                <rect width="100" height="30" rx="4" fill="#005CE6"/>
+                                <text x="50" y="20" fill="white" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">GCash</text>
+                            </svg>
+                        </div>
+                        <!-- MAYA VECTOR LOGO -->
+                        <div class="payment-option ${selectedPaymentMethod === 'Maya' ? 'active' : ''}" onclick="selectPaymentMethod('Maya')">
+                            <svg class="payment-logo" viewBox="0 0 100 30" fill="none">
+                                <rect width="100" height="30" rx="4" fill="#000000"/>
+                                <text x="50" y="20" fill="#00FFA3" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">Maya</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <form onsubmit="handleCashOutSubmit(event)">
+                        <div style="margin-bottom:12px;">
+                            <label style="font-weight:bold; display:block; margin-bottom:4px; font-size:0.85rem;">Account Holder Name:</label>
+                            <input type="text" id="cashOutName" required placeholder="Full Name on ${selectedPaymentMethod}" style="width:100%; padding:10px; border:1px solid #a2a9b1; border-radius:4px;">
+                        </div>
+
+                        <div style="margin-bottom:15px;">
+                            <label style="font-weight:bold; display:block; margin-bottom:4px; font-size:0.85rem;">Account Number:</label>
+                            <input type="text" id="cashOutNumber" required placeholder="09123456789" style="width:100%; padding:10px; border:1px solid #a2a9b1; border-radius:4px;">
+                        </div>
+
+                        <p style="font-size:0.8rem; color:#54595d; margin-bottom:15px;">
+                            * Required Coins: <b>${reqCoins.toLocaleString()} Coins</b> (10,000 Coins = ₱1.00). Cash out requests are routed live to Owner notification alerts.
+                        </p>
+
+                        <button type="submit" class="btn-claim" style="width:100%; font-size:1rem; padding:12px;">
+                            Submit Cash Out Request
+                        </button>
+                    </form>
+                </div>
+            `;
+
+            if (isOwnerAccount(currentUser) && globalCashOuts.length > 0) {
+                html += `
+                    <div style="margin-top:30px;">
+                        <h2>👑 Owner Global Cash Out Requests Dashboard</h2>
+                        <table class="wikitable">
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Holder Name</th>
+                                <th>Account Number</th>
+                                <th>Status</th>
+                            </tr>
+                `;
+                globalCashOuts.forEach(c => {
+                    html += `
+                        <tr>
+                            <td><b>${c.username || 'User'}</b></td>
+                            <td>₱${c.amount}</td>
+                            <td>${c.method}</td>
+                            <td>${c.holderName}</td>
+                            <td><code>${c.accountNumber}</code></td>
+                            <td><span class="status-badge status-pending">${c.status || 'Pending Review'}</span></td>
+                        </tr>
+                    `;
+                });
+                html += `</table></div>`;
+            }
+
+            document.getElementById('pageContent').innerHTML = html;
+        }
+
+        async function handleCashOutSubmit(event) {
+            event.preventDefault();
+            if (!currentUser) return;
+
+            const holderName = document.getElementById('cashOutName').value.trim();
+            const accountNumber = document.getElementById('cashOutNumber').value.trim();
+            const requiredCoins = selectedCashOutAmount * 10000;
+            const isOwner = isOwnerAccount(currentUser);
+
+            if (!isOwner && (currentUser.points || 0) < requiredCoins) {
+                alert(`❌ Insufficient Coins! You need ${requiredCoins.toLocaleString()} Coins to cash out ₱${selectedCashOutAmount}. Current Coins: ${(currentUser.points || 0).toLocaleString()}`);
+                return;
+            }
+
+            const cashOutId = "CASHOUT-" + Date.now();
+            const cashOutData = {
+                id: cashOutId,
+                username: currentUser.username || currentUser.name,
+                rblxUserId: currentUser.rblxUserId,
+                amount: selectedCashOutAmount,
+                method: selectedPaymentMethod,
+                holderName: holderName,
+                accountNumber: accountNumber,
+                status: "Pending",
+                timestamp: Date.now()
+            };
+
+            // Deduct Coins if not owner
+            if (!isOwner) {
+                currentUser.points = (currentUser.points || 0) - requiredCoins;
+                saveUserData();
+                updateUserStatusHeader();
+            }
+
+            try {
+                // Save Cash Out to Firebase (Global Sync)
+                await fetch(`${FIREBASE_BASE_URL}/cashouts/${cashOutId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(cashOutData)
+                });
+
+                // Trigger Owner Global Alert Notification on Firebase
+                const ownerNotifId = "NOTIF-CASH-" + Date.now();
+                await fetch(`${FIREBASE_BASE_URL}/notifications/${ownerNotifId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: ownerNotifId,
+                        title: "💰 New Cash Out Request",
+                        message: `@${currentUser.username} requested ₱${selectedCashOutAmount} via ${selectedPaymentMethod} (${accountNumber})`,
+                        timestamp: Date.now()
+                    })
+                });
+
+                alert(`✅ Cash Out Request Submitted! ₱${selectedCashOutAmount} routed to Studio Owners for payout.`);
+                renderCashOutPage();
+            } catch (e) {
+                alert("❌ Request submission error. Check internet connection.");
+            }
+        }
+
+        // ==========================================
+        // CLAIMS & DELIVERY HISTORY SYSTEM
         // ==========================================
 
         function getLocalUserClaims(userId) {
@@ -957,7 +1118,7 @@
                         body: JSON.stringify("successful")
                     });
                 } catch(e) {
-                    console.warn("Firebase sync failed, saved locally:", e);
+                    console.warn("Firebase sync warning:", e);
                 }
 
                 alert("✅ Item status updated to Delivered / Received!");
@@ -992,7 +1153,7 @@
             let localClaims = accountOwner ? getLocalUserClaims(accountOwner.rblxUserId) : [];
 
             try {
-                const response = await fetch(FIREBASE_URL);
+                const response = await fetch(`${FIREBASE_BASE_URL}/claims.json`);
                 if (response.ok) {
                     const fbData = (await response.json()) || {};
                     Object.keys(fbData).forEach(key => {
@@ -1003,7 +1164,7 @@
                         )) {
                             const existingLocal = localClaims.find(lc => lc.id === key);
                             if (existingLocal && existingLocal.status === "successful") {
-                                // Keep local received status
+                                // Keep status
                             } else {
                                 const newClaim = { ...c, id: key };
                                 if (!existingLocal) localClaims.push(newClaim);
@@ -1014,7 +1175,7 @@
                     if (accountOwner) saveLocalUserClaims(accountOwner.rblxUserId, localClaims);
                 }
             } catch (err) {
-                console.warn("Could not reach Firebase, relying on persistent local storage claims.", err);
+                console.warn("Relying on local claims fallback.", err);
             }
 
             localClaims.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -1078,289 +1239,7 @@
         }
 
         // ==========================================
-        // 4. FLOATING NOTIFICATION SYSTEM & ENGINE
-        // ==========================================
-
-        function getNotificationsList() {
-            return safeGetJSON('app_notifications_list', []);
-        }
-
-        function saveNotificationsList(list) {
-            localStorage.setItem('app_notifications_list', JSON.stringify(list));
-            updateNotificationBadgeUI();
-        }
-
-        function toggleNotificationDropdown() {
-            const dropdown = document.getElementById('notificationDropdown');
-            if (dropdown.style.display === 'flex') {
-                dropdown.style.display = 'none';
-            } else {
-                dropdown.style.display = 'flex';
-                renderNotificationDropdownList();
-            }
-        }
-
-        function updateNotificationBadgeUI() {
-            const list = getNotificationsList();
-            const unreadCount = list.filter(n => !n.read).length;
-            const badge = document.getElementById('notifBadgeCount');
-
-            if (badge) {
-                if (unreadCount > 0) {
-                    badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
-                    badge.style.display = 'block';
-                } else {
-                    badge.style.display = 'none';
-                }
-            }
-        }
-
-        function renderNotificationDropdownList() {
-            const list = getNotificationsList();
-            const container = document.getElementById('notificationListContainer');
-
-            if (!container) return;
-
-            if (list.length === 0) {
-                container.innerHTML = `<div style="padding:20px; text-align:center; color:#72777d;">No notifications yet</div>`;
-                return;
-            }
-
-            let html = '';
-            list.forEach(item => {
-                const isUnreadClass = item.read ? '' : 'unread';
-                const timeAgo = item.timestamp ? new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-
-                html += `
-                    <div class="notif-item ${isUnreadClass}">
-                        <div class="notif-item-title">
-                            <span>${item.title}</span>
-                            <span class="notif-item-time">${timeAgo}</span>
-                        </div>
-                        <div style="color:#202122; margin-bottom:6px; font-size:0.8rem;">${item.message}</div>
-                        ${!item.read ? `<button class="btn-mark-read" onclick="markSingleNotificationRead('${item.id}')">Mark as Read</button>` : ''}
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        function markSingleNotificationRead(id) {
-            let list = getNotificationsList();
-            const idx = list.findIndex(n => n.id === id);
-            if (idx !== -1) {
-                list[idx].read = true;
-                saveNotificationsList(list);
-                renderNotificationDropdownList();
-            }
-        }
-
-        function markAllNotificationsRead() {
-            let list = getNotificationsList();
-            list.forEach(n => n.read = true);
-            saveNotificationsList(list);
-            renderNotificationDropdownList();
-        }
-
-        function addNotificationToInbox(title, message) {
-            let list = getNotificationsList();
-            const notifItem = {
-                id: 'notif_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-                title: title,
-                message: message,
-                read: false,
-                timestamp: Date.now()
-            };
-            list.unshift(notifItem);
-            saveNotificationsList(list);
-
-            // Native Browser Push Notification
-            if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    new Notification(title, {
-                        body: message,
-                        icon: "https://www.roblox.com/favicon.ico"
-                    });
-                } catch(e) {
-                    console.log("Browser notification error:", e);
-                }
-            }
-        }
-
-        async function sendOwnerGlobalPush() {
-            if (!isOwnerAccount(currentUser)) {
-                alert("❌ Only Owner accounts can trigger Global Push Notifications!");
-                return;
-            }
-
-            const title = (document.getElementById('ownerPushTitle').value || '').trim();
-            const message = (document.getElementById('ownerPushMessage').value || '').trim();
-
-            if (!title || !message) {
-                alert("❌ Please enter both a Notification Title and Message!");
-                return;
-            }
-
-            addNotificationToInbox(title, message);
-
-            try {
-                await fetch(`${FIREBASE_BASE_URL}/notifications.json`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        title: title,
-                        message: message,
-                        sender: currentUser.username || currentUser.name,
-                        timestamp: Date.now()
-                    })
-                });
-            } catch(e) {
-                console.warn("Firebase notification sync issue:", e);
-            }
-
-            alert("🔔 Push Notification sent to all users successfully!");
-            document.getElementById('ownerPushTitle').value = "";
-            document.getElementById('ownerPushMessage').value = "";
-        }
-
-        // ==========================================
-        // 5. MONEY REWARDS / MONETIZATION SYSTEM
-        // ==========================================
-
-        function selectCashoutAmount(amount) {
-            selectedCashAmount = amount;
-            document.querySelectorAll('.btn-amount-opt').forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.getElementById(`btnAmt_${amount}`);
-            if (activeBtn) activeBtn.classList.add('active');
-        }
-
-        function selectPaymentMethod(method) {
-            selectedPaymentMethod = method;
-            document.querySelectorAll('.payment-card-opt').forEach(card => card.classList.remove('active'));
-            const activeCard = document.getElementById(`payOpt_${method}`);
-            if (activeCard) activeCard.classList.add('active');
-        }
-
-        function openMonetization() {
-            document.getElementById('pageTitle').innerText = "💸 Money Rewards / Cash Out";
-
-            const userCoins = currentUser ? (isOwnerAccount(currentUser) ? 999999 : (currentUser.points || 0)) : 0;
-            const estPHP = (userCoins / 10000).toFixed(2);
-
-            let html = `
-                <p style="color:#54595d;">Redeem your accumulated game coins into real GCash or Maya money balance! Rate: <b>10,000 Coins = ₱1.00</b>.</p>
-
-                <div class="money-card-box">
-                    <div class="money-est-header">
-                        | Est: ₱${estPHP}<br>
-                        |<br>
-                        | Coins: ${userCoins.toLocaleString()}
-                    </div>
-
-                    <label style="font-weight:bold; display:block; margin-bottom:8px;">Select Cash Amount:</label>
-                    <div class="amount-options-grid">
-                        <button type="button" id="btnAmt_3" class="btn-amount-opt ${selectedCashAmount === 3 ? 'active' : ''}" onclick="selectCashoutAmount(3)">₱3</button>
-                        <button type="button" id="btnAmt_5" class="btn-amount-opt ${selectedCashAmount === 5 ? 'active' : ''}" onclick="selectCashoutAmount(5)">₱5</button>
-                        <button type="button" id="btnAmt_15" class="btn-amount-opt ${selectedCashAmount === 15 ? 'active' : ''}" onclick="selectCashoutAmount(15)">₱15</button>
-                        <button type="button" id="btnAmt_30" class="btn-amount-opt ${selectedCashAmount === 30 ? 'active' : ''}" onclick="selectCashoutAmount(30)">₱30</button>
-                    </div>
-
-                    <label style="font-weight:bold; display:block; margin-bottom:8px;">Selection Payment Provider:</label>
-                    <div class="payment-method-selector">
-                        <div id="payOpt_GCash" class="payment-card-opt ${selectedPaymentMethod === 'GCash' ? 'active' : ''}" onclick="selectPaymentMethod('GCash')">
-                            <svg class="payment-logo-svg" viewBox="0 0 100 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100" height="32" rx="4" fill="#007CFF"/>
-                                <text x="50" y="21" font-family="Arial, sans-serif" font-weight="900" font-size="16" fill="#FFFFFF" text-anchor="middle">GCash</text>
-                            </svg>
-                        </div>
-                        <div id="payOpt_Maya" class="payment-card-opt ${selectedPaymentMethod === 'Maya' ? 'active' : ''}" onclick="selectPaymentMethod('Maya')">
-                            <svg class="payment-logo-svg" viewBox="0 0 100 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100" height="32" rx="4" fill="#000000"/>
-                                <text x="50" y="21" font-family="Arial, sans-serif" font-weight="900" font-size="16" fill="#20D070" text-anchor="middle">maya</text>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div style="background:#ffffff; border:1px solid #a2a9b1; padding:15px; border-radius:6px; margin-bottom:20px;">
-                        <h4 style="margin-top:0; color:#005a9c; margin-bottom:12px;">Account Holder Information:</h4>
-                        
-                        <label style="display:block; font-weight:bold; font-size:0.85rem; margin-bottom:4px;">Account Name:</label>
-                        <input type="text" id="cashoutHolderName" placeholder="Enter Full Account Name" style="width:100%; padding:8px; border:1px solid #a2a9b1; border-radius:4px; margin-bottom:12px; box-sizing:border-box;">
-
-                        <label style="display:block; font-weight:bold; font-size:0.85rem; margin-bottom:4px;">Account Mobile Number:</label>
-                        <input type="number" id="cashoutHolderNumber" placeholder="e.g. 09123456789" style="width:100%; padding:8px; border:1px solid #a2a9b1; border-radius:4px; box-sizing:border-box;">
-                    </div>
-
-                    <button class="btn-claim" style="width:100%; font-size:1rem; padding:12px;" onclick="processCashoutRequest()">
-                        Submit Cash Out Request
-                    </button>
-                </div>
-            `;
-
-            document.getElementById('pageContent').innerHTML = html;
-        }
-
-        async function processCashoutRequest() {
-            if (!currentUser) {
-                alert("❌ You must be logged in to submit a cash out request!");
-                return;
-            }
-
-            const name = (document.getElementById('cashoutHolderName').value || '').trim();
-            const number = (document.getElementById('cashoutHolderNumber').value || '').trim();
-
-            if (!name || !number) {
-                alert("❌ Please enter both your Account Name and Account Number!");
-                return;
-            }
-
-            const requiredCoins = selectedCashAmount * 10000;
-            const isOwner = isOwnerAccount(currentUser);
-
-            if (!isOwner && (currentUser.points || 0) < requiredCoins) {
-                alert(`⚠️ Insufficient coins! You need ${requiredCoins.toLocaleString()} Coins for ₱${selectedCashAmount}.00 payout.`);
-                return;
-            }
-
-            if (!isOwner) {
-                currentUser.points -= requiredCoins;
-                saveUserData();
-                updateUserStatusHeader();
-            }
-
-            const cashoutData = {
-                id: "CASHOUT-" + Date.now(),
-                username: currentUser.username || currentUser.name,
-                rblxUserId: currentUser.rblxUserId,
-                amountPHP: selectedCashAmount,
-                requiredCoins: requiredCoins,
-                provider: selectedPaymentMethod,
-                accountName: name,
-                accountNumber: number,
-                status: "Pending Payout",
-                timestamp: Date.now()
-            };
-
-            try {
-                await fetch(`${FIREBASE_BASE_URL}/cashouts/${cashoutData.id}.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(cashoutData)
-                });
-            } catch(e) {
-                console.warn("Cashout Firebase sync issue:", e);
-            }
-
-            // Notify Owner
-            addNotificationToInbox("💸 New Cashout Request", `User @${currentUser.username} requested ₱${selectedCashAmount}.00 via ${selectedPaymentMethod} (${name} - ${number})`);
-
-            alert(`✅ Cashout request for ₱${selectedCashAmount}.00 submitted successfully! The owner will process your ${selectedPaymentMethod} payout shortly.`);
-            openMonetization();
-        }
-
-        // ==========================================
-        // 6. XDRG AI ASSISTANT SYSTEM
+        // XDRG AI ASSISTANT SYSTEM
         // ==========================================
 
         function getAIChats() {
@@ -1383,7 +1262,7 @@
                     title: "New Conversation",
                     messages: [{
                         role: "assistant",
-                        text: "Kumusta! I am **XDRG AI**, the official intelligent assistant for RedGalaxy Studio & NebulaForge Studio. I fully understand English, Tagalog, and Taglish! Ask me about unit values, shop calculations, delivery history, coding/scripts, or game releases."
+                        text: "Kumusta! I am **XDRG AI**, the official intelligent assistant for RedGalaxy Studio & NebulaForge Studio. Ask me about unit values, shop calculations, delivery history, cash out rules, coding/scripts, or game releases."
                     }]
                 };
                 chats.push(newChat);
@@ -1396,9 +1275,7 @@
             renderAIPage();
         }
 
-        function switchAIModel(model) {
-            currentAIModel = model;
-        }
+        function switchAIModel(model) { currentAIModel = model; }
 
         function createNewAIChat() {
             let chats = getAIChats();
@@ -1407,7 +1284,7 @@
                 title: "New Conversation",
                 messages: [{
                     role: "assistant",
-                    text: "Kumusta! Ask me anything about our games, unit values, claim status, calculations, or coding!"
+                    text: "Kumusta! Ask me anything about our games, unit values, cash out policy, or coding!"
                 }]
             };
             chats.unshift(newChat);
@@ -1473,7 +1350,7 @@
                                     <option value="Xdrg Lite" ${currentAIModel === 'Xdrg Lite' ? 'selected' : ''}>Model: Xdrg Lite (Compact)</option>
                                 </select>
                             </div>
-                            <span style="font-size:0.8rem; color:#54595d;">Language: Multilingual (English / Tagalog)</span>
+                            <span style="font-size:0.8rem; color:#54595d;">Multilingual (English / Tagalog)</span>
                         </div>
 
                         <div class="ai-messages-container" id="aiMsgContainer">${messagesHtml}</div>
@@ -1521,28 +1398,28 @@
             const p = userPrompt.toLowerCase();
             let responseText = "";
 
-            if (p.includes("claim") || p.includes("pending") || p.includes("received") || p.includes("delivery")) {
+            if (p.includes("cash") || p.includes("money") || p.includes("gcash") || p.includes("maya")) {
+                responseText = `💰 **Money Rewards & Cash Out System:**\n\n` +
+                    `1. **Conversion Rate:** 10,000 Coins = ₱1.00.\n` +
+                    `2. **Options Available:** ₱3, ₱5, ₱15, and ₱30 payouts.\n` +
+                    `3. **Payout Method:** Directly via GCash or Maya.\n` +
+                    `4. **Processing:** Requests trigger live notifications to Owners for instant delivery.`;
+            } else if (p.includes("claim") || p.includes("pending") || p.includes("received") || p.includes("delivery")) {
                 responseText = `📦 **Delivery History & Claim Status Help:**\n\n` +
-                    `1. **Pending Status:** Your reward request is registered. When you join the game server, the auto-giver bot delivers it to your backpack.\n` +
+                    `1. **Pending Status:** Your reward request is registered. When you join the Roblox server, the auto-giver delivers it.\n` +
                     `2. **Marking Received:** Go to **📜 Claim Delivery History** in the sidebar. Click **'Mark Received'** to finalize delivery!\n` +
                     `3. **Privacy:** Adjust your delivery history visibility under **⚙️ Profile & Privacy Settings**.`;
-            } else if (p.includes("owner") || p.includes("admin") || p.includes("staff")) {
-                responseText = `👑 **Studio Leadership & Staff Team:**\n\n` +
-                    `• **Owner:** Dev_Xdragon / LumeCraftor\n` +
-                    `• **Head-Admin:** Vincent Magtolis\n` +
-                    `• **Admin:** Jayson Areglo, Summere Castrence, Jeric Caido, Han Christian\n` +
-                    `• **Moderator:** Liam Platon, Nielo Armas, Deann Mark N. Tan`;
             } else {
                 responseText = `🤖 **[${model} Reasoning Engine]**\n\n` +
                     `I received your query regarding "*${userPrompt}*".\n\n` +
-                    `How can I assist you further with unit values, claim status tracking, money rewards, or studio development?`;
+                    `How can I assist you further with game databases, Roblox direct links, claim tracking, or cash out options?`;
             }
 
             return { role: "assistant", text: responseText };
         }
 
         // ==========================================
-        // 7. QUESTS, POLLS AND REWARD CLAIM LOGIC
+        // QUESTS, POLLS AND REWARD CLAIM LOGIC
         // ==========================================
 
         async function renderQuestsPage() {
@@ -1596,14 +1473,13 @@
                 </div>
             `;
 
-            // Quest 3: COMMUNITY VOTING
-            let polls = safeGetJSON('app_polls_db', []);
+            // Real-time Polls
             let pollHtml = ``;
             const now = Date.now();
             const lastVoteTime = currentUser.lastVoteTime || 0;
             const oneHourInMs = 60 * 60 * 1000;
             
-            if (polls.length === 0) {
+            if (globalPolls.length === 0) {
                 pollHtml = `<div style="padding:15px; text-align:center; color:#777; border:1px solid #c8ccd1; border-radius:4px; background:#eaecf0;">No active community votes currently available. Check back later!</div>`;
             } else {
                 if (now - lastVoteTime < oneHourInMs) {
@@ -1613,7 +1489,7 @@
                             ⏳ You have already voted! You can vote again in <b>${remainingMinutes}</b> minute(s).
                         </div>
                     `;
-                    polls.forEach(poll => {
+                    globalPolls.forEach(poll => {
                         pollHtml += `
                             <div style="margin-bottom:15px; background:#eaecf0; padding:12px; border-radius:4px; border:1px solid #c8ccd1;">
                                 <h4 style="margin-top:0; color:#005a9c; margin-bottom:5px;">${poll.title}</h4>
@@ -1621,16 +1497,13 @@
                         if (poll.description) {
                             pollHtml += `<p style="font-size:0.9rem; color:#54595d; margin-top:0; margin-bottom:10px;">${poll.description}</p>`;
                         }
-                        if (poll.image) {
-                            pollHtml += `<img src="${poll.image}" alt="Poll Image" style="max-width:100%; border-radius:4px; margin-bottom:10px; border: 1px solid #a2a9b1;">`;
-                        }
                         pollHtml += `<div style="display:flex; flex-direction:column; gap:8px;">`;
                         
-                        poll.options.forEach(opt => {
+                        (poll.options || []).forEach(opt => {
                             pollHtml += `
                                 <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; padding:10px; border-radius:4px; border:1px solid #a2a9b1;">
                                     <span><b>${opt.name}</b></span>
-                                    <span style="color:#54595d; font-weight:bold;">${opt.votes} votes</span>
+                                    <span style="color:#54595d; font-weight:bold;">${opt.votes || 0} votes</span>
                                 </div>
                             `;
                         });
@@ -1638,7 +1511,7 @@
                     });
                 } else {
                     pollHtml += `<p style="font-size:0.9rem; color:#54595d; margin-bottom:15px;">Vote on active polls below. Voting grants <b>+5 Coins</b> every hour!</p>`;
-                    polls.forEach(poll => {
+                    globalPolls.forEach(poll => {
                         pollHtml += `
                             <div style="margin-bottom:15px; background:#eaecf0; padding:12px; border-radius:4px; border:1px solid #c8ccd1;">
                                 <h4 style="margin-top:0; color:#005a9c; margin-bottom:5px;">${poll.title}</h4>
@@ -1646,15 +1519,12 @@
                         if (poll.description) {
                             pollHtml += `<p style="font-size:0.9rem; color:#54595d; margin-top:0; margin-bottom:10px;">${poll.description}</p>`;
                         }
-                        if (poll.image) {
-                            pollHtml += `<img src="${poll.image}" alt="Poll Image" style="max-width:100%; border-radius:4px; margin-bottom:10px; border: 1px solid #a2a9b1;">`;
-                        }
                         pollHtml += `<div style="display:flex; flex-direction:column; gap:8px;">`;
                         
-                        poll.options.forEach((opt, index) => {
+                        (poll.options || []).forEach((opt, index) => {
                             pollHtml += `
                                 <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; padding:10px; border-radius:4px; border:1px solid #a2a9b1;">
-                                    <span><b>${opt.name}</b> <span style="color:#54595d; font-size:0.85rem;">(${opt.votes} votes)</span></span>
+                                    <span><b>${opt.name}</b> <span style="color:#54595d; font-size:0.85rem;">(${opt.votes || 0} votes)</span></span>
                                     <button class="btn-save" style="background-color:#005a9c;" onclick="castVote('${poll.id}', ${index})">Vote (+5 Coins)</button>
                                 </div>
                             `;
@@ -1712,7 +1582,7 @@
                     body: JSON.stringify(claimData)
                 });
             } catch (err) {
-                console.warn("Saved locally, Firebase server unavailable:", err);
+                console.warn("Saved locally, Firebase offline:", err);
             }
 
             if (!isOwner) {
@@ -1788,7 +1658,7 @@
             initMiniGame();
         }
 
-        function castVote(pollId, optionIndex) {
+        async function castVote(pollId, optionIndex) {
             if(!currentUser) {
                 alert("❌ You must be logged in to cast a vote!");
                 return;
@@ -1804,18 +1674,24 @@
                 return;
             }
 
-            let polls = safeGetJSON('app_polls_db', []);
-            const poll = polls.find(p => p.id === pollId);
+            let poll = globalPolls.find(p => p.id === pollId);
             
-            if(poll) {
-                poll.options[optionIndex].votes += 1;
+            if(poll && poll.options[optionIndex]) {
+                poll.options[optionIndex].votes = (poll.options[optionIndex].votes || 0) + 1;
                 
-                localStorage.setItem('app_polls_db', JSON.stringify(polls));
-                
+                // Live sync vote back to Firebase Realtime DB
+                try {
+                    await fetch(`${FIREBASE_BASE_URL}/polls/${pollId}.json`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(poll)
+                    });
+                } catch(e) { console.warn(e); }
+
                 currentUser.lastVoteTime = now;
-                currentUser.points = (currentUser.points || 0) + 5; // Grant +5 Coins for voting
+                currentUser.points = (currentUser.points || 0) + 5;
                 saveUserData();
-                updateUserStatusHeader(); // Live update the header coin amount
+                updateUserStatusHeader();
                 
                 alert("✅ Vote successfully cast! You received +5 Coins.");
                 renderQuestsPage();
@@ -1825,7 +1701,7 @@
         }
 
         // ==========================================
-        // 8. SETTINGS & ADMIN CONTROLS
+        // SETTINGS & ADMIN CONTROLS
         // ==========================================
 
         function openSettings() {
@@ -1867,24 +1743,6 @@
                         </div>
                     </div>
 
-                    <!-- OWNER GLOBAL PUSH NOTIFICATION SENDER -->
-                    ${isOwner ? `
-                        <div class="admin-box" style="background:#fff0f0; border:2px solid #d9534f; padding:15px; border-radius:6px; margin-bottom:20px;">
-                            <h4 style="color:#c82333; margin-top:0;">🔔 Owner Global Push Notification Sender</h4>
-                            <p style="font-size:0.8rem; color:#54595d; margin-top:0; margin-bottom:10px;">Send a real-time browser push notification and inbox alert to all website visitors.</p>
-                            
-                            <label style="font-weight:bold; font-size:0.85rem; display:block; margin-bottom:4px;">Notification Title:</label>
-                            <input type="text" id="ownerPushTitle" placeholder="e.g. Major Game Update Released!" style="margin-bottom:10px;">
-                            
-                            <label style="font-weight:bold; font-size:0.85rem; display:block; margin-bottom:4px;">Notification Message:</label>
-                            <textarea id="ownerPushMessage" rows="3" placeholder="e.g. Join the server now for 2x Coins boost event!" style="margin-bottom:12px;"></textarea>
-
-                            <button class="btn-save" style="background-color:#d9534f; width:100%; font-size:0.95rem; padding:10px;" onclick="sendOwnerGlobalPush()">
-                                🚀 Send Notification to All Users
-                            </button>
-                        </div>
-                    ` : ''}
-
                     <!-- HISTORY PRIVACY SWITCH -->
                     <div class="settings-row" style="background:#eaf3ff; border:1px solid #a7d7f9; padding:12px; border-radius:6px; margin-bottom:20px;">
                         <label style="margin-bottom:6px;">History Privacy 🔒</label>
@@ -1912,6 +1770,28 @@
                     <button class="btn-save" onclick="saveSettings()">Save Changes</button>
             `;
 
+            // OWNER GLOBAL PUSH NOTIFICATION CONTROL BOX
+            if (isOwner) {
+                html += `
+                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
+                    <div class="admin-box" style="background:#fff0f0; border-color:#f5c6cb;">
+                        <h4 style="color:#c82333;">🔴 Owner Global Push Notification Sender</h4>
+                        <p style="font-size:0.8rem; color:#54595d; margin-top:0;">Broadcast a live browser push notification and banner alert to all online users.</p>
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Notification Title:</label>
+                            <input type="text" id="ownerNotifTitle" placeholder="e.g. Major Game Update Released!" style="margin-top:4px;">
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Notification Message:</label>
+                            <textarea id="ownerNotifMsg" rows="3" placeholder="Enter notification message text..." style="margin-top:4px;"></textarea>
+                        </div>
+                        <button class="btn-save" style="background-color:#dc3545; width:100%; font-size:0.95rem; padding:10px;" onclick="sendGlobalOwnerNotification()">
+                            Send Notification to All Users
+                        </button>
+                    </div>
+                `;
+            }
+
             if (isAdmin) {
                 html += `
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
@@ -1925,10 +1805,6 @@
                         <div style="margin-bottom:10px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Description:</label>
                             <input type="text" id="newPollDesc" placeholder="e.g. Vote for the upcoming changes!" style="margin-top:4px;">
-                        </div>
-                        <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Poll Image:</label>
-                            <input type="file" id="newPollImage" accept="image/*" style="margin-top:4px; padding: 4px; background: #fff;">
                         </div>
                         <div style="margin-bottom:12px;">
                             <label style="font-weight:bold; font-size:0.85rem;">Comma-separated options:</label>
@@ -2002,11 +1878,10 @@
             document.getElementById('pageContent').innerHTML = html;
         }
         
-        function createPoll() {
+        async function createPoll() {
             const title = document.getElementById('newPollTitle').value.trim();
             const desc = document.getElementById('newPollDesc').value.trim();
             const optionsStr = document.getElementById('newPollOptions').value.trim();
-            const imageInput = document.getElementById('newPollImage');
             
             if(!title || !optionsStr) {
                 alert("❌ Please enter both a title and options for the poll!");
@@ -2019,29 +1894,25 @@
                 return;
             }
 
-            const saveAndRenderPoll = (imgBase64) => {
-                let polls = safeGetJSON('app_polls_db', []);
-                polls.unshift({
-                    id: 'poll_' + Date.now(),
-                    title: title,
-                    description: desc,
-                    image: imgBase64,
-                    options: options
-                });
-                
-                localStorage.setItem('app_polls_db', JSON.stringify(polls));
-                alert("✅ Poll created successfully!");
-                openQuests(); 
+            const pollId = 'poll_' + Date.now();
+            const newPollObj = {
+                id: pollId,
+                title: title,
+                description: desc,
+                options: options
             };
 
-            if (imageInput.files && imageInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    saveAndRenderPoll(e.target.result);
-                };
-                reader.readAsDataURL(imageInput.files[0]);
-            } else {
-                saveAndRenderPoll(null);
+            try {
+                // Save live poll to Firebase Realtime DB
+                await fetch(`${FIREBASE_BASE_URL}/polls/${pollId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(newPollObj)
+                });
+                alert("✅ Poll created and synced globally across all devices!");
+                openQuests(); 
+            } catch(e) {
+                alert("❌ Error saving poll to live server.");
             }
         }
 
@@ -2049,16 +1920,10 @@
             const targetInput = (document.getElementById('grantTargetIdentifier').value || '').trim().toLowerCase();
             const coinAmountInput = document.getElementById('grantCoinAmount').value;
 
-            if (!targetInput) { 
-                alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); 
-                return; 
-            }
+            if (!targetInput) { alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); return; }
             
             const coinsToAdd = parseInt(coinAmountInput, 10);
-            if (isNaN(coinsToAdd) || coinsToAdd <= 0) { 
-                alert("❌ Please enter a valid positive coin amount!"); 
-                return; 
-            }
+            if (isNaN(coinsToAdd) || coinsToAdd <= 0) { alert("❌ Please enter a valid positive coin amount!"); return; }
 
             let allUsers = safeGetJSON('app_users_db', []);
             let foundIndex = allUsers.findIndex(u => 
@@ -2072,7 +1937,7 @@
                 const targetUser = allUsers[foundIndex];
                 
                 if (isOwnerAccount(targetUser)) {
-                    alert(`ℹ️ Note: ${targetUser.displayName || targetUser.name} is an Owner with Infinity ♾️ balance! Numerical value updated.`);
+                    alert(`ℹ️ Note: ${targetUser.displayName || targetUser.name} is an Owner with Infinity ♾️ balance!`);
                 }
 
                 allUsers[foundIndex].points = (allUsers[foundIndex].points || 0) + coinsToAdd;
@@ -2090,16 +1955,13 @@
                 alert(`✅ Granted ${coinsToAdd} coins to ${targetUser.displayName || targetUser.username || targetUser.name}!`);
                 renderSettingsPage();
             } else {
-                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
+                alert("❌ Target user not found in local cache.");
             }
         }
 
         function promoteUserToAdmin() {
             const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim().toLowerCase();
-            if (!targetInput) { 
-                alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); 
-                return; 
-            }
+            if (!targetInput) { alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); return; }
 
             let allUsers = safeGetJSON('app_users_db', []);
             let foundIndex = allUsers.findIndex(u => 
@@ -2113,7 +1975,7 @@
                 const targetUser = allUsers[foundIndex];
                 
                 if (isOwnerAccount(targetUser)) {
-                    alert(`👑 ${targetUser.displayName || targetUser.name} is an Owner! Owner accounts hold full privileges.`);
+                    alert(`👑 ${targetUser.displayName || targetUser.name} is an Owner!`);
                     return;
                 }
 
@@ -2134,7 +1996,7 @@
                 alert(`👑 User @${allUsers[foundIndex].username || allUsers[foundIndex].name} promoted to Admin!`);
                 renderSettingsPage();
             } else {
-                alert("❌ Target user not found in the database. Ensure the account exists on this device/browser.");
+                alert("❌ Target user not found in local cache.");
             }
         }
 
@@ -2153,6 +2015,10 @@
             }
         }
 
+        // ==========================================
+        // GAME PAGES & WIKI LOGIC
+        // ==========================================
+
         function changeMutation() {
             const sel = document.getElementById('mutationSelect');
             currentMutation = parseInt(sel.value);
@@ -2162,8 +2028,8 @@
 
         function renderBrainrotsPage() {
             let html = `
-                <div style="margin-bottom: 20px;">
-                    <a href="https://www.roblox.com/share?code=1483f284c605034c99ef45593524c6f9&type=ExperienceDetails&stamp=1789062103029" target="_blank" class="btn-save" style="display:inline-block; padding:12px 20px; text-decoration:none; background-color:#00a2ff; font-size:1.05rem; border-radius:6px;">
+                <div style="margin-bottom:15px;">
+                    <a href="https://www.roblox.com/share?code=1483f284c605034c99ef45593524c6f9&type=ExperienceDetails&stamp=1789062103029" target="_blank" class="roblox-btn">
                         🎮 Play Don't Crash By Train For Brainrots on Roblox
                     </a>
                 </div>
@@ -2180,7 +2046,7 @@
                         <option value="25" ${currentMutation===25?'selected':''}>Alien (x25)</option>
                     </select>
                 </div>
-                <p>This page documents the characters and shop items found in Don't Crash By Train For Brainrots. Values shown reflect the current mutation modifier.</p>
+                <p>This page documents the characters and shop items found in <b>Don't Crash By Train For Brainrots</b>. Values reflect the selected mutation modifier.</p>
             `;
 
             categories.forEach(cat => {
@@ -2250,30 +2116,26 @@
             const releaseDate = new Date("2026-09-06T13:00:00+08:00").getTime();
             const now = Date.now();
             
+            let robloxLinkHtml = `
+                <div style="margin-bottom:15px;">
+                    <a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" class="roblox-btn">
+                        🎮 Play Crystal Collecting Simulator on Roblox
+                    </a>
+                </div>
+            `;
+
             if (now < releaseDate) {
-                document.getElementById('pageContent').innerHTML = `
-                    <div class="error-container">
-                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-bottom:15px;">Try Again</button>
-                        <p style="font-weight:bold; color:#54595d;">Loading video...</p>
-                        <img src="https://cdn.discordapp.com/attachments/1534937848006971466/1544666829580935228/file_0000000089b08209ba917d874de6070a.png?ex=6a995696&is=6a980516&hm=a61e6625ab3c97d336c6c46997df1cf9eecc95e99243dc8cce0291adfe16fa84&" alt="Game Release Announcement Banner" style="max-width:100%; border:2px solid #202122; border-radius:4px; margin-bottom:20px;">
-                        <div class="error-title" style="font-size:1.1rem; margin-bottom:15px; font-family:Georgia, serif;">
-                            (Lume Craftor announced that the game will be released on September 6, 2026, at 1:00 PM)
+                document.getElementById('pageContent').innerHTML = robloxLinkHtml + `
+                    <div style="text-align:center; padding:30px; background:#f8f9fa; border:1px solid #a2a9b1; border-radius:6px;">
+                        <h2>Game Announcement</h2>
+                        <p style="font-weight:bold; color:#54595d;">LumeCraftor announced that Crystal Collecting Simulator will officially release on September 6, 2026, at 1:00 PM!</p>
+                        <div style="font-size:1rem; color:#005a9c; padding:10px; background-color:#eaf3ff; border-left:5px solid #005a9c; display:inline-block; font-weight:bold; margin-top:10px;">
+                            Moderator Action: Admin Abuse events will start 30 minutes after release!
                         </div>
-                        <div class="error-mod" style="font-size:1.05rem; color:#005a9c; margin-bottom:25px; padding:10px; background-color:#eaf3ff; border-left:5px solid #005a9c; display:inline-block; font-weight:bold;">
-                            (Moderator Action: Admin Abuse will start 30 minutes after the release. See y'all on September 6, 2026, at 1:00 PM)
-                        </div>
-                        <br>
-                        <button class="btn-save" onclick="triggerReleaseSequence()" style="margin-top:15px;">Try Again</button>
                     </div>
                 `;
             } else {
-                document.getElementById('pageContent').innerHTML = `
-                    <div style="margin-bottom: 20px;">
-                        <a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" class="btn-save" style="display:inline-block; padding:12px 20px; text-decoration:none; background-color:#00a2ff; font-size:1.05rem; border-radius:6px;">
-                            🎮 Play Crystal Collecting Simulator on Roblox
-                        </a>
-                    </div>
-
+                document.getElementById('pageContent').innerHTML = robloxLinkHtml + `
                     <h2>[Pickaxes]</h2>
                     <table class="wikitable">
                         <tr>
