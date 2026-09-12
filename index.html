@@ -2,30 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=1200, user-scalable=yes">
     <title>RedGalaxy Studio / NebulaForge Studio Portal</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; transition: background-color 0.3s; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; transition: background 0.5s ease; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
-        /* MOBILE RESPONSIVE DESIGN */
-        @media (max-width: 768px) {
-            .mw-page-container { flex-direction: column; }
-            .mw-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #eaecf0; padding: 15px; }
-            .mw-content-container { margin: 0; border-left: none; border-top: none; padding: 15px; min-width: 100%; }
-            .mw-top-tools { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .top-right-tools { width: 100%; justify-content: space-between; }
-            .amount-grid { grid-template-columns: repeat(2, 1fr); }
-            .payment-selection { flex-direction: column; }
-            .ai-layout { flex-direction: column; }
-            .ai-history-panel { width: 100%; border-right: none; border-bottom: 1px solid #a2a9b1; }
-            .cashout-card { margin: 0; padding: 15px; }
-            h1 { font-size: 1.8rem; }
-        }
-
         /* SIDEBAR STYLES */
-        .mw-sidebar { width: 240px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
+        .mw-sidebar { width: 240px; padding: 20px; background-color: rgba(246, 246, 246, 0.9); flex-shrink: 0; border-right: 1px solid #eaecf0; }
         .mw-logo { display: block; font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
         .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; text-transform: uppercase; letter-spacing: 0.5px; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
@@ -214,6 +199,18 @@
         .accordion:after { content: '\002B'; color: #005a9c; font-weight: bold; float: right; margin-left: 5px; }
         .accordion.active:after { content: "\2212"; }
         .panel { padding: 0 18px; background-color: white; max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; border: 1px solid #eaecf0; border-top: none; border-radius: 0 0 4px 4px; }
+
+        /* REAL RAINBOW ANIMATION */
+        body.rainbow-bg {
+            background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+            background-size: 1800% 1800%;
+            animation: rainbow 18s ease infinite;
+        }
+        @keyframes rainbow {
+            0%{background-position:0% 82%}
+            50%{background-position:100% 19%}
+            100%{background-position:0% 82%}
+        }
     </style>
 </head>
 <body>
@@ -387,7 +384,8 @@
             ]
         };
 
-        const rewardCosts = {
+        // Base reward costs
+        const BASE_REWARD_COSTS = {
             "Strawberry Elephant": 35,
             "Summerini Fattini": 35
         };
@@ -537,8 +535,9 @@
             });
         }
 
-        function applyBackground(bg) {
+        function applyBackground(bg, customData = null) {
             const body = document.body;
+            body.classList.remove('rainbow-bg');
             body.style.backgroundImage = 'none';
             body.style.backgroundColor = '#f6f6f6';
             
@@ -546,21 +545,23 @@
                 'white': '#f6f6f6',
                 'green': '#e8f8f0',
                 'blue': '#eaf3ff',
-                'red': '#fff0f0',
-                'rainbow': 'linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff)',
-                'gold': 'linear-gradient(45deg, #ffd700, #ff8c00, #ffd700)',
-                'green_white': 'linear-gradient(45deg, #e8f8f0, #ffffff)',
-                'blue_red': 'linear-gradient(45deg, #eaf3ff, #fff0f0)'
+                'red': '#fff0f0'
             };
 
             if (bg === 'rainbow') {
-                body.style.backgroundImage = backgrounds['rainbow'];
+                body.classList.add('rainbow-bg');
             } else if (bg === 'gold') {
-                body.style.backgroundImage = backgrounds['gold'];
+                body.style.backgroundImage = 'linear-gradient(45deg, #ffd700, #ff8c00, #ffd700)';
             } else if (bg === 'green_white') {
-                body.style.backgroundImage = backgrounds['green_white'];
+                body.style.backgroundImage = 'linear-gradient(45deg, #e8f8f0, #ffffff)';
             } else if (bg === 'blue_red') {
-                body.style.backgroundImage = backgrounds['blue_red'];
+                body.style.backgroundImage = 'linear-gradient(45deg, #eaf3ff, #fff0f0)';
+            } else if (bg === 'custom_color' && customData) {
+                body.style.backgroundColor = customData;
+            } else if (bg === 'custom_img' && customData) {
+                body.style.backgroundImage = `url('${customData}')`;
+                body.style.backgroundSize = 'cover';
+                body.style.backgroundAttachment = 'fixed';
             } else {
                 body.style.backgroundColor = backgrounds[bg] || '#f6f6f6';
             }
@@ -568,7 +569,6 @@
 
         window.onload = () => {
             try {
-                // Request Push Notification Permissions
                 if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                     Notification.requestPermission();
                 }
@@ -598,17 +598,24 @@
                     updateUserStatusHeader();
                     logDeviceConnection(currentUser);
                     showWiki();
-                    applyBackground(currentUser.background || 'white');
+                    
+                    // Apply saved background
+                    if (currentUser.background === 'custom_color') {
+                        applyBackground('custom_color', currentUser.customBgColor);
+                    } else if (currentUser.background === 'custom_img') {
+                        applyBackground('custom_img', currentUser.customBgImg);
+                    } else {
+                        applyBackground(currentUser.background || 'white');
+                    }
+                    
                     checkDailyReward();
                 }
 
-                // Close notification dropdown when clicking outside
                 document.addEventListener('click', () => {
                     const dropdown = document.getElementById('notifDropdown');
                     if (dropdown) dropdown.classList.remove('active');
                 });
 
-                // Start real-time sync loop (polls Firebase every 5 seconds)
                 setInterval(syncRealtimeDatabase, 5000);
                 syncRealtimeDatabase();
 
@@ -629,14 +636,11 @@
             const lastClaimed = currentUser.lastClaimedDate ? new Date(currentUser.lastClaimedDate).toDateString() : null;
             
             if (lastClaimed === today) {
-                // Already claimed today
                 return;
             }
 
-            // Check if it's a new day
             let streak = currentUser.streakCount || 0;
             
-            // If last claimed was yesterday, increment streak, else reset to 1
             if (lastClaimed) {
                 const yesterday = new Date(now);
                 yesterday.setDate(yesterday.getDate() - 1);
@@ -655,7 +659,6 @@
             currentUser.lastClaimedDate = now.toISOString();
             saveUserData();
 
-            // Trigger Notification for Daily Reward
             const notifId = "DAILY-" + Date.now();
             const notifData = {
                 id: notifId,
@@ -665,11 +668,8 @@
                 isDailyReward: true
             };
 
-            // Add to local notifications temporarily
             globalNotifications.unshift(notifData);
             renderNotificationDropdown();
-
-            // Show custom popup
             showDailyRewardPopup();
         }
 
@@ -700,11 +700,8 @@
         }
 
         async function claimDailyReward() {
-            // Remove popup
             const popups = document.querySelectorAll('div[style*="z-index: 100000"]');
             popups.forEach(p => p.remove());
-
-            // Redirect to Quests page
             openQuests();
         }
 
@@ -716,7 +713,6 @@
             try {
                 let newNotifList = [];
 
-                // 1. Fetch Global Notifications
                 const notifRes = await fetch(`${FIREBASE_BASE_URL}/notifications.json`);
                 if (notifRes.ok) {
                     const notifData = await notifRes.json();
@@ -727,7 +723,6 @@
                     }
                 }
 
-                // 2. Fetch User-Specific Notifications if logged in
                 if (currentUser) {
                     const identifiers = [
                         String(currentUser.rblxUserId || '').toLowerCase(),
@@ -749,7 +744,6 @@
                     }
                 }
 
-                // 3. Fetch Owner Alerts (Cash Out Requests) if user is Owner
                 if (currentUser && isOwnerAccount(currentUser)) {
                     const ownerAlertRes = await fetch(`${FIREBASE_BASE_URL}/owner_alerts.json`);
                     if (ownerAlertRes.ok) {
@@ -762,7 +756,6 @@
                     }
                 }
 
-                // 4. Fetch Reports for Staff
                 if (currentUser && isStaff(currentUser)) {
                     const reportRes = await fetch(`${FIREBASE_BASE_URL}/reports.json`);
                     if (reportRes.ok) {
@@ -776,10 +769,8 @@
                     }
                 }
 
-                // Sort combined by timestamp descending
                 newNotifList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
-                // Check for newly pushed notifications to trigger native Browser Push
                 if (globalNotifications.length > 0 && newNotifList.length > globalNotifications.length) {
                     const latest = newNotifList[0];
                     if ("Notification" in window && Notification.permission === "granted") {
@@ -792,7 +783,6 @@
                 globalNotifications = newNotifList;
                 renderNotificationDropdown();
 
-                // 5. Sync Polls
                 const pollRes = await fetch(`${FIREBASE_BASE_URL}/polls.json`);
                 if (pollRes.ok) {
                     const pollData = await pollRes.json();
@@ -806,7 +796,6 @@
                     localStorage.setItem('app_polls_db', JSON.stringify(globalPolls));
                 }
 
-                // 6. Sync Cash Outs (For Owner Dashboard)
                 if (currentUser && isOwnerAccount(currentUser)) {
                     const cashRes = await fetch(`${FIREBASE_BASE_URL}/cashouts.json`);
                     if (cashRes.ok) {
@@ -819,7 +808,6 @@
                         }
                         globalCashOuts = cashList;
 
-                        // Auto-refresh Owner Cash Out page if it's currently open
                         if (document.getElementById('pageTitle').innerText.includes('Cash Out')) {
                             renderCashOutPage();
                         }
@@ -858,7 +846,6 @@
                 const dateStr = n.timestamp ? new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
                 let actionHtml = '';
 
-                // Add Accept/Decline buttons for Staff if it's a report notification
                 if (n.isReport && currentUser && isStaff(currentUser)) {
                     const report = globalReports.find(r => r.id === n.reportId);
                     if (report && report.status === 'pending') {
@@ -873,11 +860,18 @@
                     }
                 }
 
-                // Add Claim Now button for Daily Rewards
                 if (n.isDailyReward && currentUser) {
                     actionHtml = `
                         <div class="notif-actions">
                             <button class="btn-action-sm" style="background-color:#28a745;" onclick="claimDailyReward()">Claim Now!</button>
+                        </div>
+                    `;
+                }
+
+                if (n.isPremiumReward && currentUser) {
+                    actionHtml = `
+                        <div class="notif-actions">
+                            <button class="btn-action-sm" style="background-color:#00c6ff;" onclick="openQuests()">Claim Rewards</button>
                         </div>
                     `;
                 }
@@ -973,7 +967,7 @@
                     body: JSON.stringify(newStatus)
                 });
                 alert(`✅ Cash out marked as ${newStatus}!`);
-                syncRealtimeDatabase(); // Refresh data
+                syncRealtimeDatabase();
                 renderCashOutPage();
             } catch(e) {
                 alert("❌ Error updating cash out status.");
@@ -1026,7 +1020,6 @@
                     body: JSON.stringify(reportData)
                 });
 
-                // Send notification to staff
                 const notifId = "NOTIF-REPORT-" + Date.now();
                 const notifData = {
                     id: notifId,
@@ -1059,14 +1052,12 @@
             if (!report) return;
 
             try {
-                // Update report status
                 await fetch(`${FIREBASE_BASE_URL}/reports/${reportId}/status.json`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(action)
                 });
 
-                // Send notification back to the reporter
                 const notifId = "NOTIF-REPLY-" + Date.now();
                 const notifData = {
                     id: notifId,
@@ -1090,16 +1081,13 @@
                     });
                 }
 
-                // Reward the reporter if accepted
                 if (action === 'accepted') {
-                    // Find the reporter in the database and give coins
                     let allUsers = safeGetJSON('app_users_db', []);
                     const reporterIndex = allUsers.findIndex(u => String(u.rblxUserId) === String(report.reporterId));
                     if (reporterIndex !== -1) {
                         allUsers[reporterIndex].points = (allUsers[reporterIndex].points || 0) + 1500;
                         localStorage.setItem('app_users_db', JSON.stringify(allUsers));
                         
-                        // Sync to Firebase
                         await fetch(`${FIREBASE_BASE_URL}/users/${allUsers[reporterIndex].rblxUserId}.json`, {
                             method: "PUT",
                             headers: { "Content-Type": "application/json" },
@@ -1125,7 +1113,6 @@
             const isTargetAdmin = role === 'Admin';
             const isTargetMod = role === 'Moderator';
 
-            // Permission check
             if (isTargetAdmin && !isOwnerAccount(currentUser)) {
                 alert("❌ Only Owners can manage Admin roles!");
                 return;
@@ -1182,14 +1169,12 @@
             allUsers[foundIndex] = targetUser;
             localStorage.setItem('app_users_db', JSON.stringify(allUsers));
 
-            // Update currentUser if it's the same person
             if (String(currentUser.rblxUserId) === String(targetUser.rblxUserId) || (currentUser.gmail || '').toLowerCase() === (targetUser.gmail || '').toLowerCase()) {
                 currentUser = targetUser;
                 localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 updateUserStatusHeader();
             }
 
-            // Sync to Firebase
             try {
                 await fetch(`${FIREBASE_BASE_URL}/users/${targetUser.rblxUserId}.json`, {
                     method: "PUT",
@@ -1256,9 +1241,12 @@
                         isMod: false,
                         isVIP: false,
                         isPremium: false,
+                        premiumFreeClaims: 0,
                         streakCount: 0,
                         lastClaimedDate: null,
                         background: 'white',
+                        customBgColor: null,
+                        customBgImg: null,
                         isHistoryPublic: false
                     };
 
@@ -1304,13 +1292,22 @@
                     if (currentUser.streakCount === undefined) currentUser.streakCount = 0;
                     if (currentUser.lastClaimedDate === undefined) currentUser.lastClaimedDate = null;
                     if (currentUser.background === undefined) currentUser.background = 'white';
+                    if (currentUser.premiumFreeClaims === undefined) currentUser.premiumFreeClaims = 0;
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
 
                 updateUserStatusHeader();
                 logDeviceConnection(currentUser);
                 showWiki();
-                applyBackground(currentUser.background || 'white');
+                
+                if (currentUser.background === 'custom_color') {
+                    applyBackground('custom_color', currentUser.customBgColor);
+                } else if (currentUser.background === 'custom_img') {
+                    applyBackground('custom_img', currentUser.customBgImg);
+                } else {
+                    applyBackground(currentUser.background || 'white');
+                }
+                
                 checkDailyReward();
             } catch (err) {
                 console.error("Auth Exception:", err);
@@ -1333,7 +1330,6 @@
             }
             localStorage.setItem('app_users_db', JSON.stringify(allUsers));
 
-            // Sync user to global Firebase Realtime DB
             fetch(`${FIREBASE_BASE_URL}/users/${currentUser.rblxUserId || 'guest'}.json`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -1408,6 +1404,7 @@
             currentUser = null;
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('wikiScreen').style.display = 'none';
+            document.body.classList.remove('rainbow-bg');
             document.body.style.backgroundColor = '#f6f6f6';
             document.body.style.backgroundImage = 'none';
         }
@@ -1472,11 +1469,11 @@
                         <!-- VIP CARD -->
                         <div style="flex: 1; min-width: 300px; background: #f8f9fa; border: 2px solid #ffd700; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(255,215,0,0.2);">
                             <h3 style="color: #ffd700; margin-top: 0;">⭐ VIP Pass</h3>
-                            <div style="font-size: 2rem; margin: 15px 0;">💰 ₱50.00</div>
+                            <div style="font-size: 2rem; margin: 15px 0;">💰 12,500 Coins</div>
                             <ul style="text-align: left; font-size: 0.9rem; line-height: 1.6;">
-                                <li>✅ VIP Badge</li>
-                                <li>✅ Access to Gold & Rainbow Backgrounds</li>
-                                <li>✅ 2x Daily Reward Coins</li>
+                                <li>✅ VIP Badge & Backgrounds</li>
+                                <li>✅ 50 minutes waiting time for Cash Out</li>
+                                <li>✅ Free 250 Coins upon purchase</li>
                                 <li>✅ Priority Support</li>
                             </ul>
                             <button class="btn-claim" style="width: 100%; margin-top: 15px;" onclick="purchasePass('VIP')">Buy VIP Pass</button>
@@ -1485,13 +1482,15 @@
                         <!-- PREMIUM CARD -->
                         <div style="flex: 1; min-width: 300px; background: #f8f9fa; border: 2px solid #00c6ff; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,198,255,0.2);">
                             <h3 style="color: #00c6ff; margin-top: 0;">💎 Premium Pass</h3>
-                            <div style="font-size: 2rem; margin: 15px 0;">💰 ₱150.00</div>
+                            <div style="font-size: 2rem; margin: 15px 0;">💰 25,000 Coins</div>
                             <ul style="text-align: left; font-size: 0.9rem; line-height: 1.6;">
-                                <li>✅ Premium Badge</li>
-                                <li>✅ Access to ALL Backgrounds (Gold, Rainbow, Green/White, Blue/Red)</li>
-                                <li>✅ 3x Daily Reward Coins</li>
-                                <li>✅ 5x Coin Multiplier on Quests</li>
-                                <li>✅ Exclusive Premium Role in Discord</li>
+                                <li>✅ Premium Badge & Backgrounds</li>
+                                <li>✅ 15 minutes waiting time for Cash Out</li>
+                                <li>✅ Custom Background Design (Color Wheel)</li>
+                                <li>✅ Custom Background Image Upload</li>
+                                <li>✅ Free 1,500 Coins upon purchase</li>
+                                <li>✅ -15 Discount on Rewards (35 -> 20 Coins)</li>
+                                <li>✅ Free 2 In-Game Rewards (Strawberry & Summerini)</li>
                             </ul>
                             <button class="btn-claim" style="width: 100%; margin-top: 15px; background-color: #00c6ff;" onclick="purchasePass('Premium')">Buy Premium Pass</button>
                         </div>
@@ -1502,33 +1501,54 @@
 
         async function purchasePass(passType) {
             if (!currentUser) return;
-            const price = passType === 'VIP' ? 50 : 150;
             
-            // Simulate payment process
-            const confirmBuy = confirm(`Are you sure you want to purchase the ${passType} Pass for ₱${price}?`);
+            const cost = passType === 'VIP' ? 12500 : 25000;
+            const priceFormatted = cost.toLocaleString();
+            
+            const confirmBuy = confirm(`Are you sure you want to purchase the ${passType} Pass for ${priceFormatted} Coins?`);
             if (!confirmBuy) return;
 
-            // Deduct coins (10,000 coins = ₱1, so 50 PHP = 500,000 coins)
-            const coinCost = price * 10000;
-            if (!isOwnerAccount(currentUser) && (currentUser.points || 0) < coinCost) {
-                alert(`❌ Insufficient Coins! You need ${coinCost.toLocaleString()} Coins to buy this pass. Current Coins: ${(currentUser.points || 0).toLocaleString()}`);
+            if (!isOwnerAccount(currentUser) && (currentUser.points || 0) < cost) {
+                alert(`❌ Insufficient Coins! You need ${priceFormatted} Coins to buy this pass. Current Coins: ${(currentUser.points || 0).toLocaleString()}`);
                 return;
             }
 
             if (!isOwnerAccount(currentUser)) {
-                currentUser.points = (currentUser.points || 0) - coinCost;
+                currentUser.points = (currentUser.points || 0) - cost;
             }
 
             if (passType === 'VIP') {
                 currentUser.isVIP = true;
+                currentUser.points = (currentUser.points || 0) + 250; // Free 250 Coins
+                alert(`🎉 Congratulations! You have successfully purchased the VIP Pass! You received 250 free Coins and unlocked VIP backgrounds.`);
             } else if (passType === 'Premium') {
                 currentUser.isPremium = true;
-                currentUser.isVIP = true; // Premium includes VIP
+                currentUser.isVIP = true;
+                currentUser.points = (currentUser.points || 0) + 1500; // Free 1500 Coins
+                currentUser.premiumFreeClaims = (currentUser.premiumFreeClaims || 0) + 2; // 2 Free claims
+                
+                // Send Premium Purchase Notification
+                const notifId = "PREMIUM-" + Date.now();
+                const notifData = {
+                    id: notifId,
+                    title: "Thank you for purchasing Premium Tier",
+                    message: "You Have Free 2 In Game Rewards because you purchase the Premium",
+                    timestamp: Date.now(),
+                    isPremiumReward: true
+                };
+                
+                const safeId = encodeURIComponent(String(currentUser.rblxUserId || '').toLowerCase());
+                await fetch(`${FIREBASE_BASE_URL}/user_notifications/${safeId}/${notifId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(notifData)
+                });
+                
+                alert(`🎉 Congratulations! You have successfully purchased the Premium Pass! You received 1,500 free Coins, 2 Free In-Game Rewards, and unlocked ALL backgrounds including Custom Design & Image!`);
             }
 
             saveUserData();
             updateUserStatusHeader();
-            alert(`🎉 Congratulations! You have successfully purchased the ${passType} Pass! You can now use exclusive backgrounds in Settings.`);
             openSettings();
         }
 
@@ -1563,6 +1583,13 @@
 
             const reqCoins = selectedCashOutAmount * 10000;
 
+            let waitTimeText = "Standard waiting time: 1-3 business days.";
+            if (currentUser.isPremium) {
+                waitTimeText = "Premium waiting time: 15 minutes ⚡";
+            } else if (currentUser.isVIP) {
+                waitTimeText = "VIP waiting time: 50 minutes ⏳";
+            }
+
             let html = `
                 <div class="cashout-card">
                     <h2 style="margin-top:0; text-align:center; color:#005a9c; border:none; margin-bottom:15px;">Cash Out Money Rewards</h2>
@@ -1570,6 +1597,10 @@
                     <div class="balance-box">
                         <div>Est: ₱${estPhp}</div>
                         <div style="margin-top:4px;">Coins: ${isOwnerAccount(currentUser) ? 'Infinity ♾️' : coins.toLocaleString()}</div>
+                    </div>
+
+                    <div style="background:#fff3cd; border:1px solid #ffeeba; padding:10px; border-radius:4px; font-size:0.8rem; margin-bottom:15px; text-align:center;">
+                        ℹ️ ${waitTimeText}
                     </div>
 
                     <label style="font-weight:bold; margin-bottom:8px; display:block;">Select Amount to Cash Out:</label>
@@ -1582,14 +1613,12 @@
 
                     <label style="font-weight:bold; margin-bottom:8px; display:block;">Select Payment Option:</label>
                     <div class="payment-selection">
-                        <!-- GCASH VECTOR LOGO -->
                         <div class="payment-option ${selectedPaymentMethod === 'GCash' ? 'active' : ''}" onclick="selectPaymentMethod('GCash')">
                             <svg class="payment-logo" viewBox="0 0 100 30" fill="none">
                                 <rect width="100" height="30" rx="4" fill="#005CE6"/>
                                 <text x="50" y="20" fill="white" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">GCash</text>
                             </svg>
                         </div>
-                        <!-- MAYA VECTOR LOGO -->
                         <div class="payment-option ${selectedPaymentMethod === 'Maya' ? 'active' : ''}" onclick="selectPaymentMethod('Maya')">
                             <svg class="payment-logo" viewBox="0 0 100 30" fill="none">
                                 <rect width="100" height="30" rx="4" fill="#000000"/>
@@ -1646,7 +1675,6 @@
                         actionBtn = `<button class="btn-action-sm" onclick="updateCashOutStatus('${c.id}', 'Completed')">Mark as Done</button>`;
                     }
 
-                    // Mapped to the exact keys present in Firebase screenshot
                     const displayAmount = c.amount !== undefined ? c.amount : (c.amountPHP !== undefined ? c.amountPHP : 'Not Provided');
                     const displayMethod = c.method || c.provider || 'Not Provided';
                     const displayHolder = c.holderName || c.accountName || 'Not Provided';
@@ -1694,7 +1722,6 @@
 
             const cashOutId = "CASHOUT-" + Date.now();
             
-            // Using the EXACT keys from your Firebase screenshot structure
             const cashOutData = {
                 id: cashOutId,
                 username: currentUser.username || currentUser.name,
@@ -1708,7 +1735,6 @@
                 timestamp: Date.now()
             };
 
-            // Deduct Coins if not owner
             if (!isOwner) {
                 currentUser.points = (currentUser.points || 0) - requiredCoins;
                 saveUserData();
@@ -1716,14 +1742,12 @@
             }
 
             try {
-                // Save Cash Out to Firebase (Global Sync)
                 await fetch(`${FIREBASE_BASE_URL}/cashouts/${cashOutId}.json`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(cashOutData)
                 });
 
-                // Trigger Owner-Only Alert Notification on Firebase
                 const ownerNotifId = "OWNER-ALERT-" + Date.now();
                 await fetch(`${FIREBASE_BASE_URL}/owner_alerts/${ownerNotifId}.json`, {
                     method: "PUT",
@@ -1880,7 +1904,7 @@
                         <tr>
                             <td align="center">${index + 1}</td>
                             <td><b>${item.reward || "Unknown Item"}</b></td>
-                            <td>${item.cost === 0 ? "FREE (Owner)" : (item.cost || 35) + " Coins"}</td>
+                            <td>${item.cost === 0 ? "FREE (Premium/Owner)" : (item.cost || 35) + " Coins"}</td>
                             <td>${badgeHtml}</td>
                             <td>${dateStr} ${actionBtn}</td>
                         </tr>
@@ -2057,12 +2081,16 @@
                     `1. **Conversion Rate:** 10,000 Coins = ₱1.00.\n` +
                     `2. **Options Available:** ₱3, ₱5, ₱15, and ₱30 payouts.\n` +
                     `3. **Payout Method:** Directly via GCash or Maya.\n` +
-                    `4. **Processing:** Requests trigger live notifications to Owners for instant delivery.`;
+                    `4. **Processing:** VIP waits 50 mins, Premium waits 15 mins. Standard waits 1-3 days.`;
             } else if (p.includes("claim") || p.includes("pending") || p.includes("received") || p.includes("delivery")) {
                 responseText = `📦 **Delivery History & Claim Status Help:**\n\n` +
                     `1. **Pending Status:** Your reward request is registered. When you join the Roblox server, the auto-giver delivers it.\n` +
                     `2. **Marking Received:** Go to **📜 Claim Delivery History** in the sidebar. Click **'Mark Received'** to finalize delivery!\n` +
                     `3. **Privacy:** Adjust your delivery history visibility under **⚙️ Profile & Privacy Settings**.`;
+            } else if (p.includes("vip") || p.includes("premium") || p.includes("pass")) {
+                responseText = `🎟️ **VIP & Premium Passes:**\n\n` +
+                    `* **VIP Pass (12,500 Coins):** VIP Badge, special backgrounds, 50-min cash out wait, 250 free coins.\n` +
+                    `* **Premium Pass (25,000 Coins):** Premium Badge, ALL backgrounds + Custom Color/Image, 15-min cash out wait, 1,500 free coins, -15 discount on rewards, and 2 FREE in-game rewards!`;
             } else {
                 responseText = `🤖 **[${model} Reasoning Engine]**\n\n` +
                     `I received your query regarding "*${userPrompt}*".\n\n` +
@@ -2097,7 +2125,7 @@
                 const yesterday = new Date(now);
                 yesterday.setDate(yesterday.getDate() - 1);
                 if (lastClaimed !== yesterday.toDateString()) {
-                    streak = 0; // Reset if missed a day
+                    streak = 0;
                 }
             }
 
@@ -2107,7 +2135,7 @@
             days.forEach(day => {
                 let isActive = (day === streak + 1 && canClaim) ? 'active' : '';
                 let isClaimed = (day <= streak) ? 'claimed' : '';
-                let reward = day === 7 ? 100 : 50; // Day 7 gives 100 coins
+                let reward = day === 7 ? 100 : 50;
 
                 dailyGridHtml += `
                     <div class="daily-card ${isActive} ${isClaimed}">
@@ -2137,6 +2165,23 @@
                 `;
             }
 
+            // Calculate Reward Costs based on Premium Status
+            const isPremium = currentUser.isPremium;
+            const hasFreeClaims = currentUser.premiumFreeClaims > 0;
+            
+            const strawberryCost = hasFreeClaims ? 0 : (isPremium ? 20 : 35);
+            const summeriniCost = hasFreeClaims ? 0 : (isPremium ? 20 : 35);
+            
+            let premiumNotice = '';
+            if (isPremium) {
+                premiumNotice = `
+                    <div style="background:#e6fffa; border:1px solid #99f6e4; padding:10px; border-radius:4px; margin-bottom:10px; font-size:0.85rem; color:#0d9488;">
+                        💎 <b>Premium Benefit Active:</b> Rewards cost 20 Coins instead of 35! 
+                        ${hasFreeClaims ? `<br>🎁 You have <b>${currentUser.premiumFreeClaims} Free Claim(s)</b> remaining!` : ''}
+                    </div>
+                `;
+            }
+
             let html = `
                 <div class="points-header">
                     Total Coins / Points Available: <span id="pointCount">${coinsDisplay}</span>
@@ -2146,10 +2191,11 @@
 
                 <div class="quest-box">
                     <h3>🎁 Select Trade Reward</h3>
+                    ${premiumNotice}
                     <label><b>Choose Item to Claim:</b></label>
                     <select id="selectedRewardInput" class="reward-select">
-                        <option value="Strawberry Elephant">Strawberry Elephant (35 Coins)</option>
-                        <option value="Summerini Fattini">Summerini Fattini (35 Coins)</option>
+                        <option value="Strawberry Elephant">Strawberry Elephant (${strawberryCost} Coins)</option>
+                        <option value="Summerini Fattini">Summerini Fattini (${summeriniCost} Coins)</option>
                     </select>
                     <button class="btn-claim" onclick="claimRewardFirebase('${currentUser.username || currentUser.name}', '${currentUser.gmail}')">
                         Claim Item
@@ -2267,10 +2313,9 @@
             let rewardCoins = 50;
             
             if (streak === 7) {
-                rewardCoins = 100; // Day 7 bonus
+                rewardCoins = 100;
             }
 
-            // Check for VIP/Premium multipliers
             if (currentUser.isPremium) {
                 rewardCoins *= 3;
             } else if (currentUser.isVIP) {
@@ -2287,8 +2332,19 @@
 
         async function claimRewardFirebase(robloxUsername, userEmail) {
             const rewardItem = document.getElementById('selectedRewardInput').value;
-            const requiredCost = rewardCosts[rewardItem] || 35;
+            const isPremium = currentUser.isPremium;
+            const hasFreeClaims = currentUser.premiumFreeClaims > 0;
             const isOwner = isOwnerAccount(currentUser);
+
+            let requiredCost = BASE_REWARD_COSTS[rewardItem] || 35;
+            
+            if (isPremium) {
+                requiredCost = 20; // -15 Discount
+            }
+
+            if (hasFreeClaims && !isOwner) {
+                requiredCost = 0; // Free claim
+            }
 
             let refStore = safeGetJSON('referralDataStore', {});
             let detectedInvites = refStore[currentUser.rblxUserId] || 0;
@@ -2326,15 +2382,19 @@
             }
 
             if (!isOwner) {
-                currentUser.points = Math.max(0, (currentUser.points || 0) - requiredCost);
-                saveUserData();
+                if (hasFreeClaims) {
+                    currentUser.premiumFreeClaims -= 1;
+                    saveUserData();
+                    alert(`🎉 Claim request submitted for FREE using your Premium Benefit! Remaining free claims: ${currentUser.premiumFreeClaims}`);
+                } else {
+                    currentUser.points = Math.max(0, (currentUser.points || 0) - requiredCost);
+                    saveUserData();
+                    alert(`🎉 Claim request submitted for ${rewardItem}! Cost: ${requiredCost} Coins.`);
+                }
+            } else {
+                alert(`👑 Owner Privilege: Claim request submitted for FREE! (Unlimited ♾️ Balance)`);
             }
 
-            const noticeMsg = isOwner 
-                ? `👑 Owner Privilege: Claim request submitted for FREE! (Unlimited ♾️ Balance)`
-                : `🎉 Claim request submitted for ${rewardItem}! Cost: ${requiredCost} Coins.`;
-
-            alert(noticeMsg);
             openClaimsHistory();
         }
 
@@ -2419,7 +2479,6 @@
             if(poll && poll.options[optionIndex]) {
                 poll.options[optionIndex].votes = (poll.options[optionIndex].votes || 0) + 1;
                 
-                // Live sync vote back to Firebase Realtime DB
                 try {
                     await fetch(`${FIREBASE_BASE_URL}/polls/${pollId}.json`, {
                         method: "PUT",
@@ -2470,7 +2529,6 @@
         function setBackground(bg) {
             if (!currentUser) return;
             
-            // Check permissions for locked backgrounds
             const lockedBgs = ['rainbow', 'gold', 'green_white', 'blue_red'];
             if (lockedBgs.includes(bg)) {
                 if (bg === 'gold' || bg === 'rainbow') {
@@ -2490,6 +2548,38 @@
             saveUserData();
             applyBackground(bg);
             renderSettingsPage();
+        }
+
+        function setCustomBackgroundColor(color) {
+            if (!currentUser || !currentUser.isPremium) return;
+            currentUser.background = 'custom_color';
+            currentUser.customBgColor = color;
+            saveUserData();
+            applyBackground('custom_color', color);
+            renderSettingsPage();
+        }
+
+        function uploadCustomBackground(event) {
+            if (!currentUser || !currentUser.isPremium) return;
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                alert("❌ Image is too large! Please select an image smaller than 2MB.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Img = e.target.result;
+                currentUser.background = 'custom_img';
+                currentUser.customBgImg = base64Img;
+                saveUserData();
+                applyBackground('custom_img', base64Img);
+                renderSettingsPage();
+                alert("✅ Custom background image uploaded successfully!");
+            };
+            reader.readAsDataURL(file);
         }
 
         function renderSettingsPage() {
@@ -2548,11 +2638,24 @@
 
                         <div style="font-weight:bold; font-size:0.85rem; margin-top:15px; margin-bottom:5px;">Roles / VIP / Premium Backgrounds:</div>
                         <div class="bg-grid">
-                            <div class="bg-btn ${user.background === 'rainbow' ? 'selected' : ''} ${(!isOwner && !user.isVIP && !user.isPremium) ? 'locked' : ''}" style="background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff); color:#fff;" onclick="setBackground('rainbow')">Rainbow</div>
+                            <div class="bg-btn ${user.background === 'rainbow' ? 'selected' : ''} ${(!isOwner && !user.isVIP && !user.isPremium) ? 'locked' : ''}" style="background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3); background-size: 1800% 1800%; animation: rainbow 18s ease infinite; color:#fff;" onclick="setBackground('rainbow')">Rainbow</div>
                             <div class="bg-btn ${user.background === 'gold' ? 'selected' : ''} ${(!isOwner && !user.isVIP && !user.isPremium) ? 'locked' : ''}" style="background: linear-gradient(45deg, #ffd700, #ff8c00); color:#000;" onclick="setBackground('gold')">Gold</div>
                             <div class="bg-btn ${user.background === 'green_white' ? 'selected' : ''} ${(!isOwner && !user.isPremium) ? 'locked' : ''}" style="background: linear-gradient(45deg, #e8f8f0, #ffffff); color:#000;" onclick="setBackground('green_white')">Green/White</div>
                             <div class="bg-btn ${user.background === 'blue_red' ? 'selected' : ''} ${(!isOwner && !user.isPremium) ? 'locked' : ''}" style="background: linear-gradient(45deg, #eaf3ff, #fff0f0); color:#000;" onclick="setBackground('blue_red')">Blue/Red</div>
                         </div>
+                        
+                        ${user.isPremium || isOwner ? `
+                            <div style="font-weight:bold; font-size:0.85rem; margin-top:15px; margin-bottom:5px;">Premium Customization:</div>
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                                <label style="font-size:0.85rem; width:120px;">Custom Color:</label>
+                                <input type="color" id="customBgColorPicker" value="${user.customBgColor || '#ffffff'}" onchange="setCustomBackgroundColor(this.value)" style="width:50px; height:40px; border:none; cursor:pointer;">
+                            </div>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <label style="font-size:0.85rem; width:120px;">Custom Image:</label>
+                                <input type="file" id="customBgImgUpload" accept="image/*" onchange="uploadCustomBackground(event)" style="font-size:0.8rem;">
+                            </div>
+                            <p style="font-size:0.75rem; color:#777; margin-top:5px;">* Max image size: 2MB</p>
+                        ` : ''}
                     </div>
 
                     <!-- BUG REPORTING -->
@@ -2779,7 +2882,6 @@
             };
 
             try {
-                // Save live poll to Firebase Realtime DB
                 await fetch(`${FIREBASE_BASE_URL}/polls/${pollId}.json`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
