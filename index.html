@@ -10,7 +10,7 @@
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
         /* SIDEBAR STYLES */
-        .mw-sidebar { width: 240px; padding: 20px; background-color: rgba(246, 246, 246, 0.9); flex-shrink: 0; border-right: 1px solid #eaecf0; }
+        .mw-sidebar { width: 240px; padding: 20px; background-color: rgba(246, 246, 246, 0.95); flex-shrink: 0; border-right: 1px solid #eaecf0; }
         .mw-logo { display: block; font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
         .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; text-transform: uppercase; letter-spacing: 0.5px; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
@@ -384,7 +384,6 @@
             ]
         };
 
-        // Base reward costs
         const BASE_REWARD_COSTS = {
             "Strawberry Elephant": 35,
             "Summerini Fattini": 35
@@ -599,7 +598,6 @@
                     logDeviceConnection(currentUser);
                     showWiki();
                     
-                    // Apply saved background
                     if (currentUser.background === 'custom_color') {
                         applyBackground('custom_color', currentUser.customBgColor);
                     } else if (currentUser.background === 'custom_img') {
