@@ -6,11 +6,11 @@
     <title>RedGalaxy Studio / NebulaForge Studio Portal</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; transition: background 0.5s ease; }
-        .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; color: #202122; font-size: 14px; transition: background 0.5s ease; background-color: #f6f6f6; background-size: cover; background-attachment: fixed; }
+        .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; background-color: transparent; }
         
         /* SIDEBAR STYLES */
-        .mw-sidebar { width: 240px; padding: 20px; background-color: rgba(246, 246, 246, 0.95); flex-shrink: 0; border-right: 1px solid #eaecf0; }
+        .mw-sidebar { width: 240px; padding: 20px; background-color: rgba(246, 246, 246, 0.92); flex-shrink: 0; border-right: 1px solid #eaecf0; }
         .mw-logo { display: block; font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
         .mw-sidebar h3 { font-size: 0.85rem; color: #54595d; border-bottom: 1px solid #c8ccd1; padding-bottom: 5px; margin-top: 20px; font-weight: normal; text-transform: uppercase; letter-spacing: 0.5px; }
         .mw-sidebar ul { list-style: none; padding: 0; margin: 5px 0 0 0; }
@@ -19,7 +19,7 @@
         .mw-sidebar a:hover { text-decoration: underline; }
         
         /* CONTENT STYLES */
-        .mw-content-container { flex: 1; background-color: #ffffff; border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; min-width: 800px; position: relative; }
+        .mw-content-container { flex: 1; background-color: rgba(255, 255, 255, 0.95); border-left: 1px solid #a7d7f9; border-top: 1px solid #a7d7f9; padding: 30px; margin-top: 20px; margin-right: 20px; min-width: 800px; position: relative; }
         .mw-top-tools { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 20px; border-bottom: 1px solid #eaecf0; padding-bottom: 10px; }
         
         .user-badge { display: flex; align-items: center; gap: 10px; }
@@ -78,6 +78,7 @@
         .btn-save:hover { background-color: #2a4b8d; }
         .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; }
         .btn-claim:hover { background-color: #218838; }
+        .btn-claim:disabled { background-color: #6c757d; cursor: not-allowed; }
         .btn-danger { background-color: #dc3545; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; border-radius: 4px; }
         .btn-danger:hover { background-color: #c82333; }
         
@@ -211,6 +212,22 @@
             50%{background-position:100% 19%}
             100%{background-position:0% 82%}
         }
+
+        /* LEADERBOARD STYLES */
+        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+        .leaderboard-table th, .leaderboard-table td { padding: 12px; border: 1px solid #a2a9b1; text-align: left; }
+        .leaderboard-table th { background-color: #eaf3ff; color: #005a9c; }
+        .leaderboard-table tr:nth-child(even) { background-color: #f8f9fa; }
+        .leaderboard-rank { font-weight: bold; color: #28a745; width: 50px; text-align: center; }
+
+        /* SNEAK PEEK STYLES */
+        .sneak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .sneak-card { background: #ffffff; border: 1px solid #a2a9b1; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .sneak-card img { width: 100%; height: 180px; object-fit: cover; background: #eaecf0; }
+        .sneak-card-content { padding: 15px; }
+        .sneak-card-content h4 { margin-top: 0; margin-bottom: 5px; color: #005a9c; }
+        .sneak-card-content p { font-size: 0.85rem; color: #54595d; margin-bottom: 10px; }
+        .sneak-card-content .sync-time { font-size: 0.75rem; color: #888; font-style: italic; }
     </style>
 </head>
 <body>
@@ -298,6 +315,7 @@
                     <li><a onclick="openHome()">Main Page</a></li>
                     <li><a onclick="openGame('brainrots')">Don't Crash By Train For Brainrots</a></li>
                     <li><a onclick="openGame('crystal')">Crystal Collecting Simulator</a></li>
+                    <li><a onclick="openSneakPeek()" style="color:#9b59b6; font-weight:bold;">👀 Sneak Peek</a></li>
                 </ul>
 
                 <h3>Help</h3>
@@ -307,6 +325,7 @@
                     <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
                     <li><a onclick="openCashOutPage()" style="font-weight:bold; color:#28a745;">💰 Money Rewards & Cash Out</a></li>
                     <li><a onclick="openBuyPasses()" style="font-weight:bold; color:#ffd700;">🎟️ Buy Passes (VIP/Premium)</a></li>
+                    <li><a onclick="openLeaderboard()" style="color:#e67e22; font-weight:bold;">🏆 Leaderboard Statics</a></li>
                     <li><a onclick="openPolicy()">📜 Terms of Policy</a></li>
                 </ul>
 
@@ -317,7 +336,8 @@
 
                 <h3>Staff / Team</h3>
                 <ul>
-                    <li><b>Owners:</b><br>Dev_Xdragon / LumeCraftor</li>
+                    <li><a onclick="openStaffCommands()" style="color:#8e44ad; font-weight:bold;">🛡️ Staff Commands</a></li>
+                    <li style="margin-top:6px;"><b>Owners:</b><br>Dev_Xdragon / LumeCraftor</li>
                     <li style="margin-top:6px;"><b>Head-Admin:</b><br>Vincent Magtolis</li>
                     <li style="margin-top:6px;"><b>Admins:</b><br>Jayson Areglo<br>Summere Castrence<br>Jeric Caido<br>Han Christian</li>
                     <li style="margin-top:6px;"><b>Moderators:</b><br>Liam Platon<br>Nielo Armas<br>Deann Mark N. Tan</li>
@@ -332,6 +352,20 @@
                     </div>
                     
                     <div class="top-right-tools">
+                        <!-- LANGUAGE SELECTOR -->
+                        <div style="position:relative; display:flex; align-items:center;">
+                            <span style="font-size:1.2rem; margin-right:5px; cursor:pointer;" onclick="document.getElementById('langDropdown').classList.toggle('active')">🌐</span>
+                            <select id="langDropdown" onchange="setLanguage(this.value)" style="padding:5px; border-radius:4px; border:1px solid #a2a9b1; background:#fff; cursor:pointer;">
+                                <option value="en">English (Original)</option>
+                                <option value="fil">Filipino</option>
+                                <option value="zh">Chinese</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ko">Korean</option>
+                                <option value="id">Indonesian</option>
+                                <option value="tw">Taiwanese</option>
+                            </select>
+                        </div>
+
                         <!-- REAL WIKIPEDIA STYLE FLOATING BELL NOTIFICATION -->
                         <div class="notif-bell-btn" onclick="toggleNotifDropdown(event)" title="Notifications">
                             <svg class="notif-bell-icon" viewBox="0 0 24 24">
@@ -438,6 +472,29 @@
         let globalPolls = [];
         let globalCashOuts = [];
         let globalReports = [];
+        let globalSneakPeeks = [];
+
+        /* LANGUAGE & CURRENCY STATE */
+        let currentLanguage = 'en';
+        let currencyRates = {
+            'en': { symbol: '$', rate: 0.018 }, // 1 PHP = 0.018 USD
+            'fil': { symbol: '₱', rate: 1.00 }, // 1 PHP = 1 PHP
+            'zh': { symbol: '¥', rate: 0.13 },  // 1 PHP = 0.13 CNY
+            'ja': { symbol: '¥', rate: 2.80 },  // 1 PHP = 2.80 JPY
+            'ko': { symbol: '₩', rate: 24.5 },  // 1 PHP = 24.5 KRW
+            'id': { symbol: 'Rp', rate: 290.0 },// 1 PHP = 290 IDR
+            'tw': { symbol: 'NT$', rate: 0.57 } // 1 PHP = 0.57 TWD
+        };
+
+        const translations = {
+            'en': { home: 'Main Page', help: 'Help', settings: 'Account Settings', staff: 'Staff / Team', logout: 'Log out', welcome: 'Welcome to the official' },
+            'fil': { home: 'Pangunahing Pahina', help: 'Tulong', settings: 'Mga Setting ng Account', staff: 'Mga Staff / Team', logout: 'Mag-logout', welcome: 'Maligayang pagdating sa opisyal na' },
+            'zh': { home: '主页', help: '帮助', settings: '账户设置', staff: '员工 / 团队', logout: '登出', welcome: '欢迎来到官方' },
+            'ja': { home: 'メインページ', help: 'ヘルプ', settings: 'アカウント設定', staff: 'スタッフ / チーム', logout: 'ログアウト', welcome: '公式へようこそ' },
+            'ko': { home: '메인 페이지', help: '도움말', settings: '계정 설정', staff: '스태프 / 팀', logout: '로그아웃', welcome: '공식에 오신 것을 환영합니다' },
+            'id': { home: 'Halaman Utama', help: 'Bantuan', settings: 'Pengaturan Akun', staff: 'Staf / Tim', logout: 'Keluar', welcome: 'Selamat datang di resmi' },
+            'tw': { home: '主頁', help: '幫助', settings: '帳戶設定', staff: '員工 / 團隊', logout: '登出', welcome: '歡迎來到官方' }
+        };
 
         // ==========================================
         // HELPER & INITIALIZATION FUNCTIONS
@@ -475,6 +532,16 @@
 
         function isStaff(user) {
             return isUserModerator(user) || isUserAdmin(user) || isOwnerAccount(user);
+        }
+
+        function convertCurrency(phpAmount) {
+            const langData = currencyRates[currentLanguage] || currencyRates['en'];
+            const converted = phpAmount * langData.rate;
+            
+            if (currentLanguage === 'ja' || currentLanguage === 'ko' || currentLanguage === 'id') {
+                return `${langData.symbol}${Math.round(converted).toLocaleString()}`;
+            }
+            return `${langData.symbol}${converted.toFixed(2)}`;
         }
 
         function getUserCoinsDisplay(user) {
@@ -539,6 +606,8 @@
             body.classList.remove('rainbow-bg');
             body.style.backgroundImage = 'none';
             body.style.backgroundColor = '#f6f6f6';
+            body.style.backgroundSize = 'cover';
+            body.style.backgroundAttachment = 'fixed';
             
             const backgrounds = {
                 'white': '#f6f6f6',
@@ -559,11 +628,36 @@
                 body.style.backgroundColor = customData;
             } else if (bg === 'custom_img' && customData) {
                 body.style.backgroundImage = `url('${customData}')`;
-                body.style.backgroundSize = 'cover';
-                body.style.backgroundAttachment = 'fixed';
             } else {
                 body.style.backgroundColor = backgrounds[bg] || '#f6f6f6';
             }
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('app_language', lang);
+            
+            // Update sidebar links
+            const navLinks = document.querySelectorAll('.mw-sidebar h3');
+            if(navLinks.length >= 3) {
+                navLinks[0].innerText = translations[lang].home;
+                navLinks[1].innerText = translations[lang].help;
+                navLinks[2].innerText = translations[lang].settings;
+                navLinks[3].innerText = translations[lang].staff;
+            }
+
+            // Update logout link
+            const logoutLink = document.querySelector('a[onclick="logout()"]');
+            if(logoutLink) logoutLink.innerText = translations[lang].logout;
+
+            // Update welcome text if on home page
+            if(document.getElementById('pageTitle').innerText === "Main Page" || document.getElementById('pageTitle').innerText === "Pangunahing Pahina") {
+                openHome();
+            }
+
+            // Update currency displays
+            updateUserStatusHeader();
+            renderCashOutPage();
         }
 
         window.onload = () => {
@@ -585,6 +679,10 @@
                 }
 
                 const savedUser = safeGetJSON('app_current_user', null);
+                const savedLang = localStorage.getItem('app_language') || 'en';
+                currentLanguage = savedLang;
+                document.getElementById('langDropdown').value = savedLang;
+
                 if (savedUser) {
                     currentUser = savedUser;
                     if (currentUser.isHistoryPublic === undefined) currentUser.isHistoryPublic = false;
@@ -601,7 +699,7 @@
                     if (currentUser.background === 'custom_color') {
                         applyBackground('custom_color', currentUser.customBgColor);
                     } else if (currentUser.background === 'custom_img') {
-                        applyBackground('custom_img', currentUser.customBgImg);
+                        applyBackground('custom_img', currentUser.customBgImage);
                     } else {
                         applyBackground(currentUser.background || 'white');
                     }
@@ -810,6 +908,10 @@
                             renderCashOutPage();
                         }
                     }
+                }
+                
+                if (document.getElementById('pageTitle').innerText.includes('Sneak Peek')) {
+                    fetchSneakPeeks();
                 }
             } catch (e) {
                 console.warn("Real-time sync pause / offline mode:", e);
@@ -1184,7 +1286,7 @@
                 alert("❌ Error syncing role to server.");
             }
 
-            renderSettingsPage();
+            renderStaffCommandsPage();
         }
 
         // ==========================================
@@ -1418,8 +1520,8 @@
         // ==========================================
 
         function openHome() {
-            document.getElementById('pageTitle').innerText = "Main Page";
-            document.getElementById('pageContent').innerHTML = "<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases, chat with XDRG AI, access trade services, or cash out rewards.</p>";
+            document.getElementById('pageTitle').innerText = translations[currentLanguage].home;
+            document.getElementById('pageContent').innerHTML = `<p>${translations[currentLanguage].welcome} <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select an option from the sidebar to view game databases, chat with XDRG AI, access trade services, or cash out rewards.</p>`;
         }
 
         function openGame(game) {
@@ -1458,6 +1560,22 @@
 
         function openBuyPasses() {
             document.getElementById('pageTitle').innerText = "🎟️ Buy Passes (VIP & Premium)";
+            
+            let vipButton = '';
+            let premiumButton = '';
+
+            if (currentUser && currentUser.isVIP) {
+                vipButton = `<button class="btn-claim" style="width: 100%; margin-top: 15px; background-color: #6c757d; cursor: not-allowed;" disabled>You Already Bought this item!</button>`;
+            } else {
+                vipButton = `<button class="btn-claim" style="width: 100%; margin-top: 15px;" onclick="purchasePass('VIP')">Buy VIP Pass</button>`;
+            }
+
+            if (currentUser && currentUser.isPremium) {
+                premiumButton = `<button class="btn-claim" style="width: 100%; margin-top: 15px; background-color: #6c757d; cursor: not-allowed;" disabled>You Already Bought this item!</button>`;
+            } else {
+                premiumButton = `<button class="btn-claim" style="width: 100%; margin-top: 15px; background-color: #00c6ff;" onclick="purchasePass('Premium')">Buy Premium Pass</button>`;
+            }
+
             document.getElementById('pageContent').innerHTML = `
                 <div style="max-width: 800px; margin: 0 auto;">
                     <h2>Unlock Exclusive Perks!</h2>
@@ -1474,7 +1592,7 @@
                                 <li>✅ Free 250 Coins upon purchase</li>
                                 <li>✅ Priority Support</li>
                             </ul>
-                            <button class="btn-claim" style="width: 100%; margin-top: 15px;" onclick="purchasePass('VIP')">Buy VIP Pass</button>
+                            ${vipButton}
                         </div>
 
                         <!-- PREMIUM CARD -->
@@ -1490,7 +1608,7 @@
                                 <li>✅ -15 Discount on Rewards (35 -> 20 Coins)</li>
                                 <li>✅ Free 2 In-Game Rewards (Strawberry & Summerini)</li>
                             </ul>
-                            <button class="btn-claim" style="width: 100%; margin-top: 15px; background-color: #00c6ff;" onclick="purchasePass('Premium')">Buy Premium Pass</button>
+                            ${premiumButton}
                         </div>
                     </div>
                 </div>
@@ -1499,6 +1617,15 @@
 
         async function purchasePass(passType) {
             if (!currentUser) return;
+            
+            if (passType === 'VIP' && currentUser.isVIP) {
+                alert("You already bought the VIP Pass!");
+                return;
+            }
+            if (passType === 'Premium' && currentUser.isPremium) {
+                alert("You already bought the Premium Pass!");
+                return;
+            }
             
             const cost = passType === 'VIP' ? 12500 : 25000;
             const priceFormatted = cost.toLocaleString();
@@ -1547,7 +1674,279 @@
 
             saveUserData();
             updateUserStatusHeader();
-            openSettings();
+            openBuyPasses(); // Refresh the page to show the "Already Bought" button
+        }
+
+        // ==========================================
+        // SNEAK PEEK SYSTEM
+        // ==========================================
+
+        function openSneakPeek() {
+            document.getElementById('pageTitle').innerText = "👀 Sneak Peek";
+            renderSneakPeekPage();
+        }
+
+        async function fetchSneakPeeks() {
+            try {
+                const res = await fetch(`${FIREBASE_BASE_URL}/sneak_peeks.json`);
+                if (res.ok) {
+                    const data = await res.json();
+                    globalSneakPeeks = [];
+                    if (data) {
+                        Object.keys(data).forEach(id => {
+                            globalSneakPeeks.push({ id, ...data[id] });
+                        });
+                        globalSneakPeeks.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                    }
+                    renderSneakPeekContent();
+                }
+            } catch(e) {
+                console.warn("Failed to fetch sneak peeks:", e);
+            }
+        }
+
+        function renderSneakPeekPage() {
+            const isStaffMember = currentUser && isStaff(currentUser);
+            let html = `
+                <p>Check out the latest sneak peeks and upcoming updates from the developers!</p>
+            `;
+
+            if (isStaffMember) {
+                html += `
+                    <div class="admin-box" style="background:#fff3cd; border-color:#ffeeba; margin-top:20px;">
+                        <h4>🛡️ Staff Upload: New Sneak Peek</h4>
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Title:</label>
+                            <input type="text" id="sneakTitle" placeholder="e.g. New Crystal Update!" style="margin-top:4px;">
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Description:</label>
+                            <textarea id="sneakDesc" rows="3" placeholder="Describe the upcoming update..." style="margin-top:4px;"></textarea>
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Upload Image:</label>
+                            <input type="file" id="sneakImage" accept="image/*" style="margin-top:4px;">
+                        </div>
+                        <button class="btn-save" style="background-color:#9b59b6; width:100%;" onclick="uploadSneakPeek()">Upload Sneak Peek</button>
+                    </div>
+                `;
+            }
+
+            html += `<div id="sneakPeekGrid" class="sneak-grid"></div>`;
+            document.getElementById('pageContent').innerHTML = html;
+            fetchSneakPeeks();
+        }
+
+        async function uploadSneakPeek() {
+            if (!currentUser || !isStaff(currentUser)) return;
+
+            const title = document.getElementById('sneakTitle').value.trim();
+            const desc = document.getElementById('sneakDesc').value.trim();
+            const fileInput = document.getElementById('sneakImage');
+            
+            if (!title || !desc || fileInput.files.length === 0) {
+                alert("❌ Please fill in all fields and select an image!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            if (file.size > 2 * 1024 * 1024) {
+                alert("❌ Image is too large! Please select an image smaller than 2MB.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64Img = e.target.result;
+                const sneakId = "SNEAK-" + Date.now();
+                const sneakData = {
+                    id: sneakId,
+                    title: title,
+                    description: desc,
+                    image: base64Img,
+                    timestamp: Date.now(),
+                    uploader: currentUser.username || currentUser.name
+                };
+
+                try {
+                    await fetch(`${FIREBASE_BASE_URL}/sneak_peeks/${sneakId}.json`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(sneakData)
+                    });
+                    alert("✅ Sneak Peek uploaded successfully!");
+                    document.getElementById('sneakTitle').value = "";
+                    document.getElementById('sneakDesc').value = "";
+                    document.getElementById('sneakImage').value = "";
+                    fetchSneakPeeks();
+                } catch (err) {
+                    alert("❌ Error uploading Sneak Peek. Check internet connection.");
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderSneakPeekContent() {
+            const grid = document.getElementById('sneakPeekGrid');
+            if (!grid) return;
+
+            if (globalSneakPeeks.length === 0) {
+                grid.innerHTML = `<div style="text-align:center; padding:20px; color:#777;">No Sneak Peeks available yet. Stay tuned!</div>`;
+                return;
+            }
+
+            let html = "";
+            globalSneakPeeks.forEach(peek => {
+                const dateStr = new Date(peek.timestamp).toLocaleString();
+                html += `
+                    <div class="sneak-card">
+                        <img src="${peek.image}" alt="${peek.title}">
+                        <div class="sneak-card-content">
+                            <h4>${peek.title}</h4>
+                            <p>${peek.description}</p>
+                            <div class="sync-time">Synced: ${dateStr} by @${peek.uploader}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        // ==========================================
+        // LEADERBOARD SYSTEM
+        // ==========================================
+
+        function openLeaderboard() {
+            document.getElementById('pageTitle').innerText = "🏆 Leaderboard Statics";
+            
+            let allUsers = safeGetJSON('app_users_db', []);
+            
+            // Sort by points descending
+            allUsers.sort((a, b) => (b.points || 0) - (a.points || 0));
+            
+            let html = `
+                <p>Top players ranked by their total claimed rewards and cash out activity.</p>
+                <table class="leaderboard-table">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Claimed Rewards</th>
+                        <th>Cash Out</th>
+                        <th>Sync Time</th>
+                    </tr>
+            `;
+
+            if (allUsers.length === 0) {
+                html += `<tr><td colspan="5" style="text-align:center; padding:20px; color:#777;">No users found.</td></tr>`;
+            } else {
+                allUsers.slice(0, 20).forEach((user, index) => {
+                    const rank = index + 1;
+                    const name = user.username || user.name || "Unknown";
+                    const rewards = (user.points || 0).toLocaleString();
+                    
+                    // Calculate total cash out (simplified: assuming points spent on cash out)
+                    // In a real scenario, you'd fetch from cashouts node, but for this leaderboard, we use a proxy.
+                    const cashOutEst = ((user.points || 0) / 10000).toFixed(2); 
+                    
+                    const syncTime = user.lastSeen ? new Date(user.lastSeen).toLocaleString() : "N/A";
+
+                    html += `
+                        <tr>
+                            <td class="leaderboard-rank">#${rank}</td>
+                            <td><b>${name}</b></td>
+                            <td>${rewards}</td>
+                            <td>₱${cashOutEst}</td>
+                            <td>${syncTime}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            html += `</table>`;
+            document.getElementById('pageContent').innerHTML = html;
+        }
+
+        // ==========================================
+        // STAFF COMMANDS PAGE
+        // ==========================================
+
+        function openStaffCommands() {
+            if (!currentUser || !isStaff(currentUser)) {
+                alert("❌ Access Denied: Staff only!");
+                return;
+            }
+            document.getElementById('pageTitle').innerText = "🛡️ Staff Commands";
+            renderStaffCommandsPage();
+        }
+
+        function renderStaffCommandsPage() {
+            if (!currentUser || !isStaff(currentUser)) return;
+
+            const isOwner = isOwnerAccount(currentUser);
+            const isAdmin = isUserAdmin(currentUser);
+            const isMod = isUserModerator(currentUser);
+
+            let html = `
+                <p style="font-size:0.85rem; color:#54595d;">Click the sections below to expand specific command sets.</p>
+            `;
+
+            if (isOwner || isAdmin) {
+                html += `
+                    <button class="accordion" onclick="toggleAccordion('modCommands')">Moderator Commands</button>
+                    <div id="modCommands" class="panel">
+                        <div style="padding: 15px 0;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Target User ID or Gmail:</label>
+                            <input type="text" id="modTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px;">
+                            <div style="display:flex; gap:10px;">
+                                <button class="btn-save" style="flex:1; background-color:#28a745;" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value, 'Moderator', 'give')">Give Moderator Role</button>
+                                <button class="btn-danger" style="flex:1;" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value, 'Moderator', 'remove')">Remove Moderator Role</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (isOwner) {
+                html += `
+                    <button class="accordion" onclick="toggleAccordion('adminCommands')">Admin Commands</button>
+                    <div id="adminCommands" class="panel">
+                        <div style="padding: 15px 0;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Target User ID or Gmail:</label>
+                            <input type="text" id="adminTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px;">
+                            <div style="display:flex; gap:10px;">
+                                <button class="btn-save" style="flex:1; background-color:#007bff;" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value, 'Admin', 'give')">Give Admin Role</button>
+                                <button class="btn-danger" style="flex:1;" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value, 'Admin', 'remove')">Remove Admin Role</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="accordion" onclick="toggleAccordion('coinCommands')">Coin Giver Tool</button>
+                    <div id="coinCommands" class="panel">
+                        <div style="padding: 15px 0;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID, Username, or Gmail:</label>
+                            <input type="text" id="grantTargetIdentifier" placeholder="e.g. 7680051058 OR user@gmail.com" style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Amount of Coins to Grant:</label>
+                            <input type="number" id="grantCoinAmount" placeholder="e.g. 100" style="margin-bottom:10px;">
+                            <button class="btn-save" style="width:100%; background-color:#28a745;" onclick="grantCoinsToUser()">Confirm Grant Coins</button>
+                        </div>
+                    </div>
+
+                    <button class="accordion" onclick="toggleAccordion('pollCommands')">Create Poll</button>
+                    <div id="pollCommands" class="panel">
+                        <div style="padding: 15px 0;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Poll Title:</label>
+                            <input type="text" id="newPollTitle" placeholder="e.g. What should we add next?" style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Description:</label>
+                            <input type="text" id="newPollDesc" placeholder="e.g. Vote for the upcoming changes!" style="margin-bottom:10px;">
+                            <label style="font-weight:bold; font-size:0.85rem;">Comma-separated options:</label>
+                            <input type="text" id="newPollOptions" placeholder="e.g. Map, Crystals, Pets" style="margin-bottom:10px;">
+                            <button class="btn-save" style="width:100%; background-color:#28a745;" onclick="createPoll()">Create Poll</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('pageContent').innerHTML = html;
         }
 
         // ==========================================
@@ -1574,9 +1973,11 @@
 
             let coins = (currentUser.points || 0);
             let estPhp = (coins / 10000).toFixed(2);
+            let displayEst = convertCurrency(parseFloat(estPhp));
 
             if (isOwnerAccount(currentUser)) {
                 estPhp = "999,999.00";
+                displayEst = "999,999.00";
             }
 
             const reqCoins = selectedCashOutAmount * 10000;
@@ -1593,7 +1994,7 @@
                     <h2 style="margin-top:0; text-align:center; color:#005a9c; border:none; margin-bottom:15px;">Cash Out Money Rewards</h2>
                     
                     <div class="balance-box">
-                        <div>Est: ₱${estPhp}</div>
+                        <div>Est: ${displayEst}</div>
                         <div style="margin-top:4px;">Coins: ${isOwnerAccount(currentUser) ? 'Infinity ♾️' : coins.toLocaleString()}</div>
                     </div>
 
@@ -2743,82 +3144,7 @@
                 `;
             }
 
-            if (isAdmin || isOwner) {
-                html += `
-                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
-
-                    <div class="admin-box" style="margin-bottom:20px; background:#fff3cd; border-color:#ffeeba;">
-                        <h4>🛠️ Admin Controls: Create New Vote/Poll</h4>
-                        <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Poll Title:</label>
-                            <input type="text" id="newPollTitle" placeholder="e.g. What should we add next?" style="margin-top:4px;">
-                        </div>
-                        <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Description:</label>
-                            <input type="text" id="newPollDesc" placeholder="e.g. Vote for the upcoming changes!" style="margin-top:4px;">
-                        </div>
-                        <div style="margin-bottom:12px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Comma-separated options:</label>
-                            <input type="text" id="newPollOptions" placeholder="e.g. Map, Crystals, Pets" style="margin-top:4px;">
-                        </div>
-                        <button class="btn-save" style="background-color:#28a745; width:100%; font-size:0.95rem; padding:10px;" onclick="createPoll()">
-                            Create Poll
-                        </button>
-                    </div>
-                `;
-            }
-
-            // STAFF COMMANDS ACCORDION
-            if (isOwner || isAdmin || isMod) {
-                html += `
-                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
-                    <h2>🛡️ Staff Commands</h2>
-                    <p style="font-size:0.85rem; color:#54595d;">Click the sections below to expand specific command sets.</p>
-                `;
-
-                if (isOwner || isAdmin) {
-                    html += `
-                        <button class="accordion" onclick="toggleAccordion('modCommands')">Moderator Commands</button>
-                        <div id="modCommands" class="panel">
-                            <div style="padding: 15px 0;">
-                                <label style="font-weight:bold; font-size:0.85rem;">Target User ID or Gmail:</label>
-                                <input type="text" id="modTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px;">
-                                <div style="display:flex; gap:10px;">
-                                    <button class="btn-save" style="flex:1; background-color:#28a745;" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value, 'Moderator', 'give')">Give Moderator Role</button>
-                                    <button class="btn-danger" style="flex:1;" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value, 'Moderator', 'remove')">Remove Moderator Role</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                if (isOwner) {
-                    html += `
-                        <button class="accordion" onclick="toggleAccordion('adminCommands')">Admin Commands</button>
-                        <div id="adminCommands" class="panel">
-                            <div style="padding: 15px 0;">
-                                <label style="font-weight:bold; font-size:0.85rem;">Target User ID or Gmail:</label>
-                                <input type="text" id="adminTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px;">
-                                <div style="display:flex; gap:10px;">
-                                    <button class="btn-save" style="flex:1; background-color:#007bff;" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value, 'Admin', 'give')">Give Admin Role</button>
-                                    <button class="btn-danger" style="flex:1;" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value, 'Admin', 'remove')">Remove Admin Role</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="accordion" onclick="toggleAccordion('coinCommands')">Coin Giver Tool</button>
-                        <div id="coinCommands" class="panel">
-                            <div style="padding: 15px 0;">
-                                <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID, Username, or Gmail:</label>
-                                <input type="text" id="grantTargetIdentifier" placeholder="e.g. 7680051058 OR user@gmail.com" style="margin-bottom:10px;">
-                                <label style="font-weight:bold; font-size:0.85rem;">Amount of Coins to Grant:</label>
-                                <input type="number" id="grantCoinAmount" placeholder="e.g. 100" style="margin-bottom:10px;">
-                                <button class="btn-save" style="width:100%; background-color:#28a745;" onclick="grantCoinsToUser()">Confirm Grant Coins</button>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
+            // Note: Admin Controls (Poll, Coin Giver, Promote) have been moved to the Staff Commands page.
 
             html += `
                     <hr style="margin: 40px 0 20px 0; border: 0; border-top: 1px solid #c8ccd1;">
@@ -2886,7 +3212,7 @@
                     body: JSON.stringify(newPollObj)
                 });
                 alert("✅ Poll created and synced globally across all devices!");
-                openQuests(); 
+                openStaffCommands(); 
             } catch(e) {
                 alert("❌ Error saving poll to live server.");
             }
@@ -2929,7 +3255,7 @@
                 localStorage.setItem('app_users_db', JSON.stringify(allUsers));
                 updateUserStatusHeader();
                 alert(`✅ Granted ${coinsToAdd} coins to ${targetUser.displayName || targetUser.username || targetUser.name}!`);
-                renderSettingsPage();
+                renderStaffCommandsPage();
             } else {
                 alert("❌ Target user not found in local cache.");
             }
