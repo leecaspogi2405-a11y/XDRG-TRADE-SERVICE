@@ -2,13 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>RedGalaxy Studio / NebulaForge Studio Portal</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f6f6f6; margin: 0; padding: 0; color: #202122; font-size: 14px; transition: background-color 0.3s; }
         .mw-page-container { display: flex; max-width: 1600px; margin: 0 auto; min-height: 100vh; }
         
+        /* MOBILE RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .mw-page-container { flex-direction: column; }
+            .mw-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #eaecf0; padding: 15px; }
+            .mw-content-container { margin: 0; border-left: none; border-top: none; padding: 15px; min-width: 100%; }
+            .mw-top-tools { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .top-right-tools { width: 100%; justify-content: space-between; }
+            .amount-grid { grid-template-columns: repeat(2, 1fr); }
+            .payment-selection { flex-direction: column; }
+            .ai-layout { flex-direction: column; }
+            .ai-history-panel { width: 100%; border-right: none; border-bottom: 1px solid #a2a9b1; }
+            .cashout-card { margin: 0; padding: 15px; }
+            h1 { font-size: 1.8rem; }
+        }
+
         /* SIDEBAR STYLES */
         .mw-sidebar { width: 240px; padding: 20px; background-color: #f6f6f6; flex-shrink: 0; border-right: 1px solid #eaecf0; }
         .mw-logo { display: block; font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #000; text-decoration: none; margin-bottom: 20px; line-height: 1.2; cursor: pointer; }
@@ -41,6 +56,7 @@
         .notif-item .notif-title { font-weight: bold; color: #005a9c; margin-bottom: 2px; }
         .notif-item .notif-time { font-size: 0.72rem; color: #72777d; margin-top: 4px; }
         .notif-msg a { color: #005a9c; font-weight: bold; text-decoration: underline; word-break: break-all; }
+        .notif-actions { display: flex; gap: 5px; margin-top: 8px; }
 
         h1 { font-family: 'Georgia', serif; font-size: 2.2rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 0; }
         h2 { font-family: 'Georgia', serif; font-size: 1.5rem; font-weight: normal; border-bottom: 1px solid #a2a9b1; padding-bottom: 5px; margin-top: 30px; }
@@ -77,6 +93,8 @@
         .btn-save:hover { background-color: #2a4b8d; }
         .btn-claim { background-color: #28a745; color: white; border: none; padding: 10px 18px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 10px; }
         .btn-claim:hover { background-color: #218838; }
+        .btn-danger { background-color: #dc3545; color: white; border: none; padding: 8px 15px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        .btn-danger:hover { background-color: #c82333; }
         
         .roblox-btn { display: inline-flex; align-items: center; gap: 10px; background-color: #000000; color: #ffffff; padding: 10px 20px; font-weight: bold; border-radius: 6px; text-decoration: none; margin: 15px 0; transition: background 0.2s; }
         .roblox-btn:hover { background-color: #333333; color: #ffffff; text-decoration: none; }
@@ -113,6 +131,9 @@
         /* ROLE BADGES */
         .badge-owner { background: linear-gradient(45deg, #ff0055, #7a00ff); color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; box-shadow: 0 0 8px rgba(122, 0, 255, 0.4); display: inline-block; }
         .badge-admin { background-color: #007bff; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
+        .badge-mod { background-color: #28a745; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
+        .badge-vip { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
+        .badge-premium { background: linear-gradient(45deg, #00c6ff, #0072ff); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
 
         /* STATUS BADGES FOR CLAIMS HISTORY */
         .status-badge { padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; display: inline-block; text-align: center; }
@@ -169,6 +190,30 @@
         .policy-list li { margin-bottom: 8px; }
         .policy-back-btn { display: inline-block; margin-top: 20px; color: #0645ad; font-weight: bold; font-size: 1.05rem; cursor: pointer; text-decoration: underline; }
         .policy-back-btn:hover { color: #0b0080; }
+
+        /* DAILY REWARD STYLES */
+        .daily-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 15px; }
+        .daily-card { background: #ffffff; border: 2px solid #a2a9b1; border-radius: 8px; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .daily-card.active { border-color: #28a745; background: #e8f8f0; box-shadow: 0 0 8px rgba(40, 167, 69, 0.4); }
+        .daily-card.claimed { border-color: #6c757d; background: #e9ecef; opacity: 0.7; }
+        .daily-card .day-label { font-weight: bold; font-size: 0.8rem; color: #54595d; margin-bottom: 5px; }
+        .daily-card .reward-amount { font-size: 1.1rem; font-weight: bold; color: #28a745; }
+        .daily-card .reward-icon { font-size: 1.5rem; margin-bottom: 5px; }
+
+        /* BACKGROUND SELECTOR STYLES */
+        .bg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .bg-btn { padding: 10px; border: 1px solid #a2a9b1; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; text-align: center; transition: all 0.2s; }
+        .bg-btn:hover { transform: scale(1.05); }
+        .bg-btn.selected { border: 3px solid #005a9c; box-shadow: 0 0 8px rgba(0,90,156,0.5); }
+        .bg-btn.locked { opacity: 0.5; cursor: not-allowed; position: relative; }
+        .bg-btn.locked::after { content: "🔒"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5rem; }
+
+        /* ACCORDION FOR COMMANDS */
+        .accordion { background-color: #eaf3ff; color: #005a9c; cursor: pointer; padding: 12px; width: 100%; border: 1px solid #a7d7f9; text-align: left; outline: none; font-size: 1rem; font-weight: bold; transition: 0.4s; border-radius: 4px; margin-top: 10px; }
+        .accordion:hover { background-color: #d0e4f7; }
+        .accordion:after { content: '\002B'; color: #005a9c; font-weight: bold; float: right; margin-left: 5px; }
+        .accordion.active:after { content: "\2212"; }
+        .panel { padding: 0 18px; background-color: white; max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; border: 1px solid #eaecf0; border-top: none; border-radius: 0 0 4px 4px; }
     </style>
 </head>
 <body>
@@ -264,6 +309,7 @@
                     <li><a onclick="openQuests()">🎯 Quest and Trade Service</a></li>
                     <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
                     <li><a onclick="openCashOutPage()" style="font-weight:bold; color:#28a745;">💰 Money Rewards & Cash Out</a></li>
+                    <li><a onclick="openBuyPasses()" style="font-weight:bold; color:#ffd700;">🎟️ Buy Passes (VIP/Premium)</a></li>
                     <li><a onclick="openPolicy()">📜 Terms of Policy</a></li>
                 </ul>
 
@@ -391,8 +437,10 @@
 
         /* REALTIME SYNC STATE */
         let globalNotifications = [];
+        let globalOwnerAlerts = [];
         let globalPolls = [];
         let globalCashOuts = [];
+        let globalReports = [];
 
         // ==========================================
         // HELPER & INITIALIZATION FUNCTIONS
@@ -421,6 +469,15 @@
         function isUserAdmin(user) {
             if (!user) return false;
             return isOwnerAccount(user) || user.isAdmin === true || user.role === 'Admin';
+        }
+
+        function isUserModerator(user) {
+            if (!user) return false;
+            return isUserAdmin(user) || user.isMod === true || user.role === 'Moderator';
+        }
+
+        function isStaff(user) {
+            return isUserModerator(user) || isUserAdmin(user) || isOwnerAccount(user);
         }
 
         function getUserCoinsDisplay(user) {
@@ -480,6 +537,35 @@
             });
         }
 
+        function applyBackground(bg) {
+            const body = document.body;
+            body.style.backgroundImage = 'none';
+            body.style.backgroundColor = '#f6f6f6';
+            
+            const backgrounds = {
+                'white': '#f6f6f6',
+                'green': '#e8f8f0',
+                'blue': '#eaf3ff',
+                'red': '#fff0f0',
+                'rainbow': 'linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff)',
+                'gold': 'linear-gradient(45deg, #ffd700, #ff8c00, #ffd700)',
+                'green_white': 'linear-gradient(45deg, #e8f8f0, #ffffff)',
+                'blue_red': 'linear-gradient(45deg, #eaf3ff, #fff0f0)'
+            };
+
+            if (bg === 'rainbow') {
+                body.style.backgroundImage = backgrounds['rainbow'];
+            } else if (bg === 'gold') {
+                body.style.backgroundImage = backgrounds['gold'];
+            } else if (bg === 'green_white') {
+                body.style.backgroundImage = backgrounds['green_white'];
+            } else if (bg === 'blue_red') {
+                body.style.backgroundImage = backgrounds['blue_red'];
+            } else {
+                body.style.backgroundColor = backgrounds[bg] || '#f6f6f6';
+            }
+        }
+
         window.onload = () => {
             try {
                 // Request Push Notification Permissions
@@ -512,6 +598,8 @@
                     updateUserStatusHeader();
                     logDeviceConnection(currentUser);
                     showWiki();
+                    applyBackground(currentUser.background || 'white');
+                    checkDailyReward();
                 }
 
                 // Close notification dropdown when clicking outside
@@ -528,6 +616,97 @@
                 console.error("Initialization error:", err);
             }
         };
+
+        // ==========================================
+        // DAILY REWARDS SYSTEM
+        // ==========================================
+
+        function checkDailyReward() {
+            if (!currentUser) return;
+            
+            const now = new Date();
+            const today = now.toDateString();
+            const lastClaimed = currentUser.lastClaimedDate ? new Date(currentUser.lastClaimedDate).toDateString() : null;
+            
+            if (lastClaimed === today) {
+                // Already claimed today
+                return;
+            }
+
+            // Check if it's a new day
+            let streak = currentUser.streakCount || 0;
+            
+            // If last claimed was yesterday, increment streak, else reset to 1
+            if (lastClaimed) {
+                const yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+                if (lastClaimed === yesterday.toDateString()) {
+                    streak++;
+                } else {
+                    streak = 1;
+                }
+            } else {
+                streak = 1;
+            }
+
+            if (streak > 7) streak = 1;
+
+            currentUser.streakCount = streak;
+            currentUser.lastClaimedDate = now.toISOString();
+            saveUserData();
+
+            // Trigger Notification for Daily Reward
+            const notifId = "DAILY-" + Date.now();
+            const notifData = {
+                id: notifId,
+                title: "Your rewards in Daily Engagement is now available! Claim it now",
+                message: "You can now open the Daily Engagement Rewards 💰 thank you for your support to Xdrg Team's!",
+                timestamp: Date.now(),
+                isDailyReward: true
+            };
+
+            // Add to local notifications temporarily
+            globalNotifications.unshift(notifData);
+            renderNotificationDropdown();
+
+            // Show custom popup
+            showDailyRewardPopup();
+        }
+
+        function showDailyRewardPopup() {
+            const popup = document.createElement('div');
+            popup.style.position = 'fixed';
+            popup.style.top = '50%';
+            popup.style.left = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
+            popup.style.background = '#ffffff';
+            popup.style.border = '2px solid #28a745';
+            popup.style.borderRadius = '10px';
+            popup.style.padding = '20px';
+            popup.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
+            popup.style.zIndex = '100000';
+            popup.style.textAlign = 'center';
+            popup.style.maxWidth = '400px';
+            popup.style.width = '90%';
+
+            popup.innerHTML = `
+                <h3 style="margin-top:0; color:#28a745;">🎁 Daily Engagement Rewards</h3>
+                <p style="font-size:0.9rem; color:#54595d;">Your daily reward is ready! Thank you for your support to Xdrg Team's!</p>
+                <div style="font-size:2rem; margin:15px 0;">💰</div>
+                <button onclick="claimDailyReward()" class="btn-claim" style="width:100%; font-size:1.1rem; padding:12px;">Claim Now!</button>
+                <button onclick="this.parentElement.remove()" style="margin-top:10px; background:none; border:none; color:#54595d; cursor:pointer; text-decoration:underline;">Close</button>
+            `;
+            document.body.appendChild(popup);
+        }
+
+        async function claimDailyReward() {
+            // Remove popup
+            const popups = document.querySelectorAll('div[style*="z-index: 100000"]');
+            popups.forEach(p => p.remove());
+
+            // Redirect to Quests page
+            openQuests();
+        }
 
         // ==========================================
         // REAL-TIME FIREBASE SYNC & NOTIFICATION ENGINE
@@ -583,6 +762,20 @@
                     }
                 }
 
+                // 4. Fetch Reports for Staff
+                if (currentUser && isStaff(currentUser)) {
+                    const reportRes = await fetch(`${FIREBASE_BASE_URL}/reports.json`);
+                    if (reportRes.ok) {
+                        const reportData = await reportRes.json();
+                        if (reportData) {
+                            globalReports = [];
+                            Object.keys(reportData).forEach(id => {
+                                globalReports.push({ id, ...reportData[id] });
+                            });
+                        }
+                    }
+                }
+
                 // Sort combined by timestamp descending
                 newNotifList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
@@ -599,7 +792,7 @@
                 globalNotifications = newNotifList;
                 renderNotificationDropdown();
 
-                // 4. Sync Polls
+                // 5. Sync Polls
                 const pollRes = await fetch(`${FIREBASE_BASE_URL}/polls.json`);
                 if (pollRes.ok) {
                     const pollData = await pollRes.json();
@@ -613,7 +806,7 @@
                     localStorage.setItem('app_polls_db', JSON.stringify(globalPolls));
                 }
 
-                // 5. Sync Cash Outs (For Owner Dashboard)
+                // 6. Sync Cash Outs (For Owner Dashboard)
                 if (currentUser && isOwnerAccount(currentUser)) {
                     const cashRes = await fetch(`${FIREBASE_BASE_URL}/cashouts.json`);
                     if (cashRes.ok) {
@@ -663,11 +856,38 @@
                 if (!isRead) unreadCount++;
 
                 const dateStr = n.timestamp ? new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                let actionHtml = '';
+
+                // Add Accept/Decline buttons for Staff if it's a report notification
+                if (n.isReport && currentUser && isStaff(currentUser)) {
+                    const report = globalReports.find(r => r.id === n.reportId);
+                    if (report && report.status === 'pending') {
+                        actionHtml = `
+                            <div class="notif-actions">
+                                <button class="btn-action-sm" onclick="handleReportAction('${n.reportId}', 'accepted')">Accepted</button>
+                                <button class="btn-action-sm btn-danger" onclick="handleReportAction('${n.reportId}', 'declined')">Declined</button>
+                            </div>
+                        `;
+                    } else if (report) {
+                        actionHtml = `<div style="font-size:0.75rem; color:#54595d; margin-top:5px;">Status: <b>${report.status.toUpperCase()}</b></div>`;
+                    }
+                }
+
+                // Add Claim Now button for Daily Rewards
+                if (n.isDailyReward && currentUser) {
+                    actionHtml = `
+                        <div class="notif-actions">
+                            <button class="btn-action-sm" style="background-color:#28a745;" onclick="claimDailyReward()">Claim Now!</button>
+                        </div>
+                    `;
+                }
+
                 html += `
                     <li class="notif-item ${isRead ? '' : 'unread'}">
                         <div class="notif-title">${n.title || 'Studio Update'}</div>
                         <div class="notif-msg">${linkify(n.message || '')}</div>
                         <div class="notif-time">${dateStr}</div>
+                        ${actionHtml}
                     </li>
                 `;
             });
@@ -761,6 +981,230 @@
         }
 
         // ==========================================
+        // BUG REPORTING SYSTEM
+        // ==========================================
+
+        let selectedReportType = 'website';
+
+        function selectReportType(type) {
+            selectedReportType = type;
+            renderSettingsPage();
+        }
+
+        async function submitReport() {
+            if (!currentUser) return;
+
+            const reason = document.getElementById('reportReason').value.trim();
+            const abuserName = document.getElementById('reportAbuserName') ? document.getElementById('reportAbuserName').value.trim() : '';
+
+            if (!reason) {
+                alert("❌ Please enter a reason for your report!");
+                return;
+            }
+
+            if (selectedReportType === 'abuser' && !abuserName) {
+                alert("❌ Please enter the name of the abuser!");
+                return;
+            }
+
+            const reportId = "REPORT-" + Date.now();
+            const reportData = {
+                id: reportId,
+                reporterId: currentUser.rblxUserId,
+                reporterName: currentUser.username || currentUser.name,
+                type: selectedReportType,
+                reason: reason,
+                abuserName: abuserName,
+                status: 'pending',
+                timestamp: Date.now()
+            };
+
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/reports/${reportId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(reportData)
+                });
+
+                // Send notification to staff
+                const notifId = "NOTIF-REPORT-" + Date.now();
+                const notifData = {
+                    id: notifId,
+                    title: "🚨 New Report Submitted",
+                    message: `${currentUser.username} sent a ${selectedReportType === 'website' ? 'Website' : 'Abuser'} report. Reason: ${reason}`,
+                    timestamp: Date.now(),
+                    isReport: true,
+                    reportId: reportId
+                };
+
+                await fetch(`${FIREBASE_BASE_URL}/notifications/${notifId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(notifData)
+                });
+
+                alert("✅ Report submitted successfully! Our moderators will review it shortly.");
+                document.getElementById('reportReason').value = "";
+                if (document.getElementById('reportAbuserName')) document.getElementById('reportAbuserName').value = "";
+                renderSettingsPage();
+            } catch (e) {
+                alert("❌ Error submitting report. Check internet connection.");
+            }
+        }
+
+        async function handleReportAction(reportId, action) {
+            if (!currentUser || !isStaff(currentUser)) return;
+
+            const report = globalReports.find(r => r.id === reportId);
+            if (!report) return;
+
+            try {
+                // Update report status
+                await fetch(`${FIREBASE_BASE_URL}/reports/${reportId}/status.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(action)
+                });
+
+                // Send notification back to the reporter
+                const notifId = "NOTIF-REPLY-" + Date.now();
+                const notifData = {
+                    id: notifId,
+                    title: `Your report was ${action} by ${currentUser.username}`,
+                    message: `Your report regarding "${report.reason}" has been ${action}.`,
+                    timestamp: Date.now()
+                };
+
+                const reporterIdentifiers = [
+                    String(report.reporterId || '').toLowerCase(),
+                    (report.reporterName || '').toLowerCase()
+                ];
+
+                for (const id of reporterIdentifiers) {
+                    if (!id) continue;
+                    const safeId = encodeURIComponent(id);
+                    await fetch(`${FIREBASE_BASE_URL}/user_notifications/${safeId}/${notifId}.json`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(notifData)
+                    });
+                }
+
+                // Reward the reporter if accepted
+                if (action === 'accepted') {
+                    // Find the reporter in the database and give coins
+                    let allUsers = safeGetJSON('app_users_db', []);
+                    const reporterIndex = allUsers.findIndex(u => String(u.rblxUserId) === String(report.reporterId));
+                    if (reporterIndex !== -1) {
+                        allUsers[reporterIndex].points = (allUsers[reporterIndex].points || 0) + 1500;
+                        localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+                        
+                        // Sync to Firebase
+                        await fetch(`${FIREBASE_BASE_URL}/users/${allUsers[reporterIndex].rblxUserId}.json`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(allUsers[reporterIndex])
+                        });
+                    }
+                }
+
+                alert(`✅ Report ${action} successfully!`);
+                syncRealtimeDatabase();
+            } catch (e) {
+                alert("❌ Error processing report action.");
+            }
+        }
+
+        // ==========================================
+        // ROLES MANAGEMENT SYSTEM
+        // ==========================================
+
+        async function updateUserRole(targetIdentifier, role, action) {
+            if (!currentUser) return;
+            
+            const isTargetAdmin = role === 'Admin';
+            const isTargetMod = role === 'Moderator';
+
+            // Permission check
+            if (isTargetAdmin && !isOwnerAccount(currentUser)) {
+                alert("❌ Only Owners can manage Admin roles!");
+                return;
+            }
+            if (isTargetMod && !isOwnerAccount(currentUser) && !isUserAdmin(currentUser)) {
+                alert("❌ Only Owners and Admins can manage Moderator roles!");
+                return;
+            }
+
+            const targetInput = targetIdentifier.trim().toLowerCase();
+            if (!targetInput) {
+                alert("❌ Please enter a target User ID or Gmail!");
+                return;
+            }
+
+            let allUsers = safeGetJSON('app_users_db', []);
+            let foundIndex = allUsers.findIndex(u => 
+                String(u.rblxUserId || '').trim().toLowerCase() === targetInput || 
+                (u.gmail || '').toLowerCase().trim() === targetInput
+            );
+
+            if (foundIndex === -1) {
+                alert("❌ Target user not found in local cache.");
+                return;
+            }
+
+            const targetUser = allUsers[foundIndex];
+
+            if (isOwnerAccount(targetUser)) {
+                alert(`👑 ${targetUser.displayName || targetUser.name} is an Owner and cannot be modified.`);
+                return;
+            }
+
+            if (action === 'give') {
+                if (role === 'Admin') {
+                    targetUser.isAdmin = true;
+                    targetUser.role = 'Admin';
+                } else if (role === 'Moderator') {
+                    targetUser.isMod = true;
+                    targetUser.role = targetUser.isAdmin ? 'Admin' : 'Moderator';
+                }
+            } else if (action === 'remove') {
+                if (role === 'Admin') {
+                    targetUser.isAdmin = false;
+                    if (targetUser.isMod) targetUser.role = 'Moderator';
+                    else targetUser.role = 'Member';
+                } else if (role === 'Moderator') {
+                    targetUser.isMod = false;
+                    if (targetUser.isAdmin) targetUser.role = 'Admin';
+                    else targetUser.role = 'Member';
+                }
+            }
+
+            allUsers[foundIndex] = targetUser;
+            localStorage.setItem('app_users_db', JSON.stringify(allUsers));
+
+            // Update currentUser if it's the same person
+            if (String(currentUser.rblxUserId) === String(targetUser.rblxUserId) || (currentUser.gmail || '').toLowerCase() === (targetUser.gmail || '').toLowerCase()) {
+                currentUser = targetUser;
+                localStorage.setItem('app_current_user', JSON.stringify(currentUser));
+                updateUserStatusHeader();
+            }
+
+            // Sync to Firebase
+            try {
+                await fetch(`${FIREBASE_BASE_URL}/users/${targetUser.rblxUserId}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(targetUser)
+                });
+                alert(`✅ Successfully ${action === 'give' ? 'granted' : 'removed'} ${role} role for @${targetUser.username || targetUser.name}`);
+            } catch (e) {
+                alert("❌ Error syncing role to server.");
+            }
+
+            renderSettingsPage();
+        }
+
+        // ==========================================
         // AUTHENTICATION LOGIC
         // ==========================================
 
@@ -809,6 +1253,12 @@
                         desktop: false,
                         isAdmin: false,
                         isOwner: false,
+                        isMod: false,
+                        isVIP: false,
+                        isPremium: false,
+                        streakCount: 0,
+                        lastClaimedDate: null,
+                        background: 'white',
                         isHistoryPublic: false
                     };
 
@@ -851,12 +1301,17 @@
                         currentUser.isAdmin = true;
                     }
                     if (currentUser.isHistoryPublic === undefined) currentUser.isHistoryPublic = false;
+                    if (currentUser.streakCount === undefined) currentUser.streakCount = 0;
+                    if (currentUser.lastClaimedDate === undefined) currentUser.lastClaimedDate = null;
+                    if (currentUser.background === undefined) currentUser.background = 'white';
                     localStorage.setItem('app_current_user', JSON.stringify(currentUser));
                 }
 
                 updateUserStatusHeader();
                 logDeviceConnection(currentUser);
                 showWiki();
+                applyBackground(currentUser.background || 'white');
+                checkDailyReward();
             } catch (err) {
                 console.error("Auth Exception:", err);
                 alert("⚠️ System error during authentication: " + err.message);
@@ -922,13 +1377,21 @@
             let dName = currentUser.displayName || currentUser.name || "User";
             const isOwner = isOwnerAccount(currentUser);
             const isAdmin = isUserAdmin(currentUser);
+            const isMod = isUserModerator(currentUser);
+            const isVIP = currentUser.isVIP;
+            const isPremium = currentUser.isPremium;
 
             let roleBadgeHtml = '';
             if (isOwner) {
                 roleBadgeHtml = `<span class="badge-owner">👑 OWNER</span>`;
             } else if (isAdmin) {
                 roleBadgeHtml = `<span class="badge-admin">🛡️ ADMIN</span>`;
+            } else if (isMod) {
+                roleBadgeHtml = `<span class="badge-mod">🔰 MOD</span>`;
             }
+            
+            if (isVIP) roleBadgeHtml += ` <span class="badge-vip">⭐ VIP</span>`;
+            if (isPremium) roleBadgeHtml += ` <span class="badge-premium">💎 PREMIUM</span>`;
 
             let coinsDisplay = getUserCoinsDisplay(currentUser);
 
@@ -945,6 +1408,8 @@
             currentUser = null;
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('wikiScreen').style.display = 'none';
+            document.body.style.backgroundColor = '#f6f6f6';
+            document.body.style.backgroundImage = 'none';
         }
 
         function showWiki() {
@@ -994,6 +1459,77 @@
                     </div>
                 </div>
             `;
+        }
+
+        function openBuyPasses() {
+            document.getElementById('pageTitle').innerText = "🎟️ Buy Passes (VIP & Premium)";
+            document.getElementById('pageContent').innerHTML = `
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <h2>Unlock Exclusive Perks!</h2>
+                    <p>Support the studio and get access to special backgrounds, badges, and more.</p>
+                    
+                    <div style="display: flex; gap: 20px; margin-top: 30px; flex-wrap: wrap;">
+                        <!-- VIP CARD -->
+                        <div style="flex: 1; min-width: 300px; background: #f8f9fa; border: 2px solid #ffd700; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(255,215,0,0.2);">
+                            <h3 style="color: #ffd700; margin-top: 0;">⭐ VIP Pass</h3>
+                            <div style="font-size: 2rem; margin: 15px 0;">💰 ₱50.00</div>
+                            <ul style="text-align: left; font-size: 0.9rem; line-height: 1.6;">
+                                <li>✅ VIP Badge</li>
+                                <li>✅ Access to Gold & Rainbow Backgrounds</li>
+                                <li>✅ 2x Daily Reward Coins</li>
+                                <li>✅ Priority Support</li>
+                            </ul>
+                            <button class="btn-claim" style="width: 100%; margin-top: 15px;" onclick="purchasePass('VIP')">Buy VIP Pass</button>
+                        </div>
+
+                        <!-- PREMIUM CARD -->
+                        <div style="flex: 1; min-width: 300px; background: #f8f9fa; border: 2px solid #00c6ff; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,198,255,0.2);">
+                            <h3 style="color: #00c6ff; margin-top: 0;">💎 Premium Pass</h3>
+                            <div style="font-size: 2rem; margin: 15px 0;">💰 ₱150.00</div>
+                            <ul style="text-align: left; font-size: 0.9rem; line-height: 1.6;">
+                                <li>✅ Premium Badge</li>
+                                <li>✅ Access to ALL Backgrounds (Gold, Rainbow, Green/White, Blue/Red)</li>
+                                <li>✅ 3x Daily Reward Coins</li>
+                                <li>✅ 5x Coin Multiplier on Quests</li>
+                                <li>✅ Exclusive Premium Role in Discord</li>
+                            </ul>
+                            <button class="btn-claim" style="width: 100%; margin-top: 15px; background-color: #00c6ff;" onclick="purchasePass('Premium')">Buy Premium Pass</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function purchasePass(passType) {
+            if (!currentUser) return;
+            const price = passType === 'VIP' ? 50 : 150;
+            
+            // Simulate payment process
+            const confirmBuy = confirm(`Are you sure you want to purchase the ${passType} Pass for ₱${price}?`);
+            if (!confirmBuy) return;
+
+            // Deduct coins (10,000 coins = ₱1, so 50 PHP = 500,000 coins)
+            const coinCost = price * 10000;
+            if (!isOwnerAccount(currentUser) && (currentUser.points || 0) < coinCost) {
+                alert(`❌ Insufficient Coins! You need ${coinCost.toLocaleString()} Coins to buy this pass. Current Coins: ${(currentUser.points || 0).toLocaleString()}`);
+                return;
+            }
+
+            if (!isOwnerAccount(currentUser)) {
+                currentUser.points = (currentUser.points || 0) - coinCost;
+            }
+
+            if (passType === 'VIP') {
+                currentUser.isVIP = true;
+            } else if (passType === 'Premium') {
+                currentUser.isPremium = true;
+                currentUser.isVIP = true; // Premium includes VIP
+            }
+
+            saveUserData();
+            updateUserStatusHeader();
+            alert(`🎉 Congratulations! You have successfully purchased the ${passType} Pass! You can now use exclusive backgrounds in Settings.`);
+            openSettings();
         }
 
         // ==========================================
@@ -1110,8 +1646,7 @@
                         actionBtn = `<button class="btn-action-sm" onclick="updateCashOutStatus('${c.id}', 'Completed')">Mark as Done</button>`;
                     }
 
-                    // Safely handle undefined values from legacy DB records
-                    // Mapped to the exact keys present in your Firebase screenshot
+                    // Mapped to the exact keys present in Firebase screenshot
                     const displayAmount = c.amount !== undefined ? c.amount : (c.amountPHP !== undefined ? c.amountPHP : 'Not Provided');
                     const displayMethod = c.method || c.provider || 'Not Provided';
                     const displayHolder = c.holderName || c.accountName || 'Not Provided';
@@ -1551,10 +2086,63 @@
             let refStore = safeGetJSON('referralDataStore', {});
             let detectedInvites = refStore[currentUser.rblxUserId] || 0;
 
+            let dailyRewardHtml = ``;
+            const now = new Date();
+            const today = now.toDateString();
+            const lastClaimed = currentUser.lastClaimedDate ? new Date(currentUser.lastClaimedDate).toDateString() : null;
+            const canClaim = lastClaimed !== today;
+            
+            let streak = currentUser.streakCount || 0;
+            if (canClaim && lastClaimed) {
+                const yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+                if (lastClaimed !== yesterday.toDateString()) {
+                    streak = 0; // Reset if missed a day
+                }
+            }
+
+            const days = [1, 2, 3, 4, 5, 6, 7];
+            let dailyGridHtml = '';
+            
+            days.forEach(day => {
+                let isActive = (day === streak + 1 && canClaim) ? 'active' : '';
+                let isClaimed = (day <= streak) ? 'claimed' : '';
+                let reward = day === 7 ? 100 : 50; // Day 7 gives 100 coins
+
+                dailyGridHtml += `
+                    <div class="daily-card ${isActive} ${isClaimed}">
+                        <div class="day-label">Day ${day}</div>
+                        <div class="reward-icon">💰</div>
+                        <div class="reward-amount">${reward}</div>
+                    </div>
+                `;
+            });
+
+            if (canClaim) {
+                dailyRewardHtml = `
+                    <div class="quest-box" style="border-color: #28a745;">
+                        <h3 style="color: #28a745;">🎁 Daily Engagement Rewards</h3>
+                        <p style="font-size:0.9rem; color:#54595d;">Claim your daily reward! Day 7 gives a bonus 100 coins!</p>
+                        <div class="daily-grid">${dailyGridHtml}</div>
+                        <button class="btn-claim" style="width:100%; margin-top:15px; font-size:1.1rem; padding:12px;" onclick="claimDailyRewardAction()">Claim Day ${streak + 1} Reward</button>
+                    </div>
+                `;
+            } else {
+                dailyRewardHtml = `
+                    <div class="quest-box" style="border-color: #6c757d; background: #e9ecef;">
+                        <h3 style="color: #6c757d;">🎁 Daily Engagement Rewards</h3>
+                        <p style="font-size:0.9rem; color:#54595d;">You have already claimed your reward for today. Come back tomorrow!</p>
+                        <div class="daily-grid">${dailyGridHtml}</div>
+                    </div>
+                `;
+            }
+
             let html = `
                 <div class="points-header">
                     Total Coins / Points Available: <span id="pointCount">${coinsDisplay}</span>
                 </div>
+
+                ${dailyRewardHtml}
 
                 <div class="quest-box">
                     <h3>🎁 Select Trade Reward</h3>
@@ -1594,7 +2182,6 @@
 
             // Real-time Polls
             let pollHtml = ``;
-            const now = Date.now();
             const lastVoteTime = currentUser.lastVoteTime || 0;
             const oneHourInMs = 60 * 60 * 1000;
             
@@ -1662,6 +2249,40 @@
 
             document.getElementById('pageContent').innerHTML = html;
             initMiniGame();
+        }
+
+        async function claimDailyRewardAction() {
+            if (!currentUser) return;
+            
+            const now = new Date();
+            const today = now.toDateString();
+            const lastClaimed = currentUser.lastClaimedDate ? new Date(currentUser.lastClaimedDate).toDateString() : null;
+            
+            if (lastClaimed === today) {
+                alert("❌ You have already claimed your reward for today!");
+                return;
+            }
+
+            let streak = currentUser.streakCount || 0;
+            let rewardCoins = 50;
+            
+            if (streak === 7) {
+                rewardCoins = 100; // Day 7 bonus
+            }
+
+            // Check for VIP/Premium multipliers
+            if (currentUser.isPremium) {
+                rewardCoins *= 3;
+            } else if (currentUser.isVIP) {
+                rewardCoins *= 2;
+            }
+
+            currentUser.points = (currentUser.points || 0) + rewardCoins;
+            saveUserData();
+            updateUserStatusHeader();
+
+            alert(`🎉 You claimed your Day ${streak} reward! You received ${rewardCoins} Coins!`);
+            renderQuestsPage();
         }
 
         async function claimRewardFirebase(robloxUsername, userEmail) {
@@ -1835,10 +2456,47 @@
             renderSettingsPage();
         }
 
+        function toggleAccordion(id) {
+            const acc = document.getElementById(id);
+            acc.classList.toggle("active");
+            const panel = acc.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        }
+
+        function setBackground(bg) {
+            if (!currentUser) return;
+            
+            // Check permissions for locked backgrounds
+            const lockedBgs = ['rainbow', 'gold', 'green_white', 'blue_red'];
+            if (lockedBgs.includes(bg)) {
+                if (bg === 'gold' || bg === 'rainbow') {
+                    if (!isOwnerAccount(currentUser) && !currentUser.isVIP && !currentUser.isPremium) {
+                        alert("❌ You need the VIP or Premium Pass to unlock this background!");
+                        return;
+                    }
+                } else if (bg === 'green_white' || bg === 'blue_red') {
+                    if (!isOwnerAccount(currentUser) && !currentUser.isPremium) {
+                        alert("❌ You need the Premium Pass to unlock this background!");
+                        return;
+                    }
+                }
+            }
+
+            currentUser.background = bg;
+            saveUserData();
+            applyBackground(bg);
+            renderSettingsPage();
+        }
+
         function renderSettingsPage() {
             const user = currentUser || {};
             const isOwner = isOwnerAccount(user);
             const isAdmin = isUserAdmin(user);
+            const isMod = isUserModerator(user);
 
             const avatarUrl = getRobloxAvatarUrl(user.rblxUserId);
             const privacyBtnClass = user.isHistoryPublic ? "privacy-public" : "privacy-private";
@@ -1849,7 +2507,11 @@
                 roleBadge = '<span class="badge-owner">👑 OWNER</span>';
             } else if (isAdmin) {
                 roleBadge = '<span class="badge-admin">🛡️ ADMIN</span>';
+            } else if (isMod) {
+                roleBadge = '<span class="badge-mod">🔰 MOD</span>';
             }
+            if (user.isVIP) roleBadge += ` <span class="badge-vip">⭐ VIP</span>`;
+            if (user.isPremium) roleBadge += ` <span class="badge-premium">💎 PREMIUM</span>`;
 
             let html = `
                 <div class="settings-section">
@@ -1869,6 +2531,61 @@
                         <button type="button" class="privacy-toggle-btn ${privacyBtnClass}" onclick="togglePrivacySetting()">
                             ${privacyText}
                         </button>
+                    </div>
+
+                    <!-- BACKGROUND SELECTOR -->
+                    <div class="settings-row" style="background:#f8f9fa; border:1px solid #a2a9b1; padding:15px; border-radius:6px; margin-bottom:20px;">
+                        <label style="margin-bottom:6px;">🎨 Change Background</label>
+                        <p style="font-size:0.8rem; color:#54595d; margin-top:0; margin-bottom:10px;">Customize the look of your portal.</p>
+                        
+                        <div style="font-weight:bold; font-size:0.85rem; margin-bottom:5px;">Free Backgrounds:</div>
+                        <div class="bg-grid">
+                            <div class="bg-btn ${user.background === 'white' ? 'selected' : ''}" style="background:#f6f6f6; color:#000;" onclick="setBackground('white')">White</div>
+                            <div class="bg-btn ${user.background === 'green' ? 'selected' : ''}" style="background:#e8f8f0; color:#000;" onclick="setBackground('green')">Green</div>
+                            <div class="bg-btn ${user.background === 'blue' ? 'selected' : ''}" style="background:#eaf3ff; color:#000;" onclick="setBackground('blue')">Blue</div>
+                            <div class="bg-btn ${user.background === 'red' ? 'selected' : ''}" style="background:#fff0f0; color:#000;" onclick="setBackground('red')">Red</div>
+                        </div>
+
+                        <div style="font-weight:bold; font-size:0.85rem; margin-top:15px; margin-bottom:5px;">Roles / VIP / Premium Backgrounds:</div>
+                        <div class="bg-grid">
+                            <div class="bg-btn ${user.background === 'rainbow' ? 'selected' : ''} ${(!isOwner && !user.isVIP && !user.isPremium) ? 'locked' : ''}" style="background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff); color:#fff;" onclick="setBackground('rainbow')">Rainbow</div>
+                            <div class="bg-btn ${user.background === 'gold' ? 'selected' : ''} ${(!isOwner && !user.isVIP && !user.isPremium) ? 'locked' : ''}" style="background: linear-gradient(45deg, #ffd700, #ff8c00); color:#000;" onclick="setBackground('gold')">Gold</div>
+                            <div class="bg-btn ${user.background === 'green_white' ? 'selected' : ''} ${(!isOwner && !user.isPremium) ? 'locked' : ''}" style="background: linear-gradient(45deg, #e8f8f0, #ffffff); color:#000;" onclick="setBackground('green_white')">Green/White</div>
+                            <div class="bg-btn ${user.background === 'blue_red' ? 'selected' : ''} ${(!isOwner && !user.isPremium) ? 'locked' : ''}" style="background: linear-gradient(45deg, #eaf3ff, #fff0f0); color:#000;" onclick="setBackground('blue_red')">Blue/Red</div>
+                        </div>
+                    </div>
+
+                    <!-- BUG REPORTING -->
+                    <div class="settings-row" style="background:#fff0f0; border:1px solid #f5c6cb; padding:15px; border-radius:6px; margin-bottom:20px;">
+                        <label style="margin-bottom:6px; color:#c82333;">🐞 Report a Bug or Abuser</label>
+                        <p style="font-size:0.8rem; color:#54595d; margin-top:0; margin-bottom:10px;">Help us keep the community safe. Select the type of report below.</p>
+                        
+                        <div class="payment-selection" style="margin-bottom:15px;">
+                            <div class="payment-option ${selectedReportType === 'website' ? 'active' : ''}" onclick="selectReportType('website')" style="border-color: ${selectedReportType === 'website' ? '#3366cc' : '#a2a9b1'};">
+                                <span style="font-weight:bold;">Website Report</span>
+                            </div>
+                            <div class="payment-option ${selectedReportType === 'abuser' ? 'active' : ''}" onclick="selectReportType('abuser')" style="border-color: ${selectedReportType === 'abuser' ? '#3366cc' : '#a2a9b1'};">
+                                <span style="font-weight:bold;">Abuser Report</span>
+                            </div>
+                        </div>
+
+                        <div id="reportForm">
+                            <label style="font-weight:bold; font-size:0.85rem;">Reason / Report:</label>
+                            <textarea id="reportReason" rows="3" placeholder="Describe the issue or abuser..." style="width:100%; padding:8px; border:1px solid #a2a9b1; border-radius:4px; margin-bottom:10px;"></textarea>
+                            
+                            ${selectedReportType === 'abuser' ? `
+                                <label style="font-weight:bold; font-size:0.85rem;">Abuser Name (Roblox Username or ID):</label>
+                                <input type="text" id="reportAbuserName" placeholder="Enter the abuser's name or ID" style="width:100%; padding:8px; border:1px solid #a2a9b1; border-radius:4px; margin-bottom:10px;">
+                            ` : ''}
+
+                            <p style="font-size:0.8rem; color:#54595d; margin-bottom:10px;">
+                                ${selectedReportType === 'website' 
+                                    ? 'Message: Our moderator handle that bugs so don\'t worry.' 
+                                    : 'Message: This abuser will be removing if our moderator see if it\'s was real.'}
+                            </p>
+
+                            <button class="btn-danger" onclick="submitReport()" style="width:100%; font-size:0.95rem; padding:10px;">Submit Report</button>
+                        </div>
                     </div>
 
                     <div class="settings-row">
@@ -1925,7 +2642,7 @@
                 `;
             }
 
-            if (isAdmin) {
+            if (isAdmin || isOwner) {
                 html += `
                     <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
 
@@ -1947,33 +2664,59 @@
                             Create Poll
                         </button>
                     </div>
-                    
-                    <div class="admin-box" style="background:#e8f8f0; border-color:#b2d8d8;">
-                        <h4>🪙 Admin Controls: Coin Giver Tool</h4>
-                        <div style="margin-bottom:10px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID, Username, or Gmail:</label>
-                            <input type="text" id="grantTargetIdentifier" placeholder="e.g. 7680051058 OR user@gmail.com" style="margin-top:4px;">
-                        </div>
-                        <div style="margin-bottom:12px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Amount of Coins / Points to Grant:</label>
-                            <input type="number" id="grantCoinAmount" placeholder="e.g. 100" style="margin-top:4px;">
-                        </div>
-                        <button class="btn-save" style="background-color:#28a745; width:100%; font-size:0.95rem; padding:10px;" onclick="grantCoinsToUser()">
-                            Confirm Grant Coins
-                        </button>
-                    </div>
-
-                    <div class="admin-box" style="background:#fff9e6; border-color:#ffe0b2;">
-                        <h4>👑 Admin Controls: Promote User to Admin</h4>
-                        <div style="margin-bottom:12px;">
-                            <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID, Username, or Gmail:</label>
-                            <input type="text" id="promoteTargetIdentifier" placeholder="e.g. 9676166807 OR user@gmail.com" style="margin-top:4px;">
-                        </div>
-                        <button class="btn-save" style="background-color:#f0ad4e; width:100%; font-size:0.95rem; padding:10px;" onclick="promoteUserToAdmin()">
-                            Promote User to Admin
-                        </button>
-                    </div>
                 `;
+            }
+
+            // STAFF COMMANDS ACCORDION
+            if (isOwner || isAdmin || isMod) {
+                html += `
+                    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #c8ccd1;">
+                    <h2>🛡️ Staff Commands</h2>
+                    <p style="font-size:0.85rem; color:#54595d;">Click the sections below to expand specific command sets.</p>
+                `;
+
+                if (isOwner || isAdmin) {
+                    html += `
+                        <button class="accordion" onclick="toggleAccordion('modCommands')">Moderator Commands</button>
+                        <div id="modCommands" class="panel">
+                            <div style="padding: 15px 0;">
+                                <label style="font-weight:bold; font-size:0.85rem;">Target User ID or Gmail:</label>
+                                <input type="text" id="modTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px;">
+                                <div style="display:flex; gap:10px;">
+                                    <button class="btn-save" style="flex:1; background-color:#28a745;" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value, 'Moderator', 'give')">Give Moderator Role</button>
+                                    <button class="btn-danger" style="flex:1;" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value, 'Moderator', 'remove')">Remove Moderator Role</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (isOwner) {
+                    html += `
+                        <button class="accordion" onclick="toggleAccordion('adminCommands')">Admin Commands</button>
+                        <div id="adminCommands" class="panel">
+                            <div style="padding: 15px 0;">
+                                <label style="font-weight:bold; font-size:0.85rem;">Target User ID or Gmail:</label>
+                                <input type="text" id="adminTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px;">
+                                <div style="display:flex; gap:10px;">
+                                    <button class="btn-save" style="flex:1; background-color:#007bff;" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value, 'Admin', 'give')">Give Admin Role</button>
+                                    <button class="btn-danger" style="flex:1;" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value, 'Admin', 'remove')">Remove Admin Role</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="accordion" onclick="toggleAccordion('coinCommands')">Coin Giver Tool</button>
+                        <div id="coinCommands" class="panel">
+                            <div style="padding: 15px 0;">
+                                <label style="font-weight:bold; font-size:0.85rem;">Target Roblox User ID, Username, or Gmail:</label>
+                                <input type="text" id="grantTargetIdentifier" placeholder="e.g. 7680051058 OR user@gmail.com" style="margin-bottom:10px;">
+                                <label style="font-weight:bold; font-size:0.85rem;">Amount of Coins to Grant:</label>
+                                <input type="number" id="grantCoinAmount" placeholder="e.g. 100" style="margin-bottom:10px;">
+                                <button class="btn-save" style="width:100%; background-color:#28a745;" onclick="grantCoinsToUser()">Confirm Grant Coins</button>
+                            </div>
+                        </div>
+                    `;
+                }
             }
 
             html += `
@@ -2086,47 +2829,6 @@
                 localStorage.setItem('app_users_db', JSON.stringify(allUsers));
                 updateUserStatusHeader();
                 alert(`✅ Granted ${coinsToAdd} coins to ${targetUser.displayName || targetUser.username || targetUser.name}!`);
-                renderSettingsPage();
-            } else {
-                alert("❌ Target user not found in local cache.");
-            }
-        }
-
-        function promoteUserToAdmin() {
-            const targetInput = (document.getElementById('promoteTargetIdentifier').value || '').trim().toLowerCase();
-            if (!targetInput) { alert("❌ Please enter a target Roblox ID, Username, or Gmail address!"); return; }
-
-            let allUsers = safeGetJSON('app_users_db', []);
-            let foundIndex = allUsers.findIndex(u => 
-                String(u.rblxUserId || '').trim().toLowerCase() === targetInput || 
-                (u.gmail || '').toLowerCase().trim() === targetInput ||
-                (u.username || '').toLowerCase().trim() === targetInput ||
-                (u.name || '').toLowerCase().trim() === targetInput
-            );
-
-            if (foundIndex !== -1) {
-                const targetUser = allUsers[foundIndex];
-                
-                if (isOwnerAccount(targetUser)) {
-                    alert(`👑 ${targetUser.displayName || targetUser.name} is an Owner!`);
-                    return;
-                }
-
-                allUsers[foundIndex].isAdmin = true;
-                allUsers[foundIndex].role = 'Admin';
-                
-                if (currentUser && (
-                    String(currentUser.rblxUserId) === String(allUsers[foundIndex].rblxUserId) || 
-                    (currentUser.gmail || '').toLowerCase() === (allUsers[foundIndex].gmail || '').toLowerCase()
-                )) {
-                    currentUser.isAdmin = true;
-                    currentUser.role = 'Admin';
-                    localStorage.setItem('app_current_user', JSON.stringify(currentUser));
-                }
-                
-                localStorage.setItem('app_users_db', JSON.stringify(allUsers));
-                updateUserStatusHeader();
-                alert(`👑 User @${allUsers[foundIndex].username || allUsers[foundIndex].name} promoted to Admin!`);
                 renderSettingsPage();
             } else {
                 alert("❌ Target user not found in local cache.");
