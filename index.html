@@ -167,6 +167,10 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .sneak-card-content p{font-size:.85rem;color:#54595d;margin-bottom:10px}
 .sneak-card-content .sync-time{font-size:.75rem;color:#888;font-style:italic}
 .poll-card{background:rgba(234,236,240,.9);padding:12px;border-radius:4px;border:1px solid #c8ccd1;margin-bottom:15px}
+.verify-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:100001;display:flex;align-items:center;justify-content:center}
+.verify-box{background:#fff;border-radius:10px;padding:25px;max-width:450px;width:90%;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.verify-code{width:100%;padding:12px;border:2px solid #a2a9b1;border-radius:6px;font-size:1.5rem;text-align:center;letter-spacing:8px;font-weight:bold;font-family:monospace;margin-bottom:10px}
+.verify-code:focus{outline:none;border-color:#3366cc}
 </style>
 </head>
 <body>
@@ -298,11 +302,19 @@ const BASE_REWARD_COSTS={"Strawberry Elephant":35,"Summerini Fattini":35};
 const areaMapping={"Common":"Forest Area","Rare":"City Area","Legendary":"Farm Area","Mythic":"Volcano Area","Godly":"Beach Area","Limited":"Unknown / Event Area"};
 const categories=[{title:"Common",units:[{name:"Bananita Dolphinita",price:250},{name:"Trippi Troppi",price:200},{name:"Gangster Footera",price:55}]},{title:"Rare",units:[{name:"Ballerina Cappuccina",price:400},{name:"Svinina Bombardino",price:150},{name:"Bombombini Gusini",price:100}]},{title:"Legendary",units:[{name:"Cappuccino Assassino",price:550},{name:"La Vacca Saturno",price:1200}]},{title:"Mythic",units:[{name:"Crab Chef",price:1300},{name:"Matteo",price:1500},{name:"Tralalero Tralala",price:1800}]},{title:"Godly",units:[{name:"Giraffa Celestre",price:3000},{name:"Odin Din Din Din",price:5000},{name:"Six Seven",price:6700}]},{title:"Limited",units:[{name:"Strawberry Elephant",price:150000},{name:"Summerini Fattini",price:1500000}]}];
 const shopItems=[{name:"Boneca Ambelabu",rarity:"Rare",price:65000,income:"25,000 /s"},{name:"Job Job Job Sahur",rarity:"Rare",price:155000,income:"80,000 /s"},{name:"Trippi Troppi Troppa",rarity:"Common",price:35000,income:"10,000 /s"},{name:"Esok Sekolah",rarity:"Mythical",price:12000000,income:"125,000 /s"},{name:"Karkerkar Kurkur",rarity:"Mythical",price:25000000000,income:"115,000 /s"},{name:"Chimpanzini Bananini",rarity:"Common",price:10000,income:"8,000 /s"},{name:"Pot Hotspot",rarity:"Rare",price:125000,income:"75,000 /s"}];
+
 let currentMutation=1,mutationName="Normal",currentUser=null,selectedCards=[];
 const emojis=["🐱","🐶","🦊","🐸","🐵","🦁"];
 let robloxDebounceTimer=null,selectedCashOutAmount=3,selectedPaymentMethod='GCash',currentAIModel="Xdrg Pro 3.5",activeAIChatId=null;
 let globalNotifications=[],globalOwnerAlerts=[],globalPolls=[],globalCashOuts=[],globalReports=[],globalSneakPeeks=[];
 let currentLanguage='en',selectedReportType='website';
+
+// VERIFICATION STATE
+let cashOutVerificationDone=false;
+let pendingCashOutData=null;
+let currentVerificationCode=null;
+let verificationCodeExpires=0;
+let verificationAttempts=0;
 
 const currencyConfig={
 'en':{symbol:'$',rate:0.018,code:'USD',paymentMethods:['PayPal','GCash','Maya'],defaultPay:'PayPal'},
@@ -425,6 +437,8 @@ const su=safeGetJSON('app_current_user',null);
 if(su){
 currentUser=su;
 if(currentUser.isHistoryPublic===undefined)currentUser.isHistoryPublic=false;
+if(currentUser.wrongPasswordAttempts===undefined)currentUser.wrongPasswordAttempts=0;
+if(currentUser.accountLockedUntil===undefined)currentUser.accountLockedUntil=0;
 if(isOwnerAccount(currentUser)){currentUser.isOwner=true;currentUser.isAdmin=true;}
 updateUserStatusHeader();
 logDeviceConnection(currentUser);
@@ -511,6 +525,8 @@ if(r&&r.status==='pending')ah=`<div class="notif-actions"><button class="btn-act
 else if(r)ah=`<div style="font-size:.75rem;color:#54595d;margin-top:5px">Status: <b>${r.status.toUpperCase()}</b></div>`;}
 if(n.isDailyReward&&currentUser)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background-color:#28a745" onclick="claimDailyReward()">${t('claimNow')}</button></div>`;
 if(n.isPremiumReward&&currentUser)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background-color:#00c6ff" onclick="openQuests()">${t('claimItem')}</button></div>`;
+if(n.isCashOutCode)ah=`<div style="background:#e6fffa;border:1px solid #99f6e4;padding:8px;border-radius:4px;margin-top:5px;font-family:monospace;font-size:1rem;text-align:center;font-weight:bold;color:#0d9488">${n.codeDisplay||''}</div>`;
+if(n.isAccountLockNotif)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background-color:#dc3545" onclick="showLockContinueModal()">Continue</button></div>`;
 html+=`<li class="notif-item ${isR?'':'unread'}"><div class="notif-title">${n.title||'Update'}</div><div class="notif-msg">${linkify(n.message||'')}</div><div class="notif-time">${ds}</div>${ah}</li>`;});
 le.innerHTML=html;
 if(be){if(uc>0){be.innerText=uc>99?'99+':uc;be.style.display="block";}else be.style.display="none";}}
@@ -612,7 +628,7 @@ const un=(document.getElementById('signUsername').value||'').trim();
 const em=(document.getElementById('signGmail').value||'').trim().toLowerCase();
 const pw=(document.getElementById('signPass').value||'').trim();
 if(au.find(u=>(u.gmail||'').toLowerCase()===em||String(u.rblxUserId||'')===String(rid))){alert("❌ Account exists!");return;}
-currentUser={name,username:un||"User",displayName:name,avatarUrl:getRobloxAvatarUrl(rid),rblxUserId:rid,gmail:em,password:pw,points:0,level:1,voted:false,desktop:false,isAdmin:false,isOwner:false,isMod:false,isVIP:false,isPremium:false,premiumFreeClaims:0,streakCount:0,lastClaimedDate:null,background:'white',customBgColor:null,customBgImg:null,isHistoryPublic:false};
+currentUser={name,username:un||"User",displayName:name,avatarUrl:getRobloxAvatarUrl(rid),rblxUserId:rid,gmail:em,password:pw,points:0,level:1,voted:false,desktop:false,isAdmin:false,isOwner:false,isMod:false,isVIP:false,isPremium:false,premiumFreeClaims:0,streakCount:0,lastClaimedDate:null,background:'white',customBgColor:null,customBgImg:null,isHistoryPublic:false,wrongPasswordAttempts:0,accountLockedUntil:0};
 if(isOwnerAccount(currentUser)){currentUser.isOwner=true;currentUser.isAdmin=true;}
 au.push(currentUser);
 localStorage.setItem('app_users_db',JSON.stringify(au));
@@ -631,6 +647,8 @@ if(currentUser.isHistoryPublic===undefined)currentUser.isHistoryPublic=false;
 if(currentUser.streakCount===undefined)currentUser.streakCount=0;
 if(currentUser.background===undefined)currentUser.background='white';
 if(currentUser.premiumFreeClaims===undefined)currentUser.premiumFreeClaims=0;
+if(currentUser.wrongPasswordAttempts===undefined)currentUser.wrongPasswordAttempts=0;
+if(currentUser.accountLockedUntil===undefined)currentUser.accountLockedUntil=0;
 localStorage.setItem('app_current_user',JSON.stringify(currentUser));}
 updateUserStatusHeader();
 logDeviceConnection(currentUser);
@@ -683,7 +701,7 @@ document.getElementById('pageTitle').innerText=t('mainPage');
 document.getElementById('pageContent').innerHTML=`<p>${t('welcome')} <b>RedGalaxy Studio / NebulaForge Studio</b> ${t('welcomeSub')}</p>`;}
 
 function openGame(g){if(g==='crystal'){triggerReleaseSequence();return;}document.getElementById('pageTitle').innerText="Don't Crash By Train For Brainrots";renderBrainrotsPage();}
-function openQuests(){document.getElementById('pageTitle').innerText=t('quest');renderQuestsPage();}
+async function openQuests(){document.getElementById('pageTitle').innerText=t('quest');try{await syncRealtimeDatabase();}catch(e){}renderQuestsPage();}
 
 function openPolicy(){
 document.getElementById('pageTitle').innerText=t('policy');
@@ -716,6 +734,9 @@ await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String
 alert(`🎉 Premium purchased! +1,500 Coins + 2 Free Rewards!`);}
 saveUserData();updateUserStatusHeader();openBuyPasses();}
 
+// ==========================================
+// CASH OUT PAGE
+// ==========================================
 function openCashOutPage(){document.getElementById('pageTitle').innerText=t('cashOut');renderCashOutPage();}
 function selectCashAmount(a){selectedCashOutAmount=a;renderCashOutPage();}
 function selectPaymentMethod(m){selectedPaymentMethod=m;renderCashOutPage();}
@@ -732,7 +753,12 @@ if(currentUser.isPremium)wt=t('premiumWait');
 else if(currentUser.isVIP)wt=t('vipWait');
 let popts='';
 cfg.paymentMethods.forEach(m=>{popts+=`<div class="payment-option ${selectedPaymentMethod===m?'active':''}" onclick="selectPaymentMethod('${m}')">${getPaymentLogo(m)}</div>`;});
-let html=`<div class="cashout-card"><h2 style="margin-top:0;text-align:center;color:#005a9c;border:none;margin-bottom:15px">${t('cashOutTitle')}</h2><div class="balance-box"><div>${t('est')} ${displayEst}</div><div style="margin-top:4px">${t('coinsLabel')}: ${isOwnerAccount(currentUser)?'Infinity ♾️':coins.toLocaleString()}</div></div><div style="background:#fff3cd;border:1px solid #ffeeba;padding:10px;border-radius:4px;font-size:.8rem;margin-bottom:15px;text-align:center">ℹ️ ${wt}</div><label style="font-weight:bold;margin-bottom:8px;display:block">${t('selectAmount')}</label><div class="amount-grid"><button class="amount-btn ${selectedCashOutAmount===3?'active':''}" onclick="selectCashAmount(3)">${convertCurrency(3)}</button><button class="amount-btn ${selectedCashOutAmount===5?'active':''}" onclick="selectCashAmount(5)">${convertCurrency(5)}</button><button class="amount-btn ${selectedCashOutAmount===15?'active':''}" onclick="selectCashAmount(15)">${convertCurrency(15)}</button><button class="amount-btn ${selectedCashOutAmount===30?'active':''}" onclick="selectCashAmount(30)">${convertCurrency(30)}</button></div><label style="font-weight:bold;margin-bottom:8px;display:block">${t('selectPayment')}</label><div class="payment-selection">${popts}</div><form onsubmit="handleCashOutSubmit(event)"><div style="margin-bottom:12px"><label style="font-weight:bold;display:block;margin-bottom:4px;font-size:.85rem">${t('holderName')}</label><input type="text" id="cashOutName" required placeholder="${t('holderNamePlaceholder')} — ${selectedPaymentMethod}" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px"></div><div style="margin-bottom:15px"><label style="font-weight:bold;display:block;margin-bottom:4px;font-size:.85rem">${t('accountNum')}</label><input type="text" id="cashOutNumber" required placeholder="${t('accountNumPlaceholder')}" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px"></div><p style="font-size:.8rem;color:#54595d;margin-bottom:15px">* ${t('coinsRequired')}: <b>${reqCoins.toLocaleString()} ${t('coinsLabel')}</b></p><button type="submit" class="btn-claim" style="width:100%;font-size:1rem;padding:12px">${t('submit')}</button></form></div>`;
+let lockBanner='';
+if(currentUser.accountLockedUntil>Date.now()){
+const mins=Math.ceil((currentUser.accountLockedUntil-Date.now())/60000);
+lockBanner=`<div style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:12px;border-radius:6px;margin-bottom:15px;text-align:center;font-weight:bold">🔒 Account Disabled — ${mins} minute(s) remaining. Click below to unlock.<br><button class="btn-danger" style="margin-top:8px" onclick="showLockContinueModal()">Continue</button></div>`;
+}
+let html=`<div class="cashout-card"><h2 style="margin-top:0;text-align:center;color:#005a9c;border:none;margin-bottom:15px">${t('cashOutTitle')}</h2>${lockBanner}<div class="balance-box"><div>${t('est')} ${displayEst}</div><div style="margin-top:4px">${t('coinsLabel')}: ${isOwnerAccount(currentUser)?'Infinity ♾️':coins.toLocaleString()}</div></div><div style="background:#fff3cd;border:1px solid #ffeeba;padding:10px;border-radius:4px;font-size:.8rem;margin-bottom:15px;text-align:center">ℹ️ ${wt}</div><label style="font-weight:bold;margin-bottom:8px;display:block">${t('selectAmount')}</label><div class="amount-grid"><button class="amount-btn ${selectedCashOutAmount===3?'active':''}" onclick="selectCashAmount(3)">${convertCurrency(3)}</button><button class="amount-btn ${selectedCashOutAmount===5?'active':''}" onclick="selectCashAmount(5)">${convertCurrency(5)}</button><button class="amount-btn ${selectedCashOutAmount===15?'active':''}" onclick="selectCashAmount(15)">${convertCurrency(15)}</button><button class="amount-btn ${selectedCashOutAmount===30?'active':''}" onclick="selectCashAmount(30)">${convertCurrency(30)}</button></div><label style="font-weight:bold;margin-bottom:8px;display:block">${t('selectPayment')}</label><div class="payment-selection">${popts}</div><form onsubmit="handleCashOutSubmit(event)"><div style="margin-bottom:12px"><label style="font-weight:bold;display:block;margin-bottom:4px;font-size:.85rem">${t('holderName')}</label><input type="text" id="cashOutName" required placeholder="${t('holderNamePlaceholder')} — ${selectedPaymentMethod}" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px"></div><div style="margin-bottom:15px"><label style="font-weight:bold;display:block;margin-bottom:4px;font-size:.85rem">${t('accountNum')}</label><input type="text" id="cashOutNumber" required placeholder="${t('accountNumPlaceholder')}" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px"></div><p style="font-size:.8rem;color:#54595d;margin-bottom:15px">* ${t('coinsRequired')}: <b>${reqCoins.toLocaleString()} ${t('coinsLabel')}</b></p><button type="submit" class="btn-claim" style="width:100%;font-size:1rem;padding:12px">${t('submit')}</button></form></div>`;
 if(isOwnerAccount(currentUser)&&globalCashOuts.length>0){
 html+=`<div style="margin-top:30px"><h2>👑 ${t('cashOutRequests')}</h2><table class="wikitable"><tr><th>${t('user')}</th><th>${t('amount')}</th><th>${t('method')}</th><th>${t('holderNameCol')}</th><th>${t('accountNumCol')}</th><th>${t('status')}</th><th>${t('action')}</th></tr>`;
 globalCashOuts.forEach(c=>{
@@ -744,6 +770,158 @@ html+=`<tr><td><b>${c.username||'User'}</b></td><td>₱${dA}</td><td>${c.method|
 html+=`</table></div>`;}
 document.getElementById('pageContent').innerHTML=html;}
 
+// ==========================================
+// CASH OUT 2-STEP VERIFICATION
+// ==========================================
+function showVerificationSelection(){
+const m=document.createElement('div');
+m.className='verify-modal';m.id='verifyModal';
+m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">🔐 Cash Out Verification</h3><p style="font-size:.9rem;color:#54595d">Select any verification below to start with cash out!💰 If the verification was failed you can try again later within 1 hours to appeal thank you!</p><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-save" style="flex:1;padding:12px" onclick="startCodeVerification()">Code</button><button class="btn-save" style="flex:1;padding:12px;background-color:#6c757d" onclick="startPasswordVerification()">Password</button></div><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:12px">Cancel</button></div>`;
+document.body.appendChild(m);}
+
+function closeVerifyModal(){const m=document.getElementById('verifyModal');if(m)m.remove();}
+
+function startCodeVerification(){
+const code=Math.floor(100000+Math.random()*900000).toString();
+currentVerificationCode=code;
+verificationCodeExpires=Date.now()+5*60*1000;
+verificationAttempts=0;
+// Push notification
+globalNotifications.unshift({
+id:"CASHOUT-VERIFY-"+Date.now(),
+title:"Password Cash out Interaction",
+message:"Your Cash Out Verification Code (valid for 5 minutes):",
+timestamp:Date.now(),
+isCashOutCode:true,
+codeDisplay:code
+});
+renderNotificationDropdown();
+showCodeInputModal();}
+
+function showCodeInputModal(){
+closeVerifyModal();
+const m=document.createElement('div');
+m.className='verify-modal';m.id='verifyModal';
+m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">📱 Code Verification</h3><p style="font-size:.9rem;color:#54595d">Enter the 6-digit code sent to your notification bell 🔔</p><p style="color:#28a745;font-weight:bold" id="codeTimer">⏱️ Valid for 5:00</p><input type="text" id="verifyCodeInput" class="verify-code" maxlength="6" placeholder="------" inputmode="numeric"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitCodeVerification()">Cash Out!</button><div style="text-align:center;margin-top:12px"><a style="color:#005a9c;font-size:.85rem;cursor:pointer;text-decoration:underline" onclick="requestNewCode()">I don't receive the code</a></div><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px">Cancel</button></div>`;
+document.body.appendChild(m);
+// Live timer
+if(window._codeTimerInt)clearInterval(window._codeTimerInt);
+window._codeTimerInt=setInterval(()=>{
+const el=document.getElementById('codeTimer');
+if(!el){clearInterval(window._codeTimerInt);return;}
+const rem=Math.max(0,Math.ceil((verificationCodeExpires-Date.now())/1000));
+const mm=Math.floor(rem/60),ss=rem%60;
+el.innerText=`⏱️ Valid for ${mm}:${ss.toString().padStart(2,'0')}`;
+if(rem<=0){el.innerText='❌ Code expired';el.style.color='#dc3545';}
+},500);}
+
+function requestNewCode(){
+const code=Math.floor(100000+Math.random()*900000).toString();
+currentVerificationCode=code;
+verificationCodeExpires=Date.now()+5*60*1000;
+globalNotifications.unshift({
+id:"CASHOUT-VERIFY-"+Date.now(),
+title:"Password Cash out Interaction",
+message:"Your NEW Cash Out Verification Code (valid for 5 minutes):",
+timestamp:Date.now(),
+isCashOutCode:true,
+codeDisplay:code
+});
+renderNotificationDropdown();
+alert("📬 New code sent! Check your notification bell.");
+showCodeInputModal();}
+
+function submitCodeVerification(){
+const inp=document.getElementById('verifyCodeInput');
+const err=document.getElementById('verifyError');
+if(!inp)return;
+const entered=inp.value.trim();
+if(!entered){err.innerText='❌ Please enter the code';return;}
+if(Date.now()>verificationCodeExpires){err.innerText='❌ Code expired. Request a new one.';return;}
+if(entered!==currentVerificationCode){
+verificationAttempts++;
+err.innerText=`❌ Incorrect code. Attempts: ${verificationAttempts}/15`;
+inp.value='';
+if(verificationAttempts>=15){
+closeVerifyModal();
+lockAccountFor1Hour();
+}
+return;}
+// Success!
+cashOutVerificationDone=true;
+closeVerifyModal();
+if(window._codeTimerInt)clearInterval(window._codeTimerInt);
+processCashOut();}
+
+function startPasswordVerification(){
+closeVerifyModal();
+const m=document.createElement('div');
+m.className='verify-modal';m.id='verifyModal';
+m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">🔑 Password Verification</h3><p style="font-size:.9rem;color:#54595d">Enter the password used on this website to verify you are the real account owner.</p><input type="password" id="verifyPasswordInput" class="verify-code" placeholder="Enter password" style="letter-spacing:normal;font-size:1rem"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitPasswordVerification()">Cash Out!</button><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px">Cancel</button></div>`;
+document.body.appendChild(m);}
+
+function submitPasswordVerification(){
+const inp=document.getElementById('verifyPasswordInput');
+const err=document.getElementById('verifyError');
+if(!inp)return;
+const entered=inp.value.trim();
+if(!entered){err.innerText='❌ Please enter your password';return;}
+if(entered===currentUser.password){
+cashOutVerificationDone=true;
+currentUser.wrongPasswordAttempts=0;
+saveUserData();
+closeVerifyModal();
+processCashOut();
+return;}
+currentUser.wrongPasswordAttempts=(currentUser.wrongPasswordAttempts||0)+1;
+saveUserData();
+err.innerText=`❌ Incorrect password. Attempts: ${currentUser.wrongPasswordAttempts}/15`;
+inp.value='';
+if(currentUser.wrongPasswordAttempts>=15){
+closeVerifyModal();
+lockAccountFor1Hour();
+}}
+
+function lockAccountFor1Hour(){
+currentUser.accountLockedUntil=Date.now()+3600000;
+currentUser.wrongPasswordAttempts=0;
+saveUserData();
+// Push lock notification with Continue button
+globalNotifications.unshift({
+id:"LOCK-"+Date.now(),
+title:"Password Cash out Interaction",
+message:"Your account has been disabled for 1 hours because someone incorrect your password in Cash Out!",
+timestamp:Date.now(),
+isAccountLockNotif:true
+});
+renderNotificationDropdown();
+alert("🔒 Your account has been disabled for 1 hour.");
+if(document.getElementById('pageTitle').innerText.match(/Cash|Penarikan|提现|報酬|キャッシュ/))renderCashOutPage();}
+
+function showLockContinueModal(){
+const m=document.createElement('div');
+m.className='verify-modal';m.id='verifyModal';
+m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">Password Cash out Interaction</h3><p style="font-size:.9rem;color:#54595d">to continue please re-password your password to continue</p><input type="password" id="unlockPasswordInput" class="verify-code" placeholder="Enter your password" style="letter-spacing:normal;font-size:1rem"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-save" style="width:100%;padding:12px" onclick="submitUnlockPassword()">Done</button><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px">Cancel</button></div>`;
+document.body.appendChild(m);}
+
+function submitUnlockPassword(){
+const inp=document.getElementById('unlockPasswordInput');
+const err=document.getElementById('verifyError');
+if(!inp)return;
+const entered=inp.value.trim();
+if(!entered){err.innerText='❌ Please enter your password';return;}
+if(entered===currentUser.password){
+currentUser.accountLockedUntil=0;
+currentUser.wrongPasswordAttempts=0;
+saveUserData();
+closeVerifyModal();
+alert("✅ Account unlocked successfully!");
+if(document.getElementById('pageTitle').innerText.match(/Cash|Penarikan|提现|報酬|キャッシュ/))renderCashOutPage();
+return;}
+err.innerText='❌ Incorrect password. Try again.';
+inp.value='';}
+
+// MAIN CASH OUT SUBMIT
 async function handleCashOutSubmit(event){
 event.preventDefault();
 if(!currentUser)return;
@@ -752,6 +930,23 @@ const an=document.getElementById('cashOutNumber').value.trim();
 const amt=parseInt(selectedCashOutAmount)||3;
 const mt=selectedPaymentMethod||'PayPal';
 if(!hn||!an){alert("❌ Fill Name and Number!");return;}
+// Check account lock
+if(currentUser.accountLockedUntil>Date.now()){
+const mins=Math.ceil((currentUser.accountLockedUntil-Date.now())/60000);
+alert(`🔒 Account disabled for ${mins} more minute(s).`);
+showLockContinueModal();
+return;}
+// Check verification
+if(!cashOutVerificationDone){
+pendingCashOutData={hn,an,amt,mt};
+showVerificationSelection();
+return;}
+// Process
+await processCashOut();}
+
+async function processCashOut(){
+if(!pendingCashOutData){pendingCashOutData={hn:document.getElementById('cashOutName').value.trim(),an:document.getElementById('cashOutNumber').value.trim(),amt:parseInt(selectedCashOutAmount)||3,mt:selectedPaymentMethod||'PayPal'};}
+const{hn,an,amt,mt}=pendingCashOutData;
 const rc=amt*10000;
 const iO=isOwnerAccount(currentUser);
 if(!iO&&(currentUser.points||0)<rc){alert(`❌ Need ${rc.toLocaleString()} Coins!`);return;}
@@ -763,6 +958,8 @@ await fetch(`${FIREBASE_BASE_URL}/cashouts/${cid}.json`,{method:"PUT",headers:{"
 const onid="OWNER-ALERT-"+Date.now();
 await fetch(`${FIREBASE_BASE_URL}/owner_alerts/${onid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:onid,title:"💰 New Cash Out Request",message:`@${currentUser.username} requested ₱${amt} via ${mt}. Name: ${hn}, Number: ${an}`,timestamp:Date.now()})});
 alert(`✅ Cash Out Request Submitted!`);
+cashOutVerificationDone=false;
+pendingCashOutData=null;
 renderCashOutPage();
 }catch(e){alert("❌ Error.");}}
 
@@ -851,9 +1048,10 @@ if(ac.title==="New")ac.title=p.substring(0,22)+"...";
 i.value="";renderAIPage();
 setTimeout(()=>{
 const lp=p.toLowerCase();let r="";
-if(lp.includes("cash")||lp.includes("money"))r=`💰 Cash Out: 10,000 Coins = ₱1.00. Payment methods auto-change by language.`;
+if(lp.includes("cash")||lp.includes("money"))r=`💰 Cash Out: 10,000 Coins = ₱1.00. Payment methods auto-change by language. Cash out requires 2-step verification (Code or Password).`;
 else if(lp.includes("claim")||lp.includes("pending"))r=`📦 Check Claim Delivery History. Click 'Mark Received' to finalize.`;
 else if(lp.includes("vip")||lp.includes("premium"))r=`🎟️ VIP (12,500 Coins): badge, 50-min wait, 250 free coins. Premium (25,000 Coins): ALL backgrounds + Custom, 15-min wait, 1,500 coins, -15 reward discount, 2 free rewards.`;
+else if(lp.includes("verify")||lp.includes("code"))r=`🔐 Cash Out requires 2-step verification. Choose Code (sent to your notifications, 5-min expiry) or Password (your site password). 15 wrong attempts = 1-hour account lock.`;
 else r=`🤖 **[${currentAIModel}]** Received: "${p}". Ask about games, claims, or cash out!`;
 ac.messages.push({role:"assistant",text:r});
 saveAIChats(c);renderAIPage();},400);}
@@ -982,13 +1180,14 @@ if(!currentUser){alert("❌ Login required!");return;}
 const now=Date.now();const lvt=currentUser.lastVoteTime||0;const oh=3600000;
 if(now-lvt<oh){alert(`⏳ Wait ${Math.ceil((oh-(now-lvt))/60000)} min!`);return;}
 let poll=globalPolls.find(p=>p.id===pid);
-if(poll&&poll.options[oi]){
+if(!poll){alert("❌ Poll not found!");return;}
+if(!poll.options||!poll.options[oi]){alert("❌ Option not found!");return;}
 poll.options[oi].votes=(poll.options[oi].votes||0)+1;
-try{await fetch(`${FIREBASE_BASE_URL}/polls/${pid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(poll)});}catch(e){}
+try{await fetch(`${FIREBASE_BASE_URL}/polls/${pid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(poll)});}catch(e){console.warn(e);}
 currentUser.lastVoteTime=now;currentUser.points=(currentUser.points||0)+5;
 saveUserData();updateUserStatusHeader();
-alert("✅ +5 Coins.");
-renderQuestsPage();}}
+alert("✅ Vote cast! +5 Coins.");
+renderQuestsPage();}
 
 function openSettings(){document.getElementById('pageTitle').innerText=t('profile');renderSettingsPage();}
 function togglePrivacySetting(){if(!currentUser)return;currentUser.isHistoryPublic=!currentUser.isHistoryPublic;saveUserData();renderSettingsPage();}
@@ -1066,9 +1265,6 @@ alert(`✅ Granted ${cta} coins!`);
 renderStaffCommandsPage();}
 else alert("❌ Not found.");}
 
-// ==========================================
-// STAFF COMMANDS (with Notification Creator + Sneak Peek)
-// ==========================================
 function openStaffCommands(){
 if(!currentUser||!isStaff(currentUser)){alert("❌ Staff only!");return;}
 document.getElementById('pageTitle').innerText=t('staffCommands');
@@ -1086,40 +1282,14 @@ if(!currentUser||!isStaff(currentUser))return;
 const iO=isOwnerAccount(currentUser);
 const iA=isUserAdmin(currentUser);
 let html=`<p style="font-size:.85rem;color:#54595d">Click sections to expand commands.</p>`;
-
 if(iO||iA){
 html+=`<button class="accordion" id="accMod" onclick="toggleAccordion('accMod')">${t('moderatorCommands')}</button><div class="panel" id="accMod_panel"><label style="font-weight:bold;font-size:.85rem">${t('targetUser')}</label><input type="text" id="modTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background-color:#28a745" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value, 'Moderator', 'give')">${t('giveMod')}</button><button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value, 'Moderator', 'remove')">${t('removeMod')}</button></div></div>`;}
-
 if(iO){
 html+=`<button class="accordion" id="accAdmin" onclick="toggleAccordion('accAdmin')">${t('adminCommands')}</button><div class="panel" id="accAdmin_panel"><label style="font-weight:bold;font-size:.85rem">${t('targetUser')}</label><input type="text" id="adminTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background-color:#007bff" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value, 'Admin', 'give')">${t('giveAdmin')}</button><button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value, 'Admin', 'remove')">${t('removeAdmin')}</button></div></div>
 <button class="accordion" id="accCoins" onclick="toggleAccordion('accCoins')">${t('coinGiver')}</button><div class="panel" id="accCoins_panel"><label style="font-weight:bold;font-size:.85rem">${t('targetUser')}</label><input type="text" id="grantTargetIdentifier" placeholder="e.g. 7680051058 OR user@gmail.com" style="margin-bottom:10px"><label style="font-weight:bold;font-size:.85rem">${t('amountCoins')}</label><input type="number" id="grantCoinAmount" placeholder="e.g. 100" style="margin-bottom:10px"><button class="btn-save" style="width:100%;background-color:#28a745" onclick="grantCoinsToUser()">${t('grantCoins')}</button></div>
 <button class="accordion" id="accPoll" onclick="toggleAccordion('accPoll')">${t('createPoll')}</button><div class="panel" id="accPoll_panel"><label style="font-weight:bold;font-size:.85rem">${t('pollTitle')}</label><input type="text" id="newPollTitle" placeholder="Title" style="margin-bottom:10px"><label style="font-weight:bold;font-size:.85rem">${t('pollDesc')}</label><input type="text" id="newPollDesc" placeholder="Description" style="margin-bottom:10px"><label style="font-weight:bold;font-size:.85rem">${t('pollOptions')}</label><input type="text" id="newPollOptions" placeholder="e.g. Map, Crystals, Pets" style="margin-bottom:10px"><label style="font-weight:bold;font-size:.85rem">${t('pollImage')}</label><input type="file" id="newPollImage" accept="image/*" style="margin-bottom:10px"><button class="btn-save" style="width:100%;background-color:#28a745" onclick="createPollWithImage()">${t('createPollBtn')}</button></div>
-<button class="accordion" id="accOwnerNotif" onclick="toggleAccordion('accOwnerNotif')">${t('ownerNotif')}</button><div class="panel" id="accOwnerNotif_panel">
-<label style="font-weight:bold;font-size:.85rem">${t('notifAudience')}</label>
-<select id="ownerNotifAudience" onchange="document.getElementById('ownerNotifTargetBox').style.display=this.value==='specific'?'block':'none'" style="margin-bottom:10px">
-<option value="everyone">${t('everyone')}</option>
-<option value="specific">${t('specificUser')}</option>
-</select>
-<div id="ownerNotifTargetBox" style="display:none;margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">${t('notifTarget')}</label>
-<input type="text" id="ownerNotifTarget" placeholder="e.g. user@gmail.com or 7680051058" style="margin-top:4px">
-</div>
-<label style="font-weight:bold;font-size:.85rem">${t('notifTitle')}</label>
-<input type="text" id="ownerNotifTitle" placeholder="Title" style="margin-top:4px">
-<label style="font-weight:bold;font-size:.85rem">${t('notifMsg')}</label>
-<textarea id="ownerNotifMsg" rows="3" placeholder="Message (links auto-clickable)" style="margin-top:4px"></textarea>
-<button class="btn-save" style="width:100%;background-color:#dc3545;margin-top:10px" onclick="sendGlobalOwnerNotification()">${t('sendNotif')}</button>
-</div>
-<button class="accordion" id="accSneak" onclick="toggleAccordion('accSneak')">${t('uploadSneak')}</button><div class="panel" id="accSneak_panel">
-<label style="font-weight:bold;font-size:.85rem">${t('sneakTitleField')}</label>
-<input type="text" id="sneakTitle" placeholder="Title" style="margin-top:4px">
-<label style="font-weight:bold;font-size:.85rem">${t('sneakDescField')}</label>
-<textarea id="sneakDesc" rows="3" placeholder="Description" style="margin-top:4px"></textarea>
-<label style="font-weight:bold;font-size:.85rem">${t('sneakImgField')}</label>
-<input type="file" id="sneakImage" accept="image/*" style="margin-top:4px">
-<button class="btn-save" style="width:100%;background-color:#9b59b6;margin-top:10px" onclick="uploadSneakPeek()">${t('uploadBtn')}</button>
-</div>`;}
-
+<button class="accordion" id="accOwnerNotif" onclick="toggleAccordion('accOwnerNotif')">${t('ownerNotif')}</button><div class="panel" id="accOwnerNotif_panel"><label style="font-weight:bold;font-size:.85rem">${t('notifAudience')}</label><select id="ownerNotifAudience" onchange="document.getElementById('ownerNotifTargetBox').style.display=this.value==='specific'?'block':'none'" style="margin-bottom:10px"><option value="everyone">${t('everyone')}</option><option value="specific">${t('specificUser')}</option></select><div id="ownerNotifTargetBox" style="display:none;margin-bottom:10px"><label style="font-weight:bold;font-size:.85rem">${t('notifTarget')}</label><input type="text" id="ownerNotifTarget" placeholder="e.g. user@gmail.com or 7680051058" style="margin-top:4px"></div><label style="font-weight:bold;font-size:.85rem">${t('notifTitle')}</label><input type="text" id="ownerNotifTitle" placeholder="Title" style="margin-top:4px"><label style="font-weight:bold;font-size:.85rem">${t('notifMsg')}</label><textarea id="ownerNotifMsg" rows="3" placeholder="Message (links auto-clickable)" style="margin-top:4px"></textarea><button class="btn-save" style="width:100%;background-color:#dc3545;margin-top:10px" onclick="sendGlobalOwnerNotification()">${t('sendNotif')}</button></div>
+<button class="accordion" id="accSneak" onclick="toggleAccordion('accSneak')">${t('uploadSneak')}</button><div class="panel" id="accSneak_panel"><label style="font-weight:bold;font-size:.85rem">${t('sneakTitleField')}</label><input type="text" id="sneakTitle" placeholder="Title" style="margin-top:4px"><label style="font-weight:bold;font-size:.85rem">${t('sneakDescField')}</label><textarea id="sneakDesc" rows="3" placeholder="Description" style="margin-top:4px"></textarea><label style="font-weight:bold;font-size:.85rem">${t('sneakImgField')}</label><input type="file" id="sneakImage" accept="image/*" style="margin-top:4px"><button class="btn-save" style="width:100%;background-color:#9b59b6;margin-top:10px" onclick="uploadSneakPeek()">${t('uploadBtn')}</button></div>`;}
 document.getElementById('pageContent').innerHTML=html;}
 
 async function createPollWithImage(){
@@ -1145,11 +1315,7 @@ const r=new FileReader();
 r.onload=(e)=>savePoll(e.target.result);
 r.readAsDataURL(file);}else savePoll(null);}
 
-// ==========================================
-// SNEAK PEEK
-// ==========================================
 function openSneakPeek(){document.getElementById('pageTitle').innerText=t('sneakPeekTitle');renderSneakPeekPage();}
-
 async function fetchSneakPeeks(){
 try{
 const r=await fetch(`${FIREBASE_BASE_URL}/sneak_peeks.json`);
@@ -1160,13 +1326,11 @@ if(d)Object.keys(d).forEach(id=>globalSneakPeeks.push({id,...d[id]}));
 globalSneakPeeks.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
 renderSneakPeekContent();}
 }catch(e){}}
-
 function renderSneakPeekPage(){
 let html=`<p>${t('sneakPeekSub')}</p>`;
 html+=`<div id="sneakPeekGrid" class="sneak-grid"></div>`;
 document.getElementById('pageContent').innerHTML=html;
 fetchSneakPeeks();}
-
 async function uploadSneakPeek(){
 if(!currentUser||!isStaff(currentUser))return;
 const ttl=document.getElementById('sneakTitle').value.trim();
@@ -1184,15 +1348,11 @@ alert("✅ Uploaded!");
 document.getElementById('sneakTitle').value="";document.getElementById('sneakDesc').value="";document.getElementById('sneakImage').value="";
 openStaffCommands();}catch(err){alert("❌ Error.");}};
 r.readAsDataURL(file);}
-
 function renderSneakPeekContent(){
 const g=document.getElementById('sneakPeekGrid');if(!g)return;
 if(globalSneakPeeks.length===0){g.innerHTML=`<div style="text-align:center;padding:20px;color:#777">${t('noSneak')}</div>`;return;}
 g.innerHTML=globalSneakPeeks.map(p=>`<div class="sneak-card"><img src="${p.image}" alt="${p.title}"><div class="sneak-card-content"><h4>${p.title}</h4><p>${p.description}</p><div class="sync-time">${t('synced')} ${new Date(p.timestamp).toLocaleString()} — @${p.uploader}</div></div></div>`).join('');}
 
-// ==========================================
-// LEADERBOARD
-// ==========================================
 function openLeaderboard(){
 document.getElementById('pageTitle').innerText=t('leaderboardTitle');
 let au=safeGetJSON('app_users_db',[]);
@@ -1209,9 +1369,6 @@ html+=`<tr><td class="leaderboard-rank">#${i+1}</td><td><b>${n}</b></td><td>${r}
 html+=`</table>`;
 document.getElementById('pageContent').innerHTML=html;}
 
-// ==========================================
-// BRAINROTS GAME
-// ==========================================
 function changeMutation(){
 const s=document.getElementById('mutationSelect');
 currentMutation=parseInt(s.value);
