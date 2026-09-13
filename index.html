@@ -316,6 +316,10 @@ let currentVerificationCode=null;
 let verificationCodeExpires=0;
 let verificationAttempts=0;
 
+// RENDER GUARD: prevent re-render while user is typing
+let isUserTypingCashOut=false;
+let lastCashOutFormState={name:'',num:'',amt:3,method:'GCash'};
+
 const currencyConfig={
 'en':{symbol:'$',rate:0.018,code:'USD',paymentMethods:['PayPal','GCash','Maya'],defaultPay:'PayPal'},
 'fil':{symbol:'₱',rate:1.00,code:'PHP',paymentMethods:['GCash','Maya','PayPal'],defaultPay:'GCash'},
@@ -420,7 +424,7 @@ else if(/Profile|个人|프로필|プロフィール|資料/.test(title))openSet
 else if(/Leaderboard|排行榜|리더|ランキング|Papan/.test(title))openLeaderboard();
 else if(/Staff|员工|스태프|スタッフ|員工/.test(title))openStaffCommands();
 else if(/Sneak|抢先|搶先|スニーク|미리/.test(title))openSneakPeek();
-else if(/Buy|Bumili|购买|購入|패스|通行/.test(title))openBuyPasses();
+else if(/Buy|Bumili|购买|購入|パス|패스|通行/.test(title))openBuyPasses();
 else if(/Claim|Kasaysayan|领取|受領|수령|履歴|領取/.test(title))openClaimsHistory();
 else if(/Policy|Tuntunin|政策|利用|정책/.test(title))openPolicy();}
 
@@ -476,6 +480,9 @@ p.innerHTML=`<h3 style="margin-top:0;color:#28a745">${t('dailyTitle')}</h3><p st
 document.body.appendChild(p);}
 function claimDailyReward(){document.querySelectorAll('#dailyPopup').forEach(p=>p.remove());openQuests();}
 
+// ==========================================
+// FIXED SYNC: Does NOT re-render cash out page while user is typing
+// ==========================================
 async function syncRealtimeDatabase(){
 try{
 let nn=[];
@@ -499,12 +506,30 @@ const pr=await fetch(`${FIREBASE_BASE_URL}/polls.json`);
 if(pr.ok){const pd=await pr.json();let np=[];if(pd)Object.keys(pd).forEach(id=>np.push({id,...pd[id]}));globalPolls=np;}
 if(currentUser&&isOwnerAccount(currentUser)){
 const cr=await fetch(`${FIREBASE_BASE_URL}/cashouts.json`);
-if(cr.ok){const cd=await cr.json();let cl=[];if(cd)Object.keys(cd).forEach(id=>cl.push({id,...cd[id]}));globalCashOuts=cl;
+if(cr.ok){const cd=await cr.json();let cl=[];if(cd)Object.keys(cd).forEach(id=>cl.push({id,...cd[id]}));globalCashOuts=cl;}}
+// Only auto-refresh the Owner cash out dashboard if user is NOT typing in the form
 const title=document.getElementById('pageTitle').innerText;
-if(/Cash|Penarikan|提现|報酬|キャッシュ/.test(title))renderCashOutPage();}}
-const title=document.getElementById('pageTitle').innerText;
+const isCashPage=/Cash|Penarikan|提现|報酬|キャッシュ/.test(title);
+if(isCashPage&&currentUser&&isOwnerAccount(currentUser)&&!isUserTypingCashOut){
+// Soft-update only the dashboard section, preserving the form
+softRefreshOwnerDashboard();
+}
 if(/Sneak|抢先|スニーク/.test(title))fetchSneakPeeks();
 }catch(e){console.warn(e);}}
+
+// Soft update: only re-render the owner dashboard table, not the form
+function softRefreshOwnerDashboard(){
+const grid=document.getElementById('ownerCashOutDashboard');
+if(!grid){return;}
+let inner='<table class="wikitable"><tr><th>'+t('user')+'</th><th>'+t('amount')+'</th><th>'+t('method')+'</th><th>'+t('holderNameCol')+'</th><th>'+t('accountNumCol')+'</th><th>'+t('status')+'</th><th>'+t('action')+'</th></tr>';
+globalCashOuts.forEach(c=>{
+let sb=`<span class="status-badge status-pending">${c.status||t('pendingReview')}</span>`,ab='';
+if((c.status||'').toLowerCase()==='completed'){sb=`<span class="status-badge status-successful">${t('completed')}</span>`;ab=`<span style="color:#28a745;font-weight:bold">${t('paid')}</span>`;}
+else ab=`<button class="btn-action-sm" onclick="updateCashOutStatus('${c.id}','Completed')">${t('markDone')}</button>`;
+const dA=c.amount!==undefined?c.amount:(c.amountPHP!==undefined?c.amountPHP:'N/A');
+inner+=`<tr><td><b>${c.username||'User'}</b></td><td>₱${dA}</td><td>${c.method||c.provider||'N/A'}</td><td>${c.holderName||c.accountName||'N/A'}</td><td><code>${c.accountNumber||'N/A'}</code></td><td>${sb}</td><td>${ab}</td></tr>`;});
+inner+='</table>';
+grid.innerHTML=inner;}
 
 function toggleNotifDropdown(e){e.stopPropagation();document.getElementById('notifDropdown').classList.toggle('active');}
 function renderNotificationDropdown(){
@@ -548,7 +573,7 @@ try{await fetch(ep,{method:"PUT",headers:{"Content-Type":"application/json"},bod
 
 async function updateCashOutStatus(cid,s){
 if(!currentUser||!isOwnerAccount(currentUser))return;
-try{await fetch(`${FIREBASE_BASE_URL}/cashouts/${cid}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(s)});alert(`✅ Marked ${s}!`);syncRealtimeDatabase();renderCashOutPage();}catch(e){alert("❌ Error.");}}
+try{await fetch(`${FIREBASE_BASE_URL}/cashouts/${cid}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(s)});alert(`✅ Marked ${s}!`);syncRealtimeDatabase();softRefreshOwnerDashboard();}catch(e){alert("❌ Error.");}}
 
 function selectReportType(t){selectedReportType=t;renderSettingsPage();}
 async function submitReport(){
@@ -735,11 +760,19 @@ alert(`🎉 Premium purchased! +1,500 Coins + 2 Free Rewards!`);}
 saveUserData();updateUserStatusHeader();openBuyPasses();}
 
 // ==========================================
-// CASH OUT PAGE
+// CASH OUT PAGE - PRESERVES INPUT VALUES
 // ==========================================
 function openCashOutPage(){document.getElementById('pageTitle').innerText=t('cashOut');renderCashOutPage();}
-function selectCashAmount(a){selectedCashOutAmount=a;renderCashOutPage();}
-function selectPaymentMethod(m){selectedPaymentMethod=m;renderCashOutPage();}
+function selectCashAmount(a){saveCashOutFormState();selectedCashOutAmount=a;renderCashOutPage();}
+function selectPaymentMethod(m){saveCashOutFormState();selectedPaymentMethod=m;renderCashOutPage();}
+
+function saveCashOutFormState(){
+const n=document.getElementById('cashOutName');
+const num=document.getElementById('cashOutNumber');
+if(n)lastCashOutFormState.name=n.value;
+if(num)lastCashOutFormState.num=num.value;
+lastCashOutFormState.amt=selectedCashOutAmount;
+lastCashOutFormState.method=selectedPaymentMethod;}
 
 function renderCashOutPage(){
 if(!currentUser)return;
@@ -758,17 +791,20 @@ if(currentUser.accountLockedUntil>Date.now()){
 const mins=Math.ceil((currentUser.accountLockedUntil-Date.now())/60000);
 lockBanner=`<div style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:12px;border-radius:6px;margin-bottom:15px;text-align:center;font-weight:bold">🔒 Account Disabled — ${mins} minute(s) remaining. Click below to unlock.<br><button class="btn-danger" style="margin-top:8px" onclick="showLockContinueModal()">Continue</button></div>`;
 }
-let html=`<div class="cashout-card"><h2 style="margin-top:0;text-align:center;color:#005a9c;border:none;margin-bottom:15px">${t('cashOutTitle')}</h2>${lockBanner}<div class="balance-box"><div>${t('est')} ${displayEst}</div><div style="margin-top:4px">${t('coinsLabel')}: ${isOwnerAccount(currentUser)?'Infinity ♾️':coins.toLocaleString()}</div></div><div style="background:#fff3cd;border:1px solid #ffeeba;padding:10px;border-radius:4px;font-size:.8rem;margin-bottom:15px;text-align:center">ℹ️ ${wt}</div><label style="font-weight:bold;margin-bottom:8px;display:block">${t('selectAmount')}</label><div class="amount-grid"><button class="amount-btn ${selectedCashOutAmount===3?'active':''}" onclick="selectCashAmount(3)">${convertCurrency(3)}</button><button class="amount-btn ${selectedCashOutAmount===5?'active':''}" onclick="selectCashAmount(5)">${convertCurrency(5)}</button><button class="amount-btn ${selectedCashOutAmount===15?'active':''}" onclick="selectCashAmount(15)">${convertCurrency(15)}</button><button class="amount-btn ${selectedCashOutAmount===30?'active':''}" onclick="selectCashAmount(30)">${convertCurrency(30)}</button></div><label style="font-weight:bold;margin-bottom:8px;display:block">${t('selectPayment')}</label><div class="payment-selection">${popts}</div><form onsubmit="handleCashOutSubmit(event)"><div style="margin-bottom:12px"><label style="font-weight:bold;display:block;margin-bottom:4px;font-size:.85rem">${t('holderName')}</label><input type="text" id="cashOutName" required placeholder="${t('holderNamePlaceholder')} — ${selectedPaymentMethod}" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px"></div><div style="margin-bottom:15px"><label style="font-weight:bold;display:block;margin-bottom:4px;font-size:.85rem">${t('accountNum')}</label><input type="text" id="cashOutNumber" required placeholder="${t('accountNumPlaceholder')}" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px"></div><p style="font-size:.8rem;color:#54595d;margin-bottom:15px">* ${t('coinsRequired')}: <b>${reqCoins.toLocaleString()} ${t('coinsLabel')}</b></p><button type="submit" class="btn-claim" style="width:100%;font-size:1rem;padding:12px">${t('submit')}</button></form></div>`;
+let html=`<div class="cashout-card"><h2 style="margin-top:0;text-align:center;color:#005a9c;border:none;margin-bottom:15px">${t('cashOutTitle')}</h2>${lockBanner}<div class="balance-box"><div>${t('est')} ${displayEst}</div><div style="margin-top:4px">${t('coinsLabel')}: ${isOwnerAccount(currentUser)?'Infinity ♾️':coins.toLocaleString()}</div></div><div style="background:#fff3cd;border:1px solid #ffeeba;padding:10px;border-radius:4px;font-size:.8rem;margin-bottom:15px;text-align:center">ℹ️ ${wt}</div><label style="font-weight:bold;margin-bottom:8px;display:block">${t('selectAmount')}</label><div class="amount-grid"><button type="button" class="amount-btn ${selectedCashOutAmount===3?'active':''}" onclick="selectCashAmount(3)">${convertCurrency(3)}</button><button type="button" class="amount-btn ${selectedCashOutAmount===5?'active':''}" onclick="selectCashAmount(5)">${convertCurrency(5)}</button><button type="button" class="amount-btn ${selectedCashOutAmount===15?'active':''}" onclick="selectCashAmount(15)">${convertCurrency(15)}</button><button type="button" class="amount-btn ${selectedCashOutAmount===30?'active':''}" onclick="selectCashAmount(30)">${convertCurrency(30)}</button></div><label style="font-weight:bold;margin-bottom:8px;display:block">${t('selectPayment')}</label><div class="payment-selection">${popts}</div><form onsubmit="handleCashOutSubmit(event)"><div style="margin-bottom:12px"><label style="font-weight:bold;display:block;margin-bottom:4px;font-size:.85rem">${t('holderName')}</label><input type="text" id="cashOutName" required placeholder="${t('holderNamePlaceholder')} — ${selectedPaymentMethod}" value="${lastCashOutFormState.name.replace(/"/g,'&quot;')}" oninput="markCashOutTyping()" onfocus="markCashOutTyping()" onblur="unmarkCashOutTyping()" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px"></div><div style="margin-bottom:15px"><label style="font-weight:bold;display:block;margin-bottom:4px;font-size:.85rem">${t('accountNum')}</label><input type="text" id="cashOutNumber" required placeholder="${t('accountNumPlaceholder')}" value="${lastCashOutFormState.num.replace(/"/g,'&quot;')}" oninput="markCashOutTyping()" onfocus="markCashOutTyping()" onblur="unmarkCashOutTyping()" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px"></div><p style="font-size:.8rem;color:#54595d;margin-bottom:15px">* ${t('coinsRequired')}: <b>${reqCoins.toLocaleString()} ${t('coinsLabel')}</b></p><button type="submit" class="btn-claim" style="width:100%;font-size:1rem;padding:12px">${t('submit')}</button></form></div>`;
 if(isOwnerAccount(currentUser)&&globalCashOuts.length>0){
-html+=`<div style="margin-top:30px"><h2>👑 ${t('cashOutRequests')}</h2><table class="wikitable"><tr><th>${t('user')}</th><th>${t('amount')}</th><th>${t('method')}</th><th>${t('holderNameCol')}</th><th>${t('accountNumCol')}</th><th>${t('status')}</th><th>${t('action')}</th></tr>`;
-globalCashOuts.forEach(c=>{
-let sb=`<span class="status-badge status-pending">${c.status||t('pendingReview')}</span>`,ab='';
-if((c.status||'').toLowerCase()==='completed'){sb=`<span class="status-badge status-successful">${t('completed')}</span>`;ab=`<span style="color:#28a745;font-weight:bold">${t('paid')}</span>`;}
-else ab=`<button class="btn-action-sm" onclick="updateCashOutStatus('${c.id}','Completed')">${t('markDone')}</button>`;
-const dA=c.amount!==undefined?c.amount:(c.amountPHP!==undefined?c.amountPHP:'N/A');
-html+=`<tr><td><b>${c.username||'User'}</b></td><td>₱${dA}</td><td>${c.method||c.provider||'N/A'}</td><td>${c.holderName||c.accountName||'N/A'}</td><td><code>${c.accountNumber||'N/A'}</code></td><td>${sb}</td><td>${ab}</td></tr>`;});
-html+=`</table></div>`;}
-document.getElementById('pageContent').innerHTML=html;}
+html+=`<div style="margin-top:30px" id="ownerCashOutDashboard"></div>`;
+}
+document.getElementById('pageContent').innerHTML=html;
+if(isOwnerAccount(currentUser)&&globalCashOuts.length>0)softRefreshOwnerDashboard();}
+
+function markCashOutTyping(){isUserTypingCashOut=true;saveCashOutFormState();}
+function unmarkCashOutTyping(){
+// Delay so the blur->focus swap doesn't trigger a refresh
+setTimeout(()=>{
+const a=document.activeElement;
+if(!a||(a.id!=='cashOutName'&&a.id!=='cashOutNumber'))isUserTypingCashOut=false;
+},200);}
 
 // ==========================================
 // CASH OUT 2-STEP VERIFICATION
@@ -779,14 +815,13 @@ m.className='verify-modal';m.id='verifyModal';
 m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">🔐 Cash Out Verification</h3><p style="font-size:.9rem;color:#54595d">Select any verification below to start with cash out!💰 If the verification was failed you can try again later within 1 hours to appeal thank you!</p><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-save" style="flex:1;padding:12px" onclick="startCodeVerification()">Code</button><button class="btn-save" style="flex:1;padding:12px;background-color:#6c757d" onclick="startPasswordVerification()">Password</button></div><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:12px">Cancel</button></div>`;
 document.body.appendChild(m);}
 
-function closeVerifyModal(){const m=document.getElementById('verifyModal');if(m)m.remove();}
+function closeVerifyModal(){const m=document.getElementById('verifyModal');if(m)m.remove();if(window._codeTimerInt){clearInterval(window._codeTimerInt);window._codeTimerInt=null;}}
 
 function startCodeVerification(){
 const code=Math.floor(100000+Math.random()*900000).toString();
 currentVerificationCode=code;
 verificationCodeExpires=Date.now()+5*60*1000;
 verificationAttempts=0;
-// Push notification
 globalNotifications.unshift({
 id:"CASHOUT-VERIFY-"+Date.now(),
 title:"Password Cash out Interaction",
@@ -804,11 +839,10 @@ const m=document.createElement('div');
 m.className='verify-modal';m.id='verifyModal';
 m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">📱 Code Verification</h3><p style="font-size:.9rem;color:#54595d">Enter the 6-digit code sent to your notification bell 🔔</p><p style="color:#28a745;font-weight:bold" id="codeTimer">⏱️ Valid for 5:00</p><input type="text" id="verifyCodeInput" class="verify-code" maxlength="6" placeholder="------" inputmode="numeric"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitCodeVerification()">Cash Out!</button><div style="text-align:center;margin-top:12px"><a style="color:#005a9c;font-size:.85rem;cursor:pointer;text-decoration:underline" onclick="requestNewCode()">I don't receive the code</a></div><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px">Cancel</button></div>`;
 document.body.appendChild(m);
-// Live timer
 if(window._codeTimerInt)clearInterval(window._codeTimerInt);
 window._codeTimerInt=setInterval(()=>{
 const el=document.getElementById('codeTimer');
-if(!el){clearInterval(window._codeTimerInt);return;}
+if(!el){clearInterval(window._codeTimerInt);window._codeTimerInt=null;return;}
 const rem=Math.max(0,Math.ceil((verificationCodeExpires-Date.now())/1000));
 const mm=Math.floor(rem/60),ss=rem%60;
 el.innerText=`⏱️ Valid for ${mm}:${ss.toString().padStart(2,'0')}`;
@@ -842,15 +876,10 @@ if(entered!==currentVerificationCode){
 verificationAttempts++;
 err.innerText=`❌ Incorrect code. Attempts: ${verificationAttempts}/15`;
 inp.value='';
-if(verificationAttempts>=15){
-closeVerifyModal();
-lockAccountFor1Hour();
-}
+if(verificationAttempts>=15){closeVerifyModal();lockAccountFor1Hour();}
 return;}
-// Success!
 cashOutVerificationDone=true;
 closeVerifyModal();
-if(window._codeTimerInt)clearInterval(window._codeTimerInt);
 processCashOut();}
 
 function startPasswordVerification(){
@@ -877,16 +906,12 @@ currentUser.wrongPasswordAttempts=(currentUser.wrongPasswordAttempts||0)+1;
 saveUserData();
 err.innerText=`❌ Incorrect password. Attempts: ${currentUser.wrongPasswordAttempts}/15`;
 inp.value='';
-if(currentUser.wrongPasswordAttempts>=15){
-closeVerifyModal();
-lockAccountFor1Hour();
-}}
+if(currentUser.wrongPasswordAttempts>=15){closeVerifyModal();lockAccountFor1Hour();}}
 
 function lockAccountFor1Hour(){
 currentUser.accountLockedUntil=Date.now()+3600000;
 currentUser.wrongPasswordAttempts=0;
 saveUserData();
-// Push lock notification with Continue button
 globalNotifications.unshift({
 id:"LOCK-"+Date.now(),
 title:"Password Cash out Interaction",
@@ -921,7 +946,6 @@ return;}
 err.innerText='❌ Incorrect password. Try again.';
 inp.value='';}
 
-// MAIN CASH OUT SUBMIT
 async function handleCashOutSubmit(event){
 event.preventDefault();
 if(!currentUser)return;
@@ -930,22 +954,21 @@ const an=document.getElementById('cashOutNumber').value.trim();
 const amt=parseInt(selectedCashOutAmount)||3;
 const mt=selectedPaymentMethod||'PayPal';
 if(!hn||!an){alert("❌ Fill Name and Number!");return;}
-// Check account lock
 if(currentUser.accountLockedUntil>Date.now()){
 const mins=Math.ceil((currentUser.accountLockedUntil-Date.now())/60000);
 alert(`🔒 Account disabled for ${mins} more minute(s).`);
 showLockContinueModal();
 return;}
-// Check verification
 if(!cashOutVerificationDone){
 pendingCashOutData={hn,an,amt,mt};
+lastCashOutFormState={name:hn,num:an,amt,method:mt};
 showVerificationSelection();
 return;}
-// Process
+lastCashOutFormState={name:hn,num:an,amt,method:mt};
 await processCashOut();}
 
 async function processCashOut(){
-if(!pendingCashOutData){pendingCashOutData={hn:document.getElementById('cashOutName').value.trim(),an:document.getElementById('cashOutNumber').value.trim(),amt:parseInt(selectedCashOutAmount)||3,mt:selectedPaymentMethod||'PayPal'};}
+if(!pendingCashOutData){pendingCashOutData={hn:lastCashOutFormState.name,an:lastCashOutFormState.num,amt:lastCashOutFormState.amt,mt:lastCashOutFormState.method};}
 const{hn,an,amt,mt}=pendingCashOutData;
 const rc=amt*10000;
 const iO=isOwnerAccount(currentUser);
@@ -960,6 +983,7 @@ await fetch(`${FIREBASE_BASE_URL}/owner_alerts/${onid}.json`,{method:"PUT",heade
 alert(`✅ Cash Out Request Submitted!`);
 cashOutVerificationDone=false;
 pendingCashOutData=null;
+lastCashOutFormState={name:'',num:'',amt:3,method:'GCash'};
 renderCashOutPage();
 }catch(e){alert("❌ Error.");}}
 
@@ -1051,7 +1075,7 @@ const lp=p.toLowerCase();let r="";
 if(lp.includes("cash")||lp.includes("money"))r=`💰 Cash Out: 10,000 Coins = ₱1.00. Payment methods auto-change by language. Cash out requires 2-step verification (Code or Password).`;
 else if(lp.includes("claim")||lp.includes("pending"))r=`📦 Check Claim Delivery History. Click 'Mark Received' to finalize.`;
 else if(lp.includes("vip")||lp.includes("premium"))r=`🎟️ VIP (12,500 Coins): badge, 50-min wait, 250 free coins. Premium (25,000 Coins): ALL backgrounds + Custom, 15-min wait, 1,500 coins, -15 reward discount, 2 free rewards.`;
-else if(lp.includes("verify")||lp.includes("code"))r=`🔐 Cash Out requires 2-step verification. Choose Code (sent to your notifications, 5-min expiry) or Password (your site password). 15 wrong attempts = 1-hour account lock.`;
+else if(lp.includes("verify")||lp.includes("code"))r=`🔐 Cash Out requires 2-step verification. Choose Code (sent to notifications, 5-min expiry) or Password. 15 wrong attempts = 1-hour account lock.`;
 else r=`🤖 **[${currentAIModel}]** Received: "${p}". Ask about games, claims, or cash out!`;
 ac.messages.push({role:"assistant",text:r});
 saveAIChats(c);renderAIPage();},400);}
