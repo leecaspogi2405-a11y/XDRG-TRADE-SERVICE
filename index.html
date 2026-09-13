@@ -24,16 +24,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;m
 .notif-bell-icon{width:22px;height:22px;fill:#202122}
 .notif-bell-btn:hover .notif-bell-icon{fill:#3366cc}
 .notif-badge{position:absolute;top:-3px;right:-4px;background-color:#cc0000;color:#fff;border-radius:10px;padding:1px 5px;font-size:.7rem;font-weight:bold;line-height:1;border:1.5px solid #fff}
-.notif-dropdown{position:absolute;top:35px;right:0;width:340px;background:#fff;border:1px solid #a2a9b1;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:10000;display:none}
+.notif-dropdown{position:absolute;top:35px;right:0;width:360px;background:#fff;border:1px solid #a2a9b1;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:10000;display:none}
 .notif-dropdown.active{display:block}
 .notif-header{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#eaecf0;border-bottom:1px solid #a2a9b1;font-weight:bold;font-size:.85rem}
-.notif-list{max-height:320px;overflow-y:auto;list-style:none;padding:0;margin:0}
+.notif-list{max-height:400px;overflow-y:auto;list-style:none;padding:0;margin:0}
 .notif-item{padding:10px 12px;border-bottom:1px solid #eaecf0;font-size:.82rem}
 .notif-item.unread{background:#eaf3ff;font-weight:500}
 .notif-item .notif-title{font-weight:bold;color:#005a9c;margin-bottom:2px}
 .notif-item .notif-time{font-size:.72rem;color:#72777d;margin-top:4px}
 .notif-msg a{color:#005a9c;font-weight:bold;text-decoration:underline;word-break:break-all}
-.notif-actions{display:flex;gap:5px;margin-top:8px}
+.notif-actions{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
 h1{font-family:'Georgia',serif;font-size:2.2rem;font-weight:normal;border-bottom:1px solid rgba(162,169,177,.5);padding-bottom:5px;margin-top:0}
 h2{font-family:'Georgia',serif;font-size:1.5rem;font-weight:normal;border-bottom:1px solid rgba(162,169,177,.5);padding-bottom:5px;margin-top:30px}
 .wikitable{background-color:rgba(248,249,250,.9);color:#202122;margin:1em 0;border:1px solid #a2a9b1;border-collapse:collapse;width:100%;text-align:left}
@@ -167,11 +167,14 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .sneak-card-content .sync-time{font-size:.75rem;color:#888;font-style:italic}
 .poll-card{background:rgba(234,236,240,.9);padding:12px;border-radius:4px;border:1px solid #c8ccd1;margin-bottom:15px}
 .verify-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:100001;display:flex;align-items:center;justify-content:center}
-.verify-box{background:#fff;border-radius:10px;padding:25px;max-width:450px;width:90%;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.verify-box{background:#fff;border-radius:10px;padding:25px;max-width:450px;width:90%;box-shadow:0 10px 40px rgba(0,0,0,.3);position:relative}
 .verify-code{width:100%;padding:12px;border:2px solid #a2a9b1;border-radius:6px;font-size:1.3rem;text-align:center;letter-spacing:4px;font-weight:bold;font-family:monospace;margin-bottom:10px}
 .verify-code:focus{outline:none;border-color:#3366cc}
-.code-display-box{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:18px;border-radius:8px;text-align:center;margin:15px 0;font-family:monospace;font-size:1.5rem;font-weight:bold;letter-spacing:3px;box-shadow:0 4px 15px rgba(102,126,234,.4);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 4px 15px rgba(102,126,234,.4)}50%{box-shadow:0 4px 25px rgba(102,126,234,.8)}}
+.verify-close-x{position:absolute;top:12px;right:12px;background:none;border:none;font-size:1.4rem;font-weight:bold;color:#888;cursor:pointer;padding:4px 8px;border-radius:4px;line-height:1}
+.verify-close-x:hover{background:#f5f5f5;color:#202122}
+.notif-code-box{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:12px;border-radius:6px;text-align:center;margin-top:8px;font-family:monospace;font-size:1.2rem;font-weight:bold;letter-spacing:2px}
+.notif-automation-btn{background:#17a2b8;color:#fff;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;font-weight:bold;font-size:.8rem;margin-top:8px;width:100%}
+.notif-automation-btn:hover{background:#138496}
 </style>
 </head>
 <body>
@@ -338,7 +341,34 @@ async function syncRealtimeDatabase(){try{let nn=[];const nr=await fetch(`${FIRE
 function softRefreshOwnerDashboard(){const grid=document.getElementById('ownerCashOutDashboard');if(!grid){return;}let inner='<table class="wikitable"><tr><th>'+t('user')+'</th><th>'+t('amount')+'</th><th>'+t('method')+'</th><th>'+t('holderNameCol')+'</th><th>'+t('accountNumCol')+'</th><th>'+t('status')+'</th><th>'+t('action')+'</th></tr>';globalCashOuts.forEach(c=>{let sb=`<span class="status-badge status-pending">${c.status||t('pendingReview')}</span>`,ab='';if((c.status||'').toLowerCase()==='completed'){sb=`<span class="status-badge status-successful">${t('completed')}</span>`;ab=`<span style="color:#28a745;font-weight:bold">${t('paid')}</span>`;}else ab=`<button class="btn-action-sm" onclick="updateCashOutStatus('${c.id}','Completed')">${t('markDone')}</button>`;const dA=c.amount!==undefined?c.amount:(c.amountPHP!==undefined?c.amountPHP:'N/A');inner+=`<tr><td><b>${c.username||'User'}</b></td><td>₱${dA}</td><td>${c.method||c.provider||'N/A'}</td><td>${c.holderName||c.accountName||'N/A'}</td><td><code>${c.accountNumber||'N/A'}</code></td><td>${sb}</td><td>${ab}</td></tr>`;});inner+='</table>';grid.innerHTML=inner;}
 
 function toggleNotifDropdown(e){e.stopPropagation();document.getElementById('notifDropdown').classList.toggle('active');}
-function renderNotificationDropdown(){const le=document.getElementById('notifList');const be=document.getElementById('notifUnreadBadge');if(!le)return;let ri=safeGetJSON('read_notif_ids',[]);let uc=0;if(globalNotifications.length===0){le.innerHTML=`<li class="notif-item" style="text-align:center;color:#777;padding:15px">${t('noNotif')}</li>`;if(be)be.style.display="none";return;}let html="";globalNotifications.forEach(n=>{const isR=ri.includes(n.id);if(!isR)uc++;const ds=n.timestamp?new Date(n.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';let ah='';if(n.isReport&&currentUser&&isStaff(currentUser)){const r=globalReports.find(x=>x.id===n.reportId);if(r&&r.status==='pending')ah=`<div class="notif-actions"><button class="btn-action-sm" onclick="handleReportAction('${n.reportId}','accepted')">Accepted</button><button class="btn-action-sm btn-danger" onclick="handleReportAction('${n.reportId}','declined')">Declined</button></div>`;else if(r)ah=`<div style="font-size:.75rem;color:#54595d;margin-top:5px">Status: <b>${r.status.toUpperCase()}</b></div>`;}if(n.isDailyReward&&currentUser)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background-color:#28a745" onclick="claimDailyReward()">${t('claimNow')}</button></div>`;if(n.isPremiumReward&&currentUser)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background-color:#00c6ff" onclick="openQuests()">${t('claimItem')}</button></div>`;if(n.isCashOutCode)ah=`<div style="background:#e6fffa;border:1px solid #99f6e4;padding:8px;border-radius:4px;margin-top:5px;font-family:monospace;font-size:1rem;text-align:center;font-weight:bold;color:#0d9488">${n.codeDisplay||''}</div>`;if(n.isAccountLockNotif)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background-color:#dc3545" onclick="showLockContinueModal()">Continue</button></div>`;html+=`<li class="notif-item ${isR?'':'unread'}"><div class="notif-title">${n.title||'Update'}</div><div class="notif-msg">${linkify(n.message||'')}</div><div class="notif-time">${ds}</div>${ah}</li>`;});le.innerHTML=html;if(be){if(uc>0){be.innerText=uc>99?'99+':uc;be.style.display="block";}else be.style.display="none";}}
+
+function renderNotificationDropdown(){
+const le=document.getElementById('notifList');
+const be=document.getElementById('notifUnreadBadge');
+if(!le)return;
+let ri=safeGetJSON('read_notif_ids',[]);
+let uc=0;
+if(globalNotifications.length===0){le.innerHTML=`<li class="notif-item" style="text-align:center;color:#777;padding:15px">${t('noNotif')}</li>`;if(be)be.style.display="none";return;}
+let html="";
+globalNotifications.forEach(n=>{
+const isR=ri.includes(n.id);if(!isR)uc++;
+const ds=n.timestamp?new Date(n.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+let ah='';
+if(n.isReport&&currentUser&&isStaff(currentUser)){const r=globalReports.find(x=>x.id===n.reportId);if(r&&r.status==='pending')ah=`<div class="notif-actions"><button class="btn-action-sm" onclick="handleReportAction('${n.reportId}','accepted')">Accepted</button><button class="btn-action-sm btn-danger" onclick="handleReportAction('${n.reportId}','declined')">Declined</button></div>`;else if(r)ah=`<div style="font-size:.75rem;color:#54595d;margin-top:5px">Status: <b>${r.status.toUpperCase()}</b></div>`;}
+if(n.isDailyReward&&currentUser)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background-color:#28a745" onclick="claimDailyReward()">${t('claimNow')}</button></div>`;
+if(n.isPremiumReward&&currentUser)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background-color:#00c6ff" onclick="openQuests()">${t('claimItem')}</button></div>`;
+// CODE NOTIFICATION: show code + automation button + reopen button
+if(n.isCashOutCode){
+ah=`<div class="notif-code-box">${n.codeDisplay||''}</div>`;
+ah+=`<button class="notif-automation-btn" onclick="automationFromNotification('${n.codeDisplay}')">⚡ Are you willing to automation?</button>`;
+ah+=`<button class="notif-automation-btn" style="background:#005a9c;margin-top:5px" onclick="reopenCodeVerification()">Re-open Code Entry</button>`;
+}
+if(n.isAccountLockNotif)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background-color:#dc3545" onclick="showLockContinueModal()">Continue</button></div>`;
+html+=`<li class="notif-item ${isR?'':'unread'}"><div class="notif-title">${n.title||'Update'}</div><div class="notif-msg">${linkify(n.message||'')}</div><div class="notif-time">${ds}</div>${ah}</li>`;
+});
+le.innerHTML=html;
+if(be){if(uc>0){be.innerText=uc>99?'99+':uc;be.style.display="block";}else be.style.display="none";}
+}
 function markAllNotificationsAsRead(){localStorage.setItem('read_notif_ids',JSON.stringify(globalNotifications.map(n=>n.id)));renderNotificationDropdown();}
 
 async function sendGlobalOwnerNotification(){if(!currentUser||!isOwnerAccount(currentUser))return;const title=document.getElementById('ownerNotifTitle').value.trim();const message=document.getElementById('ownerNotifMsg').value.trim();const audience=document.getElementById('ownerNotifAudience').value;const ti=document.getElementById('ownerNotifTarget').value.trim().toLowerCase();if(!title||!message){alert("❌ Fill Title and Message!");return;}if(audience==='specific'&&!ti){alert("❌ Enter target!");return;}const nid="NOTIF-"+Date.now();const nd={id:nid,title,message,sender:currentUser.displayName||currentUser.name||"Owner",timestamp:Date.now()};let ep=`${FIREBASE_BASE_URL}/notifications/${nid}.json`;if(audience==='specific')ep=`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(ti)}/${nid}.json`;try{await fetch(ep,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`📢 Sent!`);document.getElementById('ownerNotifTitle').value="";document.getElementById('ownerNotifMsg').value="";document.getElementById('ownerNotifTarget').value="";syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}}
@@ -406,84 +436,88 @@ function markCashOutTyping(){isUserTypingCashOut=true;saveCashOutFormState();}
 function unmarkCashOutTyping(){setTimeout(()=>{const a=document.activeElement;if(!a||(a.id!=='cashOutName'&&a.id!=='cashOutNumber'))isUserTypingCashOut=false;},200);}
 
 // =============================================
-// CASH OUT 2-STEP VERIFICATION (FIXED)
+// CASH OUT 2-STEP VERIFICATION
 // =============================================
 function showVerificationSelection(){
 const m=document.createElement('div');
 m.className='verify-modal';m.id='verifyModal';
-m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">🔐 Cash Out Verification</h3><p style="font-size:.9rem;color:#54595d">Select any verification below to start with cash out!💰 If the verification was failed you can try again later within 1 hours to appeal thank you!</p><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-save" style="flex:1;padding:12px" onclick="startCodeVerification()">Code</button><button class="btn-save" style="flex:1;padding:12px;background-color:#6c757d" onclick="startPasswordVerification()">Password</button></div><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:12px">Cancel</button></div>`;
+m.innerHTML=`<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()" title="Close (can reopen later)">✕</button><h3 style="margin-top:0;color:#005a9c">🔐 Cash Out Verification</h3><p style="font-size:.9rem;color:#54595d">Select any verification below to start with cash out!💰 If the verification was failed you can try again later within 1 hours to appeal thank you!</p><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-save" style="flex:1;padding:12px" onclick="startCodeVerification()">Code</button><button class="btn-save" style="flex:1;padding:12px;background-color:#6c757d" onclick="startPasswordVerification()">Password</button></div><button onclick="cancelVerification()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:12px;font-weight:bold">Cancel Verification</button></div>`;
 document.body.appendChild(m);
 }
 
-function closeVerifyModal(){
+// X button - closes modal but keeps code active (can reopen later)
+function closeVerifyModalX(){
 const m=document.getElementById('verifyModal');
 if(m)m.remove();
-// NOTE: code remains valid for 5 minutes even after close — do NOT clear
 if(window._codeTimerInt){clearInterval(window._codeTimerInt);window._codeTimerInt=null;}
+// If code is active, push a reminder notification
+if(currentVerificationCode&&Date.now()<verificationCodeExpires){
+pushCodeNotification(currentVerificationCode,true);
+}
 }
 
-// Generate code in format: xdrg + 6 digits
+// Cancel button - permanently kills the code and verification
+function cancelVerification(){
+currentVerificationCode=null;
+verificationCodeExpires=0;
+verificationAttempts=0;
+cashOutVerificationDone=false;
+pendingCashOutData=null;
+const m=document.getElementById('verifyModal');
+if(m)m.remove();
+if(window._codeTimerInt){clearInterval(window._codeTimerInt);window._codeTimerInt=null;}
+// Remove all verification-related notifications
+globalNotifications=globalNotifications.filter(n=>!n.isCashOutCode);
+renderNotificationDropdown();
+alert("❌ Verification cancelled. You can start again anytime.");
+}
+
+// Legacy alias used by internal calls
+function closeVerifyModal(){closeVerifyModalX();}
+
 function generateVerificationCode(){
 return 'xdrg'+Math.floor(100000+Math.random()*900000);
 }
 
 function startCodeVerification(){
-// If a code already exists and not expired, show the same code
+// Reuse if code is active and not expired
 if(currentVerificationCode && Date.now()<verificationCodeExpires){
+pushCodeNotification(currentVerificationCode,true);
 showCodeInputModal();
-// Also push notification again so they see it in bell
-pushCodeNotification(currentVerificationCode);
 return;
 }
 const code=generateVerificationCode();
 currentVerificationCode=code;
 verificationCodeExpires=Date.now()+5*60*1000;
 verificationAttempts=0;
-pushCodeNotification(code);
-// Immediately show visible popup
-showCodeGeneratedPopup(code);
+pushCodeNotification(code,false);
+// Auto-open the notification bell + code entry modal
+showCodeInputModal();
 }
 
-function pushCodeNotification(code){
+function pushCodeNotification(code,isReminder){
+// Remove old code notifications first
+globalNotifications=globalNotifications.filter(n=>!n.isCashOutCode);
 globalNotifications.unshift({
-id:"CASHOUT-VERIFY-"+Date.now(),
+id:"CASHOUT-CODE-"+Date.now(),
 title:"Password Cash out Interaction",
-message:"Your Cash Out Verification Code (valid for 5 minutes):",
+message:isReminder?"Reminder — Your Cash Out Verification Code (still valid):":"Your Cash Out Verification Code (valid for 5 minutes):",
 timestamp:Date.now(),
 isCashOutCode:true,
 codeDisplay:code
 });
 renderNotificationDropdown();
-}
-
-function showCodeGeneratedPopup(code){
-const m=document.createElement('div');
-m.className='verify-modal';m.id='codeGenModal';
-m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#28a745">✅ Code Generated!</h3><p style="font-size:.9rem;color:#54595d;text-align:center">Your code has been sent to your notification bell 🔔. Copy it below:</p><div class="code-display-box">${code}</div><p style="font-size:.8rem;color:#c82333;text-align:center;margin-top:8px">⏱️ Valid for 5 minutes only</p><p style="font-size:.85rem;color:#005a9c;text-align:center;margin-top:15px;font-weight:bold">Are you willing to automation?</p><div style="display:flex;gap:10px;margin-top:10px"><button class="btn-claim" style="flex:1;padding:12px;background:#17a2b8" onclick="automationFill('${code}')">Yes, Auto-Fill!</button><button class="btn-save" style="flex:1;padding:12px;background:#6c757d" onclick="closeCodeGenModal()">No, I'll type</button></div><button onclick="copyCode('${code}')" style="background:none;border:none;color:#005a9c;cursor:pointer;text-decoration:underline;width:100%;margin-top:12px;font-size:.85rem">📋 Copy code to clipboard</button></div>`;
-document.body.appendChild(m);
-}
-
-function closeCodeGenModal(){const m=document.getElementById('codeGenModal');if(m)m.remove();}
-
-function copyCode(code){
-navigator.clipboard.writeText(code).then(()=>alert("📋 Code copied: "+code)).catch(()=>{});
-}
-
-function automationFill(code){
-// Close the code generation modal
-closeCodeGenModal();
-// Directly verify with the code and process cash out
-cashOutVerificationDone=true;
-if(currentUser){currentUser.wrongPasswordAttempts=0;saveUserData();}
-alert("⚡ Automation activated! Your cash out is being processed automatically...");
-processCashOut();
+// Auto-open bell dropdown so user sees it immediately
+setTimeout(()=>{const d=document.getElementById('notifDropdown');if(d)d.classList.add('active');},100);
 }
 
 function showCodeInputModal(){
-closeVerifyModal();
+// Remove any existing modal first without killing code
+const old=document.getElementById('verifyModal');
+if(old)old.remove();
 const m=document.createElement('div');
 m.className='verify-modal';m.id='verifyModal';
-m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">📱 Code Verification</h3><p style="font-size:.9rem;color:#54595d">Enter your code (format: xdrg######). Check your notification bell 🔔 if you don't see it.</p><p style="color:#28a745;font-weight:bold" id="codeTimer">⏱️ Valid for 5:00</p><input type="text" id="verifyCodeInput" class="verify-code" maxlength="10" placeholder="xdrg000000" inputmode="text"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitCodeVerification()">Cash Out!</button><div style="text-align:center;margin-top:12px"><a style="color:#005a9c;font-size:.85rem;cursor:pointer;text-decoration:underline" onclick="requestNewCode()">I don't receive the code</a></div><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px">Cancel</button></div>`;
+m.innerHTML=`<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()" title="Close (can reopen later)">✕</button><h3 style="margin-top:0;color:#005a9c">📱 Code Verification</h3><p style="font-size:.9rem;color:#54595d">Your code is in the notification bell 🔔. Format: <b>xdrg######</b></p><p style="color:#28a745;font-weight:bold" id="codeTimer">⏱️ Valid for 5:00</p><input type="text" id="verifyCodeInput" class="verify-code" maxlength="10" placeholder="xdrg000000" inputmode="text"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitCodeVerification()">Verify & Cash Out</button><div style="text-align:center;margin-top:12px"><a style="color:#005a9c;font-size:.85rem;cursor:pointer;text-decoration:underline" onclick="requestNewCode()">I don't receive the code</a></div><button onclick="cancelVerification()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px;font-weight:bold">Cancel Verification</button></div>`;
 document.body.appendChild(m);
 if(window._codeTimerInt)clearInterval(window._codeTimerInt);
 window._codeTimerInt=setInterval(()=>{
@@ -492,7 +526,7 @@ if(!el){clearInterval(window._codeTimerInt);window._codeTimerInt=null;return;}
 const rem=Math.max(0,Math.ceil((verificationCodeExpires-Date.now())/1000));
 const mm=Math.floor(rem/60),ss=rem%60;
 el.innerText=`⏱️ Valid for ${mm}:${ss.toString().padStart(2,'0')}`;
-if(rem<=0){el.innerText='❌ Code expired';el.style.color='#dc3545';}
+if(rem<=0){el.innerText='❌ Code expired — click below to get a new one';el.style.color='#dc3545';}
 },500);
 }
 
@@ -501,10 +535,40 @@ const code=generateVerificationCode();
 currentVerificationCode=code;
 verificationCodeExpires=Date.now()+5*60*1000;
 verificationAttempts=0;
-pushCodeNotification(code);
+pushCodeNotification(code,false);
 alert("📬 New code sent! Check your notification bell.");
-closeVerifyModal();
 showCodeInputModal();
+}
+
+function reopenCodeVerification(){
+if(!currentVerificationCode||Date.now()>verificationCodeExpires){
+alert("⚠️ No active code. Start the verification again by submitting your cash out.");
+return;
+}
+showCodeInputModal();
+}
+
+function automationFromNotification(code){
+// Called from the [Are you willing to automation?] button inside the notification
+const matched=globalNotifications.find(n=>n.isCashOutCode&&n.codeDisplay===code);
+if(!matched){
+// Even if not found in list, accept the passed code as valid as long as it matches our active code
+if(currentVerificationCode!==code){alert("⚠️ Code no longer valid. Start the cash out again.");return;}
+}
+if(currentVerificationCode!==code||Date.now()>verificationCodeExpires){
+alert("⚠️ Code expired. Start the cash out again.");
+return;
+}
+cashOutVerificationDone=true;
+currentUser.wrongPasswordAttempts=0;
+saveUserData();
+// Close any open modal
+const m=document.getElementById('verifyModal');
+if(m)m.remove();
+const d=document.getElementById('notifDropdown');
+if(d)d.classList.remove('active');
+alert("⚡ Automation activated! Processing your cash out...");
+processCashOut();
 }
 
 function submitCodeVerification(){
@@ -513,24 +577,25 @@ const err=document.getElementById('verifyError');
 if(!inp)return;
 const entered=inp.value.trim().toLowerCase();
 if(!entered){err.innerText='❌ Please enter the code';return;}
-if(Date.now()>verificationCodeExpires){err.innerText='❌ Code expired. Click "I don\'t receive the code" to get a new one.';return;}
+if(Date.now()>verificationCodeExpires){err.innerText='❌ Code expired. Click "I don\'t receive the code".';return;}
 if(entered!==currentVerificationCode.toLowerCase()){
 verificationAttempts++;
 err.innerText=`❌ Incorrect code. Attempts: ${verificationAttempts}/15`;
 inp.value='';
-if(verificationAttempts>=15){closeVerifyModal();lockAccountFor1Hour();}
+if(verificationAttempts>=15){cancelVerification();lockAccountFor1Hour();}
 return;
 }
 cashOutVerificationDone=true;
-closeVerifyModal();
+closeVerifyModalX();
 processCashOut();
 }
 
 function startPasswordVerification(){
-closeVerifyModal();
+const old=document.getElementById('verifyModal');
+if(old)old.remove();
 const m=document.createElement('div');
 m.className='verify-modal';m.id='verifyModal';
-m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">🔑 Password Verification</h3><p style="font-size:.9rem;color:#54595d">Enter the password used on this website to verify you are the real account owner.</p><input type="password" id="verifyPasswordInput" class="verify-code" placeholder="Enter password" style="letter-spacing:normal;font-size:1rem"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitPasswordVerification()">Cash Out!</button><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px">Cancel</button></div>`;
+m.innerHTML=`<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()" title="Close (can reopen later)">✕</button><h3 style="margin-top:0;color:#005a9c">🔑 Password Verification</h3><p style="font-size:.9rem;color:#54595d">Enter the password used on this website to verify you are the real account owner.</p><input type="password" id="verifyPasswordInput" class="verify-code" placeholder="Enter password" style="letter-spacing:normal;font-size:1rem"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitPasswordVerification()">Verify & Cash Out</button><button onclick="cancelVerification()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px;font-weight:bold">Cancel Verification</button></div>`;
 document.body.appendChild(m);
 }
 
@@ -544,7 +609,7 @@ if(entered===currentUser.password){
 cashOutVerificationDone=true;
 currentUser.wrongPasswordAttempts=0;
 saveUserData();
-closeVerifyModal();
+closeVerifyModalX();
 processCashOut();
 return;
 }
@@ -552,7 +617,7 @@ currentUser.wrongPasswordAttempts=(currentUser.wrongPasswordAttempts||0)+1;
 saveUserData();
 err.innerText=`❌ Incorrect password. Attempts: ${currentUser.wrongPasswordAttempts}/15`;
 inp.value='';
-if(currentUser.wrongPasswordAttempts>=15){closeVerifyModal();lockAccountFor1Hour();}
+if(currentUser.wrongPasswordAttempts>=15){cancelVerification();lockAccountFor1Hour();}
 }
 
 function lockAccountFor1Hour(){
@@ -566,9 +631,11 @@ if(document.getElementById('pageTitle').innerText.match(/Cash|Penarikan|提现|�
 }
 
 function showLockContinueModal(){
+const old=document.getElementById('verifyModal');
+if(old)old.remove();
 const m=document.createElement('div');
 m.className='verify-modal';m.id='verifyModal';
-m.innerHTML=`<div class="verify-box"><h3 style="margin-top:0;color:#005a9c">Password Cash out Interaction</h3><p style="font-size:.9rem;color:#54595d">to continue please re-password your password to continue</p><input type="password" id="unlockPasswordInput" class="verify-code" placeholder="Enter your password" style="letter-spacing:normal;font-size:1rem"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-save" style="width:100%;padding:12px" onclick="submitUnlockPassword()">Done</button><button onclick="closeVerifyModal()" style="background:none;border:none;color:#54595d;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px">Cancel</button></div>`;
+m.innerHTML=`<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()" title="Close">✕</button><h3 style="margin-top:0;color:#005a9c">Password Cash out Interaction</h3><p style="font-size:.9rem;color:#54595d">to continue please re-password your password to continue</p><input type="password" id="unlockPasswordInput" class="verify-code" placeholder="Enter your password" style="letter-spacing:normal;font-size:1rem"><p style="color:#dc3545;font-size:.8rem;margin:0 0 10px" id="verifyError"></p><button class="btn-save" style="width:100%;padding:12px" onclick="submitUnlockPassword()">Done</button><button onclick="cancelVerification()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px;font-weight:bold">Cancel</button></div>`;
 document.body.appendChild(m);
 }
 
@@ -582,7 +649,7 @@ if(entered===currentUser.password){
 currentUser.accountLockedUntil=0;
 currentUser.wrongPasswordAttempts=0;
 saveUserData();
-closeVerifyModal();
+closeVerifyModalX();
 alert("✅ Account unlocked successfully!");
 if(document.getElementById('pageTitle').innerText.match(/Cash|Penarikan|提现|報酬|キャッシュ/))renderCashOutPage();
 return;
@@ -633,7 +700,9 @@ cashOutVerificationDone=false;
 pendingCashOutData=null;
 currentVerificationCode=null;
 verificationCodeExpires=0;
+globalNotifications=globalNotifications.filter(n=>!n.isCashOutCode);
 lastCashOutFormState={name:'',num:'',amt:3,method:'GCash'};
+renderNotificationDropdown();
 renderCashOutPage();
 }catch(e){alert("❌ Error.");}
 }
@@ -668,7 +737,7 @@ function selectAIChat(id){activeAIChatId=id;renderAIPage();}
 function deleteCurrentAIChat(){let c=getAIChats().filter(x=>x.id!==activeAIChatId);saveAIChats(c);activeAIChatId=c.length>0?c[0].id:null;openXdrgAI();}
 function switchAIModel(m){currentAIModel=m;}
 function renderAIPage(){let c=getAIChats();let ac=c.find(x=>x.id===activeAIChatId)||c[0];let clh=c.map(x=>`<li class="ai-chat-item ${x.id===ac?.id?'active':''}" onclick="selectAIChat('${x.id}')">💬 ${x.title}</li>`).join('');let mh='';if(ac&&ac.messages)ac.messages.forEach(m=>{const iU=m.role==="user";const ft=m.text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');mh+=`<div class="ai-msg-bubble ${iU?'ai-msg-user':'ai-msg-assistant'}"><b>${iU?'You':'XDRG AI'}:</b><br>${ft}</div>`;});document.getElementById('pageContent').innerHTML=`<div class="ai-layout"><div class="ai-history-panel"><h4>Chat History</h4><button onclick="createNewAIChat()" class="btn-save" style="width:100%;margin-bottom:10px;font-size:.8rem">+ New Chat</button><ul class="ai-chat-list">${clh}</ul><button onclick="deleteCurrentAIChat()" style="margin-top:15px;background:none;border:1px solid #f5c6cb;color:#721c24;cursor:pointer;padding:5px;border-radius:4px;font-size:.75rem">Delete</button></div><div class="ai-main-chat"><div class="ai-header-bar"><select onchange="switchAIModel(this.value)" class="model-selector"><option value="Xdrg Pro 3.5" ${currentAIModel==='Xdrg Pro 3.5'?'selected':''}>Xdrg Pro 3.5</option><option value="Xdrg Flash" ${currentAIModel==='Xdrg Flash'?'selected':''}>Xdrg Flash</option><option value="Xdrg Lite" ${currentAIModel==='Xdrg Lite'?'selected':''}>Xdrg Lite</option></select><span style="font-size:.8rem;color:#54595d">Multilingual</span></div><div class="ai-messages-container" id="aiMsgContainer">${mh}</div><form onsubmit="handleAISend(event)" class="ai-input-bar"><input type="text" id="aiUserInput" placeholder="Ask..." autocomplete="off" required><button type="submit" class="ai-send-btn">Send</button></form></div></div>`;const cont=document.getElementById('aiMsgContainer');if(cont)cont.scrollTop=cont.scrollHeight;}
-async function handleAISend(event){event.preventDefault();const i=document.getElementById('aiUserInput');const p=(i.value||'').trim();if(!p)return;let c=getAIChats();let ac=c.find(x=>x.id===activeAIChatId);if(!ac)return;ac.messages.push({role:"user",text:p});if(ac.title==="New")ac.title=p.substring(0,22)+"...";i.value="";renderAIPage();setTimeout(()=>{const lp=p.toLowerCase();let r="";if(lp.includes("cash")||lp.includes("money"))r=`💰 Cash Out: 10,000 Coins = ₱1.00. Payment methods auto-change by language. Cash out requires 2-step verification (Code or Password). Code format: xdrg###### — valid for 5 min.`;else if(lp.includes("claim")||lp.includes("pending"))r=`📦 Check Claim Delivery History. Click 'Mark Received' to finalize.`;else if(lp.includes("vip")||lp.includes("premium"))r=`🎟️ VIP (12,500 Coins): badge, 50-min wait, 250 free coins. Premium (25,000 Coins): ALL backgrounds + Custom, 15-min wait, 1,500 coins, -15 reward discount, 2 free rewards.`;else if(lp.includes("verify")||lp.includes("code"))r=`🔐 Cash Out requires 2-step verification. Code format: xdrg###### (e.g. xdrg123456). Valid 5 min. Auto-fill button available! 15 wrong attempts = 1-hour lock.`;else r=`🤖 **[${currentAIModel}]** Received: "${p}". Ask about games, claims, or cash out!`;ac.messages.push({role:"assistant",text:r});saveAIChats(c);renderAIPage();},400);}
+async function handleAISend(event){event.preventDefault();const i=document.getElementById('aiUserInput');const p=(i.value||'').trim();if(!p)return;let c=getAIChats();let ac=c.find(x=>x.id===activeAIChatId);if(!ac)return;ac.messages.push({role:"user",text:p});if(ac.title==="New")ac.title=p.substring(0,22)+"...";i.value="";renderAIPage();setTimeout(()=>{const lp=p.toLowerCase();let r="";if(lp.includes("cash")||lp.includes("money"))r=`💰 Cash Out: 10,000 Coins = ₱1.00. Code format: xdrg###### — valid 5 min. Notification bell has the code + automation button.`;else if(lp.includes("claim")||lp.includes("pending"))r=`📦 Check Claim Delivery History. Click 'Mark Received' to finalize.`;else if(lp.includes("vip")||lp.includes("premium"))r=`🎟️ VIP (12,500 Coins): badge, 50-min wait, 250 free coins. Premium (25,000 Coins): ALL backgrounds + Custom, 15-min wait, 1,500 coins, -15 reward discount, 2 free rewards.`;else if(lp.includes("verify")||lp.includes("code"))r=`🔐 Cash Out requires 2-step verification. Code format: xdrg###### (e.g. xdrg123456). Valid 5 min. Automation button in the notification. X = close and reopen. Cancel = permanent cancel.`;else r=`🤖 **[${currentAIModel}]** Received: "${p}". Ask about games, claims, or cash out!`;ac.messages.push({role:"assistant",text:r});saveAIChats(c);renderAIPage();},400);}
 
 async function renderQuestsPage(){
 if(!currentUser)return;
