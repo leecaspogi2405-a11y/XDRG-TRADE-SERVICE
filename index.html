@@ -143,6 +143,9 @@ h2{font-family:Georgia,serif;font-size:1.5rem;font-weight:normal;border-bottom:1
 .accordion.active:after{content:"\2212"}
 .panel{display:none;padding:15px 18px;background:rgba(255,255,255,.95);border:1px solid #eaecf0;border-top:none;border-radius:0 0 4px 4px}
 .panel.active{display:block}
+.panel h4{margin-top:0;margin-bottom:6px}
+.panel input,.panel textarea,.panel select{width:100%;padding:8px;margin-bottom:10px;box-sizing:border-box;border:1px solid #a2a9b1;border-radius:4px}
+.panel label{font-weight:bold;font-size:.85rem;display:block;margin-bottom:4px}
 body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81d,#1de840,#1ddde8,#2b1de8,#dd00f3,#dd00f3);background-size:1800% 1800%!important;animation:rainbow 18s ease infinite}
 @keyframes rainbow{0%{background-position:0% 82%}50%{background-position:100% 19%}100%{background-position:0% 82%}}
 .leaderboard-table{width:100%;border-collapse:collapse;margin-top:15px;font-size:.9rem;background:rgba(255,255,255,.9)}
@@ -202,7 +205,6 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .recording-indicator{background:#dc3545;color:#fff;padding:6px 12px;border-radius:20px;font-size:.8rem;font-weight:bold;display:flex;align-items:center;gap:6px;flex:1}
 .rec-dot{width:10px;height:10px;background:#fff;border-radius:50%;animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-/* New: ban/kick overlay animations */
 @keyframes banPulse{0%,100%{opacity:1}50%{opacity:.85}}
 </style>
 </head>
@@ -340,6 +342,15 @@ function isOwnerOrCoOwner(u){return isOwnerAccount(u)||isCoOwner(u);}
 function isUserAdmin(u){return u&&(isOwnerOrCoOwner(u)||u.isAdmin===true||u.role==='Admin');}
 function isUserModerator(u){return u&&(isUserAdmin(u)||u.isMod===true||u.role==='Moderator');}
 function isStaff(u){return isUserModerator(u)||isUserAdmin(u)||isOwnerOrCoOwner(u);}
+// NEW: role label for sender in notifications
+function getSenderRoleLabel(u){
+if(!u)return 'Staff';
+if(isOwnerAccount(u))return 'Owner';
+if(isCoOwner(u))return 'Co-Owner';
+if(isUserAdmin(u))return 'Admin';
+if(isUserModerator(u))return 'Moderator';
+return 'Staff';
+}
 function convertCurrency(p){const c=currencyConfig[currentLanguage]||currencyConfig['en'];const v=p*c.rate;if(['ja','ko','id'].includes(currentLanguage))return `${c.symbol}${Math.round(v).toLocaleString()}`;return `${c.symbol}${v.toFixed(2)}`;}
 function getCurrencySymbol(){return (currencyConfig[currentLanguage]||currencyConfig['en']).symbol;}
 function getUserCoinsDisplay(u){if(!u)return 0;if(isOwnerAccount(u))return "Infinity ♾️";let rs=safeGetJSON('referralDataStore',{});let di=rs[u.rblxUserId]||0;return (u.points||0)+(di*25);}
@@ -356,9 +367,7 @@ function applyBackground(bg,cd=null){const b=document.body;b.classList.remove('r
 
 function setLanguage(lang){currentLanguage=lang;localStorage.setItem('app_language',lang);updateUserStatusHeader();}
 
-// ================================================================
-// ===== NEW: BAN / KICK ENFORCEMENT OVERLAYS ====================
-// ================================================================
+// ===== BAN / KICK ENFORCEMENT OVERLAYS =====
 function showBanScreen(reason,bannedBy){
 if(document.getElementById('banOverlay'))return;
 const o=document.createElement('div');
@@ -421,10 +430,8 @@ if(kickUntil-Date.now()<=0){clearInterval(int);document.body.style.overflow='';o
 async function enforceBanKick(){
 if(!currentUser)return false;
 if(document.getElementById('banOverlay')||document.getElementById('kickOverlay'))return true;
-// Cached check first (instant)
 if(currentUser.isBanned){showBanScreen(currentUser.banReason,currentUser.bannedBy);return true;}
 if(currentUser.kickUntil&&currentUser.kickUntil>Date.now()){showKickScreen(currentUser.kickUntil,currentUser.kickReason,currentUser.kickedBy);return true;}
-// Fresh check from Firebase
 try{
 const r=await fetch(`${FIREBASE_BASE_URL}/users/${currentUser.rblxUserId}.json`);
 if(r.ok){
@@ -432,7 +439,6 @@ const u=await r.json();
 if(u){
 if(u.isBanned){showBanScreen(u.banReason,u.bannedBy);return true;}
 if(u.kickUntil&&u.kickUntil>Date.now()){showKickScreen(u.kickUntil,u.kickReason,u.kickedBy);return true;}
-// Sync role flags from server
 currentUser.isBanned=u.isBanned||false;
 currentUser.kickUntil=u.kickUntil||0;
 currentUser.kickReason=u.kickReason||'';
@@ -521,8 +527,9 @@ if(n.isNewMessage)ah=`<div class="notif-actions"><button class="btn-action-sm" s
 if(n.isDailyReward&&currentUser){const today=new Date().toDateString();const last=currentUser.lastClaimedDate?new Date(currentUser.lastClaimedDate).toDateString():null;if(last!==today)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background:#28a745;padding:8px 16px" onclick="claimDailyRewardFromNotif()">🎁 Claim Now!</button></div>`;else ah=`<div style="font-size:.75rem;color:#28a745;margin-top:5px">✅ Claimed today</div>`;}
 if(n.isReport&&currentUser&&isStaff(currentUser)){const r=globalReports.find(x=>x.id===n.reportId);if(r&&r.status==='pending')ah=`<div class="notif-actions"><button class="btn-action-sm" onclick="handleReportAction('${n.reportId}','accepted')">Accept</button><button class="btn-action-sm btn-danger" onclick="handleReportAction('${n.reportId}','declined')">Decline</button></div>`;}
 if(n.isPremiumReward&&currentUser)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background:#00c6ff" onclick="openQuests()">Claim Item</button></div>`;
-if(n.isWarning)ah=`<div style="margin-top:6px;padding:6px 8px;background:#fff3cd;border-left:3px solid #ff9800;font-size:.75rem;border-radius:3px"><b>⚠️ Warning from ${n.warnedBy||'Staff'}</b></div>`;
-if(n.isAnnouncement)ah=`<div style="margin-top:6px;padding:6px 8px;background:#eaf3ff;border-left:3px solid #3366cc;font-size:.75rem;border-radius:3px"><b>📢 Official Announcement</b></div>`;
+// CHANGED: show actual sender role
+if(n.isWarning)ah=`<div style="margin-top:6px;padding:6px 8px;background:#fff3cd;border-left:3px solid #ff9800;font-size:.75rem;border-radius:3px"><b>⚠️ Warning from ${n.warnedByRole||n.warnedBy||'Staff'}</b></div>`;
+if(n.isAnnouncement)ah=`<div style="margin-top:6px;padding:6px 8px;background:#eaf3ff;border-left:3px solid #3366cc;font-size:.75rem;border-radius:3px"><b>📢 From ${n.senderRole||'Staff'}</b></div>`;
 const pinned=(n.isCashOutCode||n.isAccountLockNotif)?' pinned-notif':'';
 const pl=(n.isCashOutCode||n.isAccountLockNotif)?' <span class="notif-pinned-label">PINNED</span>':'';
 html+=`<li class="notif-item ${isR?'':'unread'}${pinned}"><div class="notif-title">${n.title||'Update'}${pl}</div><div class="notif-msg">${linkify(n.message||'')}</div><div class="notif-time">${ds}</div>${ah}</li>`;});
@@ -870,7 +877,6 @@ if(/Cash/.test(title)&&currentUser&&isOwnerOrCoOwner(currentUser)&&!isUserTyping
 if(document.getElementById('msgLayout'))refreshMessengerUI();
 if(document.getElementById('pvGrid'))renderProfileViewersContent();
 if(/Sneak/.test(title))fetchSneakPeeks();
-// === New: re-check ban/kick every sync ===
 if(currentUser)enforceBanKick();
 }catch(e){console.warn(e);}}
 
@@ -930,12 +936,12 @@ if(!iO){currentUser.points-=rc;saveUserData();updateUserStatusHeader();}
 try{await fetch(`${FIREBASE_BASE_URL}/cashouts/${cid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(cd)});const onid="OWNER-ALERT-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/owner_alerts/${onid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:onid,title:"💰 New Cash Out",message:`@${currentUser.username} requested ₱${amt} via ${mt}. Name: ${hn}, Number: ${an}`,timestamp:Date.now()})});alert(`✅ Submitted!`);pendingCashOutData=null;currentVerificationCode=null;globalNotifications=globalNotifications.filter(n=>!n.isCashOutCode);renderNotificationDropdown();renderCashOutPage();}catch(e){alert("❌ Error.");}}
 
 // ================================================================
-// ===== STAFF COMMANDS (FULL — ALL EXISTING + NEW) ==============
+// ===== STAFF COMMANDS (FULL — FIXED LAYOUT) =====================
 // ================================================================
 function openStaffCommands(){if(!currentUser||!isStaff(currentUser)){alert("❌ Staff only!");return;}document.getElementById('pageTitle').innerText='🛡️ Staff Commands';renderStaffCommandsPage();}
 function toggleAccordion(id){const a=document.getElementById(id),p=document.getElementById(id+'_panel');if(!a||!p)return;a.classList.toggle('active');p.classList.toggle('active');}
 
-// NEW: find user by ID / Gmail / Username / Name
+// Find user by any identifier
 function findUserByIdentifier(identifier){
 const t=String(identifier||'').trim().toLowerCase();
 if(!t)return null;
@@ -949,33 +955,65 @@ String(u.rblxUserId||'').toLowerCase()===t ||
 )||null;
 }
 
-// NEW: build the "Warn" form (reusable block)
-function warnBlock(idPrefix,roleLabel){
-return `<label style="font-weight:bold;font-size:.85rem">Message:</label>
-<textarea id="${idPrefix}WarnMessage" rows="3" placeholder="Type the warning message here..." style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"></textarea>
-<label style="font-weight:bold;font-size:.85rem">User (Gmail / ID / Username):</label>
-<input type="text" id="${idPrefix}WarnTarget" placeholder="user@gmail.com or 7680051058" style="margin-bottom:10px">
-<button class="btn-save" style="width:100%;background:#ff9800;color:#000" onclick="warnUser('${idPrefix}')">⚠️ Send Warning to User</button>`;
+// ---- Reusable block builders (each takes a unique prefix) ----
+function warnBlock(p){
+return `<label>Message:</label>
+<textarea id="${p}WarnMessage" rows="3" placeholder="Type the warning message here..."></textarea>
+<label>User (Gmail / ID / Username):</label>
+<input type="text" id="${p}WarnTarget" placeholder="user@gmail.com or 7680051058">
+<button class="btn-save" style="width:100%;background:#ff9800;color:#000" onclick="warnUser('${p}')">⚠️ Send Warning to User</button>`;
 }
-
-// NEW: build the "Kick" form (max days configurable)
-function kickBlock(idPrefix,maxDays){
-return `<label style="font-weight:bold;font-size:.85rem">User (Gmail / ID / Username):</label>
-<input type="text" id="${idPrefix}KickTarget" placeholder="user@gmail.com or 7680051058" style="margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">Duration in days (1–${maxDays}):</label>
-<input type="number" id="${idPrefix}KickDays" min="1" max="${maxDays}" placeholder="e.g. 3" style="margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">Reason:</label>
-<input type="text" id="${idPrefix}KickReason" placeholder="Reason for kick" style="margin-bottom:10px">
-<button class="btn-save" style="width:100%;background:#ffc107;color:#000" onclick="kickUser('${idPrefix}',${maxDays})">⏸️ Kick User (1–${maxDays} days)</button>`;
+function kickBlock(p,maxDays){
+return `<label>User (Gmail / ID / Username):</label>
+<input type="text" id="${p}KickTarget" placeholder="user@gmail.com or 7680051058">
+<label>Duration in days (1–${maxDays}):</label>
+<input type="number" id="${p}KickDays" min="1" max="${maxDays}" placeholder="e.g. 3">
+<label>Reason:</label>
+<input type="text" id="${p}KickReason" placeholder="Reason for kick">
+<button class="btn-save" style="width:100%;background:#ffc107;color:#000" onclick="kickUser('${p}',${maxDays})">⏸️ Kick User (1–${maxDays} days)</button>`;
 }
-
-// NEW: build the "Ban" form
-function banBlock(idPrefix){
-return `<label style="font-weight:bold;font-size:.85rem">User (Gmail / ID / Username):</label>
-<input type="text" id="${idPrefix}BanTarget" placeholder="user@gmail.com or 7680051058" style="margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">Reason:</label>
-<input type="text" id="${idPrefix}BanReason" placeholder="Reason for permanent ban" style="margin-bottom:10px">
-<button class="btn-danger" style="width:100%" onclick="banUser('${idPrefix}')">🚫 Ban User (Permanent)</button>`;
+function banBlock(p){
+return `<label>User (Gmail / ID / Username):</label>
+<input type="text" id="${p}BanTarget" placeholder="user@gmail.com or 7680051058">
+<label>Reason:</label>
+<input type="text" id="${p}BanReason" placeholder="Reason for permanent ban">
+<button class="btn-danger" style="width:100%" onclick="banUser('${p}')">🚫 Ban User (Permanent)</button>`;
+}
+function modRoleBlock(p){
+return `<label>Target (Gmail / ID):</label>
+<input type="text" id="${p}ModTarget" placeholder="user@gmail.com or 7680051058">
+<div style="display:flex;gap:10px">
+<button class="btn-save" style="flex:1;background:#28a745" onclick="updateUserRole(document.getElementById('${p}ModTarget').value,'Moderator','give')">Give Moderator</button>
+<button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('${p}ModTarget').value,'Moderator','remove')">Remove Moderator</button>
+</div>`;
+}
+function adminRoleBlock(p){
+return `<label>Target (Gmail / ID):</label>
+<input type="text" id="${p}AdminTarget" placeholder="user@gmail.com or 7680051058">
+<div style="display:flex;gap:10px">
+<button class="btn-save" style="flex:1;background:#007bff" onclick="updateUserRole(document.getElementById('${p}AdminTarget').value,'Admin','give')">Give Admin</button>
+<button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('${p}AdminTarget').value,'Admin','remove')">Remove Admin</button>
+</div>`;
+}
+function coinGiverBlock(p){
+return `<label>Target (ID / Username / Gmail):</label>
+<input type="text" id="${p}GrantTarget" placeholder="e.g. 7680051058">
+<label>Amount of Coins:</label>
+<input type="number" id="${p}GrantAmount" placeholder="e.g. 100">
+<button class="btn-save" style="width:100%;background:#28a745" onclick="grantCoinsToUser('${p}')">Confirm Grant Coins</button>`;
+}
+function pollBlock(p){
+return `<label>Poll Title:</label><input type="text" id="${p}PollTitle" placeholder="Title">
+<label>Description:</label><input type="text" id="${p}PollDesc" placeholder="Description">
+<label>Comma-separated options:</label><input type="text" id="${p}PollOptions" placeholder="e.g. Map, Crystals, Pets">
+<label>Poll Image (Optional):</label><input type="file" id="${p}PollImage" accept="image/*">
+<button class="btn-save" style="width:100%;background:#28a745" onclick="createPollWithImage('${p}')">Create Poll</button>`;
+}
+function announcementBlock(p){
+return `<label>Announcement Title:</label><input type="text" id="${p}AnnTitle" placeholder="e.g. Server Update">
+<label>Message (links auto-clickable):</label>
+<textarea id="${p}AnnMessage" rows="3" placeholder="Announcement body..."></textarea>
+<button class="btn-save" style="width:100%;background:#005a9c" onclick="createAnnouncement('${p}')">📢 Deploy Announcement to All Users</button>`;
 }
 
 function renderStaffCommandsPage(){
@@ -984,57 +1022,56 @@ const iO=isOwnerAccount(currentUser);
 const iCO=isCoOwner(currentUser);
 const iA=isUserAdmin(currentUser);
 const iM=isUserModerator(currentUser);
+const iOwnerLike=iO||iCO; // Owner OR Co-Owner can access Owner panel (minus owner-role mgmt)
 
 let html=`<p style="font-size:.85rem;color:#54595d">Click a section to expand its commands. All new staff tools are added below the existing ones — nothing was removed.</p>`;
 
-// ===== MODERATOR COMMANDS (visible to Moderator, Admin, Owner, Co-Owner) =====
-if(iO||iCO||iA||iM){
-html+=`<button class="accordion" id="accMod" onclick="toggleAccordion('accMod')">🔰 Moderator Commands (Kick 1–7 days, Ban, Warn)</button>
+// ===== MODERATOR PANEL (Mod / Admin / Co-Owner / Owner) — NO role management here =====
+if(iM||iA||iOwnerLike){
+html+=`<button class="accordion" id="accMod" onclick="toggleAccordion('accMod')">🔰 Moderator Commands (Warn, Kick 1–7 days, Ban)</button>
 <div class="panel" id="accMod_panel">
-<h4 style="margin-top:0;color:#856404">⚠️ Warn User</h4>
-${warnBlock('mod',)}
+<h4 style="color:#856404">⚠️ Warn User</h4>
+${warnBlock('mod')}
 <h4 style="margin-top:20px;color:#856404">⏸️ Kick User (1–7 days)</h4>
 ${kickBlock('mod',7)}
 <h4 style="margin-top:20px;color:#c82333">🚫 Ban User (Forever)</h4>
 ${banBlock('mod')}
-<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
-<h4 style="margin-top:0;color:#005a9c">Moderator Role Management (Admin/Owner only)</h4>
-${(iO||iCO||iA)?`<label style="font-weight:bold;font-size:.85rem">Target User ID or Gmail:</label><input type="text" id="modTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:#28a745" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value,'Moderator','give')">Give Moderator</button><button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('modTargetIdentifier').value,'Moderator','remove')">Remove Moderator</button></div>`:'<p style="color:#777;font-size:.85rem">Only Admins/Owners can manage Moderator roles.</p>'}
 </div>`;
 }
 
-// ===== ADMIN COMMANDS (visible to Admin, Co-Owner, Owner) =====
-if(iO||iCO||iA){
-html+=`<button class="accordion" id="accAdmin" onclick="toggleAccordion('accAdmin')">🛡️ Admin Commands (Kick 1–30 days, Ban, Warn, Poll, Announcement)</button>
+// ===== ADMIN PANEL (Admin / Co-Owner / Owner) =====
+if(iA||iOwnerLike){
+html+=`<button class="accordion" id="accAdmin" onclick="toggleAccordion('accAdmin')">🛡️ Admin Commands (Warn, Kick 1–30 days, Ban, Mod Role Mgmt, Coin Giver, Poll, Announcement)</button>
 <div class="panel" id="accAdmin_panel">
-<h4 style="margin-top:0;color:#856404">⚠️ Warn User</h4>
-${warnBlock('adm',)}
+<h4 style="color:#856404">⚠️ Warn User</h4>
+${warnBlock('adm')}
 <h4 style="margin-top:20px;color:#856404">⏸️ Kick User (1–30 days)</h4>
 ${kickBlock('adm',30)}
 <h4 style="margin-top:20px;color:#c82333">🚫 Ban User (Forever)</h4>
 ${banBlock('adm')}
 <hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
+<h4 style="color:#28a745">🔰 Moderator Role Management</h4>
+${modRoleBlock('adm')}
+<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
+<h4 style="color:#28a745">🪙 Coin Giver Tool</h4>
+${coinGiverBlock('adm')}
+<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
 <h4 style="color:#005a9c">📊 Create Poll</h4>
-<label style="font-weight:bold;font-size:.85rem">Poll Title:</label><input type="text" id="newPollTitle" placeholder="Title" style="margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">Description:</label><input type="text" id="newPollDesc" placeholder="Description" style="margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">Comma-separated options:</label><input type="text" id="newPollOptions" placeholder="e.g. Map, Crystals, Pets" style="margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">Poll Image (Optional):</label><input type="file" id="newPollImage" accept="image/*" style="margin-bottom:10px">
-<button class="btn-save" style="width:100%;background:#28a745" onclick="createPollWithImage()">Create Poll</button>
-<h4 style="margin-top:20px;color:#005a9c">📢 Create Announcement</h4>
-<label style="font-weight:bold;font-size:.85rem">Announcement Title:</label><input type="text" id="annTitle" placeholder="e.g. Server Update" style="margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">Message (links auto-clickable):</label>
-<textarea id="annMessage" rows="3" placeholder="Announcement body..." style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"></textarea>
-<button class="btn-save" style="width:100%;background:#005a9c" onclick="createAnnouncement()">📢 Deploy Announcement to All Users</button>
+${pollBlock('adm')}
+<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
+<h4 style="color:#005a9c">📢 Create Announcement</h4>
+${announcementBlock('adm')}
 </div>`;
 }
 
-// ===== OWNER COMMANDS (Owner only) =====
+// ===== OWNER / CO-OWNER PANEL =====
+if(iOwnerLike){
+html+=`<button class="accordion" id="accOwner" onclick="toggleAccordion('accOwner')">👑 ${iO?'Owner':'Co-Owner'} Commands (Full Access${iO?' + Owner/Co-Owner Mgmt':''})</button>
+<div class="panel" id="accOwner_panel">`;
 if(iO){
-html+=`<button class="accordion" id="accOwner" onclick="toggleAccordion('accOwner')">👑 Owner Commands (Add Owner/Co-Owner, Kick 1–100 days, Ban, Warn, + Admin Tools)</button>
-<div class="panel" id="accOwner_panel">
-<h4 style="margin-top:0;color:#7a00ff">👑 Add Owner / Co-Owner</h4>
-<label style="font-weight:bold;font-size:.85rem">Target (Gmail / ID / Username):</label>
-<input type="text" id="ownerAddTarget" placeholder="user@gmail.com or 7680051058" style="margin-bottom:10px">
+html+=`<h4 style="color:#7a00ff">👑 Add Owner / Co-Owner (Owner only)</h4>
+<label>Target (Gmail / ID / Username):</label>
+<input type="text" id="ownAddTarget" placeholder="user@gmail.com or 7680051058">
 <div style="display:flex;gap:10px">
 <button class="btn-save" style="flex:1;background:linear-gradient(45deg,#ff0055,#7a00ff);color:#fff" onclick="addOwnerOrCoOwner('Owner')">👑 Make Owner</button>
 <button class="btn-save" style="flex:1;background:linear-gradient(45deg,#ff8c00,#ffd700);color:#000" onclick="addOwnerOrCoOwner('Co-Owner')">🥇 Make Co-Owner</button>
@@ -1043,53 +1080,59 @@ html+=`<button class="accordion" id="accOwner" onclick="toggleAccordion('accOwne
 <button class="btn-danger" style="flex:1" onclick="removeOwnerOrCoOwner('Owner')">Remove Owner Flag</button>
 <button class="btn-danger" style="flex:1" onclick="removeOwnerOrCoOwner('Co-Owner')">Remove Co-Owner Flag</button>
 </div>
-<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
-<h4 style="color:#856404">⚠️ Warn User</h4>
-${warnBlock('own',)}
+<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">`;
+}else{
+html+=`<div style="background:#fff8e1;border:1px solid #ffe0b2;padding:10px;border-radius:4px;font-size:.82rem;color:#856404;margin-bottom:15px">ℹ️ Co-Owner has full staff access except Owner/Co-Owner Role Management (Owner only).</div>`;
+}
+html+=`<h4 style="color:#856404">⚠️ Warn User</h4>
+${warnBlock('own')}
 <h4 style="margin-top:20px;color:#856404">⏸️ Kick User (1–100 days)</h4>
 ${kickBlock('own',100)}
 <h4 style="margin-top:20px;color:#c82333">🚫 Ban User (Forever)</h4>
 ${banBlock('own')}
 <button class="btn-save" style="width:100%;background:#6c757d;margin-top:8px" onclick="unbanUser('own')">✅ Unban User (Reverse a Ban)</button>
 <hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
-<h4 style="color:#005a9c">🛡️ Admin Role Management</h4>
-<label style="font-weight:bold;font-size:.85rem">Target User ID or Gmail:</label>
-<input type="text" id="adminTargetIdentifier" placeholder="e.g. 7680051058 or user@gmail.com" style="margin-bottom:10px">
-<div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:#007bff" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value,'Admin','give')">Give Admin</button><button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('adminTargetIdentifier').value,'Admin','remove')">Remove Admin</button></div>
+<h4 style="color:#007bff">🛡️ Admin Role Management</h4>
+${adminRoleBlock('own')}
 <hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
-<h4 style="color:#005a9c">🪙 Coin Giver Tool</h4>
-<label style="font-weight:bold;font-size:.85rem">Target User ID, Username, or Gmail:</label>
-<input type="text" id="grantTargetIdentifier" placeholder="e.g. 7680051058" style="margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">Amount of Coins:</label>
-<input type="number" id="grantCoinAmount" placeholder="e.g. 100" style="margin-bottom:10px">
-<button class="btn-save" style="width:100%;background:#28a745" onclick="grantCoinsToUser()">Confirm Grant Coins</button>
+<h4 style="color:#28a745">🔰 Moderator Role Management</h4>
+${modRoleBlock('own')}
+<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
+<h4 style="color:#28a745">🪙 Coin Giver Tool</h4>
+${coinGiverBlock('own')}
+<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
+<h4 style="color:#005a9c">📊 Create Poll</h4>
+${pollBlock('own')}
+<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
+<h4 style="color:#005a9c">📢 Create Announcement</h4>
+${announcementBlock('own')}
 <hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
 <h4 style="color:#dc3545">🔴 Owner Notification Creator</h4>
-<label style="font-weight:bold;font-size:.85rem">Audience:</label>
-<select id="ownerNotifAudience" onchange="document.getElementById('ownerNotifTargetBox').style.display=this.value==='specific'?'block':'none'" style="margin-bottom:10px;width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px">
+<label>Audience:</label>
+<select id="ownNotifAudience" onchange="document.getElementById('ownNotifTargetBox').style.display=this.value==='specific'?'block':'none'">
 <option value="everyone">Everyone (Global)</option>
 <option value="specific">Specific User</option>
 </select>
-<div id="ownerNotifTargetBox" style="display:none;margin-bottom:10px">
-<label style="font-weight:bold;font-size:.85rem">Target (Email/ID/Username):</label>
-<input type="text" id="ownerNotifTarget" placeholder="user@gmail.com" style="margin-top:4px">
+<div id="ownNotifTargetBox" style="display:none;margin-top:8px">
+<label>Target (Email/ID/Username):</label>
+<input type="text" id="ownNotifTarget" placeholder="user@gmail.com">
 </div>
-<label style="font-weight:bold;font-size:.85rem">Title:</label><input type="text" id="ownerNotifTitle" placeholder="Title" style="margin-top:4px">
-<label style="font-weight:bold;font-size:.85rem">Message (links auto-clickable):</label>
-<textarea id="ownerNotifMsg" rows="3" placeholder="Message" style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-top:4px"></textarea>
+<label>Title:</label><input type="text" id="ownNotifTitle" placeholder="Title">
+<label>Message (links auto-clickable):</label>
+<textarea id="ownNotifMsg" rows="3" placeholder="Message"></textarea>
 <button class="btn-save" style="width:100%;background:#dc3545;margin-top:10px" onclick="sendGlobalOwnerNotification()">Send Notification</button>
 <hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
 <h4 style="color:#9b59b6">🛡️ Upload Sneak Peek</h4>
-<label style="font-weight:bold;font-size:.85rem">Title:</label><input type="text" id="sneakTitle" placeholder="Title" style="margin-top:4px">
-<label style="font-weight:bold;font-size:.85rem">Description:</label><textarea id="sneakDesc" rows="3" placeholder="Description" style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-top:4px"></textarea>
-<label style="font-weight:bold;font-size:.85rem">Upload Image:</label><input type="file" id="sneakImage" accept="image/*" style="margin-top:4px">
+<label>Title:</label><input type="text" id="ownSneakTitle" placeholder="Title">
+<label>Description:</label><textarea id="ownSneakDesc" rows="3" placeholder="Description"></textarea>
+<label>Upload Image:</label><input type="file" id="ownSneakImage" accept="image/*">
 <button class="btn-save" style="width:100%;background:#9b59b6;margin-top:10px" onclick="uploadSneakPeek()">Upload Sneak Peek</button>
 </div>`;
 }
 document.getElementById('pageContent').innerHTML=html;
 }
 
-// ===== NEW: WARN HANDLER =====
+// ===== WARN HANDLER =====
 async function warnUser(prefix){
 if(!currentUser||!isStaff(currentUser))return;
 const msg=document.getElementById(prefix+'WarnMessage').value.trim();
@@ -1098,18 +1141,29 @@ if(!msg||!target){alert("❌ Enter the warning message and the user.");return;}
 const u=findUserByIdentifier(target);
 if(!u){alert("❌ User not found. Check the Gmail / Roblox ID / Username.");return;}
 if(isOwnerAccount(u)&&!isOwnerAccount(currentUser)){alert("👑 Cannot warn an Owner.");return;}
+// CHANGED: notification now shows the actual sender role
+const senderRole=getSenderRoleLabel(currentUser);
 const nid="WARN-"+Date.now();
-const nd={id:nid,title:"⚠️ Warning from Staff",message:msg,timestamp:Date.now(),isWarning:true,warnedBy:currentUser.username||currentUser.name,warnedByName:currentUser.name};
+const nd={
+id:nid,
+title:`⚠️ Warning from ${senderRole}`,
+message:msg,
+timestamp:Date.now(),
+isWarning:true,
+warnedBy:currentUser.username||currentUser.name,
+warnedByName:currentUser.name,
+warnedByRole:senderRole
+};
 const key=encodeURIComponent(String(u.rblxUserId).toLowerCase());
 try{
 await fetch(`${FIREBASE_BASE_URL}/user_notifications/${key}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});
-alert(`⚠️ Warning sent to ${u.name||u.username}.`);
+alert(`⚠️ Warning sent to ${u.name||u.username} (from ${senderRole}).`);
 document.getElementById(prefix+'WarnMessage').value='';
 document.getElementById(prefix+'WarnTarget').value='';
 }catch(e){alert("❌ Failed: "+e.message);}
 }
 
-// ===== NEW: KICK HANDLER =====
+// ===== KICK HANDLER =====
 async function kickUser(prefix,maxDays){
 if(!currentUser||!isStaff(currentUser))return;
 const target=document.getElementById(prefix+'KickTarget').value.trim();
@@ -1129,8 +1183,9 @@ if(idx!==-1)all[idx]=updated;else all.push(updated);
 localStorage.setItem('app_users_db',JSON.stringify(all));
 try{
 await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});
+const senderRole=getSenderRoleLabel(currentUser);
 const nid="KICK-"+Date.now();
-await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"⏸️ You Have Been Kicked",message:`You have been kicked for ${days} day(s). Reason: ${reason}`,timestamp:Date.now(),isKick:true})}).catch(()=>{});
+await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:`⏸️ Kicked by ${senderRole}`,message:`You have been kicked for ${days} day(s). Reason: ${reason}`,timestamp:Date.now(),isKick:true,kickedBy:currentUser.username||currentUser.name})}).catch(()=>{});
 alert(`⏸️ Kicked ${u.name||u.username} for ${days} day(s).`);
 document.getElementById(prefix+'KickTarget').value='';
 document.getElementById(prefix+'KickDays').value='';
@@ -1138,7 +1193,7 @@ document.getElementById(prefix+'KickReason').value='';
 }catch(e){alert("❌ Failed: "+e.message);}
 }
 
-// ===== NEW: BAN HANDLER =====
+// ===== BAN HANDLER =====
 async function banUser(prefix){
 if(!currentUser||!isStaff(currentUser))return;
 const target=document.getElementById(prefix+'BanTarget').value.trim();
@@ -1156,17 +1211,18 @@ if(idx!==-1)all[idx]=updated;else all.push(updated);
 localStorage.setItem('app_users_db',JSON.stringify(all));
 try{
 await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});
+const senderRole=getSenderRoleLabel(currentUser);
 const nid="BAN-"+Date.now();
-await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"🚫 You Have Been Banned",message:`Your account has been permanently banned. Reason: ${reason}`,timestamp:Date.now(),isBan:true})}).catch(()=>{});
+await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:`🚫 Banned by ${senderRole}`,message:`Your account has been permanently banned. Reason: ${reason}`,timestamp:Date.now(),isBan:true,bannedBy:currentUser.username||currentUser.name})}).catch(()=>{});
 alert(`🚫 Banned ${u.name||u.username}.`);
 document.getElementById(prefix+'BanTarget').value='';
 document.getElementById(prefix+'BanReason').value='';
 }catch(e){alert("❌ Failed: "+e.message);}
 }
 
-// ===== NEW: UNBAN HANDLER =====
+// ===== UNBAN HANDLER =====
 async function unbanUser(prefix){
-if(!currentUser||!isOwnerAccount(currentUser)){alert("❌ Owner only.");return;}
+if(!currentUser||!isOwnerOrCoOwner(currentUser)){alert("❌ Owner / Co-Owner only.");return;}
 const target=document.getElementById(prefix+'BanTarget').value.trim();
 if(!target){alert("❌ Enter the user.");return;}
 const u=findUserByIdentifier(target);
@@ -1182,10 +1238,10 @@ alert(`✅ Unbanned ${u.name||u.username}.`);
 }catch(e){alert("❌ Failed: "+e.message);}
 }
 
-// ===== NEW: ADD OWNER / CO-OWNER =====
+// ===== ADD OWNER / CO-OWNER (Owner only) =====
 async function addOwnerOrCoOwner(type){
 if(!currentUser||!isOwnerAccount(currentUser)){alert("❌ Owner only.");return;}
-const target=document.getElementById('ownerAddTarget').value.trim();
+const target=document.getElementById('ownAddTarget').value.trim();
 if(!target){alert("❌ Enter the user.");return;}
 const u=findUserByIdentifier(target);
 if(!u){alert("❌ User not found.");return;}
@@ -1202,15 +1258,15 @@ await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",head
 const nid="ROLE-"+Date.now();
 await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:`👑 You Are Now ${type}`,message:`Congratulations! You have been promoted to ${type}.`,timestamp:Date.now()})}).catch(()=>{});
 alert(`👑 ${u.name||u.username} is now ${type}!`);
-document.getElementById('ownerAddTarget').value='';
+document.getElementById('ownAddTarget').value='';
 renderStaffCommandsPage();
 }catch(e){alert("❌ Failed: "+e.message);}
 }
 
-// ===== NEW: REMOVE OWNER / CO-OWNER =====
+// ===== REMOVE OWNER / CO-OWNER (Owner only) =====
 async function removeOwnerOrCoOwner(type){
 if(!currentUser||!isOwnerAccount(currentUser)){alert("❌ Owner only.");return;}
-const target=document.getElementById('ownerAddTarget').value.trim();
+const target=document.getElementById('ownAddTarget').value.trim();
 if(!target){alert("❌ Enter the user.");return;}
 const u=findUserByIdentifier(target);
 if(!u){alert("❌ User not found.");return;}
@@ -1230,19 +1286,28 @@ renderStaffCommandsPage();
 }catch(e){alert("❌ Failed: "+e.message);}
 }
 
-// ===== NEW: CREATE ANNOUNCEMENT =====
-async function createAnnouncement(){
+// ===== CREATE ANNOUNCEMENT (Admin / Co-Owner / Owner) =====
+async function createAnnouncement(prefix){
 if(!currentUser||!isUserAdmin(currentUser)){alert("❌ Admin+ only.");return;}
-const title=document.getElementById('annTitle').value.trim();
-const message=document.getElementById('annMessage').value.trim();
+const title=document.getElementById(prefix+'AnnTitle').value.trim();
+const message=document.getElementById(prefix+'AnnMessage').value.trim();
 if(!title||!message){alert("❌ Enter title and message.");return;}
+const senderRole=getSenderRoleLabel(currentUser);
 const nid="ANN-"+Date.now();
-const nd={id:nid,title:"📢 "+title,message,timestamp:Date.now(),isAnnouncement:true,sender:currentUser.name||currentUser.username||'Staff'};
+const nd={
+id:nid,
+title:`📢 ${title} — From ${senderRole}`,
+message,
+timestamp:Date.now(),
+isAnnouncement:true,
+sender:currentUser.name||currentUser.username||'Staff',
+senderRole
+};
 try{
 await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});
 alert("📢 Announcement deployed to everyone!");
-document.getElementById('annTitle').value='';
-document.getElementById('annMessage').value='';
+document.getElementById(prefix+'AnnTitle').value='';
+document.getElementById(prefix+'AnnMessage').value='';
 syncRealtimeDatabase();
 }catch(e){alert("❌ Failed: "+e.message);}
 }
@@ -1250,11 +1315,11 @@ syncRealtimeDatabase();
 // ===== EXISTING: ROLE MANAGEMENT =====
 async function updateUserRole(ti,role,action){
 if(!currentUser)return;
-if(role==='Admin'&&!isOwnerAccount(currentUser)){alert("❌ Owners only!");return;}
-if(role==='Moderator'&&!isOwnerAccount(currentUser)&&!isUserAdmin(currentUser)){alert("❌ Owners/Admins only!");return;}
+if(role==='Admin'&&!isOwnerOrCoOwner(currentUser)){alert("❌ Owner / Co-Owner only!");return;}
+if(role==='Moderator'&&!isOwnerOrCoOwner(currentUser)&&!isUserAdmin(currentUser)){alert("❌ Owners / Co-Owners / Admins only!");return;}
 const tt=ti.trim().toLowerCase();if(!tt){alert("❌ Enter target!");return;}
 let au=safeGetJSON('app_users_db',[]);
-let fi=au.findIndex(u=>String(u.rblxUserId||'').toLowerCase()===tt||(u.gmail||'').toLowerCase()===tt);
+let fi=au.findIndex(u=>String(u.rblxUserId||'').toLowerCase()===tt||(u.gmail||'').toLowerCase()===tt||(u.username||'').toLowerCase()===tt);
 if(fi===-1){alert("❌ Not found.");return;}
 const tu=au[fi];if(isOwnerAccount(tu)){alert(`👑 Owner.`);return;}
 if(action==='give'){if(role==='Admin'){tu.isAdmin=true;tu.role='Admin';}else{tu.isMod=true;tu.role=tu.isAdmin?'Admin':'Moderator';}}
@@ -1265,11 +1330,11 @@ renderStaffCommandsPage();
 }
 
 // ===== EXISTING: POLL =====
-async function createPollWithImage(){
-const title=document.getElementById('newPollTitle').value.trim();
-const desc=document.getElementById('newPollDesc').value.trim();
-const optionsStr=document.getElementById('newPollOptions').value.trim();
-const fi=document.getElementById('newPollImage');
+async function createPollWithImage(prefix){
+const title=document.getElementById(prefix+'PollTitle').value.trim();
+const desc=document.getElementById(prefix+'PollDesc').value.trim();
+const optionsStr=document.getElementById(prefix+'PollOptions').value.trim();
+const fi=document.getElementById(prefix+'PollImage');
 if(!title||!optionsStr){alert("❌ Enter title and options!");return;}
 const options=optionsStr.split(',').map(o=>({name:o.trim(),votes:0})).filter(o=>o.name!=="");
 if(options.length<2){alert("❌ At least 2 options!");return;}
@@ -1280,26 +1345,27 @@ if(fi.files.length>0){const file=fi.files[0];if(file.size>2*1024*1024){alert("�
 
 // ===== EXISTING: OWNER NOTIFICATION =====
 async function sendGlobalOwnerNotification(){
-if(!currentUser||!isOwnerAccount(currentUser))return;
-const title=document.getElementById('ownerNotifTitle').value.trim();
-const message=document.getElementById('ownerNotifMsg').value.trim();
-const audience=document.getElementById('ownerNotifAudience').value;
-const ti=document.getElementById('ownerNotifTarget').value.trim().toLowerCase();
+if(!currentUser||!isOwnerOrCoOwner(currentUser))return;
+const title=document.getElementById('ownNotifTitle').value.trim();
+const message=document.getElementById('ownNotifMsg').value.trim();
+const audience=document.getElementById('ownNotifAudience').value;
+const ti=document.getElementById('ownNotifTarget').value.trim().toLowerCase();
 if(!title||!message){alert("❌ Fill Title and Message!");return;}
 if(audience==='specific'&&!ti){alert("❌ Enter target!");return;}
+const senderRole=getSenderRoleLabel(currentUser);
 const nid="NOTIF-"+Date.now();
-const nd={id:nid,title,message,sender:currentUser.displayName||currentUser.name||"Owner",timestamp:Date.now()};
+const nd={id:nid,title,message,sender:currentUser.displayName||currentUser.name||"Staff",senderRole,timestamp:Date.now()};
 let ep=`${FIREBASE_BASE_URL}/notifications/${nid}.json`;
 if(audience==='specific')ep=`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(ti)}/${nid}.json`;
-try{await fetch(ep,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`📢 Sent!`);document.getElementById('ownerNotifTitle').value="";document.getElementById('ownerNotifMsg').value="";syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}
+try{await fetch(ep,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`📢 Sent!`);document.getElementById('ownNotifTitle').value="";document.getElementById('ownNotifMsg').value="";syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}
 }
 
 // ===== EXISTING: SNEAK PEEK =====
 async function uploadSneakPeek(){
 if(!currentUser||!isStaff(currentUser))return;
-const ttl=document.getElementById('sneakTitle').value.trim();
-const dsc=document.getElementById('sneakDesc').value.trim();
-const fi=document.getElementById('sneakImage');
+const ttl=document.getElementById('ownSneakTitle').value.trim();
+const dsc=document.getElementById('ownSneakDesc').value.trim();
+const fi=document.getElementById('ownSneakImage');
 if(!ttl||!dsc||fi.files.length===0){alert("❌ Fill all!");return;}
 const file=fi.files[0];if(file.size>2*1024*1024){alert("❌ Max 2MB!");return;}
 const r=new FileReader();
@@ -1308,19 +1374,19 @@ try{await fetch(`${FIREBASE_BASE_URL}/sneak_peeks/${sid}.json`,{method:"PUT",hea
 r.readAsDataURL(file);
 }
 
-// ===== EXISTING: GRANT COINS =====
-function grantCoinsToUser(){
-if(!currentUser||!isOwnerAccount(currentUser)){alert("❌ Owner only.");return;}
-const ti=(document.getElementById('grantTargetIdentifier').value||'').trim().toLowerCase();
-const ca=document.getElementById('grantCoinAmount').value;
+// ===== EXISTING: GRANT COINS (now also available to Admin) =====
+function grantCoinsToUser(prefix){
+if(!currentUser||!isUserAdmin(currentUser)){alert("❌ Admin+ only.");return;}
+const ti=(document.getElementById(prefix+'GrantTarget').value||'').trim().toLowerCase();
+const ca=document.getElementById(prefix+'GrantAmount').value;
 if(!ti){alert("❌ Enter target!");return;}
-const cta=parseInt(ca,10);if(isNaN(cta)||cta<=0){alert("❌ Valid!");return;}
+const cta=parseInt(ca,10);if(isNaN(cta)||cta<=0){alert("❌ Valid amount required!");return;}
 let au=safeGetJSON('app_users_db',[]);
 let fi=au.findIndex(u=>String(u.rblxUserId||'').toLowerCase()===ti||(u.gmail||'').toLowerCase()===ti||(u.username||'').toLowerCase()===ti);
-if(fi!==-1){au[fi].points=(au[fi].points||0)+cta;localStorage.setItem('app_users_db',JSON.stringify(au));fetch(`${FIREBASE_BASE_URL}/users/${au[fi].rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(au[fi])}).catch(()=>{});alert(`✅ Granted ${cta}!`);renderStaffCommandsPage();}else alert("❌ Not found.");
+if(fi!==-1){au[fi].points=(au[fi].points||0)+cta;localStorage.setItem('app_users_db',JSON.stringify(au));fetch(`${FIREBASE_BASE_URL}/users/${au[fi].rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(au[fi])}).catch(()=>{});alert(`✅ Granted ${cta} Coins!`);}else alert("❌ Not found.");
 }
 
-async function handleReportAction(rid,action){if(!currentUser||!isStaff(currentUser))return;const r=globalReports.find(x=>x.id===rid);if(!r)return;try{await fetch(`${FIREBASE_BASE_URL}/reports/${rid}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(action)});const nid="NOTIF-REPLY-"+Date.now();const nd={id:nid,title:`Your report was ${action} by ${currentUser.username}`,message:`Your report regarding "${r.reason}" has been ${action}.`,timestamp:Date.now()};for(const id of [String(r.reporterId||'').toLowerCase()]){if(!id)continue;await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(id)}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});}alert(`✅ Report ${action}!`);syncRealtimeDatabase();}catch(e){alert("❌ Error.");}}
+async function handleReportAction(rid,action){if(!currentUser||!isStaff(currentUser))return;const r=globalReports.find(x=>x.id===rid);if(!r)return;try{await fetch(`${FIREBASE_BASE_URL}/reports/${rid}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(action)});const nid="NOTIF-REPLY-"+Date.now();const senderRole=getSenderRoleLabel(currentUser);const nd={id:nid,title:`Your report was ${action} by ${senderRole}`,message:`Your report regarding "${r.reason}" has been ${action}.`,timestamp:Date.now()};for(const id of [String(r.reporterId||'').toLowerCase()]){if(!id)continue;await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(id)}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});}alert(`✅ Report ${action}!`);syncRealtimeDatabase();}catch(e){alert("❌ Error.");}}
 
 // ===== REPORT SUBMIT =====
 function selectReportType(t){selectedReportType=t;renderSettingsPage();}
@@ -1446,7 +1512,6 @@ const n=document.getElementById('logName').value.trim().toLowerCase();
 const p=document.getElementById('logPass').value.trim();
 const eu=au.find(u=>((u.name||'').toLowerCase()===n||(u.username||'').toLowerCase()===n||(u.gmail||'').toLowerCase()===n||String(u.rblxUserId||'')===n)&&String(u.password||'')===String(p));
 if(!eu){alert("❌ Invalid!");return;}
-// NEW: block banned/kicked users at login
 if(eu.isBanned){showBanScreen(eu.banReason,eu.bannedBy);return;}
 if(eu.kickUntil&&eu.kickUntil>Date.now()){showKickScreen(eu.kickUntil,eu.kickReason,eu.kickedBy);return;}
 currentUser=eu;
@@ -1491,7 +1556,7 @@ function selectAIChat(id){activeAIChatId=id;renderAIPage();}
 function deleteCurrentAIChat(){let c=getAIChats().filter(x=>x.id!==activeAIChatId);saveAIChats(c);activeAIChatId=c.length>0?c[0].id:null;openXdrgAI();}
 function switchAIModel(m){currentAIModel=m;}
 function renderAIPage(){let c=getAIChats();let ac=c.find(x=>x.id===activeAIChatId)||c[0];let clh=c.map(x=>`<li class="ai-chat-item ${x.id===ac?.id?'active':''}" onclick="selectAIChat('${x.id}')">💬 ${x.title}</li>`).join('');let mh='';if(ac&&ac.messages)ac.messages.forEach(m=>{const iU=m.role==="user";const ft=m.text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');mh+=`<div class="ai-msg-bubble ${iU?'ai-msg-user':'ai-msg-assistant'}"><b>${iU?'You':'XDRG AI'}:</b><br>${ft}</div>`;});document.getElementById('pageContent').innerHTML=`<div class="ai-layout"><div class="ai-history-panel"><h4>Chat History</h4><button onclick="createNewAIChat()" class="btn-save" style="width:100%;margin-bottom:10px;font-size:.8rem">+ New Chat</button><ul class="ai-chat-list">${clh}</ul><button onclick="deleteCurrentAIChat()" style="margin-top:15px;background:none;border:1px solid #f5c6cb;color:#721c24;cursor:pointer;padding:5px;border-radius:4px;font-size:.75rem">Delete</button></div><div class="ai-main-chat"><div class="ai-header-bar"><select onchange="switchAIModel(this.value)" class="model-selector"><option value="Xdrg Pro 3.5">Xdrg Pro 3.5</option><option value="Xdrg Flash">Xdrg Flash</option><option value="Xdrg Lite">Xdrg Lite</option></select></div><div class="ai-messages-container" id="aiMsgContainer">${mh}</div><form onsubmit="handleAISend(event)" class="ai-input-bar"><input type="text" id="aiUserInput" placeholder="Ask..." autocomplete="off" required><button type="submit" class="ai-send-btn">Send</button></form></div></div>`;const cont=document.getElementById('aiMsgContainer');if(cont)cont.scrollTop=cont.scrollHeight;}
-async function handleAISend(event){event.preventDefault();const i=document.getElementById('aiUserInput');const p=(i.value||'').trim();if(!p)return;let c=getAIChats();let ac=c.find(x=>x.id===activeAIChatId);if(!ac)return;ac.messages.push({role:"user",text:p});if(ac.title==="New")ac.title=p.substring(0,22)+"...";i.value="";renderAIPage();setTimeout(()=>{const lp=p.toLowerCase();let r="";if(lp.includes("cash"))r=`💰 Cash Out: 10,000 Coins = ₱1.00. Code format: xdrg###### — 5 min validity.`;else if(lp.includes("daily"))r=`🎁 Daily Reward: 7-day cycle. Day 7 gives 100 coins bonus. Claim via notification bell or Quest page.`;else if(lp.includes("friend"))r=`👥 Profile Viewers to add friends. Friend Confirmation to manage requests.`;else if(lp.includes("mic")||lp.includes("camera"))r=`🎙️📷 Mic & Camera require HTTPS. Click the buttons in Messenger to grant permission.`;else if(lp.includes("ban")||lp.includes("kick")||lp.includes("warn"))r=`🛡️ Staff tools: Moderator can kick 1–7 days. Admin can kick 1–30 days. Owner can kick 1–100 days. Ban = permanent. Warn sends a notification to the target user.`;else r=`🤖 **[${currentAIModel}]** Received: "${p}".`;ac.messages.push({role:"assistant",text:r});saveAIChats(c);renderAIPage();},400);}
+async function handleAISend(event){event.preventDefault();const i=document.getElementById('aiUserInput');const p=(i.value||'').trim();if(!p)return;let c=getAIChats();let ac=c.find(x=>x.id===activeAIChatId);if(!ac)return;ac.messages.push({role:"user",text:p});if(ac.title==="New")ac.title=p.substring(0,22)+"...";i.value="";renderAIPage();setTimeout(()=>{const lp=p.toLowerCase();let r="";if(lp.includes("cash"))r=`💰 Cash Out: 10,000 Coins = ₱1.00. Code format: xdrg###### — 5 min validity.`;else if(lp.includes("daily"))r=`🎁 Daily Reward: 7-day cycle. Day 7 gives 100 coins bonus. Claim via notification bell or Quest page.`;else if(lp.includes("friend"))r=`👥 Profile Viewers to add friends. Friend Confirmation to manage requests.`;else if(lp.includes("mic")||lp.includes("camera"))r=`🎙️📷 Mic & Camera require HTTPS. Click the buttons in Messenger to grant permission.`;else if(lp.includes("ban")||lp.includes("kick")||lp.includes("warn"))r=`🛡️ Staff tools: Moderator can kick 1–7 days. Admin can kick 1–30 days. Owner/Co-Owner can kick 1–100 days. Ban = permanent. Warn sends a notification to the target user.`;else r=`🤖 **[${currentAIModel}]** Received: "${p}".`;ac.messages.push({role:"assistant",text:r});saveAIChats(c);renderAIPage();},400);}
 
 function openSneakPeek(){document.getElementById('pageTitle').innerText='👀 Sneak Peek';document.getElementById('pageContent').innerHTML=`<p>Latest from developers!</p><div id="sneakPeekGrid" class="sneak-grid"></div>`;fetchSneakPeeks();}
 async function fetchSneakPeeks(){try{const r=await fetch(`${FIREBASE_BASE_URL}/sneak_peeks.json`);if(r.ok){const d=await r.json();globalSneakPeeks=[];if(d)Object.keys(d).forEach(id=>globalSneakPeeks.push({id,...d[id]}));globalSneakPeeks.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));renderSneakPeekContent();}}catch(e){}}
