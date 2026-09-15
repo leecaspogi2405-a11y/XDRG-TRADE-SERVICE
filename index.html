@@ -198,7 +198,10 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .saved-video-card .sv-body b{font-size:.85rem;display:block;margin-bottom:3px}
 .saved-video-card .sv-body small{color:#777;font-size:.72rem}
 
-/* ====== FULLSCREEN OVERLAY SWAP-UI (Lucky Spin & TikTok Video Shares) ====== */
+/* Verified badge inline */
+.verified-badge-inline{display:inline-block;width:16px;height:16px;vertical-align:-3px;margin-left:4px}
+
+/* ====== FULLSCREEN OVERLAY SWAP-UI (Lucky Spin & XDRG Img Shot) ====== */
 .swap-ui-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:999999;display:none;overflow-y:auto;background:radial-gradient(ellipse at top,#1b2438,#0a0d14 70%);color:#fff}
 .swap-ui-overlay.active{display:block}
 .swap-ui-topbar{position:sticky;top:0;background:rgba(10,13,20,.9);backdrop-filter:blur(10px);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.1);z-index:10}
@@ -213,7 +216,7 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .spin-pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:2.2rem;z-index:5;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
 .spin-wheel{width:100%;height:100%;border-radius:50%;border:8px solid #fbbf24;box-shadow:0 0 30px rgba(251,191,36,.5),inset 0 0 40px rgba(0,0,0,.5);transition:transform 4.5s cubic-bezier(.17,.67,.12,1);position:relative;overflow:hidden}
 .spin-labels{position:absolute;inset:0;border-radius:50%;pointer-events:none}
-.spin-label{position:absolute;top:50%;left:50%;font-size:.72rem;font-weight:900;color:#111;text-align:center;width:90px;line-height:1.15;text-shadow:0 0 3px rgba(255,255,255,.7)}
+.spin-label{position:absolute;top:50%;left:50%;font-size:.6rem;font-weight:900;color:#111;text-align:center;width:62px;line-height:1.1;text-shadow:0 0 3px rgba(255,255,255,.7)}
 .spin-label>span{display:block;transform-origin:center center}
 .spin-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;background:radial-gradient(circle,#fef3c7,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:bold;color:#111;border:4px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.4);z-index:4}
 .spin-btn{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border:none;padding:14px 40px;border-radius:30px;font-size:1.1rem;font-weight:bold;cursor:pointer;box-shadow:0 8px 20px rgba(239,68,68,.4)}
@@ -221,7 +224,7 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .spin-legend{margin-top:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-width:460px;margin-left:auto;margin-right:auto;font-size:.85rem}
 .spin-legend div{background:rgba(255,255,255,.08);padding:8px 12px;border-radius:8px;display:flex;justify-content:space-between}
 
-/* ============ TikTok Video Shares ============ */
+/* ============ XDRG Img Shot ============ */
 .tiktok-overlay{background:#000 !important;display:none;overflow:hidden !important}
 .tiktok-overlay.active{display:flex;flex-direction:column;height:100vh}
 .tt-topbar{flex-shrink:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(0,0,0,.35);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08);z-index:20}
@@ -264,7 +267,7 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .tt-play-pause{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:4rem;color:rgba(255,255,255,.9);pointer-events:none;opacity:0;transition:opacity .2s}
 .tt-item.paused .tt-play-pause{opacity:1}
 
-/* Upload modal (TikTok style) */
+/* Upload modal */
 .tt-upload-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:1000001;display:none;align-items:center;justify-content:center;padding:20px}
 .tt-upload-modal.active{display:flex}
 .tt-upload-box{background:#1a1a1a;border:1px solid #333;border-radius:14px;max-width:520px;width:100%;padding:24px;color:#fff;max-height:90vh;overflow-y:auto}
@@ -274,7 +277,7 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .tt-upload-box input[type=text],.tt-upload-box textarea{width:100%;padding:10px;background:#0d0d0d;border:1px solid #333;border-radius:8px;color:#fff;font-size:.9rem;box-sizing:border-box;font-family:inherit}
 .tt-upload-box input[type=file]{width:100%;padding:12px;background:#0d0d0d;border:1px dashed #555;border-radius:8px;color:#bbb;font-size:.85rem;box-sizing:border-box;cursor:pointer}
 .tt-upload-preview{margin-top:12px;border-radius:8px;overflow:hidden;background:#000;max-height:260px;display:flex;align-items:center;justify-content:center}
-.tt-upload-preview img,.tt-upload-preview video{max-width:100%;max-height:260px;display:block}
+.tt-upload-preview img{max-width:100%;max-height:260px;display:block}
 .tt-upload-actions{display:flex;gap:10px;margin-top:20px}
 .tt-upload-actions button{flex:1;padding:12px;border-radius:8px;font-weight:bold;font-size:.95rem;cursor:pointer;border:none}
 .tt-upload-submit{background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff}
@@ -308,7 +311,7 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 <button class="cookie-banner-btn" onclick="acceptCookies()">I allow cookies</button>
 </div>
 
-<!-- ============ TIKTOK VIDEO SHARES OVERLAY ============ -->
+<!-- ============ XDRG IMG SHOT OVERLAY ============ -->
 <div id="videoSharesOverlay" class="swap-ui-overlay tiktok-overlay">
   <div class="tt-topbar">
     <div class="tt-tabs">
@@ -321,26 +324,24 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
   <div class="tt-feed" id="ttFeed"></div>
   <div class="tt-bottombar">
     <button class="tt-bb-btn" onclick="openClaimedRewards()"><span class="tt-bb-icon">💰</span><span>Claimed Rewards</span></button>
-    <button class="tt-upload-btn" onclick="openUploadUI()" title="Upload">+</button>
+    <button class="tt-upload-btn" onclick="openUploadUI()" title="Upload Image">+</button>
     <button class="tt-bb-btn" onclick="goHomeFromVideo()"><span class="tt-bb-icon">🏠</span><span>Home</span></button>
   </div>
 </div>
 
-<!-- Upload modal -->
+<!-- Upload modal (Images only) -->
 <div id="uploadModal" class="tt-upload-modal">
   <div class="tt-upload-box">
-    <h3>📤 Upload Media</h3>
-    <p class="sub">Pick a video/image from your files, or paste a link. Media auto-converts.</p>
-    <label>Media File (video or image)</label>
-    <input type="file" id="ttFileInput" accept="video/*,image/*" onchange="handleUploadFile(this)">
+    <h3>🖼️ Upload Image</h3>
+    <p class="sub">Pick an image from your files. Only image files are supported.</p>
+    <label>Image File</label>
+    <input type="file" id="ttFileInput" accept="image/*" onchange="handleUploadFile(this)">
     <div class="tt-upload-preview" id="ttUploadPreview" style="display:none"></div>
-    <label>…or Media Link</label>
-    <input type="text" id="ttUploadLink" placeholder="https://... (mp4/jpg/png, or any link)" oninput="handleUploadLink(this.value)">
     <label>Title</label>
     <input type="text" id="ttUploadTitle" placeholder="Give it a title..." maxlength="80">
     <label>Description</label>
-    <textarea id="ttUploadDesc" rows="2" placeholder="Describe your media..." maxlength="240"></textarea>
-    <div class="tt-upload-info">ℹ️ Files are converted into media automatically. Max file size ≈ 6MB (larger files may crash the browser). Use a direct link for bigger media.</div>
+    <textarea id="ttUploadDesc" rows="2" placeholder="Describe your image..." maxlength="240"></textarea>
+    <div class="tt-upload-info">ℹ️ Only images are allowed. Max file size ≈ 6MB. Larger files may crash the browser.</div>
     <div class="tt-upload-actions">
       <button class="tt-upload-cancel" onclick="closeUploadUI()">Cancel</button>
       <button class="tt-upload-submit" onclick="submitUpload()">Upload</button>
@@ -413,7 +414,7 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 <h3>Help</h3>
 <ul>
 <li><a onclick="openQuests()">🎯 Quest and Trade Service</a></li>
-<li><a onclick="openVideoShares()" style="font-weight:bold;color:#ec4899">🎬 XDRG Video Shares</a></li>
+<li><a onclick="openVideoShares()" style="font-weight:bold;color:#ec4899">🖼️ XDRG Img Shot</a></li>
 <li><a onclick="openLuckySpin()" style="font-weight:bold;color:#f59e0b">🎰 Lucky Spin</a></li>
 <li><a onclick="openClaimsHistory()">📜 Claim Delivery History</a></li>
 <li><a onclick="openCashOutPage()" style="font-weight:bold;color:#28a745">💰 Money Rewards & Cash Out</a></li>
@@ -438,12 +439,6 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 <div class="mw-top-tools">
 <div id="userStatus" class="user-badge"><span>Not logged in</span></div>
 <div class="top-right-tools">
-<div style="position:relative;display:flex;align-items:center">
-<span style="font-size:1.2rem;margin-right:5px">🌐</span>
-<select id="langDropdown" onchange="setLanguage(this.value)" style="padding:5px;border-radius:4px;border:1px solid #a2a9b1;background:#fff;cursor:pointer">
-<option value="en">English</option><option value="fil">Filipino</option><option value="zh">Chinese</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="id">Indonesian</option><option value="tw">Taiwanese</option>
-</select>
-</div>
 <div class="notif-bell-btn" onclick="toggleNotifDropdown(event)">
 <svg class="notif-bell-icon" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
 <span id="notifUnreadBadge" class="notif-badge" style="display:none">0</span>
@@ -470,14 +465,28 @@ const areaMapping={"Common":"Forest Area","Rare":"City Area","Legendary":"Farm A
 const categories=[{title:"Common",units:[{name:"Bananita Dolphinita",price:250},{name:"Trippi Troppi",price:200},{name:"Gangster Footera",price:55}]},{title:"Rare",units:[{name:"Ballerina Cappuccina",price:400},{name:"Svinina Bombardino",price:150},{name:"Bombombini Gusini",price:100}]},{title:"Legendary",units:[{name:"Cappuccino Assassino",price:550},{name:"La Vacca Saturno",price:1200}]},{title:"Mythic",units:[{name:"Crab Chef",price:1300},{name:"Matteo",price:1500},{name:"Tralalero Tralala",price:1800}]},{title:"Godly",units:[{name:"Giraffa Celestre",price:3000},{name:"Odin Din Din Din",price:5000},{name:"Six Seven",price:6700}]},{title:"Limited",units:[{name:"Strawberry Elephant",price:150000},{name:"Summerini Fattini",price:1500000}]}];
 const shopItems=[{name:"Boneca Ambelabu",rarity:"Rare",price:65000,income:"25,000 /s"},{name:"Job Job Job Sahur",rarity:"Rare",price:155000,income:"80,000 /s"},{name:"Trippi Troppi Troppa",rarity:"Common",price:35000,income:"10,000 /s"},{name:"Esok Sekolah",rarity:"Mythical",price:12000000,income:"125,000 /s"},{name:"Karkerkar Kurkur",rarity:"Mythical",price:25000000000,income:"115,000 /s"},{name:"Chimpanzini Bananini",rarity:"Common",price:10000,income:"8,000 /s"},{name:"Pot Hotspot",rarity:"Rare",price:125000,income:"75,000 /s"}];
 
+// ============ VERIFIED BADGE SVG ============
+const VERIFIED_BADGE_SVG=`<svg class="verified-badge-inline" viewBox="0 0 24 24" aria-label="Verified"><title>Verified</title><path fill="#1DA1F2" d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"/></svg>`;
+function verifiedBadgeHtml(u){
+  if(!u)return '';
+  if(!u.isVerified)return '';
+  if(u.verifiedExpiry && u.verifiedExpiry < Date.now())return '';
+  return VERIFIED_BADGE_SVG;
+}
+
 // ============ LUCKY SPIN SEGMENTS ============
 const SPIN_SEGMENTS=[
-{label:"🪙 100",coins:100,weight:30,color:"#fef3c7"},
-{label:"🪙 500",coins:500,weight:25,color:"#fde68a"},
-{label:"🪙 1K",coins:1000,weight:20,color:"#fcd34d"},
-{label:"💰 10K",coins:10000,weight:15,color:"#fbbf24"},
-{label:"🧰 500K",coins:500000,weight:8,color:"#f59e0b"},
-{label:"⭐ VIP 24h",coins:0,vip:true,weight:2,color:"#7c3aed"}
+{label:"🪙 100",coins:100,weight:25,color:"#fef3c7"},
+{label:"🪙 500",coins:500,weight:20,color:"#fde68a"},
+{label:"🪙 1K",coins:1000,weight:15,color:"#fcd34d"},
+{label:"💰 10K",coins:10000,weight:10,color:"#fbbf24"},
+{label:"🧰 500K",coins:500000,weight:5,color:"#f59e0b"},
+{label:"⭐ VIP 24h",coins:0,vip:true,weight:2,color:"#7c3aed"},
+{label:"💰 PHP ₱10",cash:10,weight:8,color:"#86efac"},
+{label:"🤑 PHP ₱25",cash:25,weight:5,color:"#4ade80"},
+{label:"😭 Nothing",nothing:true,weight:7,color:"#94a3b8"},
+{label:"🎉 2 + Spin",extraSpins:2,weight:2,color:"#a78bfa"},
+{label:"🔵 Verified 1mo",verifiedTrial:true,weight:1,color:"#38bdf8"}
 ];
 
 let currentMutation=1,mutationName="Normal",currentUser=null,selectedCards=[];
@@ -493,13 +502,14 @@ let pvTab='all',pvSearch='',activeConvUserId=null;
 let activeMediaRecorder=null,activeMediaStream=null,activeCamStream=null,recordedAudioChunks=[],mediaRecordTimer=null;
 let spinAngle=0,spinInProgress=false;
 
-// TikTok state
+// XDRG Img Shot state
 let vsTab='fyt';
-let uploadFileData=null;   // {dataUrl, mediaType}
-let uploadLinkData=null;   // {url, mediaType:'link'}
+let uploadFileData=null;
 let ttObserver=null;
 
 const currencyConfig={'en':{symbol:'$',rate:0.018,paymentMethods:['PayPal','GCash','Maya'],defaultPay:'PayPal'},'fil':{symbol:'₱',rate:1.00,paymentMethods:['GCash','Maya','PayPal'],defaultPay:'GCash'},'zh':{symbol:'¥',rate:0.13,paymentMethods:['Alipay','WeChat Pay','PayPal'],defaultPay:'Alipay'},'ja':{symbol:'¥',rate:2.80,paymentMethods:['PayPay','PayPal'],defaultPay:'PayPay'},'ko':{symbol:'₩',rate:24.5,paymentMethods:['KakaoPay','PayPal'],defaultPay:'KakaoPay'},'id':{symbol:'Rp',rate:290.0,paymentMethods:['OVO','GoPay','PayPal'],defaultPay:'OVO'},'tw':{symbol:'NT$',rate:0.57,paymentMethods:['JKoPay','PayPal'],defaultPay:'JKoPay'}};
+
+const currencyLabels={'en':'US Dollar -> USD','fil':'Philippines peso -> PHP','zh':'Chinese Yuan -> CNY','ja':'Japanese Yen -> JPY','ko':'South Korean Won -> KRW','id':'Indonesian Rupiah -> IDR','tw':'New Taiwan Dollar -> TWD'};
 
 function getPaymentLogo(m){const l={'PayPal':'<svg class="payment-logo" viewBox="0 0 124 33"><path fill="#253B80" d="M46.211 6.749h-6.839a.95.95 0 0 0-.939.802l-2.766 17.537a.57.57 0 0 0 .564.658h3.265a.95.95 0 0 0 .939-.803l.746-4.73a.95.95 0 0 1 .938-.803h2.165c4.505 0 7.105-2.18 7.784-6.5.306-1.89.013-3.375-.872-4.415-.972-1.142-2.696-1.746-4.985-1.746z"/><path fill="#179BD7" d="M25.251 6.749h-6.84a.95.95 0 0 0-.938.802l-2.766 17.537a.57.57 0 0 0 .562.658h3.51a.665.665 0 0 0 .657-.561l.784-4.972a.95.95 0 0 1 .939-.803h2.164c4.506 0 7.105-2.18 7.785-6.5.306-1.89.012-3.375-.873-4.415-.971-1.142-2.694-1.746-4.984-1.746z"/></svg>','GCash':'<svg class="payment-logo" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#0070E0"/><circle cx="18" cy="20" r="8" fill="#fff"/><text x="55" y="26" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">GCash</text></svg>','Maya':'<svg class="payment-logo" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#000"/><circle cx="18" cy="20" r="6" fill="#00FF00"/><text x="58" y="27" fill="#00FF00" font-size="20" font-weight="bold" text-anchor="middle">Maya</text></svg>','Alipay':'<svg class="payment-logo" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#1677FF"/><text x="50" y="26" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">Alipay</text></svg>','WeChat Pay':'<svg class="payment-logo" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#07C160"/><text x="50" y="26" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">WeChat Pay</text></svg>','PayPay':'<svg class="payment-logo" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#FF0033"/><text x="50" y="27" fill="#fff" font-size="20" font-weight="bold" text-anchor="middle">PayPay</text></svg>','KakaoPay':'<svg class="payment-logo" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#FFEB00"/><text x="50" y="27" fill="#000" font-size="18" font-weight="bold" text-anchor="middle">KakaoPay</text></svg>','OVO':'<svg class="payment-logo" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#4C3494"/><text x="50" y="28" fill="#fff" font-size="22" font-weight="bold" text-anchor="middle">OVO</text></svg>','GoPay':'<svg class="payment-logo" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#00AA13"/><text x="50" y="27" fill="#fff" font-size="18" font-weight="bold" text-anchor="middle">GoPay</text></svg>','JKoPay':'<svg class="payment-logo" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#E30613"/><text x="50" y="27" fill="#fff" font-size="18" font-weight="bold" text-anchor="middle">JKoPay</text></svg>'};return l[m]||`<b>${m}</b>`;}
 
@@ -545,21 +555,20 @@ return Math.max(0,cd-elapsed);
 function renderLuckySpinOverlay(){
 const c=document.getElementById('luckySpinContent');
 const rem=getSpinCooldownRemaining();
-const ready=rem<=0;
+const hasExtra=currentUser&&(currentUser.extraSpins||0)>0;
+const ready=rem<=0||hasExtra;
 const n=SPIN_SEGMENTS.length;
 const segAngle=360/n;
 
-// Build conic-gradient
 let conic=[];
 SPIN_SEGMENTS.forEach((s,i)=>{
   const a=i*segAngle,b=(i+1)*segAngle;
   conic.push(`${s.color} ${a}deg ${b}deg`);
 });
 
-// Build labels with proper rotation
 let labelsHtml='<div class="spin-labels">';
 SPIN_SEGMENTS.forEach((s,i)=>{
-  const angle=i*segAngle+segAngle/2;   // center of segment measured clockwise from top
+  const angle=i*segAngle+segAngle/2;
   labelsHtml+=`<div class="spin-label" style="transform:translate(-50%,-50%) rotate(${angle}deg) translateY(-115px);">
     <span style="display:inline-block;transform:rotate(${-angle}deg);">${s.label}</span>
   </div>`;
@@ -567,6 +576,11 @@ SPIN_SEGMENTS.forEach((s,i)=>{
 labelsHtml+='</div>';
 
 let legend=SPIN_SEGMENTS.map(s=>`<div><span>${s.label}</span><small style="opacity:.7">${s.weight}%</small></div>`).join('');
+
+let btnLabel;
+if(ready && hasExtra && rem>0)btnLabel=`🎯 SPIN NOW (${currentUser.extraSpins} Extra)`;
+else if(ready)btnLabel='🎯 SPIN NOW';
+else btnLabel='⏳ '+formatSpinTime(rem);
 
 let html=`<div class="lucky-spin-wrap">
 <h2 style="color:#fbbf24;border:none;margin-bottom:8px">🎰 Lucky Spin</h2>
@@ -578,7 +592,7 @@ ${labelsHtml}
 <div class="spin-center">SPIN</div>
 </div>
 </div>
-<button class="spin-btn" id="spinBtn" ${ready?'':'disabled'} onclick="doLuckySpin()">${ready?'🎯 SPIN NOW':'⏳ '+formatSpinTime(rem)}</button>
+<button class="spin-btn" id="spinBtn" ${ready?'':'disabled'} onclick="doLuckySpin()">${btnLabel}</button>
 <div class="spin-legend">${legend}</div>
 </div>`;
 c.innerHTML=html;
@@ -599,7 +613,9 @@ function formatSpinTime(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),sec=s
 function doLuckySpin(){
 if(spinInProgress)return;
 const rem=getSpinCooldownRemaining();
-if(rem>0){alert("⏳ Wait "+formatSpinTime(rem)+" more.");return;}
+const hasExtra=currentUser&&(currentUser.extraSpins||0)>0;
+const useExtra=rem>0&&hasExtra;
+if(rem>0&&!hasExtra){alert("⏳ Wait "+formatSpinTime(rem)+" more.");return;}
 spinInProgress=true;
 const btn=document.getElementById('spinBtn');if(btn)btn.disabled=true;
 
@@ -610,9 +626,6 @@ for(let i=0;i<SPIN_SEGMENTS.length;i++){acc+=SPIN_SEGMENTS[i].weight;if(r<=acc){
 const seg=SPIN_SEGMENTS[winnerIdx];
 const n=SPIN_SEGMENTS.length;
 const segAngle=360/n;
-// Pointer is at top (0deg). We want segment's center to land under pointer.
-// Center of segment i is at (i*segAngle + segAngle/2) clockwise from top.
-// To bring it to top (0deg), rotate by -(center) i.e. 360-(center), plus full spins.
 const center=winnerIdx*segAngle+segAngle/2;
 const targetAngle=360*5+(360-center);
 spinAngle=targetAngle;
@@ -621,15 +634,48 @@ if(wheel)wheel.style.transform=`rotate(${targetAngle}deg)`;
 
 setTimeout(async ()=>{
   spinInProgress=false;
-  const key='spin_last_'+((currentUser&&currentUser.rblxUserId)||'guest');
-  localStorage.setItem(key,JSON.stringify(Date.now()));
+  if(useExtra){
+    currentUser.extraSpins=(currentUser.extraSpins||0)-1;
+    saveUserData();
+  } else {
+    const key='spin_last_'+((currentUser&&currentUser.rblxUserId)||'guest');
+    localStorage.setItem(key,JSON.stringify(Date.now()));
+  }
   let msg='';
   if(seg.vip){
     if(currentUser){currentUser.isVIP=true;saveUserData();updateUserStatusHeader();}
     msg='⭐ VIP 24 hours!';
     const exp=Date.now()+24*3600*1000;
     localStorage.setItem('vip_temp_expiry_'+((currentUser&&currentUser.rblxUserId)||'guest'),JSON.stringify(exp));
-  }else{
+  } else if(seg.cash){
+    if(currentUser){
+      currentUser.cashBalance=(currentUser.cashBalance||0)+seg.cash;
+      saveUserData();
+    }
+    msg=`💰 PHP ₱${seg.cash}!`;
+  } else if(seg.nothing){
+    msg='😭 Nothing this time!';
+  } else if(seg.extraSpins){
+    if(currentUser){
+      currentUser.extraSpins=(currentUser.extraSpins||0)+seg.extraSpins;
+      saveUserData();
+    }
+    msg=`🎉 ${seg.extraSpins} Extra Spins added!`;
+  } else if(seg.verifiedTrial){
+    if(currentUser){
+      currentUser.isVerified=true;
+      currentUser.verifiedExpiry=Date.now()+30*24*3600*1000;
+      saveUserData();
+      updateUserStatusHeader();
+      const nid="VBSPIN-"+Date.now();
+      const nd={id:nid,title:"you receive an Verified Badge from Lucky Spin",message:"congratulations you been receive an Verified Badge to use it click this button",timestamp:Date.now(),isVerifiedBadge:true};
+      try{
+        await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(currentUser.rblxUserId||'').toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});
+      }catch(e){}
+      globalNotifications.unshift(nd);
+    }
+    msg='🔵 Verified Badge (1-month trial)!';
+  } else if(seg.coins){
     if(currentUser){currentUser.points=(currentUser.points||0)+seg.coins;saveUserData();updateUserStatusHeader();}
     msg=`🪙 ${seg.coins.toLocaleString()} Coins!`;
   }
@@ -643,23 +689,40 @@ setTimeout(async ()=>{
 },4600);
 }
 
-// ============ VIDEO SHARES (TikTok UI) ============
-function generateVideoShareCode(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let code='xdrgvideo';for(let i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];return code;}
-function getAllVideoShares(){return safeGetJSON('xdrg_video_shares',[]);}
-function saveAllVideoShares(v){localStorage.setItem('xdrg_video_shares',JSON.stringify(v));}
+// ============ XDRG IMG SHOT ============
+function generateImgShotCode(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let code='xdrgimg';for(let i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];return code;}
+function getAllImgShots(){return safeGetJSON('xdrg_img_shots',[]);}
+function saveAllImgShots(v){localStorage.setItem('xdrg_img_shots',JSON.stringify(v));}
+// Backward compat: migrate old video shares keys that only contain images
+function migrateOldVideoShares(){
+  try{
+    const old=safeGetJSON('xdrg_video_shares',null);
+    if(Array.isArray(old)&&old.length>0){
+      const cur=getAllImgShots();
+      const map={};cur.forEach(v=>map[v.id]=v);
+      old.forEach(v=>{
+        // Only import image entries
+        if(v&&v.mediaType==='image'){ if(!map[v.id])map[v.id]=v; }
+        else if(v&&v.mediaType&&v.mediaType!=='image'){ /* skip */ }
+        else if(v&&v.media){ if(!map[v.id])map[v.id]=v; }
+      });
+      saveAllImgShots(Object.values(map));
+    }
+  }catch(e){}
+}
 
 function openVideoShares(){
   vsTab='fyt';
   document.querySelectorAll('.tt-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab==='fyt'));
   applyUserBgToVideoOverlay();
   openSwapUI('videoSharesOverlay');
-  renderVideoFeed();
+  renderImgShotFeed();
 }
 
 function setVsTab(tab){
   vsTab=tab;
   document.querySelectorAll('.tt-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
-  renderVideoFeed();
+  renderImgShotFeed();
 }
 
 function applyUserBgToVideoOverlay(){
@@ -678,10 +741,9 @@ function applyUserBgToVideoOverlay(){
   else if(bg==='custom_img'&&currentUser.customBgImg){ov.style.backgroundImage=`linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.85)),url('${currentUser.customBgImg}')`;}
 }
 
-function getFilteredVideoShares(){
-  const all=getAllVideoShares();
+function getFilteredImgShots(){
+  const all=getAllImgShots();
   if(!currentUser)return all;
-  const meId=String(currentUser.rblxUserId);
   if(vsTab==='friends'){
     const fids=(currentUser.friends||[]).map(String);
     return all.filter(v=>fids.includes(String(v.uploaderId)));
@@ -690,7 +752,6 @@ function getFilteredVideoShares(){
     const fls=(currentUser.following||[]).map(String);
     return all.filter(v=>fls.includes(String(v.uploaderId)));
   }
-  // FYT = all, newest first but slightly shuffled
   return all.slice().sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
 }
 
@@ -699,16 +760,16 @@ function isFollowingUser(uid){
   return (currentUser.following||[]).map(String).includes(String(uid));
 }
 
-function renderVideoFeed(){
+function renderImgShotFeed(){
   const feed=document.getElementById('ttFeed');
   if(!feed)return;
   if(ttObserver){ttObserver.disconnect();ttObserver=null;}
 
   const meId=currentUser?String(currentUser.rblxUserId):'guest';
-  const list=getFilteredVideoShares().reverse(); // newest first in feed scroll direction
+  const list=getFilteredImgShots().reverse();
 
   if(list.length===0){
-    feed.innerHTML=`<div class="tt-item"><div class="tt-empty">📭 No videos here yet.<br>Tap <b>+</b> below to upload the first one!</div></div>`;
+    feed.innerHTML=`<div class="tt-item"><div class="tt-empty">📭 No images here yet.<br>Tap <b>+</b> below to upload the first one!</div></div>`;
     return;
   }
 
@@ -718,27 +779,24 @@ function renderVideoFeed(){
     const following=isFollowingUser(v.uploaderId);
     const isMe=String(v.uploaderId)===meId;
     const avatar=getRobloxAvatarUrl(v.uploaderId);
+    // find uploader for verified badge
+    const allUsers=safeGetJSON('app_users_db',[]);
+    const uploader=allUsers.find(u=>String(u.rblxUserId)===String(v.uploaderId));
+    const vb=verifiedBadgeHtml(uploader);
+
     let mediaHtml='';
-    if(v.mediaType==='video'&&v.media){
-      mediaHtml=`<video class="tt-media" src="${v.media}" loop muted playsinline preload="metadata" poster="${v.thumb||''}"></video>`;
-    }else if(v.mediaType==='image'&&v.media){
+    if(v.media){
       mediaHtml=`<img class="tt-media" src="${v.media}" alt="">`;
-    }else if(v.media){
-      // fallback: use thumb, click opens link
-      mediaHtml=`<img class="tt-media" src="${v.thumb||v.media}" alt="" onclick="window.open('${v.media}','_blank')">`;
-    }else if(v.thumb){
-      mediaHtml=`<img class="tt-media" src="${v.thumb}" alt="">`;
     }else{
-      mediaHtml=`<div class="tt-media" style="display:flex;align-items:center;justify-content:center;font-size:6rem;">🎬</div>`;
+      mediaHtml=`<div class="tt-media" style="display:flex;align-items:center;justify-content:center;font-size:6rem;">🖼️</div>`;
     }
     return `<div class="tt-item" data-vid="${v.id}">
       ${mediaHtml}
-      <div class="tt-play-pause">▶</div>
       <div class="tt-overlay-left">
         <div class="tt-uploader-row">
           <img class="tt-avatar" src="${avatar}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'" onclick="viewUploaderProfile('${v.uploaderId}')">
           <div>
-            <div class="tt-uploader-name" onclick="viewUploaderProfile('${v.uploaderId}')">@${v.uploaderUsername||'user'}</div>
+            <div class="tt-uploader-name" onclick="viewUploaderProfile('${v.uploaderId}')">@${v.uploaderUsername||'user'}${vb}</div>
           </div>
         </div>
         <div class="tt-title">${v.title||'Untitled'}</div>
@@ -753,58 +811,28 @@ function renderVideoFeed(){
           <span class="tt-action-icon">${following?'✓':'➕'}</span>
           <span>${following?'Following':'Follow'}</span>
         </button>`}
-        <button class="tt-action ${liked?'liked':''}" onclick="toggleVideoLike('${v.id}')">
+        <button class="tt-action ${liked?'liked':''}" onclick="toggleImgShotLike('${v.id}')">
           <span class="tt-action-icon">${liked?'❤️':'🤍'}</span>
           <span>${(v.likes||[]).length}</span>
         </button>
-        <button class="tt-action" onclick="showVideoComments('${v.id}')">
+        <button class="tt-action" onclick="showImgShotComments('${v.id}')">
           <span class="tt-action-icon">💬</span>
           <span>0</span>
         </button>
-        <button class="tt-action ${saved?'saved':''}" onclick="toggleVideoSave('${v.id}')">
+        <button class="tt-action ${saved?'saved':''}" onclick="toggleImgShotSave('${v.id}')">
           <span class="tt-action-icon">${saved?'⭐':'🔖'}</span>
           <span>${saved?'Saved':'Save'}</span>
         </button>
-        <button class="tt-action" onclick="shareVideoShare('${v.id}')">
+        <button class="tt-action" onclick="shareImgShot('${v.id}')">
           <span class="tt-action-icon">↗️</span>
           <span>${v.views||0}👁</span>
         </button>
       </div>
     </div>`;
   }).join('');
-
-  // Setup IntersectionObserver for autoplay
-  setTimeout(()=>{
-    const items=feed.querySelectorAll('.tt-item');
-    ttObserver=new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        const video=entry.target.querySelector('video');
-        if(!video)return;
-        if(entry.isIntersecting){
-          video.muted=false;
-          video.play().catch(()=>{video.muted=true;video.play().catch(()=>{});});
-          entry.target.classList.remove('paused');
-        }else{
-          video.pause();
-          entry.target.classList.add('paused');
-        }
-      });
-    },{threshold:0.6});
-    items.forEach(it=>ttObserver.observe(it));
-
-    // click to toggle pause/play
-    items.forEach(it=>{
-      it.addEventListener('click',(e)=>{
-        if(e.target.closest('.tt-action')||e.target.closest('.tt-uploader-name')||e.target.closest('.tt-avatar'))return;
-        const v=it.querySelector('video');if(!v)return;
-        if(v.paused){v.play().catch(()=>{});it.classList.remove('paused');}
-        else{v.pause();it.classList.add('paused');}
-      });
-    });
-  },50);
 }
 
-function showVideoComments(id){alert("💬 Comments coming soon!");}
+function showImgShotComments(id){alert("💬 Comments coming soon!");}
 
 function viewUploaderProfile(uid){
   if(!uid)return;
@@ -831,27 +859,27 @@ function renderClaimedRewards(){
   if(!c)return;
   if(!currentUser){c.innerHTML='<p style="text-align:center;color:#94a3b8">Login required.</p>';return;}
   const meId=String(currentUser.rblxUserId);
-  const myVideos=getAllVideoShares().filter(v=>String(v.uploaderId)===meId);
-  const totalViews=myVideos.reduce((s,v)=>s+(v.views||0),0);
-  const totalLikes=myVideos.reduce((s,v)=>s+(v.likes||[]).length,0);
+  const myImgs=getAllImgShots().filter(v=>String(v.uploaderId)===meId);
+  const totalViews=myImgs.reduce((s,v)=>s+(v.views||0),0);
+  const totalLikes=myImgs.reduce((s,v)=>s+(v.likes||[]).length,0);
   const totalFollowers=(currentUser.followers||[]).length;
-  const followersBonus=totalFollowers*10;      // 10 coins per follower
-  const likesBonus=totalLikes*5;               // 5 coins per like
-  const viewsBonus=Math.floor(totalViews/10);  // 1 coin per 10 views
+  const followersBonus=totalFollowers*10;
+  const likesBonus=totalLikes*5;
+  const viewsBonus=Math.floor(totalViews/10);
   const totalEarned=followersBonus+likesBonus+viewsBonus;
   const sym=getCurrencySymbol();
   const estCash=(totalEarned/10000).toFixed(2);
 
-  let videoRows='';
-  if(myVideos.length===0){
-    videoRows='<div style="text-align:center;color:#94a3b8;padding:16px">No uploads yet.</div>';
+  let imgRows='';
+  if(myImgs.length===0){
+    imgRows='<div style="text-align:center;color:#94a3b8;padding:16px">No uploads yet.</div>';
   }else{
-    videoRows=myVideos.map(v=>{
+    imgRows=myImgs.map(v=>{
       const vLikes=(v.likes||[]).length;
       const vViews=v.views||0;
       const earned=vLikes*5+Math.floor(vViews/10);
       return `<div class="rev-video-row">
-        <img src="${v.thumb||(v.mediaType==='image'?v.media:'')}" onerror="this.style.background='#333'">
+        <img src="${v.media||''}" onerror="this.style.background='#333'">
         <div class="rv-info"><b>${v.title||'Untitled'}</b><small>👁 ${vViews} · ❤️ ${vLikes} · ${v.code||''}</small></div>
         <div class="rv-earn">+${earned.toLocaleString()}<br><small style="color:#94a3b8;font-weight:400">Coins</small></div>
       </div>`;
@@ -868,11 +896,11 @@ function renderClaimedRewards(){
       <div class="rev-card"><div class="rc-icon">👁</div><div class="rc-value">${totalViews.toLocaleString()}</div><div class="rc-label">Total Views</div></div>
       <div class="rev-card"><div class="rc-icon">❤️</div><div class="rc-value">${totalLikes.toLocaleString()}</div><div class="rc-label">Total Likes</div></div>
       <div class="rev-card"><div class="rc-icon">👥</div><div class="rc-value">${totalFollowers.toLocaleString()}</div><div class="rc-label">Followers</div></div>
-      <div class="rev-card"><div class="rc-icon">🎬</div><div class="rc-value">${myVideos.length}</div><div class="rc-label">Uploads</div></div>
+      <div class="rev-card"><div class="rc-icon">🖼️</div><div class="rc-value">${myImgs.length}</div><div class="rc-label">Uploads</div></div>
     </div>
     <div class="rev-video-list">
-      <h3 style="margin:0 0 12px 0;color:#fff;font-size:1.05rem">📊 Per-Video Earnings</h3>
-      ${videoRows}
+      <h3 style="margin:0 0 12px 0;color:#fff;font-size:1.05rem">📊 Per-Image Earnings</h3>
+      ${imgRows}
     </div>
     <p style="color:#94a3b8;font-size:.8rem;text-align:center;margin-top:16px">
       Earning rate: 10 Coins per follower · 5 Coins per like · 1 Coin per 10 views
@@ -880,12 +908,11 @@ function renderClaimedRewards(){
   </div>`;
 }
 
-// ===== Upload flow =====
+// ===== Upload flow (image only) =====
 function openUploadUI(){
   if(!currentUser){alert("❌ Please log in first.");return;}
-  uploadFileData=null;uploadLinkData=null;
+  uploadFileData=null;
   document.getElementById('ttFileInput').value='';
-  document.getElementById('ttUploadLink').value='';
   document.getElementById('ttUploadTitle').value='';
   document.getElementById('ttUploadDesc').value='';
   const prev=document.getElementById('ttUploadPreview');
@@ -897,38 +924,17 @@ function closeUploadUI(){document.getElementById('uploadModal').classList.remove
 function handleUploadFile(input){
   const file=input.files&&input.files[0];
   if(!file)return;
-  if(file.size>6*1024*1024){alert("❌ Max 6MB. For larger files, please use a link.");input.value='';return;}
+  if(file.size>6*1024*1024){alert("❌ Max 6MB.");input.value='';return;}
   const type=file.type||'';
-  let mediaType='image';
-  if(type.startsWith('video/'))mediaType='video';
-  else if(type.startsWith('image/'))mediaType='image';
-  else {alert("❌ Unsupported file type.");input.value='';return;}
+  if(!type.startsWith('image/')){alert("❌ Only image files are allowed here.");input.value='';return;}
   const reader=new FileReader();
   reader.onload=(e)=>{
-    uploadFileData={dataUrl:e.target.result,mediaType};
-    uploadLinkData=null;
+    uploadFileData={dataUrl:e.target.result,mediaType:'image'};
     const prev=document.getElementById('ttUploadPreview');
     prev.style.display='flex';
-    prev.innerHTML=mediaType==='video'
-      ?`<video src="${e.target.result}" controls muted style="max-width:100%;max-height:260px;"></video>`
-      :`<img src="${e.target.result}">`;
+    prev.innerHTML=`<img src="${e.target.result}">`;
   };
   reader.readAsDataURL(file);
-}
-
-function handleUploadLink(val){
-  const url=(val||'').trim();
-  if(!url){uploadLinkData=null;return;}
-  const lower=url.toLowerCase();
-  let mediaType='link';
-  if(/\.(mp4|webm|ogg|mov|m4v)(\?|$)/.test(lower))mediaType='video';
-  else if(/\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?|$)/.test(lower))mediaType='image';
-  else if(lower.includes('youtube.com')||lower.includes('youtu.be')||lower.includes('tiktok.com')||lower.includes('vimeo.com'))mediaType='link';
-  uploadLinkData={url,mediaType};
-  const prev=document.getElementById('ttUploadPreview');
-  if(mediaType==='image'){prev.style.display='flex';prev.innerHTML=`<img src="${url}">`;}
-  else if(mediaType==='video'){prev.style.display='flex';prev.innerHTML=`<video src="${url}" controls muted style="max-width:100%;max-height:260px;"></video>`;}
-  else{prev.style.display='none';prev.innerHTML='';}
 }
 
 function submitUpload(){
@@ -936,66 +942,56 @@ function submitUpload(){
   const title=(document.getElementById('ttUploadTitle').value||'').trim();
   const desc=(document.getElementById('ttUploadDesc').value||'').trim();
   if(!title){alert("❌ Please add a title.");return;}
-  let media='',mediaType='image',thumb='';
-  if(uploadFileData){
-    media=uploadFileData.dataUrl;
-    mediaType=uploadFileData.mediaType;
-  }else if(uploadLinkData&&uploadLinkData.url){
-    media=uploadLinkData.url;
-    mediaType=uploadLinkData.mediaType==='link'?'link':uploadLinkData.mediaType;
-  }else{
-    alert("❌ Pick a file or paste a link.");return;
-  }
-  const code=generateVideoShareCode();
-  const vid="VID-"+Date.now();
+  if(!uploadFileData||!uploadFileData.dataUrl){alert("❌ Please pick an image file.");return;}
+  const code=generateImgShotCode();
+  const vid="IMG-"+Date.now();
   const obj={
     id:vid,code,title,description:desc,
-    media,mediaType,thumb,
+    media:uploadFileData.dataUrl,mediaType:'image',thumb:'',
     uploaderId:String(currentUser.rblxUserId),
     uploaderName:currentUser.displayName||currentUser.name,
     uploaderUsername:currentUser.username,
     views:0,likes:[],savedBy:[],timestamp:Date.now()
   };
-  const all=getAllVideoShares();all.push(obj);saveAllVideoShares(all);
-  // Sync to Firebase
-  fetch(`${FIREBASE_BASE_URL}/video_shares/${vid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(obj)}).catch(()=>{});
+  const all=getAllImgShots();all.push(obj);saveAllImgShots(all);
+  fetch(`${FIREBASE_BASE_URL}/img_shots/${vid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(obj)}).catch(()=>{});
   closeUploadUI();
   alert(`✅ Uploaded!\nShare code: ${code}`);
   vsTab='fyt';
   document.querySelectorAll('.tt-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab==='fyt'));
-  renderVideoFeed();
+  renderImgShotFeed();
 }
 
 // ===== Likes / Saves / Shares =====
-function toggleVideoLike(id){
+function toggleImgShotLike(id){
   if(!currentUser){alert("❌ Log in first.");return;}
   const me=String(currentUser.rblxUserId);
-  const all=getAllVideoShares();
+  const all=getAllImgShots();
   const v=all.find(x=>x.id===id);if(!v)return;
   if(!v.likes)v.likes=[];
   const idx=v.likes.map(String).indexOf(me);
   if(idx===-1)v.likes.push(me);else v.likes.splice(idx,1);
-  saveAllVideoShares(all);
-  fetch(`${FIREBASE_BASE_URL}/video_shares/${id}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)}).catch(()=>{});
-  renderVideoFeed();
+  saveAllImgShots(all);
+  fetch(`${FIREBASE_BASE_URL}/img_shots/${id}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)}).catch(()=>{});
+  renderImgShotFeed();
 }
 
-function toggleVideoSave(id){
+function toggleImgShotSave(id){
   if(!currentUser){alert("❌ Log in first.");return;}
   const me=String(currentUser.rblxUserId);
-  const all=getAllVideoShares();
+  const all=getAllImgShots();
   const v=all.find(x=>x.id===id);if(!v)return;
   if(!v.savedBy)v.savedBy=[];
   const idx=v.savedBy.map(String).indexOf(me);
   if(idx===-1)v.savedBy.push(me);else v.savedBy.splice(idx,1);
-  saveAllVideoShares(all);
-  fetch(`${FIREBASE_BASE_URL}/video_shares/${id}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)}).catch(()=>{});
-  renderVideoFeed();
+  saveAllImgShots(all);
+  fetch(`${FIREBASE_BASE_URL}/img_shots/${id}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)}).catch(()=>{});
+  renderImgShotFeed();
 }
 
-function shareVideoShare(id){
-  const v=getAllVideoShares().find(x=>x.id===id);if(!v)return;
-  const url=window.location.protocol+'//'+window.location.host+window.location.pathname+'?xdrgvideo='+v.code;
+function shareImgShot(id){
+  const v=getAllImgShots().find(x=>x.id===id);if(!v)return;
+  const url=window.location.protocol+'//'+window.location.host+window.location.pathname+'?xdrgimg='+v.code;
   if(navigator.clipboard){
     navigator.clipboard.writeText(url).then(()=>alert(`🔗 Share link copied!\n\n${url}\nCode: ${v.code}`)).catch(()=>prompt("Copy this link:",url));
   }else prompt("Copy this link:",url);
@@ -1013,7 +1009,6 @@ async function followUserToggle(targetId){
   if(nowFollowing)currentUser.following.push(tid);
   else currentUser.following.splice(idx,1);
   saveUserData();
-  // Update target's followers
   const allUsers=safeGetJSON('app_users_db',[]);
   const tIdx=allUsers.findIndex(u=>String(u.rblxUserId)===tid);
   if(tIdx!==-1){
@@ -1028,7 +1023,17 @@ async function followUserToggle(targetId){
       fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(tid.toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"👥 New Follower",message:`${currentUser.name} started following you!`,timestamp:Date.now()})}).catch(()=>{});
     }
   }
-  renderVideoFeed();
+  renderImgShotFeed();
+}
+
+// ============ VERIFIED BADGE ACTIONS ============
+function activateVerifiedBadge(){
+  if(!currentUser){alert("❌ Log in first.");return;}
+  currentUser.isVerified=true;
+  saveUserData();
+  updateUserStatusHeader();
+  alert("✅ Verified Badge activated! You can now use it.");
+  renderNotificationDropdown();
 }
 
 // ============ BAN / KICK ENFORCEMENT ============
@@ -1112,6 +1117,10 @@ async function enforceBanKick(){
         currentUser.isAdmin=u.isAdmin===true||currentUser.isAdmin;
         currentUser.isMod=u.isMod===true||currentUser.isMod;
         currentUser.role=u.role||currentUser.role;
+        if(u.isVerified!==undefined)currentUser.isVerified=u.isVerified;
+        if(u.verifiedExpiry!==undefined)currentUser.verifiedExpiry=u.verifiedExpiry;
+        if(u.cashBalance!==undefined)currentUser.cashBalance=u.cashBalance;
+        if(u.extraSpins!==undefined)currentUser.extraSpins=u.extraSpins;
         if(u.followers)currentUser.followers=u.followers;
         if(u.following)currentUser.following=u.following;
         localStorage.setItem('app_current_user',JSON.stringify(currentUser));
@@ -1125,10 +1134,11 @@ window.onload=()=>{
   try{
     if("Notification" in window&&Notification.permission!=="granted"&&Notification.permission!=="denied")Notification.requestPermission();
     const up=new URLSearchParams(window.location.search);
-    const vsCode=up.get('xdrgvideo');
+    const vsCode=up.get('xdrgimg')||up.get('xdrgvideo');
     const ref=up.get('ref');
     if(ref){localStorage.setItem('activeReferrer',ref);const ab=document.getElementById('refDetectAlert');if(ab){ab.innerText=`🔗 Referral Link Detected!`;ab.style.display='block';}}
-    const sl=localStorage.getItem('app_language')||'en';currentLanguage=sl;document.getElementById('langDropdown').value=sl;
+    const sl=localStorage.getItem('app_language')||'en';currentLanguage=sl;
+    migrateOldVideoShares();
     const su=safeGetJSON('app_current_user',null);
     if(su){
       currentUser=su;
@@ -1138,6 +1148,10 @@ window.onload=()=>{
       if(currentUser.friends===undefined)currentUser.friends=[];
       if(currentUser.following===undefined)currentUser.following=[];
       if(currentUser.followers===undefined)currentUser.followers=[];
+      if(currentUser.isVerified===undefined)currentUser.isVerified=false;
+      if(currentUser.verifiedExpiry===undefined)currentUser.verifiedExpiry=0;
+      if(currentUser.cashBalance===undefined)currentUser.cashBalance=0;
+      if(currentUser.extraSpins===undefined)currentUser.extraSpins=0;
       if(isOwnerAccount(currentUser)){currentUser.isOwner=true;currentUser.isAdmin=true;}
       updateUserStatusHeader();logDeviceConnection(currentUser);showWiki();
       if(currentUser.background==='custom_color')applyBackground('custom_color',currentUser.customBgColor);
@@ -1222,6 +1236,7 @@ function renderNotificationDropdown(){
     if(n.isPremiumReward&&currentUser)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background:#00c6ff" onclick="openQuests()">Claim Item</button></div>`;
     if(n.isWarning)ah=`<div style="margin-top:6px;padding:6px 8px;background:#fff3cd;border-left:3px solid #ff9800;font-size:.75rem;border-radius:3px"><b>⚠️ Warning from ${n.warnedByRole||n.warnedBy||'Staff'}</b></div>`;
     if(n.isAnnouncement)ah=`<div style="margin-top:6px;padding:6px 8px;background:#eaf3ff;border-left:3px solid #3366cc;font-size:.75rem;border-radius:3px"><b>📢 From ${n.senderRole||'Staff'}</b></div>`;
+    if(n.isVerifiedBadge)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background:#1DA1F2;padding:8px 16px" onclick="activateVerifiedBadge()">🔵 Get Verified Badge</button></div>`;
     const pinned=(n.isCashOutCode||n.isAccountLockNotif)?' pinned-notif':'';
     const pl=(n.isCashOutCode||n.isAccountLockNotif)?' <span class="notif-pinned-label">PINNED</span>':'';
     html+=`<li class="notif-item ${isR?'':'unread'}${pinned}"><div class="notif-title">${n.title||'Update'}${pl}</div><div class="notif-msg">${linkify(n.message||'')}</div><div class="notif-time">${ds}</div>${ah}</li>`;
@@ -1257,8 +1272,9 @@ function openMessenger(targetUserId){
   activeConvUserId=targetUserId;
   const isFriend=(currentUser.friends||[]).map(String).includes(String(targetUserId));
   if(!isFriend){if(!confirm("⚠️ Not friends yet. Continue anyway?"))return;}
+  const targetVb=verifiedBadgeHtml(target);
   document.getElementById('pageTitle').innerText='💌 Messenger';
-  document.getElementById('pageContent').innerHTML=`<div class="msg-layout" id="msgLayout"><div class="msg-sidebar"><div class="msg-sidebar-header">💬 Conversations</div><div id="msgConvList"></div></div><div class="msg-main"><div class="msg-header"><img src="${getRobloxAvatarUrl(target.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold">${target.name||'User'}</div><div style="font-size:.75rem;color:#54595d">@${target.username||'user'} · ${isUserOnline(target)?'🟢 Online':'⚫ Offline'}</div></div></div><div class="msg-body" id="msgBody"></div><div class="msg-input-bar" id="msgInputBar"><input type="text" id="msgInput" placeholder="Type your message here..." autocomplete="off"><button type="button" class="msg-icon-btn" title="Voice message" onclick="msgMic()">🎙️</button><button type="button" class="msg-icon-btn" title="Send photo" onclick="msgCamera()">📷</button><button type="button" class="msg-send-btn" onclick="sendMessage()">Send</button></div></div></div>`;
+  document.getElementById('pageContent').innerHTML=`<div class="msg-layout" id="msgLayout"><div class="msg-sidebar"><div class="msg-sidebar-header">💬 Conversations</div><div id="msgConvList"></div></div><div class="msg-main"><div class="msg-header"><img src="${getRobloxAvatarUrl(target.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold">${target.name||'User'}${targetVb}</div><div style="font-size:.75rem;color:#54595d">@${target.username||'user'} · ${isUserOnline(target)?'🟢 Online':'⚫ Offline'}</div></div></div><div class="msg-body" id="msgBody"></div><div class="msg-input-bar" id="msgInputBar"><input type="text" id="msgInput" placeholder="Type your message here..." autocomplete="off"><button type="button" class="msg-icon-btn" title="Voice message" onclick="msgMic()">🎙️</button><button type="button" class="msg-icon-btn" title="Send photo" onclick="msgCamera()">📷</button><button type="button" class="msg-send-btn" onclick="sendMessage()">Send</button></div></div></div>`;
   refreshMessengerUI();
 }
 
@@ -1269,7 +1285,7 @@ function refreshMessengerUI(){
   if(convList){
     const fids=(currentUser.friends||[]).map(String);
     if(fids.length===0)convList.innerHTML='<div style="padding:15px;color:#777;font-size:.85rem">No friends yet.</div>';
-    else convList.innerHTML=allUsers.filter(u=>fids.includes(String(u.rblxUserId))).map(u=>{const isActive=String(u.rblxUserId)===String(activeConvUserId);return `<div class="msg-conv ${isActive?'active':''}" onclick="openMessenger('${u.rblxUserId}')"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div style="flex:1;overflow:hidden"><div style="font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.name||'User'}</div><div style="font-size:.7rem;color:#777">@${u.username||'user'}</div></div></div>`;}).join('');
+    else convList.innerHTML=allUsers.filter(u=>fids.includes(String(u.rblxUserId))).map(u=>{const isActive=String(u.rblxUserId)===String(activeConvUserId);const vb=verifiedBadgeHtml(u);return `<div class="msg-conv ${isActive?'active':''}" onclick="openMessenger('${u.rblxUserId}')"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div style="flex:1;overflow:hidden"><div style="font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.name||'User'}${vb}</div><div style="font-size:.7rem;color:#777">@${u.username||'user'}</div></div></div>`;}).join('');
   }
   const msgBody=document.getElementById('msgBody');
   if(msgBody){
@@ -1409,8 +1425,8 @@ async function renderQuestsPage(){
   <div class="quest-box"><h3>🎁 Select Trade Reward</h3>${currentUser.isPremium?`<div style="background:#e6fffa;border:1px solid #99f6e4;padding:10px;border-radius:4px;margin-bottom:10px;font-size:.85rem;color:#0d9488">💎 Premium: 20 Coins instead of 35!${hFC?`<br>🎁 ${currentUser.premiumFreeClaims} Free Claim(s) remaining!`:''}</div>`:''}<label><b>Choose Item:</b></label><select id="selectedRewardInput" class="reward-select"><option value="Strawberry Elephant">Strawberry Elephant (${sC} Coins)</option><option value="Summerini Fattini">Summerini Fattini (${sC} Coins)</option></select><button class="btn-claim" onclick="claimRewardFirebase()">Claim Item</button></div>
   <div class="quest-box"><h3>Quest 1: Invite Friend (+25 Points)</h3><label><b>Invite Link:</b></label><div class="copy-container"><input type="text" id="inviteUrlInput" value="${ail}" readonly><button class="btn-copy" onclick="copyInviteLink()">Copy</button></div><div style="margin-top:12px;font-weight:bold;color:#005a9c">📊 Verified: <span>${di}</span></div></div>
   <div class="quest-box"><h3>Quest 2: Emoji Puzzle (+1 Pt/Level)</h3><p style="color:#54595d;font-size:.9rem">Level <span id="gameLevel">${currentUser.level||1}</span>/250</p><div class="game-grid" id="gameGrid"></div></div>
-  <div class="quest-box" style="background:linear-gradient(135deg,#fce7f3,#fff);border-color:#ec4899"><h3 style="color:#db2777;margin-top:0">🎬 XDRG Video Shares</h3><p style="font-size:.9rem;color:#54595d">Upload, like, follow, and save videos. Uploaders earn rewards for milestones!</p><button class="btn-claim" style="width:100%;background:#ec4899" onclick="openVideoShares()">🎬 Open Video Shares</button></div>
-  <div class="quest-box" style="background:linear-gradient(135deg,#fef3c7,#fff);border-color:#f59e0b"><h3 style="color:#b45309;margin-top:0">🎰 Lucky Spin</h3><p style="font-size:.9rem;color:#54595d">Spin every 30 minutes. Win up to 500,000 Coins or VIP 24h!</p><button class="btn-claim" style="width:100%;background:#f59e0b;color:#fff" onclick="openLuckySpin()">🎰 Open Lucky Spin</button></div>`;
+  <div class="quest-box" style="background:linear-gradient(135deg,#fce7f3,#fff);border-color:#ec4899"><h3 style="color:#db2777;margin-top:0">🖼️ XDRG Img Shot</h3><p style="font-size:.9rem;color:#54595d">Upload images, like, follow, and save. Uploaders earn rewards for milestones!</p><button class="btn-claim" style="width:100%;background:#ec4899" onclick="openVideoShares()">🖼️ Open XDRG Img Shot</button></div>
+  <div class="quest-box" style="background:linear-gradient(135deg,#fef3c7,#fff);border-color:#f59e0b"><h3 style="color:#b45309;margin-top:0">🎰 Lucky Spin</h3><p style="font-size:.9rem;color:#54595d">Spin every 30 minutes. Win up to 500,000 Coins, PHP cash, VIP 24h, or a Verified Badge trial!</p><button class="btn-claim" style="width:100%;background:#f59e0b;color:#fff" onclick="openLuckySpin()">🎰 Open Lucky Spin</button></div>`;
 
   let ph='';const lvt=currentUser.lastVoteTime||0;const oh=3600000;
   if(globalPolls.length===0)ph=`<div style="padding:15px;text-align:center;color:#777">No active polls.</div>`;
@@ -1473,10 +1489,10 @@ function renderProfileViewersContent(){
     const isFollowing=currentUser&&(currentUser.following||[]).map(String).includes(String(u.rblxUserId));
     const followerCount=(u.followers||[]).length;
     const followingCount=(u.following||[]).length;
-    // count likes received from videos
-    const allVids=getAllVideoShares();
-    const userVideos=allVids.filter(v=>String(v.uploaderId)===String(u.rblxUserId));
-    const totalLikes=userVideos.reduce((s,v)=>s+(v.likes||[]).length,0);
+    const allImgs=getAllImgShots();
+    const userImgs=allImgs.filter(v=>String(v.uploaderId)===String(u.rblxUserId));
+    const totalLikes=userImgs.reduce((s,v)=>s+(v.likes||[]).length,0);
+    const vb=verifiedBadgeHtml(u);
     let fb='';
     if(!isMe){
       if(fs==='friends')fb=`<button class="pv-btn pv-btn-friend friends" onclick="openMessenger('${u.rblxUserId}')">✅ Friends — Chat</button>`;
@@ -1485,7 +1501,7 @@ function renderProfileViewersContent(){
       else fb=`<button class="pv-btn pv-btn-friend" onclick="sendFriendRequest('${u.rblxUserId}')">➕ Add Friend</button>`;
     }
     const followBtn=isMe?'':`<button class="pv-btn" style="background:${isFollowing?'#28a745':'#ec4899'};" onclick="followUserToggle('${u.rblxUserId}');setTimeout(renderProfileViewersContent,150);">${isFollowing?'✓ Following':'➕ Follow'}</button>`;
-    return `<div class="pv-card"><div class="pv-card-header"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold;font-size:1rem">${u.name||'Unknown'} ${isMe?'(You)':''}</div><div style="color:#54595d;font-size:.8rem">@${u.username||'user'}</div><div style="font-size:.75rem;margin-top:3px">${getRoleLabel(u)}</div></div></div><div class="pv-info"><div><b>NAME:</b> ${u.name||'N/A'}</div><div><b>NUMBER:</b> ${u.number||'N/A'}</div><div><b>GMAIL:</b> ${u.gmail||'N/A'}</div><div><b>ROLE:</b> ${getRoleLabel(u)}</div><div><b>FOLLOWERS:</b> ${followerCount}</div><div><b>FOLLOWING:</b> ${followingCount}</div><div><b>TOTAL LIKES:</b> ${totalLikes}</div><div><b>RgsNfs STATUS:</b> ${statusDot}</div><div><b>ROBLOX STATUS:</b> ${robloxOnline}</div><div><b>ROBLOX LINK:</b> <a href="${getRobloxProfileLink(u)}" target="_blank" style="color:#0645ad">${u.rblxUserId||'N/A'}</a></div><div><b>ROBLOX LAST SEEN:</b> ${robloxLastSeen(u)}</div>${u.isBanned?`<div style="color:#c82333;font-weight:bold">🚫 BANNED: ${u.banReason||'N/A'}</div>`:''}${(u.kickUntil&&u.kickUntil>Date.now())?`<div style="color:#856404;font-weight:bold">⏸️ KICKED until ${new Date(u.kickUntil).toLocaleString()}</div>`:''}</div><div class="pv-actions">${fb}${followBtn}${!isMe?`<button class="pv-btn pv-btn-message" onclick="openMessenger('${u.rblxUserId}')">💬 Message</button>`:''}</div></div>`;
+    return `<div class="pv-card"><div class="pv-card-header"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold;font-size:1rem">${u.name||'Unknown'} ${isMe?'(You)':''}${vb}</div><div style="color:#54595d;font-size:.8rem">@${u.username||'user'}</div><div style="font-size:.75rem;margin-top:3px">${getRoleLabel(u)}</div></div></div><div class="pv-info"><div><b>NAME:</b> ${u.name||'N/A'}</div><div><b>NUMBER:</b> ${u.number||'N/A'}</div><div><b>GMAIL:</b> ${u.gmail||'N/A'}</div><div><b>ROLE:</b> ${getRoleLabel(u)}</div><div><b>VERIFIED:</b> ${u.isVerified?'🔵 Yes'+(u.verifiedExpiry?` (trial until ${new Date(u.verifiedExpiry).toLocaleDateString()})`:''):'❌ No'}</div><div><b>FOLLOWERS:</b> ${followerCount}</div><div><b>FOLLOWING:</b> ${followingCount}</div><div><b>TOTAL LIKES:</b> ${totalLikes}</div><div><b>RgsNfs STATUS:</b> ${statusDot}</div><div><b>ROBLOX STATUS:</b> ${robloxOnline}</div><div><b>ROBLOX LINK:</b> <a href="${getRobloxProfileLink(u)}" target="_blank" style="color:#0645ad">${u.rblxUserId||'N/A'}</a></div><div><b>ROBLOX LAST SEEN:</b> ${robloxLastSeen(u)}</div>${u.isBanned?`<div style="color:#c82333;font-weight:bold">🚫 BANNED: ${u.banReason||'N/A'}</div>`:''}${(u.kickUntil&&u.kickUntil>Date.now())?`<div style="color:#856404;font-weight:bold">⏸️ KICKED until ${new Date(u.kickUntil).toLocaleString()}</div>`:''}</div><div class="pv-actions">${fb}${followBtn}${!isMe?`<button class="pv-btn pv-btn-message" onclick="openMessenger('${u.rblxUserId}')">💬 Message</button>`:''}</div></div>`;
   }).join('');
 }
 
@@ -1510,15 +1526,15 @@ async function openFriendConfirmation(){
   let outgoing=globalFriendRequests.filter(r=>String(r.from)===String(currentUser.rblxUserId));
   let allUsers=safeGetJSON('app_users_db',[]);
   let html=`<p style="color:#54595d;font-size:.9rem">Manage your friend requests here.</p>`;
-  if(incoming.length>0){html+=`<h2>📩 Incoming (${incoming.length})</h2>`;html+=incoming.map(r=>{const u=allUsers.find(x=>String(x.rblxUserId)===String(r.from))||{name:r.fromName,rblxUserId:r.from};return `<div class="pv-card" style="margin-bottom:10px"><div class="pv-card-header"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold">${u.name||'Unknown'}</div></div></div><div class="pv-actions"><button class="pv-btn pv-btn-friend friends" onclick="acceptFriendRequest('${r.id}','${r.from}')">✅ Accept</button><button class="pv-btn" style="background:#dc3545" onclick="declineFriendRequest('${r.id}')">❌ Decline</button></div></div>`;}).join('');}
-  if(outgoing.length>0){html+=`<h2>📤 Sent (${outgoing.length})</h2>`;html+=outgoing.map(r=>{const u=allUsers.find(x=>String(x.rblxUserId)===String(r.to))||{name:'User',rblxUserId:r.to};return `<div class="pv-card" style="margin-bottom:10px"><div class="pv-card-header"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold">${u.name||'User'}</div></div></div><div style="color:#856404;font-weight:bold">⏳ Pending</div></div>`;}).join('');}
+  if(incoming.length>0){html+=`<h2>📩 Incoming (${incoming.length})</h2>`;html+=incoming.map(r=>{const u=allUsers.find(x=>String(x.rblxUserId)===String(r.from))||{name:r.fromName,rblxUserId:r.from};return `<div class="pv-card" style="margin-bottom:10px"><div class="pv-card-header"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold">${u.name||'Unknown'}${verifiedBadgeHtml(u)}</div></div></div><div class="pv-actions"><button class="pv-btn pv-btn-friend friends" onclick="acceptFriendRequest('${r.id}','${r.from}')">✅ Accept</button><button class="pv-btn" style="background:#dc3545" onclick="declineFriendRequest('${r.id}')">❌ Decline</button></div></div>`;}).join('');}
+  if(outgoing.length>0){html+=`<h2>📤 Sent (${outgoing.length})</h2>`;html+=outgoing.map(r=>{const u=allUsers.find(x=>String(x.rblxUserId)===String(r.to))||{name:'User',rblxUserId:r.to};return `<div class="pv-card" style="margin-bottom:10px"><div class="pv-card-header"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold">${u.name||'User'}${verifiedBadgeHtml(u)}</div></div></div><div style="color:#856404;font-weight:bold">⏳ Pending</div></div>`;}).join('');}
   if(incoming.length===0&&outgoing.length===0)html+=`<div style="padding:30px;text-align:center;color:#777">No friend requests yet.</div>`;
   html+=`<h2>👥 My Friends (${(currentUser.friends||[]).length})</h2><div class="pv-grid" id="friendsGrid"></div>`;
   document.getElementById('pageContent').innerHTML=html;
   const fg=document.getElementById('friendsGrid');
   const fids=(currentUser.friends||[]).map(String);
   if(fids.length===0)fg.innerHTML=`<div style="padding:20px;color:#777">No friends yet.</div>`;
-  else fg.innerHTML=allUsers.filter(u=>fids.includes(String(u.rblxUserId))).map(u=>`<div class="pv-card"><div class="pv-card-header"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold">${u.name||'Unknown'}</div></div></div><div class="pv-actions"><button class="pv-btn pv-btn-message" onclick="openMessenger('${u.rblxUserId}')">💬 Chat</button><button class="pv-btn pv-btn-view" onclick="removeFriend('${u.rblxUserId}')">Remove</button></div></div>`).join('');
+  else fg.innerHTML=allUsers.filter(u=>fids.includes(String(u.rblxUserId))).map(u=>`<div class="pv-card"><div class="pv-card-header"><img src="${getRobloxAvatarUrl(u.rblxUserId)}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-weight:bold">${u.name||'Unknown'}${verifiedBadgeHtml(u)}</div></div></div><div class="pv-actions"><button class="pv-btn pv-btn-message" onclick="openMessenger('${u.rblxUserId}')">💬 Chat</button><button class="pv-btn pv-btn-view" onclick="removeFriend('${u.rblxUserId}')">Remove</button></div></div>`).join('');
 }
 
 async function acceptFriendRequest(reqId,fromId){
@@ -1581,30 +1597,33 @@ async function syncRealtimeDatabase(){
             }
           });
           localStorage.setItem('app_users_db',JSON.stringify(allUsers));
-          // Update currentUser followers/following counts
           if(currentUser){
             const me=allUsers.find(x=>String(x.rblxUserId)===String(currentUser.rblxUserId));
             if(me){
               if(me.followers)currentUser.followers=me.followers;
               if(me.following)currentUser.following=me.following;
               if(me.friends)currentUser.friends=me.friends;
+              if(me.isVerified!==undefined)currentUser.isVerified=me.isVerified;
+              if(me.verifiedExpiry!==undefined)currentUser.verifiedExpiry=me.verifiedExpiry;
+              if(me.cashBalance!==undefined)currentUser.cashBalance=me.cashBalance;
+              if(me.extraSpins!==undefined)currentUser.extraSpins=me.extraSpins;
               localStorage.setItem('app_current_user',JSON.stringify(currentUser));
             }
           }
         }
       }
     }catch(e){}
-    // Sync video shares
+    // Sync img shots
     try{
-      const vsRes=await fetch(`${FIREBASE_BASE_URL}/video_shares.json`);
+      const vsRes=await fetch(`${FIREBASE_BASE_URL}/img_shots.json`);
       if(vsRes.ok){
         const vsData=await vsRes.json();
         if(vsData){
-          const remote=Object.keys(vsData).map(k=>vsData[k]);
-          const local=getAllVideoShares();
+          const remote=Object.keys(vsData).map(k=>vsData[k]).filter(v=>v&&v.mediaType==='image');
+          const local=getAllImgShots();
           const map={};local.forEach(v=>map[v.id]=v);
           remote.forEach(v=>{if(!map[v.id])map[v.id]=v;else map[v.id]={...map[v.id],...v};});
-          saveAllVideoShares(Object.values(map));
+          saveAllImgShots(Object.values(map));
         }
       }
     }catch(e){}
@@ -1663,14 +1682,24 @@ function renderCashOutPage(){
   if(!currentUser)return;
   const cfg=currencyConfig[currentLanguage]||currencyConfig['en'];
   let coins=(currentUser.points||0);
-  let displayEst=isOwnerAccount(currentUser)?"∞":convertCurrency(coins/10000);
+  let cashBonus=currentUser.cashBalance||0;
+  let displayEst=isOwnerAccount(currentUser)?"∞":convertCurrency(coins/10000 + cashBonus);
   const reqCoins=selectedCashOutAmount*10000;
   if(!cfg.paymentMethods.includes(selectedPaymentMethod))selectedPaymentMethod=cfg.defaultPay;
   let wt=currentUser.isPremium?'Premium: 15 minutes ⚡':(currentUser.isVIP?'VIP: 50 minutes ⏳':'Standard: 1-3 business days.');
   let popts='';cfg.paymentMethods.forEach(m=>{popts+=`<div class="payment-option ${selectedPaymentMethod===m?'active':''}" onclick="selectPaymentMethod('${m}')">${getPaymentLogo(m)}</div>`;});
   let lockBanner='';
   if(currentUser.accountLockedUntil>Date.now()){const mins=Math.ceil((currentUser.accountLockedUntil-Date.now())/60000);lockBanner=`<div style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:12px;border-radius:6px;margin-bottom:15px;text-align:center;font-weight:bold">🔒 Account Disabled — ${mins} min.<br><button class="btn-danger" style="margin-top:8px" onclick="showLockContinueModal()">Continue</button></div>`;}
-  let html=`<div class="cashout-card"><h2 style="margin-top:0;text-align:center;color:#005a9c;border:none;margin-bottom:15px">Cash Out Money Rewards</h2>${lockBanner}<div class="balance-box"><div>Est: ${displayEst}</div><div>Coins: ${isOwnerAccount(currentUser)?'Infinity ♾️':coins.toLocaleString()}</div></div><div style="background:#fff3cd;border:1px solid #ffeeba;padding:10px;border-radius:4px;font-size:.8rem;margin-bottom:15px;text-align:center">ℹ️ ${wt}</div><label style="font-weight:bold;margin-bottom:8px;display:block">Select Amount:</label><div class="amount-grid"><button class="amount-btn ${selectedCashOutAmount===3?'active':''}" onclick="selectCashAmount(3)">${convertCurrency(3)}</button><button class="amount-btn ${selectedCashOutAmount===5?'active':''}" onclick="selectCashAmount(5)">${convertCurrency(5)}</button><button class="amount-btn ${selectedCashOutAmount===15?'active':''}" onclick="selectCashAmount(15)">${convertCurrency(15)}</button><button class="amount-btn ${selectedCashOutAmount===30?'active':''}" onclick="selectCashAmount(30)">${convertCurrency(30)}</button></div><label style="font-weight:bold;margin-bottom:8px;display:block">Select Payment:</label><div class="payment-selection">${popts}</div><form onsubmit="handleCashOutSubmit(event)"><label>Account Holder Name:</label><input type="text" id="cashOutName" required placeholder="Full Name" value="${lastCashOutFormState.name.replace(/"/g,'&quot;')}" oninput="isUserTypingCashOut=true;saveCashOutFormState()" onfocus="isUserTypingCashOut=true" onblur="setTimeout(()=>{isUserTypingCashOut=false;},300)" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"><label>Account Number:</label><input type="text" id="cashOutNumber" required placeholder="Number" value="${lastCashOutFormState.num.replace(/"/g,'&quot;')}" oninput="isUserTypingCashOut=true;saveCashOutFormState()" onfocus="isUserTypingCashOut=true" onblur="setTimeout(()=>{isUserTypingCashOut=false;},300)" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"><p style="font-size:.8rem;color:#54595d">* Required: <b>${reqCoins.toLocaleString()} Coins</b></p><button type="submit" class="btn-claim" style="width:100%;padding:12px">Submit Request</button></form></div>`;
+
+  // Currency selector
+  let currencySelectHtml=`<div style="margin-bottom:15px;background:#eaf3ff;border:1px solid #a7d7f9;border-radius:6px;padding:12px">
+    <label style="font-weight:bold;display:block;margin-bottom:6px;color:#005a9c">💱 Currency</label>
+    <select onchange="setLanguage(this.value)" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px;background:#fff;font-weight:bold;cursor:pointer">
+      ${Object.keys(currencyLabels).map(k=>`<option value="${k}" ${currentLanguage===k?'selected':''}>${currencyLabels[k]}</option>`).join('')}
+    </select>
+  </div>`;
+
+  let html=`<div class="cashout-card"><h2 style="margin-top:0;text-align:center;color:#005a9c;border:none;margin-bottom:15px">Cash Out Money Rewards</h2>${currencySelectHtml}${lockBanner}<div class="balance-box"><div>Est: ${displayEst}</div><div>Coins: ${isOwnerAccount(currentUser)?'Infinity ♾️':coins.toLocaleString()}</div>${cashBonus>0?`<div>Spin Cash Bonus: ₱${cashBonus.toLocaleString()}</div>`:''}</div><div style="background:#fff3cd;border:1px solid #ffeeba;padding:10px;border-radius:4px;font-size:.8rem;margin-bottom:15px;text-align:center">ℹ️ ${wt}</div><label style="font-weight:bold;margin-bottom:8px;display:block">Select Amount:</label><div class="amount-grid"><button class="amount-btn ${selectedCashOutAmount===3?'active':''}" onclick="selectCashAmount(3)">${convertCurrency(3)}</button><button class="amount-btn ${selectedCashOutAmount===5?'active':''}" onclick="selectCashAmount(5)">${convertCurrency(5)}</button><button class="amount-btn ${selectedCashOutAmount===15?'active':''}" onclick="selectCashAmount(15)">${convertCurrency(15)}</button><button class="amount-btn ${selectedCashOutAmount===30?'active':''}" onclick="selectCashAmount(30)">${convertCurrency(30)}</button></div><label style="font-weight:bold;margin-bottom:8px;display:block">Select Payment:</label><div class="payment-selection">${popts}</div><form onsubmit="handleCashOutSubmit(event)"><label>Account Holder Name:</label><input type="text" id="cashOutName" required placeholder="Full Name" value="${lastCashOutFormState.name.replace(/"/g,'&quot;')}" oninput="isUserTypingCashOut=true;saveCashOutFormState()" onfocus="isUserTypingCashOut=true" onblur="setTimeout(()=>{isUserTypingCashOut=false;},300)" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"><label>Account Number:</label><input type="text" id="cashOutNumber" required placeholder="Number" value="${lastCashOutFormState.num.replace(/"/g,'&quot;')}" oninput="isUserTypingCashOut=true;saveCashOutFormState()" onfocus="isUserTypingCashOut=true" onblur="setTimeout(()=>{isUserTypingCashOut=false;},300)" style="width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"><p style="font-size:.8rem;color:#54595d">* Required: <b>${reqCoins.toLocaleString()} Coins</b></p><button type="submit" class="btn-claim" style="width:100%;padding:12px">Submit Request</button></form></div>`;
   if(isOwnerOrCoOwner(currentUser)&&globalCashOuts.length>0)html+=`<div style="margin-top:30px" id="ownerCashOutDashboard"></div>`;
   document.getElementById('pageContent').innerHTML=html;
   if(isOwnerOrCoOwner(currentUser)&&globalCashOuts.length>0)softRefreshOwnerDashboard();
@@ -1792,6 +1821,14 @@ function announcementBlock(p){
   <textarea id="${p}AnnMessage" rows="3" placeholder="Announcement body..."></textarea>
   <button class="btn-save" style="width:100%;background:#005a9c" onclick="createAnnouncement('${p}')">📢 Deploy Announcement to All Users</button>`;
 }
+function verifiedBadgeBlock(p){
+  return `<label>Target (Gmail / User ID / Username):</label>
+  <input type="text" id="${p}VerifiedTarget" placeholder="user@gmail.com or 7680051058">
+  <div style="display:flex;gap:10px">
+  <button class="btn-save" style="flex:1;background:#1DA1F2;color:#fff" onclick="giveVerifiedBadge('${p}')">🔵 Give Verified Badge</button>
+  <button class="btn-danger" style="flex:1" onclick="removeVerifiedBadge('${p}')">Remove Verified Badge</button>
+  </div>`;
+}
 
 function renderStaffCommandsPage(){
   if(!currentUser||!isStaff(currentUser))return;
@@ -1858,7 +1895,10 @@ function renderStaffCommandsPage(){
     }else{
       html+=`<div style="background:#fff8e1;border:1px solid #ffe0b2;padding:10px;border-radius:4px;font-size:.82rem;color:#856404;margin-bottom:15px">ℹ️ Co-Owner has full staff access except Owner/Co-Owner Role Management (Owner only).</div>`;
     }
-    html+=`<h4 style="color:#856404">⚠️ Warn User</h4>
+    html+=`<h4 style="color:#1DA1F2">🔵 Verified Badge Management (Owner / Co-Owner only)</h4>
+    ${verifiedBadgeBlock('own')}
+    <hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">
+    <h4 style="color:#856404">⚠️ Warn User</h4>
     ${warnBlock('own')}
     <h4 style="margin-top:20px;color:#856404">⏸️ Kick User (1–100 days)</h4>
     ${kickBlock('own',100)}
@@ -1984,6 +2024,63 @@ async function unbanUser(prefix){
   if(idx!==-1)all[idx]=updated;else all.push(updated);
   localStorage.setItem('app_users_db',JSON.stringify(all));
   try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});alert(`✅ Unbanned ${u.name||u.username}.`);}catch(e){alert("❌ Failed: "+e.message);}
+}
+
+async function giveVerifiedBadge(prefix){
+  if(!currentUser||!isOwnerOrCoOwner(currentUser)){alert("❌ Owner / Co-Owner only.");return;}
+  const target=document.getElementById(prefix+'VerifiedTarget').value.trim();
+  if(!target){alert("❌ Enter the user (Gmail / UserID / Username).");return;}
+  const u=findUserByIdentifier(target);
+  if(!u){alert("❌ User not found.");return;}
+  if(u.isVerified){alert("ℹ️ This user already has a Verified Badge.");return;}
+  if(!confirm(`Give Verified Badge to ${u.name||u.username}?`))return;
+  let all=safeGetJSON('app_users_db',[]);
+  const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));
+  const updated={...u,isVerified:true,verifiedExpiry:0,verifiedBy:currentUser.username||currentUser.name,verifiedAt:Date.now()};
+  if(idx!==-1)all[idx]=updated;else all.push(updated);
+  localStorage.setItem('app_users_db',JSON.stringify(all));
+  try{
+    await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});
+    const nid="VB-"+Date.now();
+    const nd={
+      id:nid,
+      title:"You Receive An Verified Badge From RgsNfs official's",
+      message:"congratulations you been receive an Verified Badge to use it click this button",
+      timestamp:Date.now(),
+      isVerifiedBadge:true
+    };
+    await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});
+    // if the target is the current user, refresh UI too
+    if(String(u.rblxUserId)===String(currentUser.rblxUserId)){
+      currentUser.isVerified=true;currentUser.verifiedExpiry=0;saveUserData();updateUserStatusHeader();
+      globalNotifications.unshift(nd);renderNotificationDropdown();
+    }
+    alert(`🔵 Verified Badge given to ${u.name||u.username}!`);
+    document.getElementById(prefix+'VerifiedTarget').value='';
+  }catch(e){alert("❌ Failed: "+e.message);}
+}
+
+async function removeVerifiedBadge(prefix){
+  if(!currentUser||!isOwnerOrCoOwner(currentUser)){alert("❌ Owner / Co-Owner only.");return;}
+  const target=document.getElementById(prefix+'VerifiedTarget').value.trim();
+  if(!target){alert("❌ Enter the user (Gmail / UserID / Username).");return;}
+  const u=findUserByIdentifier(target);
+  if(!u){alert("❌ User not found.");return;}
+  if(!u.isVerified){alert("ℹ️ This user does not have a Verified Badge.");return;}
+  if(!confirm(`Remove Verified Badge from ${u.name||u.username}?`))return;
+  let all=safeGetJSON('app_users_db',[]);
+  const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));
+  const updated={...u,isVerified:false,verifiedExpiry:0,verifiedBy:'',verifiedAt:0};
+  if(idx!==-1)all[idx]=updated;else all.push(updated);
+  localStorage.setItem('app_users_db',JSON.stringify(all));
+  try{
+    await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});
+    if(String(u.rblxUserId)===String(currentUser.rblxUserId)){
+      currentUser.isVerified=false;currentUser.verifiedExpiry=0;saveUserData();updateUserStatusHeader();
+    }
+    alert(`✅ Verified Badge removed from ${u.name||u.username}.`);
+    document.getElementById(prefix+'VerifiedTarget').value='';
+  }catch(e){alert("❌ Failed: "+e.message);}
 }
 
 async function addOwnerOrCoOwner(type){
@@ -2126,7 +2223,7 @@ async function submitReport(){
   try{await fetch(`${FIREBASE_BASE_URL}/reports/${rid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(rd)});alert("✅ Report submitted!");document.getElementById('reportReason').value="";if(document.getElementById('reportAbuserName'))document.getElementById('reportAbuserName').value="";renderSettingsPage();}catch(e){alert("❌ Error.");}
 }
 
-// ===== SETTINGS (with Saved Videos) =====
+// ===== SETTINGS (with Saved Images) =====
 function openSettings(){document.getElementById('pageTitle').innerText='⚙️ Profile & Privacy Settings';renderSettingsPage();}
 function togglePrivacySetting(){if(!currentUser)return;currentUser.isHistoryPublic=!currentUser.isHistoryPublic;saveUserData();renderSettingsPage();}
 function setBackground(bg){if(!currentUser)return;const lb=['rainbow','gold','green_white','blue_red'];if(lb.includes(bg)){if(bg==='gold'||bg==='rainbow'){if(!isOwnerOrCoOwner(currentUser)&&!currentUser.isVIP&&!currentUser.isPremium){alert("❌ Need VIP/Premium!");return;}}else if(bg==='green_white'||bg==='blue_red'){if(!isOwnerOrCoOwner(currentUser)&&!currentUser.isPremium){alert("❌ Need Premium!");return;}}}currentUser.background=bg;saveUserData();applyBackground(bg);renderSettingsPage();}
@@ -2140,23 +2237,24 @@ function renderSettingsPage(){
   const pt=u.isHistoryPublic?"✅ Public":"❎ Private";
   const pbc=u.isHistoryPublic?"privacy-public":"privacy-private";
   const me=String(u.rblxUserId);
-  const savedVideos=getAllVideoShares().filter(v=>(v.savedBy||[]).map(String).includes(me));
+  const savedImgs=getAllImgShots().filter(v=>(v.savedBy||[]).map(String).includes(me));
   let savedHtml='';
-  if(savedVideos.length===0){savedHtml=`<p style="color:#777;font-size:.85rem">No saved videos yet. Save videos from 🎬 XDRG Video Shares.</p>`;}
+  if(savedImgs.length===0){savedHtml=`<p style="color:#777;font-size:.85rem">No saved images yet. Save images from 🖼️ XDRG Img Shot.</p>`;}
   else{
     savedHtml=`<div class="saved-videos-grid">`;
-    savedVideos.forEach(v=>{
+    savedImgs.forEach(v=>{
       savedHtml+=`<div class="saved-video-card" onclick="openVideoShares()">
-      ${v.thumb?`<img src="${v.thumb}" onerror="this.style.background='#eaecf0'">`:`<div style="height:140px;background:#eaecf0;display:flex;align-items:center;justify-content:center;font-size:2rem">🎬</div>`}
+      ${v.media?`<img src="${v.media}" onerror="this.style.background='#eaecf0'">`:`<div style="height:140px;background:#eaecf0;display:flex;align-items:center;justify-content:center;font-size:2rem">🖼️</div>`}
       <div class="sv-body"><b>${v.title||'Untitled'}</b><small>@${v.uploaderUsername||'user'} • ${v.code}</small></div>
       </div>`;
     });
     savedHtml+=`</div>`;
   }
+  const vb=verifiedBadgeHtml(u);
   let html=`<div class="settings-section">
   <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px;background:rgba(248,249,250,.95);border:1px solid #a2a9b1;padding:15px;border-radius:6px">
   <img src="${au}" style="width:70px;height:70px;border-radius:50%;border:3px solid #3366cc;object-fit:cover" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'">
-  <div><div style="font-size:1.2rem;font-weight:bold">${u.displayName||u.name}</div><div style="color:#54595d">@${u.username||''} ${getRoleLabel(u)}</div><div style="font-size:.85rem;margin-top:4px">Roblox User ID: <b>${u.rblxUserId||'N/A'}</b></div></div>
+  <div><div style="font-size:1.2rem;font-weight:bold">${u.displayName||u.name}${vb}</div><div style="color:#54595d">@${u.username||''} ${getRoleLabel(u)}</div><div style="font-size:.85rem;margin-top:4px">Roblox User ID: <b>${u.rblxUserId||'N/A'}</b></div></div>
   </div>
   <div class="settings-row" style="background:rgba(234,243,255,.9);border:1px solid #a7d7f9;padding:12px;border-radius:6px;margin-bottom:20px"><label>History Privacy 🔒</label><p style="font-size:.8rem;color:#54595d">Control who can view your history.</p><button class="privacy-toggle-btn ${pbc}" onclick="togglePrivacySetting()">${pt}</button></div>
   <div class="settings-row" style="background:rgba(248,249,250,.95);border:1px solid #a2a9b1;padding:15px;border-radius:6px;margin-bottom:20px"><label>🎨 Change Background</label>
@@ -2180,8 +2278,8 @@ function renderSettingsPage(){
   <p style="font-size:.75rem;color:#777;margin-top:5px">* Max 2MB</p>`:''}
   </div>
   <div class="settings-row" style="background:rgba(254,243,199,.6);border:1px solid #fcd34d;padding:15px;border-radius:6px;margin-bottom:20px">
-  <label>⭐ Saved Videos</label>
-  <p style="font-size:.8rem;color:#54595d;margin:4px 0 8px">Your bookmarked videos from 🎬 XDRG Video Shares.</p>
+  <label>⭐ Saved Images</label>
+  <p style="font-size:.8rem;color:#54595d;margin:4px 0 8px">Your bookmarked images from 🖼️ XDRG Img Shot.</p>
   ${savedHtml}
   </div>
   <div class="settings-row" style="background:rgba(255,240,240,.95);border:1px solid #f5c6cb;padding:15px;border-radius:6px;margin-bottom:20px">
@@ -2238,7 +2336,7 @@ async function handleAuth(e,type){
       const num=document.getElementById('signNumber').value.trim();
       const pw=document.getElementById('signPass').value.trim();
       if(au.find(u=>(u.gmail||'').toLowerCase()===em||String(u.rblxUserId||'')===String(rid))){alert("❌ Exists!");return;}
-      currentUser={name,username:un||"User",displayName:name,avatarUrl:getRobloxAvatarUrl(rid),rblxUserId:rid,gmail:em,number:num,password:pw,points:0,level:1,isVIP:false,isPremium:false,premiumFreeClaims:0,streakCount:0,lastClaimedDate:null,background:'white',isHistoryPublic:false,wrongPasswordAttempts:0,accountLockedUntil:0,friends:[],following:[],followers:[],isBanned:false,kickUntil:0,isCoOwner:false,lastSeen:new Date().toISOString()};
+      currentUser={name,username:un||"User",displayName:name,avatarUrl:getRobloxAvatarUrl(rid),rblxUserId:rid,gmail:em,number:num,password:pw,points:0,level:1,isVIP:false,isPremium:false,premiumFreeClaims:0,streakCount:0,lastClaimedDate:null,background:'white',isHistoryPublic:false,wrongPasswordAttempts:0,accountLockedUntil:0,friends:[],following:[],followers:[],isBanned:false,kickUntil:0,isCoOwner:false,isVerified:false,verifiedExpiry:0,cashBalance:0,extraSpins:0,lastSeen:new Date().toISOString()};
       if(isOwnerAccount(currentUser)){currentUser.isOwner=true;currentUser.isAdmin=true;}
       au.push(currentUser);localStorage.setItem('app_users_db',JSON.stringify(au));localStorage.setItem('app_current_user',JSON.stringify(currentUser));
       const pr=localStorage.getItem('activeReferrer');
@@ -2260,6 +2358,10 @@ async function handleAuth(e,type){
       if(currentUser.streakCount===undefined)currentUser.streakCount=0;
       if(currentUser.wrongPasswordAttempts===undefined)currentUser.wrongPasswordAttempts=0;
       if(currentUser.accountLockedUntil===undefined)currentUser.accountLockedUntil=0;
+      if(currentUser.isVerified===undefined)currentUser.isVerified=false;
+      if(currentUser.verifiedExpiry===undefined)currentUser.verifiedExpiry=0;
+      if(currentUser.cashBalance===undefined)currentUser.cashBalance=0;
+      if(currentUser.extraSpins===undefined)currentUser.extraSpins=0;
       localStorage.setItem('app_current_user',JSON.stringify(currentUser));
     }
     updateUserStatusHeader();logDeviceConnection(currentUser);showWiki();applyBackground(currentUser.background||'white');checkDailyReward();enforceBanKick();
@@ -2277,7 +2379,7 @@ function saveUserData(){
   fetch(`${FIREBASE_BASE_URL}/users/${currentUser.rblxUserId||'guest'}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(currentUser)}).catch(e=>{});
 }
 async function logDeviceConnection(u){if(!u)return;try{await fetch(`${FIREBASE_BASE_URL}/devices/${u.rblxUserId||'guest'}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u.username||u.name,rblxUserId:u.rblxUserId,lastSeen:new Date().toISOString()})});}catch(e){}}
-function updateUserStatusHeader(){if(!currentUser)return;const a=getRobloxAvatarUrl(currentUser.rblxUserId);const dn=currentUser.displayName||currentUser.name||"User";const iO=isOwnerAccount(currentUser),iCO=isCoOwner(currentUser),iA=isUserAdmin(currentUser),iM=isUserModerator(currentUser);let rb='';if(iO)rb=`<span class="badge-owner">👑 OWNER</span>`;else if(iCO)rb=`<span class="badge-coowner">🥇 CO-OWNER</span>`;else if(iA)rb=`<span class="badge-admin">🛡️ ADMIN</span>`;else if(iM)rb=`<span class="badge-mod">🔰 MOD</span>`;if(currentUser.isVIP)rb+=` <span class="badge-vip">⭐ VIP</span>`;if(currentUser.isPremium)rb+=` <span class="badge-premium">💎 PREMIUM</span>`;document.getElementById('userStatus').innerHTML=`<img src="${a}" class="user-avatar-small" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><b>${dn}</b> (@${currentUser.username}) ${rb} | 🪙 <b>${getUserCoinsDisplay(currentUser)}</b> | 🟢</div>`;}
+function updateUserStatusHeader(){if(!currentUser)return;const a=getRobloxAvatarUrl(currentUser.rblxUserId);const dn=currentUser.displayName||currentUser.name||"User";const iO=isOwnerAccount(currentUser),iCO=isCoOwner(currentUser),iA=isUserAdmin(currentUser),iM=isUserModerator(currentUser);let rb='';if(iO)rb=`<span class="badge-owner">👑 OWNER</span>`;else if(iCO)rb=`<span class="badge-coowner">🥇 CO-OWNER</span>`;else if(iA)rb=`<span class="badge-admin">🛡️ ADMIN</span>`;else if(iM)rb=`<span class="badge-mod">🔰 MOD</span>`;if(currentUser.isVIP)rb+=` <span class="badge-vip">⭐ VIP</span>`;if(currentUser.isPremium)rb+=` <span class="badge-premium">💎 PREMIUM</span>`;const vb=verifiedBadgeHtml(currentUser);document.getElementById('userStatus').innerHTML=`<img src="${a}" class="user-avatar-small" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><b>${dn}</b>${vb} (@${currentUser.username}) ${rb} | 🪙 <b>${getUserCoinsDisplay(currentUser)}</b> | 🟢</div>`;}
 function logout(){localStorage.removeItem('app_current_user');currentUser=null;activeConvUserId=null;document.getElementById('loginScreen').style.display='block';document.getElementById('wikiScreen').style.display='none';document.body.classList.remove('rainbow-bg');document.body.style.backgroundColor='#f6f6f6';document.body.style.backgroundImage='none';['banOverlay','kickOverlay','luckySpinOverlay','claimedRewardsOverlay'].forEach(id=>{const el=document.getElementById(id);if(el&&el.classList.contains('swap-ui-overlay'))el.classList.remove('active');else if(el)el.remove();});const vso=document.getElementById('videoSharesOverlay');if(vso)vso.classList.remove('active');document.body.style.overflow='';}
 function showWiki(){document.getElementById('loginScreen').style.display='none';document.getElementById('wikiScreen').style.display='block';openHome();}
 
@@ -2286,7 +2388,7 @@ function openHome(){document.getElementById('pageTitle').innerText='Main Page';d
 function openGame(g){if(g==='crystal'){triggerReleaseSequence();return;}document.getElementById('pageTitle').innerText="Don't Crash By Train For Brainrots";renderBrainrotsPage();}
 function changeMutation(){const s=document.getElementById('mutationSelect');currentMutation=parseInt(s.value);mutationName=s.options[s.selectedIndex].text.split(" ")[0];renderBrainrotsPage();}
 function renderBrainrotsPage(){let html=`<div style="margin-bottom:15px"><a href="https://www.roblox.com/share?code=1483f284c605034c99ef45593524c6f9&type=ExperienceDetails&stamp=1789062103029" target="_blank" class="roblox-btn">🎮 Play on Roblox</a></div><div class="infobox"><b>Game Mechanics</b><hr style="margin:5px 0"><label style="font-size:.85em">Mutation Multiplier:</label><select id="mutationSelect" onchange="changeMutation()"><option value="1">Normal (x1)</option><option value="5">Gold (x5)</option><option value="15">Diamond (x15)</option><option value="20">Crab (x20)</option><option value="25">Alien (x25)</option></select></div>`;categories.forEach(cat=>{const an=areaMapping[cat.title];html+=`<h2>${cat.title} Units</h2><table class="wikitable"><tr><th>#</th><th>Name</th><th>Area</th><th>Rarity</th><th>Mutation</th><th>Price</th></tr>`;cat.units.forEach((u,i)=>{html+=`<tr><td>${i+1}</td><td><b>${u.name}</b></td><td>${an}</td><td>${cat.title}</td><td>${mutationName}</td><td>${(u.price*currentMutation).toLocaleString()}</td></tr>`;});html+=`</table>`;});html+=`<h2>Shop Items</h2><table class="wikitable"><tr><th>#</th><th>Name</th><th>Rarity</th><th>Price</th><th>Income</th></tr>`;shopItems.forEach((it,i)=>{html+=`<tr><td>${i+1}</td><td><b>${it.name}</b></td><td>${it.rarity}</td><td>${(it.price*currentMutation).toLocaleString()}</td><td style="color:#005a9c;font-weight:bold">${it.income}</td></tr>`;});html+=`</table>`;document.getElementById('pageContent').innerHTML=html;}
-function triggerReleaseSequence(){document.getElementById('pageTitle').innerText="Crystal Collecting Simulator";document.getElementById('pageContent').innerHTML=`<div style="margin-bottom:15px"><a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" class="roblox-btn">🎮 Play on Roblox</a></div><div style="text-align:center;padding:30px;background:rgba(248,249,250,.95);border:1px solid #a2a9b1;border-radius:6px"><h2>Game Announcement</h2><p style="font-weight:bold;color:#54595d">Crystal Collecting Simulator releases September 6, 2026!</p></div>`;}
+function triggerReleaseSequence(){document.getElementById('pageTitle').innerText="Crystal Collecting Simulator";document.getElementById('pageContent').innerHTML=`<div style="margin-bottom:15px"><a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" class="roblox-btn">🎮 Play on Roblox</a></div><div style="text-align:center;padding:30px;background:rgba(248,249,250,.95);border:1px solid #a2a9b1;border-radius:6px"><h2>Game Announcement</h2><p style="font-weight:bold;color:#54595d">Crystal Collecting Simulator releases September 28, 2026 at 1:00 PM!</p></div>`;}
 
 function openPolicy(){document.getElementById('pageTitle').innerText='Terms of Policy';const rules=["Users must be 13 years or older to register and use this website.","Do not copy, clone, or redistribute any part of this website or its code.","Do not reveal or share sensitive credentials including Passwords and Secret Keys.","Do not share your Web IP address or personal account details with anyone.","Give proper credit to the original owners: Dev Xdragon and LumeCraftor.","Respect all community members, including Admins, Moderators, and other users.","Cheating, exploiting, or hacking the website or connected Roblox games is prohibited.","Do not use bots, scripts, or auto-clickers to farm Coins or rewards.","Multiple accounts created solely to abuse the referral system will be banned.","Daily Rewards must be claimed once every 24 hours — no exceptions.","Claimed rewards in-game are delivered via the auto-giver; do not abuse this system.","Cash out requests must be legitimate. Fraudulent claims will result in a permanent ban.","The minimum cash out amount is ₱3.00. Payouts are via GCash, Maya, PayPal, or local methods.","VIP and Premium Passes are one-time purchases and are non-refundable.","Premium Free Claims (2 rewards) are consumed in order and cannot be transferred.","Custom background uploads must not contain NSFW, offensive, or copyrighted content.","Any uploaded image exceeding 2MB will be automatically rejected by the system.","Reports (Website or Abuser) must be truthful. False reports will result in a 1,500 Coin penalty.","Abuser reports must include a valid Roblox Username or ID for the moderators to investigate.","Notifications sent by Owners are official — do not impersonate staff or owners.","Poll votes are limited to once per hour per user. Vote manipulation is forbidden.","All transactions and activity are logged and synced to our Firebase database in real-time.","Your data (username, Gmail, Roblox ID) is stored securely and never shared with third parties.","The Studio reserves the right to modify or remove any feature, pass, or reward without notice.","Breaking any of these rules may result in a temporary suspension or permanent ban.","Appeals regarding bans or declined reports can be submitted via Facebook or Discord.","Continued use of this website constitutes full acceptance of all policies listed here.","Thank you for supporting RedGalaxy Studio and NebulaForge Studio!"];let rh=rules.map((r,i)=>`<li><b>Rule ${i+1}:</b> ${r}</li>`).join('');document.getElementById('pageContent').innerHTML=`<div class="policy-card"><h2 style="margin-top:0;color:#005a9c;border-bottom:2px solid #3366cc;padding-bottom:8px">[XDRG Studio — Terms of Policy]</h2><p style="font-size:.9rem;color:#54595d">By using this website, you agree to abide by the following rules:</p><ol class="policy-list">${rh}</ol><div style="margin-top:20px"><a onclick="openHome()" class="policy-back-btn">I have read and accept all policies</a></div></div>`;}
 
@@ -2295,7 +2397,7 @@ async function purchasePass(pt){if(!currentUser)return;if(pt==='VIP'&&currentUse
 
 function openClaimsHistory(){document.getElementById('pageTitle').innerText='📜 Claim Delivery History';const lc=safeGetJSON(`user_claims_${currentUser.rblxUserId}`,[]);const pb=currentUser.isHistoryPublic?`<span style="color:#0d9488;font-weight:bold;font-size:.85rem">[ Public ✅ ]</span>`:`<span style="color:#c82333;font-weight:bold;font-size:.85rem">[ Private 🔒 ]</span>`;let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px"><p style="color:#54595d;margin:0">Records for <b>${currentUser.displayName||currentUser.name}</b> ${pb}</p><button onclick="openSettings()" class="btn-save" style="font-size:.8rem">Change Privacy</button></div><table class="wikitable"><tr><th>#</th><th>Item</th><th>Cost</th><th>Status</th><th>Time</th></tr>`;if(lc.length===0)html+=`<tr><td colspan="5" style="text-align:center;color:#777;padding:20px">No claims.</td></tr>`;else lc.forEach((i,x)=>{const st=(i.status||'pending').toLowerCase();let b=`<span class="status-badge status-pending">⏳ Pending</span>`;if(['successful','delivered','received'].includes(st))b=`<span class="status-badge status-successful">✅ Received</span>`;else if(['unsuccessful','failed','rejected'].includes(st))b=`<span class="status-badge status-unsuccessful">❌ Failed</span>`;html+=`<tr><td>${x+1}</td><td><b>${i.reward||'?'}</b></td><td>${i.cost===0?'FREE':(i.cost||35)+' Coins'}</td><td>${b}</td><td>${new Date(i.timestamp).toLocaleString()}</td></tr>`;});html+=`</table>`;document.getElementById('pageContent').innerHTML=html;}
 
-function openLeaderboard(){document.getElementById('pageTitle').innerText='🏆 Leaderboard Statics';let au=safeGetJSON('app_users_db',[]);au.sort((a,b)=>(b.points||0)-(a.points||0));const sym=getCurrencySymbol();let html=`<p>Top players ranked by rewards and cash out.</p><table class="leaderboard-table"><tr><th>Rank</th><th>Name</th><th>Claimed Rewards</th><th>Cash Out</th><th>Sync Time</th></tr>`;if(au.length===0)html+=`<tr><td colspan="5" style="text-align:center;color:#777;padding:20px">No users found.</td></tr>`;else au.slice(0,20).forEach((u,i)=>{html+=`<tr><td class="leaderboard-rank">#${i+1}</td><td><b>${u.username||u.name||'?'}</b></td><td>${(u.points||0).toLocaleString()}</td><td>${sym}${((u.points||0)/10000).toFixed(2)}</td><td>${u.lastSeen?new Date(u.lastSeen).toLocaleString():'N/A'}</td></tr>`;});html+=`</table>`;document.getElementById('pageContent').innerHTML=html;}
+function openLeaderboard(){document.getElementById('pageTitle').innerText='🏆 Leaderboard Statics';let au=safeGetJSON('app_users_db',[]);au.sort((a,b)=>(b.points||0)-(a.points||0));const sym=getCurrencySymbol();let html=`<p>Top players ranked by rewards and cash out.</p><table class="leaderboard-table"><tr><th>Rank</th><th>Name</th><th>Claimed Rewards</th><th>Cash Out</th><th>Sync Time</th></tr>`;if(au.length===0)html+=`<tr><td colspan="5" style="text-align:center;color:#777;padding:20px">No users found.</td></tr>`;else au.slice(0,20).forEach((u,i)=>{html+=`<tr><td class="leaderboard-rank">#${i+1}</td><td><b>${u.username||u.name||'?'}</b>${verifiedBadgeHtml(u)}</td><td>${(u.points||0).toLocaleString()}</td><td>${sym}${((u.points||0)/10000).toFixed(2)}</td><td>${u.lastSeen?new Date(u.lastSeen).toLocaleString():'N/A'}</td></tr>`;});html+=`</table>`;document.getElementById('pageContent').innerHTML=html;}
 
 function openSneakPeek(){document.getElementById('pageTitle').innerText='👀 Sneak Peek';document.getElementById('pageContent').innerHTML=`<p>Latest from developers!</p><div id="sneakPeekGrid" class="sneak-grid"></div>`;fetchSneakPeeks();}
 async function fetchSneakPeeks(){try{const r=await fetch(`${FIREBASE_BASE_URL}/sneak_peeks.json`);if(r.ok){const d=await r.json();globalSneakPeeks=[];if(d)Object.keys(d).forEach(id=>globalSneakPeeks.push({id,...d[id]}));globalSneakPeeks.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));renderSneakPeekContent();}}catch(e){}}
