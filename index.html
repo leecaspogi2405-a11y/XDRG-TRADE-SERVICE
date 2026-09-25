@@ -29,7 +29,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;m
 .notif-list{max-height:450px;overflow-y:auto;list-style:none;padding:0;margin:0}
 .notif-item{padding:10px 12px;border-bottom:1px solid #eaecf0;font-size:.82rem}
 .notif-item.unread{background:#eaf3ff;font-weight:500}
-.notif-item.pinned-notif{background:#fff8e1;border-left:4px solid #ff9800}
 .notif-title{font-weight:bold;color:#005a9c;margin-bottom:2px}
 .notif-time{font-size:.72rem;color:#72777d;margin-top:4px}
 .notif-msg a{color:#005a9c;font-weight:bold;text-decoration:underline}
@@ -38,9 +37,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;m
 .notif-automation-btn{background:#17a2b8;color:#fff;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;font-weight:bold;font-size:.8rem;margin-top:8px;width:100%}
 h1{font-family:Georgia,serif;font-size:2.2rem;font-weight:normal;border-bottom:1px solid rgba(162,169,177,.5);padding-bottom:5px;margin-top:0}
 h2{font-family:Georgia,serif;font-size:1.5rem;font-weight:normal;border-bottom:1px solid rgba(162,169,177,.5);padding-bottom:5px;margin-top:30px}
-.wikitable{background:rgba(248,249,250,.9);margin:1em 0;border:1px solid #a2a9b1;border-collapse:collapse;width:100%;text-align:left}
-.wikitable th,.wikitable td{border:1px solid #a2a9b1;padding:8px 10px}
-.wikitable th{background:#eaecf0;text-align:center}
 .form-box{max-width:450px;margin:30px auto;border:1px solid #a2a9b1;padding:30px;background:#f8f9fa;border-radius:6px}
 .form-box label{display:block;font-weight:bold;margin-bottom:3px;font-size:.85rem}
 .form-box input{width:100%;padding:8px;margin-bottom:12px;border:1px solid #a2a9b1;border-radius:4px}
@@ -93,7 +89,7 @@ h2{font-family:Georgia,serif;font-size:1.5rem;font-weight:normal;border-bottom:1
 .policy-back-btn{display:inline-block;margin-top:20px;color:#0645ad;font-weight:bold;font-size:1.05rem;cursor:pointer;text-decoration:underline}
 .daily-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:15px}
 .daily-card{background:#fff;border:2px solid #a2a9b1;border-radius:8px;padding:10px;text-align:center}
-.daily-card.active{border-color:#28a745;background:#e8f8f0;box-shadow:0 0 15px rgba(40,167,69,.6)}
+.daily-card.active{border-color:#28a745;background:#e8f8f0}
 .daily-card.claimed{border-color:#6c757d;background:#e9ecef;opacity:.5}
 .daily-card .day-label{font-weight:bold;font-size:.8rem;color:#54595d;margin-bottom:5px}
 .daily-card .reward-amount{font-size:1.1rem;font-weight:bold;color:#28a745}
@@ -253,6 +249,12 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .tt-upload-submit{background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff}
 .tt-upload-cancel{background:#333;color:#fff}
 .tt-upload-info{margin-top:14px;background:#0d0d0d;border:1px solid #333;border-radius:8px;padding:10px;font-size:.78rem;color:#888;line-height:1.5}
+
+/* SHOP */
+.shop-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.shop-tab{background:#333;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-weight:bold;cursor:pointer;transition:background .2s}
+.shop-tab:hover{background:#4a4a4a}
+.shop-tab.active{background:#8b5cf6}
 .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:16px}
 .shop-card{background:rgba(255,255,255,.95);border:1px solid #a2a9b1;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;color:#202122}
 .shop-card img{width:100%;height:170px;object-fit:cover;background:#eaecf0}
@@ -269,9 +271,6 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .cart-item .ci-name{font-weight:bold;margin-bottom:4px}
 .cart-item .ci-price{color:#28a745;font-weight:bold}
 .cart-item .ci-remove{background:#dc3545;color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-weight:bold;font-size:.8rem}
-.shop-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.shop-tab{background:#333;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-weight:bold;cursor:pointer}
-.shop-tab.active{background:#8b5cf6}
 .order-card{background:rgba(255,255,255,.95);color:#202122;border:2px solid #8b5cf6;border-radius:10px;padding:16px;margin-bottom:12px}
 .order-card .oc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #eaecf0}
 .order-card .oc-id{font-family:monospace;font-weight:bold;color:#8b5cf6}
@@ -283,7 +282,13 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 .logistics-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
 .logistics-opt{border:2px solid #a2a9b1;border-radius:6px;padding:10px;text-align:center;cursor:pointer;background:#fff;color:#202122;display:flex;flex-direction:column;align-items:center;gap:4px}
 .logistics-opt.active{border-color:#8b5cf6;background:#f3e8ff}
-.logistics-opt .logo-svg{height:26px}
+.logistics-opt .logo-svg{height:30px}
+.checkout-box{background:rgba(255,255,255,.95);color:#202122;border:2px solid #8b5cf6;border-radius:10px;padding:20px;margin-bottom:16px}
+.checkout-box h3{margin-top:0;color:#6366f1}
+.checkout-box label{font-weight:bold;font-size:.85rem;display:block;margin-bottom:5px;margin-top:10px}
+.checkout-box input{width:100%;padding:10px;border:1px solid #a2a9b1;border-radius:6px;box-sizing:border-box}
+.empty-state{text-align:center;padding:40px;color:#94a3b8}
+.empty-state .icon{font-size:4rem;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -308,19 +313,14 @@ body.rainbow-bg{background:linear-gradient(124deg,#ff2400,#e81d1d,#e8b71d,#e3e81
 
 <div id="xdrgShopOverlay" class="swap-ui-overlay">
   <div class="swap-ui-topbar"><div class="swap-ui-title">🛍️ XDRG Shop</div><button class="swap-ui-x" onclick="closeXdrgShop()">✕</button></div>
-  <div class="swap-ui-container" id="xdrgShopContent"></div>
-</div>
-<div id="xdrgCartOverlay" class="swap-ui-overlay">
-  <div class="swap-ui-topbar"><div class="swap-ui-title">🛒 Your Cart</div><button class="swap-ui-x" onclick="closeXdrgCart()">✕</button></div>
-  <div class="swap-ui-container" id="xdrgCartContent"></div>
-</div>
-<div id="xdrgCheckoutOverlay" class="swap-ui-overlay">
-  <div class="swap-ui-topbar"><div class="swap-ui-title">📦 Checkout</div><button class="swap-ui-x" onclick="closeXdrgCheckout()">✕</button></div>
-  <div class="swap-ui-container" id="xdrgCheckoutContent"></div>
-</div>
-<div id="xdrgOrdersOverlay" class="swap-ui-overlay">
-  <div class="swap-ui-topbar"><div class="swap-ui-title">📋 Processing Orders</div><button class="swap-ui-x" onclick="closeXdrgOrders()">✕</button></div>
-  <div class="swap-ui-container" id="xdrgOrdersContent"></div>
+  <div class="swap-ui-container">
+    <div class="shop-tabs">
+      <button class="shop-tab" id="shopTabProducts" onclick="setShopTab('products')">🛍️ Products</button>
+      <button class="shop-tab" id="shopTabCart" onclick="setShopTab('cart')">🛒 Cart (<span id="shopCartCount">0</span>)</button>
+      <button class="shop-tab" id="shopTabOrders" onclick="setShopTab('orders')">📋 Processing Orders</button>
+    </div>
+    <div id="xdrgShopBody"></div>
+  </div>
 </div>
 
 <div id="videoSharesOverlay" class="swap-ui-overlay tiktok-overlay">
@@ -431,21 +431,22 @@ const OWNER_CONFIG={emails:["xdrgxdragon@gmail.com","lumecraftors.x@gmail.com"],
 const DEFAULT_AVATAR="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233366cc'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z'/%3E%3C/svg%3E";
 const VERIFIED_BADGE_SVG='<svg class="verified-badge-inline" viewBox="0 0 24 24"><path fill="#1DA1F2" d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"/></svg>';
 
+/* REAL LOGOS (SVG realistic) */
 const LOGOS={
-  PayPal:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#003087"/><text x="50" y="27" fill="#fff" font-size="17" font-weight="bold" text-anchor="middle">PayPal</text></svg>',
-  GCash:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#0070E0"/><circle cx="20" cy="20" r="9" fill="#fff"/><circle cx="20" cy="20" r="4.5" fill="#0070E0"/><text x="60" y="26" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">GCash</text></svg>',
-  Maya:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#0A0A0A"/><circle cx="20" cy="20" r="7" fill="#7CFF6B"/><text x="60" y="27" fill="#7CFF6B" font-size="18" font-weight="900" text-anchor="middle">maya</text></svg>',
-  Alipay:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#1677FF"/><text x="50" y="27" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">Alipay</text></svg>',
-  WeChatPay:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#07C160"/><text x="50" y="26" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">WeChat Pay</text></svg>',
-  PayPay:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#FF0033"/><text x="50" y="27" fill="#fff" font-size="18" font-weight="bold" text-anchor="middle">PayPay</text></svg>',
-  KakaoPay:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#FFEB00"/><text x="50" y="27" fill="#000" font-size="16" font-weight="bold" text-anchor="middle">KakaoPay</text></svg>',
-  OVO:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#4C3494"/><text x="50" y="28" fill="#fff" font-size="20" font-weight="bold" text-anchor="middle">OVO</text></svg>',
-  GoPay:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#00AA13"/><text x="50" y="27" fill="#fff" font-size="17" font-weight="bold" text-anchor="middle">GoPay</text></svg>',
-  JKoPay:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#E30613"/><text x="50" y="27" fill="#fff" font-size="17" font-weight="bold" text-anchor="middle">JKoPay</text></svg>',
-  JT:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#D40000"/><text x="50" y="28" fill="#fff" font-size="22" font-weight="900" text-anchor="middle">J&amp;T</text></svg>',
-  Flash:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#FFD400"/><text x="26" y="29" fill="#000" font-size="24" font-weight="900" text-anchor="middle">⚡</text><text x="64" y="27" fill="#000" font-size="15" font-weight="900" text-anchor="middle">Flash</text></svg>',
-  SPX:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#EE4D2D"/><text x="50" y="28" fill="#fff" font-size="22" font-weight="900" text-anchor="middle">SPX</text></svg>',
-  COD:'<svg class="logo-svg" viewBox="0 0 100 40"><rect width="100" height="40" rx="6" fill="#28a745"/><text x="50" y="27" fill="#fff" font-size="15" font-weight="900" text-anchor="middle">💵 COD</text></svg>'
+  PayPal:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#003087"/><path fill="#fff" d="M20 10h8c3 0 5 2 4.5 5s-2.5 5-5.5 5h-3l-1 7h-4z"/><path fill="#009cde" d="M24 12h7c2.8 0 4.7 1.8 4.3 4.7-.5 3-2.7 4.7-5.7 4.7h-3l-1 6.6h-3.4z"/><text x="42" y="26" fill="#003087" font-size="15" font-weight="bold" font-family="Arial,sans-serif">Pay</text><text x="70" y="26" fill="#009cde" font-size="15" font-weight="bold" font-family="Arial,sans-serif">Pal</text></svg>',
+  GCash:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#0070E0"/><circle cx="20" cy="20" r="10" fill="#fff"/><circle cx="20" cy="20" r="5.5" fill="#0070E0"/><circle cx="20" cy="20" r="3" fill="#fff"/><text x="62" y="26" fill="#fff" font-size="17" font-weight="900" font-family="Arial,sans-serif" text-anchor="middle">GCash</text></svg>',
+  Maya:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#0A0A0A"/><circle cx="18" cy="20" r="8" fill="#7CFF6B"/><path d="M14 24 L14 16 L22 16 L22 20 L18 20 L18 24 Z" fill="#0A0A0A"/><text x="65" y="28" fill="#7CFF6B" font-size="22" font-weight="900" font-family="Arial,sans-serif" text-anchor="middle">maya</text></svg>',
+  JT:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#D40000"/><circle cx="20" cy="20" r="10" fill="#fff"/><text x="20" y="25" fill="#D40000" font-size="13" font-weight="900" text-anchor="middle" font-family="Arial,sans-serif">J&amp;T</text><text x="70" y="25" fill="#fff" font-size="13" font-weight="900" font-family="Arial,sans-serif" text-anchor="middle">EXPRESS</text></svg>',
+  Flash:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#FFD400"/><path d="M22 8 L12 22 L20 22 L18 32 L28 18 L20 18 Z" fill="#000"/><text x="72" y="27" fill="#000" font-size="18" font-weight="900" font-family="Arial,sans-serif" text-anchor="middle">Flash</text></svg>',
+  SPX:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#EE4D2D"/><rect x="12" y="12" width="20" height="16" fill="#fff" rx="2"/><path d="M16 16 L28 16 L28 24 L16 24 Z" fill="#EE4D2D"/><text x="72" y="28" fill="#fff" font-size="20" font-weight="900" font-family="Arial,sans-serif" text-anchor="middle">SPX</text></svg>',
+  COD:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#28a745"/><rect x="10" y="14" width="22" height="14" fill="#fff" rx="2"/><circle cx="21" cy="21" r="4" fill="#28a745"/><text x="70" y="26" fill="#fff" font-size="14" font-weight="900" font-family="Arial,sans-serif" text-anchor="middle">Cash</text></svg>',
+  Alipay:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#1677FF"/><text x="60" y="27" fill="#fff" font-size="16" font-weight="900" text-anchor="middle" font-family="Arial,sans-serif">Alipay</text></svg>',
+  WeChatPay:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#07C160"/><text x="60" y="25" fill="#fff" font-size="13" font-weight="900" text-anchor="middle" font-family="Arial,sans-serif">WeChat Pay</text></svg>',
+  PayPay:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#FF0033"/><text x="60" y="28" fill="#fff" font-size="18" font-weight="900" text-anchor="middle" font-family="Arial,sans-serif">PayPay</text></svg>',
+  KakaoPay:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#FFEB00"/><text x="60" y="28" fill="#000" font-size="16" font-weight="900" text-anchor="middle" font-family="Arial,sans-serif">KakaoPay</text></svg>',
+  OVO:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#4C3494"/><text x="60" y="28" fill="#fff" font-size="20" font-weight="900" text-anchor="middle" font-family="Arial,sans-serif">OVO</text></svg>',
+  GoPay:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#00AA13"/><text x="60" y="28" fill="#fff" font-size="17" font-weight="900" text-anchor="middle" font-family="Arial,sans-serif">GoPay</text></svg>',
+  JKoPay:'<svg class="logo-svg" viewBox="0 0 120 40"><rect width="120" height="40" rx="6" fill="#E30613"/><text x="60" y="28" fill="#fff" font-size="17" font-weight="900" text-anchor="middle" font-family="Arial,sans-serif">JKoPay</text></svg>'
 };
 
 const SPIN_SEGMENTS=[
@@ -504,9 +505,8 @@ let uploadFileData=null;
 let ttObserver=null;
 let selectedReportType='website';
 let selectedCards=[];
-let currentMutation=1;
-let mutationName="Normal";
 let robloxDebounceTimer=null;
+let shopTab='products';
 let checkoutState={paylater:false,paylaterTerm:0,logistics:'J&T',payment:'COD',barrow:false};
 
 function safeGetJSON(k,d){try{const i=localStorage.getItem(k);return i?JSON.parse(i):d;}catch(e){return d;}}
@@ -591,15 +591,8 @@ function updateUserStatusHeader(){
   const ab=getAgeBadge(currentUser);
   document.getElementById('userStatus').innerHTML=`<img src="${a}" class="user-avatar-small" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><b>${dn}</b>${vb}${ab} (@${currentUser.username}) ${rb} | 🪙 <b>${getUserCoinsDisplay(currentUser)}</b></div>`;
 }
-
 async function logDeviceConnection(u){if(!u)return;try{await fetch(`${FIREBASE_BASE_URL}/devices/${u.rblxUserId||'guest'}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u.username||u.name,rblxUserId:u.rblxUserId,lastSeen:new Date().toISOString()})});}catch(e){}}
-
-function switchAuthTab(t){
-  document.getElementById('signInForm').style.display=t==='signin'?'block':'none';
-  document.getElementById('loginForm').style.display=t==='login'?'block':'none';
-  document.getElementById('btnTabSign').classList.toggle('active',t==='signin');
-  document.getElementById('btnTabLog').classList.toggle('active',t==='login');
-}
+function switchAuthTab(t){document.getElementById('signInForm').style.display=t==='signin'?'block':'none';document.getElementById('loginForm').style.display=t==='login'?'block':'none';document.getElementById('btnTabSign').classList.toggle('active',t==='signin');document.getElementById('btnTabLog').classList.toggle('active',t==='login');}
 
 async function handleAuth(e,type){
   e.preventDefault();
@@ -652,10 +645,9 @@ function logout(){
   document.body.classList.remove('rainbow-bg');
   document.body.style.backgroundColor='#f6f6f6';
   document.body.style.backgroundImage='none';
-  ['banOverlay','kickOverlay','luckySpinOverlay','claimedRewardsOverlay','xdrgShopOverlay','xdrgCartOverlay','xdrgCheckoutOverlay','xdrgOrdersOverlay','videoSharesOverlay','ageUiOverlay','ageAppealOverlay','ageRequestOverlay'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  ['banOverlay','kickOverlay','luckySpinOverlay','claimedRewardsOverlay','xdrgShopOverlay','videoSharesOverlay','ageUiOverlay','ageAppealOverlay','ageRequestOverlay'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
   document.body.style.overflow='';
 }
-
 function showWiki(){document.getElementById('loginScreen').style.display='none';document.getElementById('wikiScreen').style.display='block';openHome();}
 
 function showBanScreen(reason,bannedBy){
@@ -700,7 +692,7 @@ async function enforceBanKick(){
 
 function openHome(){document.getElementById('pageTitle').innerText='Main Page';document.getElementById('pageContent').innerHTML='<p>Welcome to the official <b>RedGalaxy Studio / NebulaForge Studio</b> portal. Select from the sidebar.</p>';}
 function openGame(g){if(g==='crystal'){triggerReleaseSequence();return;}document.getElementById('pageTitle').innerText="Don't Crash By Train For Brainrots";document.getElementById('pageContent').innerHTML='<p>Game info page.</p><div style="margin-bottom:15px"><a href="https://www.roblox.com/share?code=1483f284c605034c99ef45593524c6f9&type=ExperienceDetails&stamp=1789062103029" target="_blank" class="roblox-btn">🎮 Play on Roblox</a></div>';}
-function triggerReleaseSequence(){document.getElementById('pageTitle').innerText="Crystal Collecting Simulator";document.getElementById('pageContent').innerHTML=`<div style="margin-bottom:15px"><a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" class="roblox-btn">🎮 Play on Roblox</a></div><div style="text-align:center;padding:30px;background:rgba(248,249,250,.95);border:1px solid #a2a9b1;border-radius:6px"><h2>Game Announcement</h2><p style="font-weight:bold;color:#54595d">Crystal Collecting Simulator releases September 28, 2026 at 1:00 PM!</p></div>`;}
+function triggerReleaseSequence(){document.getElementById('pageTitle').innerText="Crystal Collecting Simulator";document.getElementById('pageContent').innerHTML='<div style="margin-bottom:15px"><a href="https://www.roblox.com/share?code=fe4a6c316df6524f9eadbe4c5d3bdb25&type=ExperienceDetails&stamp=1789062176785" target="_blank" class="roblox-btn">🎮 Play on Roblox</a></div><div style="text-align:center;padding:30px;background:rgba(248,249,250,.95);border:1px solid #a2a9b1;border-radius:6px"><h2>Game Announcement</h2><p style="font-weight:bold;color:#54595d">Crystal Collecting Simulator releases September 28, 2026 at 1:00 PM!</p></div>';}
 
 function openPolicy(){
   document.getElementById('pageTitle').innerText='Terms of Policy';
@@ -725,18 +717,16 @@ async function purchasePass(pt){
   if(!isOwnerAccount(currentUser))currentUser.points-=cost;
   if(pt==='VIP'){currentUser.isVIP=true;currentUser.points+=250;alert('🎉 VIP!');}
   else{currentUser.isPremium=true;currentUser.isVIP=true;currentUser.points+=1500;currentUser.premiumFreeClaims=(currentUser.premiumFreeClaims||0)+2;alert('🎉 Premium!');}
-  saveUserData();
-  updateUserStatusHeader();
-  openBuyPasses();
+  saveUserData();updateUserStatusHeader();openBuyPasses();
 }
 
 function openClaimsHistory(){
   document.getElementById('pageTitle').innerText='📜 Claim Delivery History';
   const lc=safeGetJSON(`user_claims_${currentUser.rblxUserId}`,[]);
   const pb=currentUser.isHistoryPublic?'<span style="color:#0d9488;font-weight:bold;font-size:.85rem">[ Public ✅ ]</span>':'<span style="color:#c82333;font-weight:bold;font-size:.85rem">[ Private 🔒 ]</span>';
-  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px"><p style="color:#54595d;margin:0">Records for <b>${currentUser.displayName||currentUser.name}</b> ${pb}</p><button onclick="openSettings()" class="btn-save" style="font-size:.8rem">Change Privacy</button></div><table class="wikitable"><tr><th>#</th><th>Item</th><th>Cost</th><th>Status</th><th>Time</th></tr>`;
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px"><p style="color:#54595d;margin:0">Records for <b>${currentUser.displayName||currentUser.name}</b> ${pb}</p><button onclick="openSettings()" class="btn-save" style="font-size:.8rem">Change Privacy</button></div><table style="background:rgba(248,249,250,.9);border:1px solid #a2a9b1;border-collapse:collapse;width:100%"><tr style="background:#eaecf0"><th style="border:1px solid #a2a9b1;padding:8px">#</th><th style="border:1px solid #a2a9b1;padding:8px">Item</th><th style="border:1px solid #a2a9b1;padding:8px">Cost</th><th style="border:1px solid #a2a9b1;padding:8px">Status</th><th style="border:1px solid #a2a9b1;padding:8px">Time</th></tr>`;
   if(lc.length===0)html+='<tr><td colspan="5" style="text-align:center;color:#777;padding:20px">No claims.</td></tr>';
-  else lc.forEach((i,x)=>{const st=(i.status||'pending').toLowerCase();let b='<span class="status-badge status-pending">⏳ Pending</span>';if(['successful','delivered','received'].includes(st))b='<span class="status-badge status-successful">✅ Received</span>';else if(['unsuccessful','failed','rejected'].includes(st))b='<span class="status-badge status-unsuccessful">❌ Failed</span>';html+=`<tr><td>${x+1}</td><td><b>${i.reward||'?'}</b></td><td>${i.cost===0?'FREE':(i.cost||35)+' Coins'}</td><td>${b}</td><td>${new Date(i.timestamp).toLocaleString()}</td></tr>`;});
+  else lc.forEach((i,x)=>{const st=(i.status||'pending').toLowerCase();let b='<span class="status-badge status-pending">⏳ Pending</span>';if(['successful','delivered','received'].includes(st))b='<span class="status-badge status-successful">✅ Received</span>';else if(['unsuccessful','failed','rejected'].includes(st))b='<span class="status-badge status-unsuccessful">❌ Failed</span>';html+=`<tr><td style="border:1px solid #a2a9b1;padding:8px">${x+1}</td><td style="border:1px solid #a2a9b1;padding:8px"><b>${i.reward||'?'}</b></td><td style="border:1px solid #a2a9b1;padding:8px">${i.cost===0?'FREE':(i.cost||35)+' Coins'}</td><td style="border:1px solid #a2a9b1;padding:8px">${b}</td><td style="border:1px solid #a2a9b1;padding:8px">${new Date(i.timestamp).toLocaleString()}</td></tr>`;});
   html+='</table>';
   document.getElementById('pageContent').innerHTML=html;
 }
@@ -812,7 +802,7 @@ function renderCashOutPage(){
     return;
   }
   if((currentUser.verifiedAgeValue||0)<13){
-    document.getElementById('pageContent').innerHTML=`<div class="cashout-card" style="max-width:600px;text-align:center;padding:40px 25px;border-color:#dc3545"><div style="font-size:5rem;line-height:1">⚠️</div><h2 style="color:#dc3545;border:none;margin:15px 0 10px">Under 13 — Cash Out Disabled</h2><p style="color:#54595d;font-size:.95rem;line-height:1.7">Your verified age is <b>${currentUser.verifiedAgeValue}</b> years old. Users under 13 cannot cash out real money, but can still use the app.</p><p style="color:#54595d;font-size:.9rem;margin-top:10px">If incorrect, submit an age appeal and the Owner will review.</p><button class="btn-claim" style="background:#8b5cf6;font-size:1rem;padding:14px 28px;margin-top:15px" onclick="openAgeAppeal()">📩 Submit Age Appeal</button></div>`;
+    document.getElementById('pageContent').innerHTML=`<div class="cashout-card" style="max-width:600px;text-align:center;padding:40px 25px;border-color:#dc3545"><div style="font-size:5rem;line-height:1">⚠️</div><h2 style="color:#dc3545;border:none;margin:15px 0 10px">Under 13 — Cash Out Disabled</h2><p style="color:#54595d;font-size:.95rem;line-height:1.7">Your verified age is <b>${currentUser.verifiedAgeValue}</b> years old. Users under 13 cannot cash out real money, but can still use the app.</p><button class="btn-claim" style="background:#8b5cf6;font-size:1rem;padding:14px 28px;margin-top:15px" onclick="openAgeAppeal()">📩 Submit Age Appeal</button></div>`;
     return;
   }
   const cfg=currencyConfig[currentLanguage]||currencyConfig['en'];
@@ -849,63 +839,34 @@ async function redeemLimitedCashOut(){
   if(!confirm(`Redeem ₱${money} for ${cost.toLocaleString()} Coins?`))return;
   if(!isOwnerAccount(currentUser))currentUser.points-=cost;
   currentUser.cashBalance=(currentUser.cashBalance||0)+money;
-  saveUserData();
-  updateUserStatusHeader();
+  saveUserData();updateUserStatusHeader();
   const cid="LIMITED-"+Date.now();
   const cd={id:cid,username:currentUser.username||currentUser.name,rblxUserId:currentUser.rblxUserId,amountPHP:money,provider:selectedPaymentMethod,accountName:currentUser.autoCashOutName||currentUser.name,accountNumber:currentUser.autoCashOutNumber||'TBD',requiredCoins:cost,status:"Pending",timestamp:Date.now(),isLimitedCashOut:true};
-  try{await fetch(`${FIREBASE_BASE_URL}/cashouts/${cid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(cd)});alert(`🎉 Redeemed! ₱${money} added to your cash balance.`);renderCashOutPage();}catch(e){alert("❌ Error.");}
+  try{await fetch(`${FIREBASE_BASE_URL}/cashouts/${cid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(cd)});alert(`🎉 Redeemed! ₱${money} added.`);renderCashOutPage();}catch(e){alert("❌ Error.");}
 }
 function showVerificationSelection(){const m=document.createElement('div');m.className='verify-modal';m.id='verifyModal';m.innerHTML='<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()">✕</button><h3 style="margin-top:0;color:#005a9c">🔐 Cash Out Verification</h3><p style="font-size:.9rem;color:#54595d">Select verification method.</p><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-save" style="flex:1;padding:12px" onclick="startCodeVerification()">Code</button><button class="btn-save" style="flex:1;padding:12px;background:#6c757d" onclick="startPasswordVerification()">Password</button></div><button onclick="cancelVerification()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:12px;font-weight:bold">Cancel</button></div>';document.body.appendChild(m);}
 function closeVerifyModalX(){const m=document.getElementById('verifyModal');if(m)m.remove();}
 function cancelVerification(){currentVerificationCode=null;verificationCodeExpires=0;const m=document.getElementById('verifyModal');if(m)m.remove();globalNotifications=globalNotifications.filter(n=>!n.isCashOutCode);renderNotificationDropdown();alert("Cancelled.");}
 function generateVerificationCode(){return 'xdrg'+Math.floor(100000+Math.random()*900000);}
 function startCodeVerification(){const code=generateVerificationCode();currentVerificationCode=code;verificationCodeExpires=Date.now()+5*60*1000;verificationAttempts=0;globalNotifications=globalNotifications.filter(n=>!n.isCashOutCode);globalNotifications.unshift({id:"CASHOUT-"+Date.now(),title:"Password Cash out Interaction",message:"Your Cash Out Verification Code (5 min):",timestamp:Date.now(),isCashOutCode:true,codeDisplay:code});renderNotificationDropdown();setTimeout(()=>{const d=document.getElementById('notifDropdown');if(d)d.classList.add('active');},100);showCodeInputModal();}
-function showCodeInputModal(){const old=document.getElementById('verifyModal');if(old)old.remove();const m=document.createElement('div');m.className='verify-modal';m.id='verifyModal';m.innerHTML='<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()">✕</button><h3 style="margin-top:0;color:#005a9c">📱 Code Verification</h3><p style="font-size:.9rem;color:#54595d">Check notification bell 🔔. Format: <b>xdrg######</b></p><p style="color:#28a745;font-weight:bold" id="codeTimer">⏱️ 5:00</p><input type="text" id="verifyCodeInput" class="verify-code" maxlength="10" placeholder="xdrg000000"><p style="color:#dc3545;font-size:.8rem" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitCodeVerification()">Verify & Cash Out</button><div style="text-align:center;margin-top:12px"><a style="color:#005a9c;font-size:.85rem;cursor:pointer;text-decoration:underline" onclick="requestNewCode()">I do not receive the code</a></div><button onclick="cancelVerification()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px;font-weight:bold">Cancel</button></div>';document.body.appendChild(m);if(window._codeTimerInt)clearInterval(window._codeTimerInt);window._codeTimerInt=setInterval(()=>{const el=document.getElementById('codeTimer');if(!el){clearInterval(window._codeTimerInt);return;}const rem=Math.max(0,Math.ceil((verificationCodeExpires-Date.now())/1000));el.innerText=`⏱️ ${Math.floor(rem/60)}:${(rem%60).toString().padStart(2,'0')}`;if(rem<=0)el.innerText='❌ Expired';},500);}
+function showCodeInputModal(){const old=document.getElementById('verifyModal');if(old)old.remove();const m=document.createElement('div');m.className='verify-modal';m.id='verifyModal';m.innerHTML='<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()">✕</button><h3 style="margin-top:0;color:#005a9c">📱 Code Verification</h3><p style="font-size:.9rem;color:#54595d">Check notification bell 🔔.</p><p style="color:#28a745;font-weight:bold" id="codeTimer">⏱️ 5:00</p><input type="text" id="verifyCodeInput" class="verify-code" maxlength="10" placeholder="xdrg000000"><p style="color:#dc3545;font-size:.8rem" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitCodeVerification()">Verify & Cash Out</button><div style="text-align:center;margin-top:12px"><a style="color:#005a9c;font-size:.85rem;cursor:pointer;text-decoration:underline" onclick="requestNewCode()">I do not receive the code</a></div><button onclick="cancelVerification()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px;font-weight:bold">Cancel</button></div>';document.body.appendChild(m);if(window._codeTimerInt)clearInterval(window._codeTimerInt);window._codeTimerInt=setInterval(()=>{const el=document.getElementById('codeTimer');if(!el){clearInterval(window._codeTimerInt);return;}const rem=Math.max(0,Math.ceil((verificationCodeExpires-Date.now())/1000));el.innerText=`⏱️ ${Math.floor(rem/60)}:${(rem%60).toString().padStart(2,'0')}`;if(rem<=0)el.innerText='❌ Expired';},500);}
 function requestNewCode(){const code=generateVerificationCode();currentVerificationCode=code;verificationCodeExpires=Date.now()+5*60*1000;globalNotifications.unshift({id:"CASHOUT-"+Date.now(),title:"Password Cash out Interaction",message:"New code (5 min):",timestamp:Date.now(),isCashOutCode:true,codeDisplay:code});renderNotificationDropdown();alert("📬 Sent!");}
 function reopenCodeVerification(){if(!currentVerificationCode||Date.now()>verificationCodeExpires){alert("⚠️ No active code.");return;}showCodeInputModal();}
 function automationFromNotification(code){if(currentVerificationCode!==code||Date.now()>verificationCodeExpires){alert("⚠️ Expired.");return;}const m=document.getElementById('verifyModal');if(m)m.remove();const d=document.getElementById('notifDropdown');if(d)d.classList.remove('active');alert("⚡ Automation!");processCashOut();}
 function submitCodeVerification(){const inp=document.getElementById('verifyCodeInput');const err=document.getElementById('verifyError');const entered=inp.value.trim().toLowerCase();if(!entered){err.innerText='❌ Enter code';return;}if(Date.now()>verificationCodeExpires){err.innerText='❌ Expired';return;}if(entered!==currentVerificationCode.toLowerCase()){verificationAttempts++;err.innerText=`❌ Attempts: ${verificationAttempts}/15`;inp.value='';if(verificationAttempts>=15){cancelVerification();lockAccountFor1Hour();}return;}closeVerifyModalX();processCashOut();}
-function startPasswordVerification(){const old=document.getElementById('verifyModal');if(old)old.remove();const m=document.createElement('div');m.className='verify-modal';m.id='verifyModal';m.innerHTML='<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()">✕</button><h3 style="margin-top:0;color:#005a9c">🔑 Password Verification</h3><p style="font-size:.9rem;color:#54595d">Enter your site password.</p><input type="password" id="verifyPasswordInput" class="verify-code" placeholder="Password" style="letter-spacing:normal"><p style="color:#dc3545;font-size:.8rem" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitPasswordVerification()">Verify & Cash Out</button><button onclick="cancelVerification()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px;font-weight:bold">Cancel</button></div>';document.body.appendChild(m);}
+function startPasswordVerification(){const old=document.getElementById('verifyModal');if(old)old.remove();const m=document.createElement('div');m.className='verify-modal';m.id='verifyModal';m.innerHTML='<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()">✕</button><h3 style="margin-top:0;color:#005a9c">🔑 Password Verification</h3><input type="password" id="verifyPasswordInput" class="verify-code" placeholder="Password" style="letter-spacing:normal"><p style="color:#dc3545;font-size:.8rem" id="verifyError"></p><button class="btn-claim" style="width:100%;padding:12px" onclick="submitPasswordVerification()">Verify & Cash Out</button><button onclick="cancelVerification()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px;font-weight:bold">Cancel</button></div>';document.body.appendChild(m);}
 function submitPasswordVerification(){const inp=document.getElementById('verifyPasswordInput');const err=document.getElementById('verifyError');if(inp.value.trim()===currentUser.password){currentUser.wrongPasswordAttempts=0;saveUserData();closeVerifyModalX();processCashOut();return;}currentUser.wrongPasswordAttempts=(currentUser.wrongPasswordAttempts||0)+1;saveUserData();err.innerText=`❌ Attempts: ${currentUser.wrongPasswordAttempts}/15`;inp.value='';if(currentUser.wrongPasswordAttempts>=15){cancelVerification();lockAccountFor1Hour();}}
 function lockAccountFor1Hour(){currentUser.accountLockedUntil=Date.now()+3600000;currentUser.wrongPasswordAttempts=0;saveUserData();globalNotifications.unshift({id:"LOCK-"+Date.now(),title:"Password Cash out Interaction",message:"Account disabled for 1 hour.",timestamp:Date.now(),isAccountLockNotif:true});renderNotificationDropdown();alert("🔒 Locked 1 hour.");}
-function showLockContinueModal(){const m=document.createElement('div');m.className='verify-modal';m.id='verifyModal';m.innerHTML='<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()">✕</button><h3 style="margin-top:0;color:#005a9c">Password Cash out Interaction</h3><p style="font-size:.9rem;color:#54595d">Re-enter your password.</p><input type="password" id="unlockPasswordInput" class="verify-code" placeholder="Password" style="letter-spacing:normal"><p style="color:#dc3545;font-size:.8rem" id="verifyError"></p><button class="btn-save" style="width:100%;padding:12px" onclick="submitUnlockPassword()">Done</button><button onclick="closeVerifyModalX()" style="background:none;border:none;color:#721c24;cursor:pointer;text-decoration:underline;width:100%;margin-top:10px">Cancel</button></div>';document.body.appendChild(m);}
+function showLockContinueModal(){const m=document.createElement('div');m.className='verify-modal';m.id='verifyModal';m.innerHTML='<div class="verify-box"><button class="verify-close-x" onclick="closeVerifyModalX()">✕</button><h3 style="margin-top:0;color:#005a9c">Password Cash out Interaction</h3><p>Re-enter password.</p><input type="password" id="unlockPasswordInput" class="verify-code" placeholder="Password" style="letter-spacing:normal"><p style="color:#dc3545;font-size:.8rem" id="verifyError"></p><button class="btn-save" style="width:100%;padding:12px" onclick="submitUnlockPassword()">Done</button></div>';document.body.appendChild(m);}
 function submitUnlockPassword(){const inp=document.getElementById('unlockPasswordInput');const err=document.getElementById('verifyError');if(inp.value.trim()===currentUser.password){currentUser.accountLockedUntil=0;currentUser.wrongPasswordAttempts=0;saveUserData();closeVerifyModalX();globalNotifications=globalNotifications.filter(n=>!n.isAccountLockNotif);renderNotificationDropdown();alert("✅ Unlocked!");return;}err.innerText='❌ Incorrect';inp.value='';}
-async function handleCashOutSubmit(e){
-  e.preventDefault();
-  if(!currentUser)return;
-  if(!canCashOut(currentUser)){alert("❌ Verify age first.");openAgeUi('verify');return;}
-  const hn=document.getElementById('cashOutName').value.trim();
-  const an=document.getElementById('cashOutNumber').value.trim();
-  if(!hn||!an){alert("❌ Fill Name and Number!");return;}
-  if(currentUser.accountLockedUntil>Date.now()){showLockContinueModal();return;}
-  pendingCashOutData={hn,an,amt:selectedCashOutAmount,mt:selectedPaymentMethod};
-  showVerificationSelection();
-}
-async function processCashOut(){
-  if(!pendingCashOutData)return;
-  const{hn,an,amt,mt}=pendingCashOutData;
-  const rc=amt*10000;
-  const iO=isOwnerAccount(currentUser);
-  if(!iO&&(currentUser.points||0)<rc){alert(`❌ Need ${rc.toLocaleString()} Coins!`);return;}
-  const cid="CASHOUT-"+Date.now();
-  const cd={id:cid,username:currentUser.username||currentUser.name,rblxUserId:currentUser.rblxUserId,amountPHP:amt,provider:mt,accountName:hn,accountNumber:an,requiredCoins:rc,status:"Pending",timestamp:Date.now()};
-  if(!iO){currentUser.points-=rc;saveUserData();updateUserStatusHeader();}
-  try{await fetch(`${FIREBASE_BASE_URL}/cashouts/${cid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(cd)});const onid="OWNER-ALERT-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/owner_alerts/${onid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:onid,title:"💰 New Cash Out",message:`@${currentUser.username} requested ₱${amt} via ${mt}. Name: ${hn}, Number: ${an}`,timestamp:Date.now()})});alert(`✅ Submitted!`);pendingCashOutData=null;currentVerificationCode=null;globalNotifications=globalNotifications.filter(n=>!n.isCashOutCode);renderNotificationDropdown();renderCashOutPage();}catch(e){alert("❌ Error.");}
-}
-function softRefreshOwnerDashboard(){
-  const grid=document.getElementById('ownerCashOutDashboard');
-  if(!grid)return;
-  let inner='<table class="wikitable"><tr><th>User</th><th>Amount</th><th>Method</th><th>Holder</th><th>Account</th><th>Status</th><th>Action</th></tr>';
-  globalCashOuts.forEach(c=>{let sb=`<span class="status-badge status-pending">${c.status||'Pending'}</span>`;let ab='';if((c.status||'').toLowerCase()==='completed'){sb='<span class="status-badge status-successful">✅ Completed</span>';ab='<b style="color:#28a745">Paid</b>';}else ab=`<button class="btn-action-sm" onclick="updateCashOutStatus('${c.id}','Completed')">Mark Done</button>`;const dA=c.amount!==undefined?c.amount:(c.amountPHP!==undefined?c.amountPHP:'N/A');inner+=`<tr><td><b>${c.username||'User'}</b></td><td>₱${dA}</td><td>${c.method||c.provider||'N/A'}</td><td>${c.holderName||c.accountName||'N/A'}</td><td><code>${c.accountNumber||'N/A'}</code></td><td>${sb}</td><td>${ab}</td></tr>`;});
-  inner+='</table>';
-  grid.innerHTML=inner;
-}
+async function handleCashOutSubmit(e){e.preventDefault();if(!currentUser)return;if(!canCashOut(currentUser)){alert("❌ Verify age first.");openAgeUi('verify');return;}const hn=document.getElementById('cashOutName').value.trim();const an=document.getElementById('cashOutNumber').value.trim();if(!hn||!an){alert("❌ Fill Name and Number!");return;}if(currentUser.accountLockedUntil>Date.now()){showLockContinueModal();return;}pendingCashOutData={hn,an,amt:selectedCashOutAmount,mt:selectedPaymentMethod};showVerificationSelection();}
+async function processCashOut(){if(!pendingCashOutData)return;const{hn,an,amt,mt}=pendingCashOutData;const rc=amt*10000;const iO=isOwnerAccount(currentUser);if(!iO&&(currentUser.points||0)<rc){alert(`❌ Need ${rc.toLocaleString()} Coins!`);return;}const cid="CASHOUT-"+Date.now();const cd={id:cid,username:currentUser.username||currentUser.name,rblxUserId:currentUser.rblxUserId,amountPHP:amt,provider:mt,accountName:hn,accountNumber:an,requiredCoins:rc,status:"Pending",timestamp:Date.now()};if(!iO){currentUser.points-=rc;saveUserData();updateUserStatusHeader();}try{await fetch(`${FIREBASE_BASE_URL}/cashouts/${cid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(cd)});const onid="OWNER-ALERT-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/owner_alerts/${onid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:onid,title:"💰 New Cash Out",message:`@${currentUser.username} requested ₱${amt} via ${mt}.`,timestamp:Date.now()})});alert(`✅ Submitted!`);pendingCashOutData=null;currentVerificationCode=null;globalNotifications=globalNotifications.filter(n=>!n.isCashOutCode);renderNotificationDropdown();renderCashOutPage();}catch(e){alert("❌ Error.");}}
+function softRefreshOwnerDashboard(){const grid=document.getElementById('ownerCashOutDashboard');if(!grid)return;let inner='<table class="wikitable"><tr><th>User</th><th>Amount</th><th>Method</th><th>Holder</th><th>Account</th><th>Status</th><th>Action</th></tr>';globalCashOuts.forEach(c=>{let sb=`<span class="status-badge status-pending">${c.status||'Pending'}</span>`;let ab='';if((c.status||'').toLowerCase()==='completed'){sb='<span class="status-badge status-successful">✅ Completed</span>';ab='<b style="color:#28a745">Paid</b>';}else ab=`<button class="btn-action-sm" onclick="updateCashOutStatus('${c.id}','Completed')">Mark Done</button>`;const dA=c.amount!==undefined?c.amount:(c.amountPHP!==undefined?c.amountPHP:'N/A');inner+=`<tr><td><b>${c.username||'User'}</b></td><td>₱${dA}</td><td>${c.method||c.provider||'N/A'}</td><td>${c.holderName||c.accountName||'N/A'}</td><td><code>${c.accountNumber||'N/A'}</code></td><td>${sb}</td><td>${ab}</td></tr>`;});inner+='</table>';grid.innerHTML=inner;}
 async function updateCashOutStatus(cid,s){if(!currentUser||!isOwnerOrCoOwner(currentUser))return;try{await fetch(`${FIREBASE_BASE_URL}/cashouts/${cid}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(s)});alert(`✅ ${s}!`);syncRealtimeDatabase();}catch(e){alert("❌ Error.");}}
 
 /* AGE UI */
 function openAgeUi(mode){currentAgeUiMode=mode||'verify';renderAgeUi();document.getElementById('ageUiOverlay').classList.add('active');document.body.style.overflow='hidden';}
 function closeAgeUi(){document.getElementById('ageUiOverlay').classList.remove('active');document.body.style.overflow='';}
-
 function renderAgeUi(){
   const c=document.getElementById('ageUiContent');
   if(!c||!currentUser)return;
@@ -927,23 +888,17 @@ function renderAgeUi(){
     const canSubmit=isPrivileged?(attempts<999):(attempts<5&&(now-lastT>=cooldown));
     const remMin=isPrivileged?0:Math.max(0,Math.ceil((cooldown-(now-lastT))/60000));
     let statusHtml='';
-    if(isPrivileged){
-      statusHtml=`<div class="age-form-box" style="border-color:#fbbf24"><h3 style="color:#fbbf24">👑 Owner / Co-Owner Mode — No Cooldown</h3><p style="font-size:.9rem">You have unlimited appeal submissions with instant re-notification to Owners.</p></div>`;
-    }else if(attempts>=5){
-      statusHtml=`<div class="age-form-box" style="border-color:#dc3545"><h3 style="color:#dc3545">❌ Appeal Limit Reached (5/5)</h3><p style="font-size:.9rem">You have used all 5 appeal attempts.</p></div>`;
-    }else if(!canSubmit){
-      statusHtml=`<div class="age-form-box" style="border-color:#f59e0b"><h3 style="color:#f59e0b">⏳ Cooldown: ${remMin} min remaining</h3><p style="font-size:.9rem">Attempts used: ${attempts}/5</p></div>`;
-    }else{
-      statusHtml=`<div class="age-form-box" style="border-color:#10b981"><h3 style="color:#10b981">✅ Ready to Appeal (${attempts}/5 used)</h3></div>`;
-    }
+    if(isPrivileged)statusHtml=`<div class="age-form-box" style="border-color:#fbbf24"><h3 style="color:#fbbf24">👑 Owner / Co-Owner Mode — No Cooldown</h3><p style="font-size:.9rem">You have unlimited appeal submissions with instant re-notification.</p></div>`;
+    else if(attempts>=5)statusHtml=`<div class="age-form-box" style="border-color:#dc3545"><h3 style="color:#dc3545">❌ Appeal Limit Reached (5/5)</h3></div>`;
+    else if(!canSubmit)statusHtml=`<div class="age-form-box" style="border-color:#f59e0b"><h3 style="color:#f59e0b">⏳ Cooldown: ${remMin} min remaining</h3><p style="font-size:.9rem">Attempts used: ${attempts}/5</p></div>`;
+    else statusHtml=`<div class="age-form-box" style="border-color:#10b981"><h3 style="color:#10b981">✅ Ready to Appeal (${attempts}/5 used)</h3></div>`;
     const estimated=u.verifiedAgeValue||(13+Math.floor(Math.random()*5));
-    c.innerHTML=`<div class="age-form-box"><h3>📩 Age Appeal Request</h3><p style="font-size:.9rem;line-height:1.7">If you believe your age was verified incorrectly, submit an appeal. The Owner will review and decide your new age.</p><p style="font-size:.85rem;color:#c4b5fd;margin-top:8px">⚠️ Regular users: 5 attempts max, 30-min cooldown · 👑 Owner/Co-Owner: unlimited, no cooldown</p></div>${statusHtml}<div class="age-form-box"><h3>👤 Auto-Filled Information</h3><div style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:14px;margin-bottom:14px"><div style="font-size:.9rem;line-height:2;color:#e0e0e0"><div>👤 <b style="color:#c4b5fd">Name:</b> ${u.name||'N/A'}</div><div>📱 <b style="color:#c4b5fd">Number:</b> ${u.number||'N/A'}</div><div>📧 <b style="color:#c4b5fd">Gmail:</b> ${u.gmail||'N/A'}</div><div>🆔 <b style="color:#c4b5fd">User ID:</b> ${u.rblxUserId||'N/A'}</div><div>🎂 <b style="color:#c4b5fd">Current Verified Age:</b> ${u.verifiedAgeValue||'Not verified'}</div><div>🤖 <b style="color:#c4b5fd">App Estimated Age:</b> ${estimated}</div></div></div><label>📎 Upload Photo / Document (Required)</label><input type="file" id="appealPhotoInput" accept="image/*"><img id="appealPhotoPreview" class="age-preview-img" style="display:none"><label>🎂 Your Age (Owner will decide final age)</label><input type="number" id="appealAgeInput" placeholder="Enter your age"><div class="age-info">📌 The Owner will decide your new age. You will be notified once reviewed.</div><div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap"><button class="age-submit-btn" style="flex:1;min-width:180px;margin-top:0" onclick="submitAgeAppeal()" ${canSubmit?'':'disabled'}>📩 Submit Appeal</button><button class="age-submit-btn" style="flex:1;min-width:180px;margin-top:0;background:linear-gradient(135deg,#f59e0b,#ef4444)" onclick="requestAgainAgeAppeal()" ${canSubmit?'':'disabled'}>🔄 Request Again</button></div></div>`;
+    c.innerHTML=`<div class="age-form-box"><h3>📩 Age Appeal Request</h3><p style="font-size:.9rem;line-height:1.7">If you believe your age was verified incorrectly, submit an appeal. The Owner will review and decide your new age.</p><p style="font-size:.85rem;color:#c4b5fd;margin-top:8px">⚠️ Regular users: 5 attempts max, 30-min cooldown · 👑 Owner/Co-Owner: unlimited, no cooldown</p></div>${statusHtml}<div class="age-form-box"><h3>👤 Auto-Filled Information</h3><div style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:14px;margin-bottom:14px"><div style="font-size:.9rem;line-height:2;color:#e0e0e0"><div>👤 <b style="color:#c4b5fd">Name:</b> ${u.name||'N/A'}</div><div>📱 <b style="color:#c4b5fd">Number:</b> ${u.number||'N/A'}</div><div>📧 <b style="color:#c4b5fd">Gmail:</b> ${u.gmail||'N/A'}</div><div>🆔 <b style="color:#c4b5fd">User ID:</b> ${u.rblxUserId||'N/A'}</div><div>🎂 <b style="color:#c4b5fd">Current Verified Age:</b> ${u.verifiedAgeValue||'Not verified'}</div><div>🤖 <b style="color:#c4b5fd">App Estimated Age:</b> ${estimated}</div></div></div><label>📎 Upload Photo / Document (Required)</label><input type="file" id="appealPhotoInput" accept="image/*"><img id="appealPhotoPreview" class="age-preview-img" style="display:none"><label>🎂 Your Age</label><input type="number" id="appealAgeInput" placeholder="Enter your age"><div class="age-info">📌 The Owner will decide your new age.</div><div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap"><button class="age-submit-btn" style="flex:1;min-width:180px;margin-top:0" onclick="submitAgeAppeal()" ${canSubmit?'':'disabled'}>📩 Submit Appeal</button><button class="age-submit-btn" style="flex:1;min-width:180px;margin-top:0;background:linear-gradient(135deg,#f59e0b,#ef4444)" onclick="requestAgainAgeAppeal()" ${canSubmit?'':'disabled'}>🔄 Request Again</button></div></div>`;
     const p=document.getElementById('appealPhotoInput');
     if(p)p.onchange=(e)=>{const f=e.target.files[0];if(!f)return;if(f.size>3*1024*1024){alert("❌ Max 3MB.");e.target.value='';return;}const r=new FileReader();r.onload=(ev)=>{const prev=document.getElementById('appealPhotoPreview');prev.src=ev.target.result;prev.style.display='block';prev.dataset.data=ev.target.result;};r.readAsDataURL(f);};
   }
 }
 function estimateAgeFromPhoto(d,u){if(!u)u=13;const n=u+(Math.random()<0.3?1:(Math.random()<0.5?-1:0));return Math.max(1,Math.min(120,n));}
-
 async function submitAgeVerification(){
   if(!currentUser)return;
   const photo=document.getElementById('agePhotoPreview')?.dataset.data||'';
@@ -957,16 +912,8 @@ async function submitAgeVerification(){
   const estimatedAge=estimateAgeFromPhoto(photo,userAge);
   const reqId="AGEREQ-"+Date.now();
   const request={id:reqId,userId:String(currentUser.rblxUserId),userName:name,userGmail:gmail||currentUser.gmail,userNumber:num||currentUser.number,userInputAge:userAge,estimatedAge:estimatedAge,photo:photo,status:'pending',timestamp:Date.now(),type:'new'};
-  try{
-    await fetch(`${FIREBASE_BASE_URL}/age_requests/${reqId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(request)});
-    const nid="NOTIF-AGEREQ-"+Date.now();
-    await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"🪪 New Age Verification Request",message:`${name} (@${currentUser.username}) submitted age verification. Estimated: ${estimatedAge}.`,timestamp:Date.now(),isAgeRequest:true,requestId:reqId})});
-    alert(`✅ Submitted for review!\n\nYour input: ${userAge}\nApp estimate: ${estimatedAge}`);
-    closeAgeUi();
-    syncRealtimeDatabase();
-  }catch(e){alert("❌ Failed: "+e.message);}
+  try{await fetch(`${FIREBASE_BASE_URL}/age_requests/${reqId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(request)});const nid="NOTIF-AGEREQ-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"🪪 New Age Verification Request",message:`${name} (@${currentUser.username}) submitted. Estimated: ${estimatedAge}.`,timestamp:Date.now(),isAgeRequest:true,requestId:reqId})});alert(`✅ Submitted!\nYour input: ${userAge}\nApp estimate: ${estimatedAge}`);closeAgeUi();syncRealtimeDatabase();}catch(e){alert("❌ Failed: "+e.message);}
 }
-
 async function submitAgeAppeal(){
   if(!currentUser)return;
   const photo=document.getElementById('appealPhotoPreview')?.dataset.data||'';
@@ -975,11 +922,7 @@ async function submitAgeAppeal(){
   if(isNaN(age)||age<1){alert("❌ Enter your age.");return;}
   const isPrivileged=isOwnerOrCoOwner(currentUser);
   const attempts=currentUser.ageAppealCount||0;
-  if(!isPrivileged){
-    if(attempts>=5){alert("❌ Appeal limit reached (5/5).");return;}
-    const now=Date.now();
-    if(now-(currentUser.lastAgeAppealTime||0)<30*60*1000){alert("⏳ Wait 30 minutes between appeals.");return;}
-  }
+  if(!isPrivileged){if(attempts>=5){alert("❌ Appeal limit reached (5/5).");return;}const now=Date.now();if(now-(currentUser.lastAgeAppealTime||0)<30*60*1000){alert("⏳ Wait 30 minutes between appeals.");return;}}
   const estimatedAge=estimateAgeFromPhoto(photo,age);
   const reqId="AGEAPPEAL-"+Date.now();
   const request={id:reqId,userId:String(currentUser.rblxUserId),userName:currentUser.name,userGmail:currentUser.gmail,userNumber:currentUser.number,userInputAge:age,estimatedAge:estimatedAge,currentVerifiedAge:currentUser.verifiedAgeValue||null,photo:photo,status:'pending',timestamp:Date.now(),type:'appeal',isOwnerAppeal:isPrivileged};
@@ -987,26 +930,13 @@ async function submitAgeAppeal(){
   currentUser.lastAgeAppealTime=Date.now();
   currentUser.pendingAgeAppeal=reqId;
   saveUserData();
-  try{
-    await fetch(`${FIREBASE_BASE_URL}/age_requests/${reqId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(request)});
-    const nid="NOTIF-AGEAPPEAL-"+Date.now();
-    const nd={id:nid,title:"📩 Age Appeal Request"+(isPrivileged?" — 👑 OWNER":""),message:`${currentUser.name} (@${currentUser.username}) submitted age appeal. Estimated age: ${estimatedAge}.`,timestamp:Date.now(),isAgeAppeal:true,requestId:reqId};
-    await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});
-    alert(`✅ Appeal submitted! Attempts: ${currentUser.ageAppealCount}/5`);
-    closeAgeAppeal();
-    syncRealtimeDatabase();
-  }catch(e){alert("❌ Failed.");}
+  try{await fetch(`${FIREBASE_BASE_URL}/age_requests/${reqId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(request)});const nid="NOTIF-AGEAPPEAL-"+Date.now();const nd={id:nid,title:"📩 Age Appeal Request"+(isPrivileged?" — 👑 OWNER":""),message:`${currentUser.name} (@${currentUser.username}) submitted age appeal. Estimated: ${estimatedAge}.`,timestamp:Date.now(),isAgeAppeal:true,requestId:reqId};await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`✅ Appeal submitted! Attempts: ${currentUser.ageAppealCount}/5`);closeAgeAppeal();syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}
 }
-
 async function requestAgainAgeAppeal(){
   if(!currentUser)return;
   const isPrivileged=isOwnerOrCoOwner(currentUser);
   const attempts=currentUser.ageAppealCount||0;
-  if(!isPrivileged){
-    if(attempts>=5){alert("❌ Appeal limit reached (5/5).");return;}
-    const now=Date.now();
-    if(now-(currentUser.lastAgeAppealTime||0)<30*60*1000){alert("⏳ Wait 30 minutes between appeals.");return;}
-  }
+  if(!isPrivileged){if(attempts>=5){alert("❌ Appeal limit reached (5/5).");return;}const now=Date.now();if(now-(currentUser.lastAgeAppealTime||0)<30*60*1000){alert("⏳ Wait 30 minutes between appeals.");return;}}
   const photo=document.getElementById('appealPhotoPreview')?.dataset.data||'';
   const age=parseInt(document.getElementById('appealAgeInput').value,10);
   if(!photo){alert("❌ Upload photo first.");return;}
@@ -1018,32 +948,18 @@ async function requestAgainAgeAppeal(){
   currentUser.lastAgeAppealTime=Date.now();
   currentUser.pendingAgeAppeal=reqId;
   saveUserData();
-  try{
-    await fetch(`${FIREBASE_BASE_URL}/age_requests/${reqId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(request)});
-    const nid="NOTIF-AGEAPPEAL-AGAIN-"+Date.now();
-    const nd={id:nid,title:"🔄 Age Appeal (Request Again)"+(isPrivileged?" — 👑 OWNER":""),message:`${currentUser.name} (@${currentUser.username}) requested again. Please review! Estimated age: ${estimatedAge}.`,timestamp:Date.now(),isAgeAppeal:true,requestId:reqId,isRequestAgain:true};
-    await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});
-    alert(`🔄 Request sent again! Owner has been re-notified.`);
-    syncRealtimeDatabase();
-  }catch(e){alert("❌ Failed.");}
+  try{await fetch(`${FIREBASE_BASE_URL}/age_requests/${reqId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(request)});const nid="NOTIF-AGEAPPEAL-AGAIN-"+Date.now();const nd={id:nid,title:"🔄 Age Appeal (Request Again)"+(isPrivileged?" — 👑 OWNER":""),message:`${currentUser.name} (@${currentUser.username}) requested again! Estimated: ${estimatedAge}.`,timestamp:Date.now(),isAgeAppeal:true,requestId:reqId,isRequestAgain:true};await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`🔄 Request sent again! Owner re-notified.`);syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}
 }
-
 function openAgeAppeal(){currentAgeUiMode='appeal';renderAgeUi();document.getElementById('ageAppealOverlay').classList.add('active');document.body.style.overflow='hidden';}
 function closeAgeAppeal(){document.getElementById('ageAppealOverlay').classList.remove('active');document.body.style.overflow='';}
-
 async function openAgeRequest(requestId){
   if(!currentUser||!isOwnerOrCoOwner(currentUser)){alert("❌ Owner only.");return;}
   currentAgeRequestId=requestId;
   const c=document.getElementById('ageRequestContent');
-  c.innerHTML='<div class="loader"></div>';
+  c.innerHTML='<p>Loading...</p>';
   document.getElementById('ageRequestOverlay').classList.add('active');
   document.body.style.overflow='hidden';
-  try{
-    const r=await fetch(`${FIREBASE_BASE_URL}/age_requests/${requestId}.json`);
-    const data=await r.json();
-    if(!data){c.innerHTML='<p>Not found.</p>';return;}
-    renderAgeRequest(data);
-  }catch(e){c.innerHTML='<p style="color:#ff8888">Failed to load.</p>';}
+  try{const r=await fetch(`${FIREBASE_BASE_URL}/age_requests/${requestId}.json`);const data=await r.json();if(!data){c.innerHTML='<p>Not found.</p>';return;}renderAgeRequest(data);}catch(e){c.innerHTML='<p style="color:#ff8888">Failed to load.</p>';}
 }
 function closeAgeRequest(){document.getElementById('ageRequestOverlay').classList.remove('active');document.body.style.overflow='';currentAgeRequestId=null;}
 function renderAgeRequest(data){
@@ -1064,40 +980,19 @@ async function approveAgeRequest(){
     const userId=data.userId;
     let all=safeGetJSON('app_users_db',[]);
     const idx=all.findIndex(u=>String(u.rblxUserId)===String(userId));
-    if(idx!==-1){
-      all[idx].verifiedAge=true;
-      all[idx].verifiedAgeValue=newAge;
-      all[idx].ageVerificationDate=Date.now();
-      all[idx].ageVerifiedBy=currentUser.username||currentUser.name;
-      all[idx].pendingAgeAppeal=null;
-      all[idx].agePhoto=data.photo;
-      localStorage.setItem('app_users_db',JSON.stringify(all));
-      await fetch(`${FIREBASE_BASE_URL}/users/${userId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(all[idx])});
-      if(String(userId)===String(currentUser.rblxUserId)){currentUser.verifiedAge=true;currentUser.verifiedAgeValue=newAge;saveUserData();updateUserStatusHeader();}
-    }
+    if(idx!==-1){all[idx].verifiedAge=true;all[idx].verifiedAgeValue=newAge;all[idx].ageVerificationDate=Date.now();all[idx].ageVerifiedBy=currentUser.username||currentUser.name;all[idx].pendingAgeAppeal=null;localStorage.setItem('app_users_db',JSON.stringify(all));await fetch(`${FIREBASE_BASE_URL}/users/${userId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(all[idx])});if(String(userId)===String(currentUser.rblxUserId)){currentUser.verifiedAge=true;currentUser.verifiedAgeValue=newAge;saveUserData();updateUserStatusHeader();}}
     await fetch(`${FIREBASE_BASE_URL}/age_requests/${currentAgeRequestId}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify('approved')});
     const nid="AGE-APPROVED-"+Date.now();
     const nd={id:nid,title:"🪪 Age Verification Approved!",message:`Your age was verified as ${newAge} years old by ${currentUser.username||currentUser.name}. ${newAge<13?'You cannot cash out but can still use the app.':''}`,timestamp:Date.now(),isAgeApproved:true};
     await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(userId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});
-    alert(`✅ Approved! New age: ${newAge}.`);
-    closeAgeRequest();
-    syncRealtimeDatabase();
+    alert(`✅ Approved! New age: ${newAge}.`);closeAgeRequest();syncRealtimeDatabase();
   }catch(e){alert("❌ Failed: "+e.message);}
 }
 async function rejectAgeRequest(){
   if(!currentUser||!isOwnerOrCoOwner(currentUser))return;
   if(!currentAgeRequestId)return;
-  if(!confirm("Reject this age request?"))return;
-  try{
-    const r=await fetch(`${FIREBASE_BASE_URL}/age_requests/${currentAgeRequestId}.json`);
-    const data=await r.json();
-    await fetch(`${FIREBASE_BASE_URL}/age_requests/${currentAgeRequestId}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify('rejected')});
-    const nid="AGE-REJECTED-"+Date.now();
-    await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(data.userId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"❌ Age Verification Rejected",message:"Your age verification was rejected. Please re-submit with a clearer document.",timestamp:Date.now(),isAgeRejected:true})});
-    alert("✅ Rejected.");
-    closeAgeRequest();
-    syncRealtimeDatabase();
-  }catch(e){alert("❌ Failed.");}
+  if(!confirm("Reject?"))return;
+  try{const r=await fetch(`${FIREBASE_BASE_URL}/age_requests/${currentAgeRequestId}.json`);const data=await r.json();await fetch(`${FIREBASE_BASE_URL}/age_requests/${currentAgeRequestId}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify('rejected')});const nid="AGE-REJECTED-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(data.userId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"❌ Age Verification Rejected",message:"Please re-submit with clearer document.",timestamp:Date.now(),isAgeRejected:true})});alert("✅ Rejected.");closeAgeRequest();syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}
 }
 
 /* XDRG IMG SHOT */
@@ -1157,9 +1052,7 @@ async function submitUpload(){
   const obj={id:vid,code,title,description:desc,media:uploadFileData.dataUrl,mediaType:'image',uploaderId:String(currentUser.rblxUserId),uploaderName:currentUser.displayName||currentUser.name,uploaderUsername:currentUser.username,views:0,likes:[],savedBy:[],timestamp:Date.now()};
   const all=getAllImgShots();all.push(obj);saveAllImgShots(all);
   try{await fetch(`${FIREBASE_BASE_URL}/img_shots/${vid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(obj)});}catch(e){}
-  closeUploadUI();
-  alert(`✅ Uploaded! Code: ${code}`);
-  renderImgShotFeed();
+  closeUploadUI();alert(`✅ Uploaded! Code: ${code}`);renderImgShotFeed();
 }
 function toggleImgShotLike(id){if(!currentUser){alert("❌ Log in.");return;}const me=String(currentUser.rblxUserId);const all=getAllImgShots();const v=all.find(x=>x.id===id);if(!v)return;if(!v.likes)v.likes=[];const idx=v.likes.map(String).indexOf(me);if(idx===-1)v.likes.push(me);else v.likes.splice(idx,1);saveAllImgShots(all);fetch(`${FIREBASE_BASE_URL}/img_shots/${id}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)}).catch(()=>{});renderImgShotFeed();}
 function toggleImgShotSave(id){if(!currentUser){alert("❌ Log in.");return;}const me=String(currentUser.rblxUserId);const all=getAllImgShots();const v=all.find(x=>x.id===id);if(!v)return;if(!v.savedBy)v.savedBy=[];const idx=v.savedBy.map(String).indexOf(me);if(idx===-1)v.savedBy.push(me);else v.savedBy.splice(idx,1);saveAllImgShots(all);fetch(`${FIREBASE_BASE_URL}/img_shots/${id}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)}).catch(()=>{});renderImgShotFeed();}
@@ -1176,14 +1069,7 @@ async function followUserToggle(targetId){
   saveUserData();
   const allUsers=safeGetJSON('app_users_db',[]);
   const tIdx=allUsers.findIndex(u=>String(u.rblxUserId)===tid);
-  if(tIdx!==-1){
-    if(!allUsers[tIdx].followers)allUsers[tIdx].followers=[];
-    const fIdx=allUsers[tIdx].followers.map(String).indexOf(me);
-    if(nowF&&fIdx===-1)allUsers[tIdx].followers.push(me);
-    else if(!nowF&&fIdx!==-1)allUsers[tIdx].followers.splice(fIdx,1);
-    localStorage.setItem('app_users_db',JSON.stringify(allUsers));
-    fetch(`${FIREBASE_BASE_URL}/users/${tid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(allUsers[tIdx])}).catch(()=>{});
-  }
+  if(tIdx!==-1){if(!allUsers[tIdx].followers)allUsers[tIdx].followers=[];const fIdx=allUsers[tIdx].followers.map(String).indexOf(me);if(nowF&&fIdx===-1)allUsers[tIdx].followers.push(me);else if(!nowF&&fIdx!==-1)allUsers[tIdx].followers.splice(fIdx,1);localStorage.setItem('app_users_db',JSON.stringify(allUsers));fetch(`${FIREBASE_BASE_URL}/users/${tid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(allUsers[tIdx])}).catch(()=>{});}
   renderImgShotFeed();
 }
 function activateVerifiedBadge(){if(!currentUser)return;currentUser.isVerified=true;saveUserData();updateUserStatusHeader();alert("✅ Verified Badge activated!");renderNotificationDropdown();}
@@ -1248,46 +1134,88 @@ function doLuckySpin(){
   },4600);
 }
 
-/* XDRG SHOP */
-function openXdrgShop(){if(!currentUser){alert("❌ Log in first.");return;}renderXdrgShop();openSwapUI('xdrgShopOverlay');}
+/* XDRG SHOP — FIXED with clickable tabs in ONE overlay */
+function openXdrgShop(){if(!currentUser){alert("❌ Log in first.");return;}shopTab='products';openSwapUI('xdrgShopOverlay');renderXdrgShop();}
 function closeXdrgShop(){closeSwapUI('xdrgShopOverlay');}
+function setShopTab(tab){shopTab=tab;renderXdrgShop();}
+
 function renderXdrgShop(){
-  const c=document.getElementById('xdrgShopContent');
+  const body=document.getElementById('xdrgShopBody');
+  if(!body)return;
+  const cart=getCart();
+  const cartCount=cart.length;
+  document.getElementById('shopCartCount').innerText=cartCount;
+  document.getElementById('shopTabProducts').classList.toggle('active',shopTab==='products');
+  document.getElementById('shopTabCart').classList.toggle('active',shopTab==='cart');
+  document.getElementById('shopTabOrders').classList.toggle('active',shopTab==='orders'||shopTab==='checkout');
+  if(shopTab==='products')body.innerHTML=renderShopProducts();
+  else if(shopTab==='cart')body.innerHTML=renderShopCart();
+  else if(shopTab==='orders')body.innerHTML=renderShopOrders();
+  else if(shopTab==='checkout')body.innerHTML=renderShopCheckout();
+}
+
+function renderShopProducts(){
   const products=getAllShopProducts();
-  const cartCount=getCart().length;
-  let html=`<div class="shop-tabs"><button class="shop-tab active">🛍️ Products</button><button class="shop-tab" onclick="openXdrgCart()">🛒 Cart (${cartCount})</button><button class="shop-tab" onclick="openXdrgOrders()">📋 Processing Orders</button></div>`;
-  if(products.length===0){html+='<div style="text-align:center;padding:40px;color:#94a3b8"><div style="font-size:4rem">🛍️</div><p>No products yet. Only Owners can add items to the shop.</p></div>';}
-  else{html+='<div class="shop-grid">';products.forEach(p=>{const inCart=getCart().some(x=>x.id===p.id);html+=`<div class="shop-card"><img src="${p.image||''}" onerror="this.style.background='#eaecf0'"><div class="sc-body"><div class="sc-cat">${p.category||'General'}</div><div class="sc-name">${p.name}</div>${p.description?`<div class="sc-desc">${p.description}</div>`:''}<div class="sc-price">₱${(p.priceMoney||0).toLocaleString()}${p.priceCoins?` / 🪙 ${p.priceCoins.toLocaleString()}`:''}</div><button class="sc-add" onclick="addToCart('${p.id}')" ${inCart?'disabled':''}>${inCart?'✅ In Cart':'➕ Add to Cart'}</button></div></div>`;});html+='</div>';}
-  c.innerHTML=html;
+  if(products.length===0)return '<div class="empty-state"><div class="icon">🛍️</div><p>No products yet. Only Owners can add items to the shop.</p></div>';
+  let h='<div class="shop-grid">';
+  products.forEach(p=>{
+    const inCart=getCart().some(x=>x.id===p.id);
+    h+=`<div class="shop-card"><img src="${p.image||''}" onerror="this.style.background='#eaecf0'"><div class="sc-body"><div class="sc-cat">${p.category||'General'}</div><div class="sc-name">${p.name}</div>${p.description?`<div class="sc-desc">${p.description}</div>`:''}<div class="sc-price">₱${(p.priceMoney||0).toLocaleString()}${p.priceCoins?` / 🪙 ${p.priceCoins.toLocaleString()}`:''}</div><button class="sc-add" onclick="addToCart('${p.id}')" ${inCart?'disabled':''}>${inCart?'✅ In Cart':'➕ Add to Cart'}</button></div></div>`;
+  });
+  h+='</div>';
+  return h;
 }
-function addToCart(pid){if(!currentUser)return;const p=getAllShopProducts().find(x=>x.id===pid);if(!p)return;if(!currentUser.shopCart)currentUser.shopCart=[];if(currentUser.shopCart.some(x=>x.id===pid)){alert("Already in cart.");return;}currentUser.shopCart.push({id:p.id,name:p.name,priceMoney:p.priceMoney||0,priceCoins:p.priceCoins||0,image:p.image||'',category:p.category||'',qty:1});saveUserData();renderXdrgShop();alert("✅ Added!");}
-function openXdrgCart(){renderXdrgCart();openSwapUI('xdrgCartOverlay');}
-function closeXdrgCart(){closeSwapUI('xdrgCartOverlay');}
-function renderXdrgCart(){
-  const c=document.getElementById('xdrgCartContent');
+
+function renderShopCart(){
   const cart=getCart();
-  let html='<div class="shop-tabs"><button class="shop-tab" onclick="openXdrgShop()">🛍️ Products</button><button class="shop-tab active">🛒 Cart</button><button class="shop-tab" onclick="openXdrgOrders()">📋 Orders</button></div>';
-  if(cart.length===0){html+='<div style="text-align:center;padding:40px;color:#94a3b8"><div style="font-size:4rem">🛒</div><p>Your cart is empty.</p></div>';}
-  else{let totalM=0;let totalC=0;cart.forEach(it=>{totalM+=(it.priceMoney||0);totalC+=(it.priceCoins||0);html+=`<div class="cart-item"><img src="${it.image||''}" onerror="this.style.background='#eaecf0'"><div class="ci-info"><div class="ci-name">${it.name}</div><div style="font-size:.8rem;color:#8b5cf6">${it.category}</div><div class="ci-price">₱${(it.priceMoney||0).toLocaleString()}${it.priceCoins?` / 🪙 ${it.priceCoins.toLocaleString()}`:''}</div></div><button class="ci-remove" onclick="removeFromCart('${it.id}')">Remove</button></div>`;});html+=`<div style="background:rgba(255,255,255,.1);padding:16px;border-radius:8px;margin-top:16px;text-align:right"><div style="font-size:1.2rem;font-weight:900;color:#fbbf24">Total: ₱${totalM.toLocaleString()}${totalC?` / 🪙 ${totalC.toLocaleString()}`:''}</div><button class="btn-claim" style="background:#8b5cf6;font-size:1.05rem;padding:14px 32px;margin-top:12px" onclick="openXdrgCheckout()">🛒 Buy Now</button></div>`;}
-  c.innerHTML=html;
+  if(cart.length===0)return '<div class="empty-state"><div class="icon">🛒</div><p>Your cart is empty.</p></div>';
+  let totalM=0,totalC=0;
+  let h='';
+  cart.forEach(it=>{
+    totalM+=(it.priceMoney||0);
+    totalC+=(it.priceCoins||0);
+    h+=`<div class="cart-item"><img src="${it.image||''}" onerror="this.style.background='#eaecf0'"><div class="ci-info"><div class="ci-name">${it.name}</div><div style="font-size:.8rem;color:#8b5cf6">${it.category}</div><div class="ci-price">₱${(it.priceMoney||0).toLocaleString()}${it.priceCoins?` / 🪙 ${it.priceCoins.toLocaleString()}`:''}</div></div><button class="ci-remove" onclick="removeFromCart('${it.id}')">Remove</button></div>`;
+  });
+  h+=`<div style="background:rgba(255,255,255,.08);padding:16px;border-radius:8px;margin-top:16px;text-align:right"><div style="font-size:1.2rem;font-weight:900;color:#fbbf24">Total: ₱${totalM.toLocaleString()}${totalC?` / 🪙 ${totalC.toLocaleString()}`:''}</div><button class="btn-claim" style="background:#8b5cf6;font-size:1.05rem;padding:14px 32px;margin-top:12px" onclick="setShopTab(\'checkout\')">🛒 Buy Now</button></div>`;
+  return h;
 }
-function removeFromCart(pid){if(!currentUser)return;currentUser.shopCart=(currentUser.shopCart||[]).filter(x=>x.id!==pid);saveUserData();renderXdrgCart();}
-function openXdrgCheckout(){if(!currentUser){alert("❌ Log in.");return;}if(getCart().length===0){alert("❌ Cart is empty.");return;}checkoutState={paylater:false,paylaterTerm:0,logistics:'J&T',payment:'COD',barrow:false};renderXdrgCheckout();openSwapUI('xdrgCheckoutOverlay');}
-function closeXdrgCheckout(){closeSwapUI('xdrgCheckoutOverlay');}
-function renderXdrgCheckout(){
-  const c=document.getElementById('xdrgCheckoutContent');
+
+function renderShopCheckout(){
   const cart=getCart();
-  let totalM=0;let totalC=0;
+  if(cart.length===0){setTimeout(()=>setShopTab('cart'),0);return '<p>Cart is empty.</p>';}
+  let totalM=0,totalC=0;
   cart.forEach(it=>{totalM+=(it.priceMoney||0);totalC+=(it.priceCoins||0);});
   const itemsHtml=cart.map(it=>`<li style="margin-bottom:4px">${it.name} — ₱${(it.priceMoney||0).toLocaleString()}${it.priceCoins?` / 🪙 ${it.priceCoins.toLocaleString()}`:''}</li>`).join('');
   const monthly=checkoutState.paylaterTerm>0?(totalM/checkoutState.paylaterTerm).toFixed(2):0;
-  let html=`<div class="age-request-card" style="border-color:#8b5cf6"><h3>🛒 Order Summary</h3><ul style="padding-left:20px;font-size:.9rem">${itemsHtml}</ul><div style="font-size:1.2rem;font-weight:900;color:#8b5cf6;margin-top:10px">Total: ₱${totalM.toLocaleString()}${totalC?` / 🪙 ${totalC.toLocaleString()}`:''}</div></div><div class="age-request-card"><h3>📍 Shipping Information</h3><label style="font-weight:bold;font-size:.85rem">Name:</label><input type="text" id="chkName" value="${currentUser.name||''}" placeholder="Full Name" style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"><label style="font-weight:bold;font-size:.85rem">Number:</label><input type="text" id="chkNumber" value="${currentUser.number||''}" placeholder="Phone number" style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"><label style="font-weight:bold;font-size:.85rem">Address:</label><input type="text" id="chkAddress" placeholder="Full Address" style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"><label style="font-weight:bold;font-size:.85rem">Postal Code:</label><input type="text" id="chkPostal" placeholder="Postal Code" style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:10px"></div><div class="age-request-card"><h3>💳 Payment Options</h3><label style="font-weight:bold;font-size:.85rem;display:flex;align-items:center;gap:8px;margin-bottom:8px"><input type="checkbox" id="chkBarrow" ${checkoutState.barrow?'checked':''} onchange="checkoutState.barrow=this.checked"> Barrow (Pay within 7 days)</label><label style="font-weight:bold;font-size:.85rem;display:flex;align-items:center;gap:8px;margin-bottom:8px"><input type="checkbox" id="chkPayLater" ${checkoutState.paylater?'checked':''} onchange="togglePayLater(this.checked)"> XDRGPayLater (Installment)</label>${checkoutState.paylater?`<div style="background:#f3e8ff;border:1px solid #c4b5fd;border-radius:6px;padding:12px;margin-top:8px"><div style="font-weight:bold;color:#8b5cf6;font-size:.85rem;margin-bottom:6px">Choose Term:</div><div class="paylater-opts"><div class="paylater-opt ${checkoutState.paylaterTerm===1?'active':''}" onclick="setPayLaterTerm(1)">1 Month</div><div class="paylater-opt ${checkoutState.paylaterTerm===6?'active':''}" onclick="setPayLaterTerm(6)">6 Months</div><div class="paylater-opt ${checkoutState.paylaterTerm===12?'active':''}" onclick="setPayLaterTerm(12)">12 Months</div></div>${checkoutState.paylaterTerm>0?`<div style="font-size:.85rem;color:#54595d;margin-top:8px">Monthly: <b>₱${monthly}</b> × ${checkoutState.paylaterTerm} months</div>`:''}</div>`:''}<h4 style="margin-top:16px;color:#8b5cf6">Logistics Partner</h4><div class="logistics-opts"><div class="logistics-opt ${checkoutState.logistics==='J&T'?'active':''}" onclick="setCheckoutLogistics('J&T')">${LOGOS.JT}<span style="font-size:.75rem">J&amp;T</span></div><div class="logistics-opt ${checkoutState.logistics==='Flash'?'active':''}" onclick="setCheckoutLogistics('Flash')">${LOGOS.Flash}<span style="font-size:.75rem">Flash</span></div><div class="logistics-opt ${checkoutState.logistics==='SPX'?'active':''}" onclick="setCheckoutLogistics('SPX')">${LOGOS.SPX}<span style="font-size:.75rem">SPX</span></div></div><h4 style="margin-top:16px;color:#8b5cf6">Payment Method</h4><div class="logistics-opts"><div class="logistics-opt ${checkoutState.payment==='COD'?'active':''}" onclick="setCheckoutPayment('COD')">${LOGOS.COD}<span style="font-size:.75rem">Cash on Delivery</span></div><div class="logistics-opt ${checkoutState.payment==='GCash'?'active':''}" onclick="setCheckoutPayment('GCash')">${LOGOS.GCash}<span style="font-size:.75rem">GCash</span></div><div class="logistics-opt ${checkoutState.payment==='Maya'?'active':''}" onclick="setCheckoutPayment('Maya')">${LOGOS.Maya}<span style="font-size:.75rem">Maya</span></div></div></div><button class="btn-claim" style="background:#8b5cf6;width:100%;padding:16px;font-size:1.05rem;font-weight:900" onclick="submitXdrgOrder()">✅ Place Order</button>`;
-  c.innerHTML=html;
+  let h=`<div class="checkout-box" style="border-color:#8b5cf6"><h3>🛒 Order Summary</h3><ul style="padding-left:20px;font-size:.9rem">${itemsHtml}</ul><div style="font-size:1.2rem;font-weight:900;color:#8b5cf6;margin-top:10px">Total: ₱${totalM.toLocaleString()}${totalC?` / 🪙 ${totalC.toLocaleString()}`:''}</div></div>`;
+  h+=`<div class="checkout-box"><h3>📍 Shipping Information</h3><label>Name:</label><input type="text" id="chkName" value="${(currentUser.name||'').replace(/"/g,'&quot;')}" placeholder="Full Name"><label>Number:</label><input type="text" id="chkNumber" value="${(currentUser.number||'').replace(/"/g,'&quot;')}" placeholder="Phone number"><label>Address:</label><input type="text" id="chkAddress" placeholder="Full Address"><label>Postal Code:</label><input type="text" id="chkPostal" placeholder="Postal Code"></div>`;
+  h+=`<div class="checkout-box"><h3>💳 Payment Options</h3><label style="display:flex;align-items:center;gap:8px;font-weight:normal"><input type="checkbox" id="chkBarrow" ${checkoutState.barrow?'checked':''} onchange="checkoutState.barrow=this.checked" style="width:auto;margin:0"> Barrow (Pay within 7 days)</label><label style="display:flex;align-items:center;gap:8px;font-weight:normal;margin-top:8px"><input type="checkbox" id="chkPayLater" ${checkoutState.paylater?'checked':''} onchange="togglePayLater(this.checked)" style="width:auto;margin:0"> XDRGPayLater (Installment)</label>`;
+  if(checkoutState.paylater){
+    h+=`<div style="background:#f3e8ff;border:1px solid #c4b5fd;border-radius:6px;padding:12px;margin-top:8px"><div style="font-weight:bold;color:#8b5cf6;font-size:.85rem;margin-bottom:6px">Choose Term:</div><div class="paylater-opts"><div class="paylater-opt ${checkoutState.paylaterTerm===1?'active':''}" onclick="setPayLaterTerm(1)">1 Month</div><div class="paylater-opt ${checkoutState.paylaterTerm===6?'active':''}" onclick="setPayLaterTerm(6)">6 Months</div><div class="paylater-opt ${checkoutState.paylaterTerm===12?'active':''}" onclick="setPayLaterTerm(12)">12 Months</div></div>${checkoutState.paylaterTerm>0?`<div style="font-size:.85rem;color:#54595d;margin-top:8px">Monthly: <b>₱${monthly}</b> × ${checkoutState.paylaterTerm} months</div>`:''}</div>`;
+  }
+  h+=`<h4 style="margin-top:16px;color:#8b5cf6">Logistics Partner</h4><div class="logistics-opts"><div class="logistics-opt ${checkoutState.logistics==='J&T'?'active':''}" onclick="setCheckoutLogistics('J&T')">${LOGOS.JT}<span style="font-size:.75rem">J&amp;T</span></div><div class="logistics-opt ${checkoutState.logistics==='Flash'?'active':''}" onclick="setCheckoutLogistics('Flash')">${LOGOS.Flash}<span style="font-size:.75rem">Flash</span></div><div class="logistics-opt ${checkoutState.logistics==='SPX'?'active':''}" onclick="setCheckoutLogistics('SPX')">${LOGOS.SPX}<span style="font-size:.75rem">SPX</span></div></div>`;
+  h+=`<h4 style="margin-top:16px;color:#8b5cf6">Payment Method</h4><div class="logistics-opts"><div class="logistics-opt ${checkoutState.payment==='COD'?'active':''}" onclick="setCheckoutPayment('COD')">${LOGOS.COD}<span style="font-size:.75rem">Cash on Delivery</span></div><div class="logistics-opt ${checkoutState.payment==='GCash'?'active':''}" onclick="setCheckoutPayment('GCash')">${LOGOS.GCash}<span style="font-size:.75rem">GCash</span></div><div class="logistics-opt ${checkoutState.payment==='Maya'?'active':''}" onclick="setCheckoutPayment('Maya')">${LOGOS.Maya}<span style="font-size:.75rem">Maya</span></div></div></div>`;
+  h+=`<div style="display:flex;gap:10px;margin-top:16px"><button class="btn-save" style="flex:1;background:#6c757d;padding:14px;font-size:1rem" onclick="setShopTab('cart')">← Back to Cart</button><button class="btn-claim" style="flex:2;background:#8b5cf6;padding:14px;font-size:1.05rem;font-weight:900;margin-top:0" onclick="submitXdrgOrder()">✅ Buy / Place Order</button></div>`;
+  return h;
 }
-function togglePayLater(on){checkoutState.paylater=on;if(!on)checkoutState.paylaterTerm=0;renderXdrgCheckout();}
-function setPayLaterTerm(t){checkoutState.paylaterTerm=t;renderXdrgCheckout();}
-function setCheckoutLogistics(l){checkoutState.logistics=l;renderXdrgCheckout();}
-function setCheckoutPayment(p){checkoutState.payment=p;renderXdrgCheckout();}
+
+function renderShopOrders(){
+  const myOrders=getAllShopOrders().filter(o=>String(o.userId)===String(currentUser.rblxUserId));
+  if(myOrders.length===0)return '<div class="empty-state"><div class="icon">📋</div><p>No orders yet. Buy something first!</p></div>';
+  let h='';
+  myOrders.slice().reverse().forEach(o=>{
+    const items=o.items.map(it=>it.name).join(', ');
+    h+=`<div class="order-card"><div class="oc-header"><div class="oc-id">${o.orderIdText||o.id}</div><span class="status-badge ${o.status==='Pending'?'status-pending':(o.status==='Cancelled'?'status-unsuccessful':'status-successful')}">${o.status}</span></div><div class="oc-info"><div><b>Items:</b> ${items}</div><div><b>Total:</b> ₱${(o.totalMoney||0).toLocaleString()}${o.totalCoins?` / 🪙 ${o.totalCoins.toLocaleString()}`:''}</div><div><b>Shipping:</b> ${o.shipping.name}, ${o.shipping.number}</div><div><b>Address:</b> ${o.shipping.address}, ${o.shipping.postal}</div><div><b>Logistics:</b> ${o.logistics}</div><div><b>Payment:</b> ${o.payment}${o.paylater?` (PayLater ${o.paylaterTerm}mo × ₱${o.paylaterMonthly})`:''}${o.barrow?' + Barrow':''}</div>${o.orderIdText?`<div><b>Owner Order ID:</b> ${o.orderIdText}</div>`:''}${o.addressProcess?`<div><b>Address Process:</b> ${o.addressProcess}</div>`:''}<div><b>Placed:</b> ${new Date(o.timestamp).toLocaleString()}</div></div>${o.status==='Pending'?`<button class="btn-danger" style="width:100%;margin-top:10px" onclick="cancelXdrgOrder('${o.id}')">❌ Cancel Order</button>`:''}</div>`;
+  });
+  return h;
+}
+
+function addToCart(pid){if(!currentUser)return;const p=getAllShopProducts().find(x=>x.id===pid);if(!p)return;if(!currentUser.shopCart)currentUser.shopCart=[];if(currentUser.shopCart.some(x=>x.id===pid)){alert("Already in cart.");return;}currentUser.shopCart.push({id:p.id,name:p.name,priceMoney:p.priceMoney||0,priceCoins:p.priceCoins||0,image:p.image||'',category:p.category||'',qty:1});saveUserData();renderXdrgShop();alert("✅ Added!");}
+function removeFromCart(pid){if(!currentUser)return;currentUser.shopCart=(currentUser.shopCart||[]).filter(x=>x.id!==pid);saveUserData();renderXdrgShop();}
+function togglePayLater(on){checkoutState.paylater=on;if(!on)checkoutState.paylaterTerm=0;renderXdrgShop();}
+function setPayLaterTerm(t){checkoutState.paylaterTerm=t;renderXdrgShop();}
+function setCheckoutLogistics(l){checkoutState.logistics=l;renderXdrgShop();}
+function setCheckoutPayment(p){checkoutState.payment=p;renderXdrgShop();}
 async function submitXdrgOrder(){
   if(!currentUser)return;
   const cart=getCart();
@@ -1298,7 +1226,7 @@ async function submitXdrgOrder(){
   const postal=(document.getElementById('chkPostal').value||'').trim();
   if(!name||!num||!addr||!postal){alert("❌ Fill all shipping details.");return;}
   if(checkoutState.paylater&&checkoutState.paylaterTerm===0){alert("❌ Choose a XDRGPayLater term.");return;}
-  let totalM=0;let totalC=0;
+  let totalM=0,totalC=0;
   cart.forEach(it=>{totalM+=(it.priceMoney||0);totalC+=(it.priceCoins||0);});
   const orderId="XDRG-ORD-"+Date.now().toString().slice(-8);
   const order={id:orderId,userId:String(currentUser.rblxUserId),userName:currentUser.username||currentUser.name,items:cart,totalMoney:totalM,totalCoins:totalC,shipping:{name,number:num,address:addr,postal},barrow:checkoutState.barrow,paylater:checkoutState.paylater,paylaterTerm:checkoutState.paylaterTerm,paylaterMonthly:checkoutState.paylaterTerm>0?(totalM/checkoutState.paylaterTerm).toFixed(2):0,logistics:checkoutState.logistics,payment:checkoutState.payment,status:'Pending',orderIdText:'',addressProcess:'',timestamp:Date.now()};
@@ -1308,22 +1236,11 @@ async function submitXdrgOrder(){
   const orders=getAllShopOrders();orders.push(order);saveAllShopOrders(orders);
   try{
     await fetch(`${FIREBASE_BASE_URL}/xdrg_shop/orders/${orderId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(order)});
-    if(checkoutState.payment==='GCash'||checkoutState.payment==='Maya'||checkoutState.paylater){const nid="SHOP-ORDER-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/owner_alerts/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"🛒 New XDRG Shop Order",message:`${name} placed order ${orderId} via ${checkoutState.payment}${checkoutState.paylater?' + PayLater':''}. Enter Name & Number to process.`,timestamp:Date.now(),isShopOrder:true,orderId})});}
+    if(checkoutState.payment==='GCash'||checkoutState.payment==='Maya'||checkoutState.paylater){const nid="SHOP-ORDER-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/owner_alerts/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"🛒 New XDRG Shop Order",message:`${name} placed order ${orderId} via ${checkoutState.payment}${checkoutState.paylater?' + PayLater':''}.`,timestamp:Date.now(),isShopOrder:true,orderId})});}
   }catch(e){}
   alert(`✅ Order placed!\nOrder ID: ${orderId}`);
-  closeXdrgCheckout();
-  openXdrgOrders();
-}
-function openXdrgOrders(){renderXdrgOrders();openSwapUI('xdrgOrdersOverlay');}
-function closeXdrgOrders(){closeSwapUI('xdrgOrdersOverlay');}
-function renderXdrgOrders(){
-  const c=document.getElementById('xdrgOrdersContent');
-  if(!currentUser){c.innerHTML='<p>Login required.</p>';return;}
-  const myOrders=getAllShopOrders().filter(o=>String(o.userId)===String(currentUser.rblxUserId));
-  let html='<div class="shop-tabs"><button class="shop-tab" onclick="openXdrgShop()">🛍️ Products</button><button class="shop-tab" onclick="openXdrgCart()">🛒 Cart</button><button class="shop-tab active">📋 Orders</button></div>';
-  if(myOrders.length===0){html+='<div style="text-align:center;padding:40px;color:#94a3b8"><div style="font-size:4rem">📋</div><p>No orders yet.</p></div>';}
-  else{myOrders.slice().reverse().forEach(o=>{const items=o.items.map(it=>it.name).join(', ');const cancelBtn='<button class="btn-danger" style="width:100%;margin-top:10px" onclick="cancelXdrgOrder(\'' + o.id + '\')">❌ Cancel Order</button>';html+=`<div class="order-card"><div class="oc-header"><div class="oc-id">${o.orderIdText||o.id}</div><span class="status-badge ${o.status==='Pending'?'status-pending':(o.status==='Cancelled'?'status-unsuccessful':'status-successful')}">${o.status}</span></div><div class="oc-info"><div><b>Items:</b> ${items}</div><div><b>Total:</b> ₱${(o.totalMoney||0).toLocaleString()}${o.totalCoins?` / 🪙 ${o.totalCoins.toLocaleString()}`:''}</div><div><b>Shipping:</b> ${o.shipping.name}, ${o.shipping.number}</div><div><b>Address:</b> ${o.shipping.address}, ${o.shipping.postal}</div><div><b>Logistics:</b> ${o.logistics}</div><div><b>Payment:</b> ${o.payment}${o.paylater?` (PayLater ${o.paylaterTerm}mo × ₱${o.paylaterMonthly})`:''}${o.barrow?' + Barrow':''}</div>${o.orderIdText?`<div><b>Owner Order ID:</b> ${o.orderIdText}</div>`:''}${o.addressProcess?`<div><b>Address Process:</b> ${o.addressProcess}</div>`:''}<div><b>Placed:</b> ${new Date(o.timestamp).toLocaleString()}</div></div>${o.status==='Pending'?cancelBtn:''}</div>`;});}
-  c.innerHTML=html;
+  checkoutState={paylater:false,paylaterTerm:0,logistics:'J&T',payment:'COD',barrow:false};
+  setShopTab('orders');
 }
 function cancelXdrgOrder(oid){
   if(!currentUser)return;
@@ -1335,7 +1252,7 @@ function cancelXdrgOrder(oid){
   orders[idx].status='Cancelled';
   saveAllShopOrders(orders);
   fetch(`${FIREBASE_BASE_URL}/xdrg_shop/orders/${oid}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify('Cancelled')}).catch(()=>{});
-  renderXdrgOrders();
+  renderXdrgShop();
   alert("✅ Order cancelled.");
 }
 
@@ -1350,7 +1267,7 @@ function checkDailyReward(){
   if(s>7)s=1;
   currentUser.streakCount=s;
   saveUserData();
-  globalNotifications.unshift({id:"DAILY-"+Date.now(),title:"🎁 Daily Reward Ready!",message:"Your Daily Engagement Rewards is available! Click Claim below.",timestamp:Date.now(),isDailyReward:true});
+  globalNotifications.unshift({id:"DAILY-"+Date.now(),title:"🎁 Daily Reward Ready!",message:"Your Daily Engagement Rewards is available!",timestamp:Date.now(),isDailyReward:true});
   renderNotificationDropdown();
 }
 function claimDailyRewardAction(){
@@ -1363,8 +1280,7 @@ function claimDailyRewardAction(){
   if(currentUser.isPremium)rc*=3;else if(currentUser.isVIP)rc*=2;
   currentUser.points=(currentUser.points||0)+rc;
   currentUser.lastClaimedDate=new Date().toISOString();
-  saveUserData();
-  updateUserStatusHeader();
+  saveUserData();updateUserStatusHeader();
   globalNotifications=globalNotifications.filter(n=>!n.isDailyReward);
   renderNotificationDropdown();
   alert(`🎉 Claimed Day ${s}! +${rc} Coins!`);
@@ -1383,13 +1299,11 @@ function renderNotificationDropdown(){
     const isR=ri.includes(n.id);if(!isR)uc++;
     const ds=n.timestamp?new Date(n.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
     let ah='';
-    if(n.isCashOutCode)ah=`<div class="notif-code-box">${n.codeDisplay||''}</div><button class="notif-automation-btn" onclick="automationFromNotification('${n.codeDisplay}')">⚡ Are you willing to automation?</button><button class="notif-automation-btn" style="background:#005a9c;margin-top:5px" onclick="reopenCodeVerification()">Re-open Code Entry</button>`;
+    if(n.isCashOutCode)ah=`<div class="notif-code-box">${n.codeDisplay||''}</div><button class="notif-automation-btn" onclick="automationFromNotification('${n.codeDisplay}')">⚡ Automation</button><button class="notif-automation-btn" style="background:#005a9c;margin-top:5px" onclick="reopenCodeVerification()">Re-open Code Entry</button>`;
     if(n.isAccountLockNotif)ah='<div class="notif-actions"><button class="btn-action-sm" style="background:#dc3545" onclick="showLockContinueModal()">Continue</button></div>';
     if(n.isFriendRequest)ah='<div class="notif-actions"><button class="btn-action-sm" style="background:#0d6efd" onclick="openFriendConfirmation()">View Request</button></div>';
-    if(n.isFriendAccepted)ah='<div class="notif-actions"><button class="btn-action-sm" style="background:#28a745" onclick="openFriendConfirmation()">View Friends</button></div>';
     if(n.isNewMessage)ah=`<div class="notif-actions"><button class="btn-action-sm" style="background:#17a2b8" onclick="openMessenger('${n.fromUserId}')">Open Chat</button></div>`;
     if(n.isDailyReward&&currentUser){const today=new Date().toDateString();const last=currentUser.lastClaimedDate?new Date(currentUser.lastClaimedDate).toDateString():null;if(last!==today)ah='<div class="notif-actions"><button class="btn-action-sm" style="background:#28a745;padding:8px 16px" onclick="claimDailyRewardAction()">🎁 Claim Now!</button></div>';else ah='<div style="font-size:.75rem;color:#28a745;margin-top:5px">✅ Claimed today</div>';}
-    if(n.isReport&&currentUser&&isStaff(currentUser)){const r=globalReports.find(x=>x.id===n.reportId);if(r&&r.status==='pending')ah=`<div class="notif-actions"><button class="btn-action-sm" onclick="handleReportAction('${n.reportId}','accepted')">Accept</button><button class="btn-action-sm btn-danger" onclick="handleReportAction('${n.reportId}','declined')">Decline</button></div>`;}
     if(n.isWarning)ah=`<div style="margin-top:6px;padding:6px 8px;background:#fff3cd;border-left:3px solid #ff9800;font-size:.75rem;border-radius:3px"><b>⚠️ Warning from ${n.warnedByRole||n.warnedBy||'Staff'}</b></div>`;
     if(n.isAnnouncement)ah=`<div style="margin-top:6px;padding:6px 8px;background:#eaf3ff;border-left:3px solid #3366cc;font-size:.75rem;border-radius:3px"><b>📢 From ${n.senderRole||'Staff'}</b></div>`;
     if(n.isVerifiedBadge)ah='<div class="notif-actions"><button class="btn-action-sm" style="background:#1DA1F2;padding:8px 16px" onclick="activateVerifiedBadge()">🔵 Get Verified Badge</button></div>';
@@ -1402,8 +1316,7 @@ function renderNotificationDropdown(){
     if(n.isAgeRejected&&currentUser)ah='<div style="margin-top:6px;padding:8px;background:#f8d7da;border-left:3px solid #dc3545;border-radius:4px;font-size:.78rem;color:#721c24;font-weight:bold">❌ Age rejected — please re-submit.</div>';
     if(n.isShopOrder&&currentUser&&isOwnerOrCoOwner(currentUser))ah='<div class="notif-actions"><button class="btn-action-sm" style="background:#8b5cf6" onclick="openStaffCommands()">🛒 View Order</button></div>';
     const pinned=(n.isCashOutCode||n.isAccountLockNotif)?' pinned-notif':'';
-    const pl=(n.isCashOutCode||n.isAccountLockNotif)?' <span style="font-size:.7rem;background:#ff9800;color:#fff;padding:2px 6px;border-radius:3px;font-weight:bold;margin-left:6px">PINNED</span>':'';
-    html+=`<li class="notif-item ${isR?'':'unread'}${pinned}"><div class="notif-title">${n.title||'Update'}${pl}</div><div class="notif-msg">${linkify(n.message||'')}</div><div class="notif-time">${ds}</div>${ah}</li>`;
+    html+=`<li class="notif-item ${isR?'':'unread'}${pinned}"><div class="notif-title">${n.title||'Update'}</div><div class="notif-msg">${linkify(n.message||'')}</div><div class="notif-time">${ds}</div>${ah}</li>`;
   });
   le.innerHTML=html;
   if(be){if(uc>0){be.innerText=uc>99?'99+':uc;be.style.display="block";}else be.style.display="none";}
@@ -1487,12 +1400,7 @@ async function sendFriendRequest(targetId){
   if(String(targetId)===String(currentUser.rblxUserId)){alert("❌ Can't add yourself!");return;}
   const reqId="FR-"+Date.now();
   const data={id:reqId,from:currentUser.rblxUserId,fromName:currentUser.name,fromUsername:currentUser.username,to:targetId,timestamp:Date.now(),status:'pending'};
-  try{
-    await fetch(`${FIREBASE_BASE_URL}/friend_requests/${reqId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
-    const nid="NOTIF-FR-"+Date.now();
-    await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(targetId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"👥 New Friend Request",message:`${currentUser.name} sent you a friend request!`,timestamp:Date.now(),isFriendRequest:true})});
-    alert("✅ Sent!");
-  }catch(e){alert("❌ Error.");}
+  try{await fetch(`${FIREBASE_BASE_URL}/friend_requests/${reqId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});const nid="NOTIF-FR-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(targetId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"👥 New Friend Request",message:`${currentUser.name} sent you a friend request!`,timestamp:Date.now(),isFriendRequest:true})});alert("✅ Sent!");}catch(e){alert("❌ Error.");}
 }
 async function openFriendConfirmation(){
   document.getElementById('pageTitle').innerText='💌 Friend Confirmation';
@@ -1518,9 +1426,7 @@ async function acceptFriendRequest(reqId,fromId){
   const fi=allUsers.findIndex(u=>String(u.rblxUserId)===String(fromId));
   if(fi!==-1){if(!allUsers[fi].friends)allUsers[fi].friends=[];if(!allUsers[fi].friends.map(String).includes(String(currentUser.rblxUserId)))allUsers[fi].friends.push(String(currentUser.rblxUserId));localStorage.setItem('app_users_db',JSON.stringify(allUsers));await fetch(`${FIREBASE_BASE_URL}/users/${fromId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(allUsers[fi])}).catch(()=>{});}
   try{await fetch(`${FIREBASE_BASE_URL}/friend_requests/${reqId}.json`,{method:"DELETE"});}catch(e){}
-  alert("✅ Added!");
-  syncRealtimeDatabase();
-  openFriendConfirmation();
+  alert("✅ Added!");syncRealtimeDatabase();openFriendConfirmation();
 }
 async function declineFriendRequest(reqId){if(!confirm("Decline?"))return;try{await fetch(`${FIREBASE_BASE_URL}/friend_requests/${reqId}.json`,{method:"DELETE"});}catch(e){}alert("Declined.");syncRealtimeDatabase();openFriendConfirmation();}
 async function removeFriend(fid){if(!confirm("Remove friend?"))return;currentUser.friends=(currentUser.friends||[]).filter(f=>String(f)!==String(fid));saveUserData();alert("Removed.");openFriendConfirmation();}
@@ -1571,8 +1477,6 @@ async function sendMessage(){
 function openSettings(){document.getElementById('pageTitle').innerText='⚙️ Profile & Privacy Settings';renderSettingsPage();}
 function togglePrivacySetting(){if(!currentUser)return;currentUser.isHistoryPublic=!currentUser.isHistoryPublic;saveUserData();renderSettingsPage();}
 function setBackground(bg){if(!currentUser)return;currentUser.background=bg;saveUserData();applyBackground(bg);renderSettingsPage();}
-function setCustomBackgroundColor(c){if(!currentUser||!currentUser.isPremium)return;currentUser.background='custom_color';currentUser.customBgColor=c;saveUserData();applyBackground('custom_color',c);renderSettingsPage();}
-function uploadCustomBackground(event){if(!currentUser||!currentUser.isPremium)return;const f=event.target.files[0];if(!f)return;if(f.size>2*1024*1024){alert("❌ Max 2MB!");return;}const r=new FileReader();r.onload=function(e){currentUser.background='custom_img';currentUser.customBgImg=e.target.result;saveUserData();applyBackground('custom_img',e.target.result);renderSettingsPage();};r.readAsDataURL(f);}
 function renderSettingsPage(){
   const u=currentUser||{};
   const iO=isOwnerOrCoOwner(u);
@@ -1589,7 +1493,7 @@ function renderSettingsPage(){
   if(ageVerified){ageStatusBtn=`<div style="background:#e8f8f0;border:1px solid #a7f3d0;border-radius:6px;padding:12px;color:#065f46;font-size:.88rem"><b>✅ Age Verified:</b> ${u.verifiedAgeValue} years old<br><small>Reviewed by ${u.ageVerifiedBy||'System'}</small></div><button class="btn-save" style="width:100%;margin-top:8px;background:#8b5cf6;color:#fff" onclick="openAgeUi('verify')">🪪 View Details</button>`;}
   else{ageStatusBtn='<button class="btn-claim" style="width:100%;background:#8b5cf6;color:#fff" onclick="openAgeUi(\'verify\')">🪪 Verified Aged — Verify Now</button>';}
   const autoOn=u.automationCashOut===true;
-  let html=`<div class="settings-section" style="max-width:650px;margin-top:20px">
+  let html=`<div style="max-width:650px;margin-top:20px">
   <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px;background:rgba(248,249,250,.95);border:1px solid #a2a9b1;padding:15px;border-radius:6px"><img src="${au}" style="width:70px;height:70px;border-radius:50%;border:3px solid #3366cc" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}'"><div><div style="font-size:1.2rem;font-weight:bold">${u.displayName||u.name}${vb}${ageBadge}</div><div style="color:#54595d">@${u.username||''} ${getRoleLabel(u)}</div></div></div>
   <div style="margin-bottom:15px;background:rgba(139,92,246,.1);border:1px solid #c4b5fd;padding:15px;border-radius:6px"><label style="color:#6366f1;font-weight:bold;display:block;margin-bottom:5px">🪪 Verified Aged</label><p style="font-size:.8rem;color:#54595d;margin:4px 0 8px">Verify your age to unlock cash out.</p>${ageStatusBtn}</div>
   <div style="margin-bottom:15px;background:rgba(234,243,255,.9);border:1px solid #a7d7f9;padding:12px;border-radius:6px"><label style="font-weight:bold;display:block;margin-bottom:5px">History Privacy 🔒</label><button class="privacy-toggle-btn ${pbc}" onclick="togglePrivacySetting()">${pt}</button></div>
@@ -1605,17 +1509,7 @@ function renderSettingsPage(){
   <div style="background:rgba(248,249,250,.95);border:1px solid #a2a9b1;padding:15px;border-radius:6px;margin-bottom:12px"><label style="font-weight:bold;display:block;margin-bottom:5px">📧 Change Gmail (anytime)</label><input type="text" id="chGmailInput" value="${(u.gmail||'').replace(/"/g,'&quot;')}" style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:8px"><button class="btn-save" onclick="changeGmail()">Change</button></div>
   <div style="background:rgba(248,249,250,.95);border:1px solid #a2a9b1;padding:15px;border-radius:6px;margin-bottom:12px"><label style="font-weight:bold;display:block;margin-bottom:5px">🆔 Change User ID <span style="color:#dc3545;font-size:.75rem">(3 TIMES ONLY)</span></label><input type="number" id="chUserIdInput" value="${(u.rblxUserId||'').toString()}" style="width:100%;padding:8px;border:1px solid #a2a9b1;border-radius:4px;margin-bottom:8px" ${u.changeUserIdCount>=3?'disabled':''}>${u.changeUserIdCount>=3?'<p style="color:#dc3545;font-size:.78rem;margin:0">❌ Already used (3/3)</p>':`<p style="font-size:.75rem;color:#54595d;margin:0 0 8px 0">Used: ${u.changeUserIdCount||0}/3</p><button class="btn-save" onclick="changeUserId()">Change ID</button>`}</div>
   <div style="background:rgba(139,92,246,.1);border:2px solid #8b5cf6;padding:15px;border-radius:6px;margin-bottom:20px"><label style="color:#6366f1;font-weight:bold;display:block;margin-bottom:5px">📩 Age Appeal</label><p style="font-size:.82rem;color:#54595d;margin:4px 0 8px">If you believe your age was verified incorrectly, submit an appeal.</p><p style="font-size:.75rem;color:#54595d;margin:0 0 8px 0">Attempts used: ${u.ageAppealCount||0}/5${iO?' · 👑 Owner: No cooldown':''}</p><button class="btn-save" style="background:#8b5cf6;color:#fff" onclick="openAgeAppeal()">📩 Submit Age Appeal</button></div>
-  <div style="margin-bottom:15px"><label style="font-weight:bold;display:block;margin-bottom:5px">Username:</label><input type="text" id="setUserName" value="${u.username||''}" style="width:100%;max-width:320px;padding:8px;border:1px solid #a2a9b1;border-radius:4px"></div>
-  <div style="margin-bottom:15px"><label style="font-weight:bold;display:block;margin-bottom:5px">Password:</label><input type="password" id="setUserPass" value="${u.password||''}" style="width:100%;max-width:320px;padding:8px;border:1px solid #a2a9b1;border-radius:4px"></div>
-  <div style="margin-bottom:15px"><label style="font-weight:bold;display:block;margin-bottom:5px">Phone:</label><input type="text" id="setUserNumber" value="${u.number||''}" style="width:100%;max-width:320px;padding:8px;border:1px solid #a2a9b1;border-radius:4px"></div>
-  <button class="btn-save" onclick="saveSettings()">Save Changes</button>
-  <hr style="margin:40px 0 20px 0;border:0;border-top:1px solid rgba(200,204,209,.5)">
-  <h2>Socials</h2>
-  <ul style="list-style:none;padding:0;font-size:1rem;margin-top:15px">
-  <li style="margin-bottom:12px"><a href="https://www.facebook.com/profile.php?id=61583174657283" target="_blank" style="text-decoration:none;color:#202122;display:inline-flex;align-items:center;gap:10px;font-weight:bold;padding:8px 14px;border:1px solid #a2a9b1;border-radius:6px;background:rgba(248,249,250,.9);width:100%;max-width:280px">📘 Facebook Page</a></li>
-  <li style="margin-bottom:12px"><a href="https://tiktok.com/@xdragon" target="_blank" style="text-decoration:none;color:#202122;display:inline-flex;align-items:center;gap:10px;font-weight:bold;padding:8px 14px;border:1px solid #a2a9b1;border-radius:6px;background:rgba(248,249,250,.9);width:100%;max-width:280px">🎵 TikTok Channel</a></li>
-  <li style="margin-bottom:12px"><a href="https://www.youtube.com/@dev-xdragon" target="_blank" style="text-decoration:none;color:#202122;display:inline-flex;align-items:center;gap:10px;font-weight:bold;padding:8px 14px;border:1px solid #a2a9b1;border-radius:6px;background:rgba(248,249,250,.9);width:100%;max-width:280px">▶️ YouTube Channel</a></li>
-  </ul>
+  <button class="btn-save" onclick="alert('Settings auto-saved')">✅ All Auto-Saved</button>
   </div>`;
   document.getElementById('pageContent').innerHTML=html;
 }
@@ -1626,23 +1520,22 @@ function changeName(){if(!currentUser)return;if(currentUser.changeNameCount>=1){
 function changeNumber(){if(!currentUser)return;currentUser.number=(document.getElementById('chNumberInput').value||'').trim();saveUserData();alert("✅ Changed.");renderSettingsPage();}
 function changeGmail(){if(!currentUser)return;currentUser.gmail=(document.getElementById('chGmailInput').value||'').trim();saveUserData();alert("✅ Changed.");renderSettingsPage();}
 function changeUserId(){if(!currentUser)return;if((currentUser.changeUserIdCount||0)>=3){alert("❌ Already used 3.");return;}const id=(document.getElementById('chUserIdInput').value||'').trim();if(!id){alert("❌ Enter ID.");return;}if(!confirm("⚠️ Use "+((currentUser.changeUserIdCount||0)+1)+"/3. Continue?"))return;currentUser.rblxUserId=id;currentUser.avatarUrl=getRobloxAvatarUrl(id);currentUser.changeUserIdCount=(currentUser.changeUserIdCount||0)+1;saveUserData();updateUserStatusHeader();alert("✅ Used: "+currentUser.changeUserIdCount+"/3");renderSettingsPage();}
-function saveSettings(){if(currentUser){currentUser.username=(document.getElementById('setUserName').value||'').trim();currentUser.password=(document.getElementById('setUserPass').value||'').trim();const numEl=document.getElementById('setUserNumber');if(numEl)currentUser.number=numEl.value.trim();saveUserData();updateUserStatusHeader();alert("Saved!");}}
 
 /* STAFF COMMANDS */
 function openStaffCommands(){if(!currentUser||!isStaff(currentUser)){alert("❌ Staff only!");return;}document.getElementById('pageTitle').innerText='🛡️ Staff Commands';renderStaffCommandsPage();}
 function toggleAccordion(id){const a=document.getElementById(id),p=document.getElementById(id+'_panel');if(!a||!p)return;a.classList.toggle('active');p.classList.toggle('active');}
 function findUserByIdentifier(id){const t=String(id||'').trim().toLowerCase();if(!t)return null;const all=safeGetJSON('app_users_db',[]);if(currentUser&&!all.find(u=>String(u.rblxUserId)===String(currentUser.rblxUserId)))all.push(currentUser);return all.find(u=>String(u.rblxUserId||'').toLowerCase()===t||(u.gmail||'').toLowerCase()===t||(u.username||'').toLowerCase()===t||(u.name||'').toLowerCase()===t)||null;}
-function warnBlock(p){return `<label>Message:</label><textarea id="${p}WarnMessage" rows="3" placeholder="Type the warning message here..."></textarea><label>User (Gmail / ID / Username):</label><input type="text" id="${p}WarnTarget" placeholder="user@gmail.com or 7680051058"><button class="btn-save" style="width:100%;background:#ff9800;color:#000" onclick="warnUser('${p}')">⚠️ Send Warning (Instant)</button>`;}
-function kickBlock(p,maxDays){return `<label>User (Gmail / ID / Username):</label><input type="text" id="${p}KickTarget" placeholder="user@gmail.com or 7680051058"><label>Duration in days (1–${maxDays}):</label><input type="number" id="${p}KickDays" min="1" max="${maxDays}" placeholder="e.g. 3"><label>Reason:</label><input type="text" id="${p}KickReason" placeholder="Reason for kick"><button class="btn-save" style="width:100%;background:#ffc107;color:#000" onclick="kickUser('${p}',${maxDays})">⏸️ Kick User (1–${maxDays} days)</button>`;}
-function banBlock(p){return `<label>User (Gmail / ID / Username):</label><input type="text" id="${p}BanTarget" placeholder="user@gmail.com or 7680051058"><label>Reason:</label><input type="text" id="${p}BanReason" placeholder="Reason for permanent ban"><button class="btn-danger" style="width:100%" onclick="banUser('${p}')">🚫 Ban User (Permanent)</button>`;}
-function modRoleBlock(p){return `<label>Target (Gmail / ID):</label><input type="text" id="${p}ModTarget" placeholder="user@gmail.com or 7680051058"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:#28a745" onclick="updateUserRole(document.getElementById('${p}ModTarget').value,'Moderator','give')">Give Moderator</button><button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('${p}ModTarget').value,'Moderator','remove')">Remove Moderator</button></div>`;}
-function adminRoleBlock(p){return `<label>Target (Gmail / ID):</label><input type="text" id="${p}AdminTarget" placeholder="user@gmail.com or 7680051058"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:#007bff" onclick="updateUserRole(document.getElementById('${p}AdminTarget').value,'Admin','give')">Give Admin</button><button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('${p}AdminTarget').value,'Admin','remove')">Remove Admin</button></div>`;}
-function coinGiverBlock(p){return `<div style="background:#fff8e1;border-left:4px solid #ff9800;padding:10px;border-radius:4px;margin-bottom:10px;font-size:.82rem">⚡ <b>Instant Gift:</b> Coins delivered in real-time (within 2 seconds).</div><label>Target (ID / Username / Gmail):</label><input type="text" id="${p}GrantTarget" placeholder="e.g. 7680051058"><label>Amount of Coins:</label><input type="number" id="${p}GrantAmount" placeholder="e.g. 100"><button class="btn-save" style="width:100%;background:#28a745" onclick="grantCoinsToUser('${p}')">⚡ Confirm Grant Coins (Instant)</button>`;}
-function pollBlock(p){return `<div style="background:#fff8e1;border-left:4px solid #ff9800;padding:10px;border-radius:4px;margin-bottom:10px;font-size:.82rem">⚡ <b>Instant Publish</b></div><label>Poll Title:</label><input type="text" id="${p}PollTitle" placeholder="Title"><label>Description:</label><input type="text" id="${p}PollDesc" placeholder="Description"><label>Comma-separated options:</label><input type="text" id="${p}PollOptions" placeholder="e.g. Map, Crystals, Pets"><label>Poll Image (Optional):</label><input type="file" id="${p}PollImage" accept="image/*"><button class="btn-save" style="width:100%;background:#28a745" onclick="createPollWithImage('${p}')">⚡ Create Poll (Instant)</button>`;}
-function announcementBlock(p){return `<div style="background:#fff8e1;border-left:4px solid #ff9800;padding:10px;border-radius:4px;margin-bottom:10px;font-size:.82rem">⚡ <b>Instant Broadcast</b></div><label>Announcement Title:</label><input type="text" id="${p}AnnTitle" placeholder="e.g. Server Update"><label>Message (links auto-clickable):</label><textarea id="${p}AnnMessage" rows="3" placeholder="Announcement body..."></textarea><button class="btn-save" style="width:100%;background:#005a9c" onclick="createAnnouncement('${p}')">⚡ Deploy Announcement (Instant)</button>`;}
-function verifiedBadgeBlock(p){return `<label>Target (Gmail / User ID / Username):</label><input type="text" id="${p}VerifiedTarget" placeholder="user@gmail.com or 7680051058"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:#1DA1F2;color:#fff" onclick="giveVerifiedBadge('${p}')">🔵 Give Verified Badge</button><button class="btn-danger" style="flex:1" onclick="removeVerifiedBadge('${p}')">Remove Verified Badge</button></div>`;}
-function limitedCashOutBlock(p){return `<div style="background:linear-gradient(135deg,#fff3cd,#ffe0b2);border:2px dashed #f59e0b;border-radius:8px;padding:14px;margin-bottom:12px"><h4 style="margin:0 0 10px 0;color:#b45309">🤑 Limited Cash Out — Setup</h4><label>Money Amount (₱):</label><input type="number" id="${p}LcoMoney" value="20" min="1"><label>Duration:</label><input type="number" id="${p}LcoDuration" value="1" min="1"><select id="${p}LcoUnit"><option value="minutes">Minutes</option><option value="hours" selected>Hours</option><option value="days">Days</option><option value="weeks">Weeks</option><option value="months">Months</option><option value="years">Years</option></select><label>Cost in Coins:</label><input type="number" id="${p}LcoCostCoins" value="20000" min="1"><button class="btn-save" style="width:100%;background:linear-gradient(135deg,#ff6b6b,#feca57);color:#fff;font-weight:900;font-size:1rem;padding:14px" onclick="activateLimitedCashOut('${p}')">🚀 Activate Limited Cash Out</button><button class="btn-danger" style="width:100%;margin-top:8px" onclick="deactivateLimitedCashOut()">❌ Cancel Active Limited Cash Out</button></div>`;}
-function xdrgShopOwnerBlock(p){return `<div style="background:#f3e8ff;border:2px solid #8b5cf6;border-radius:8px;padding:14px;margin-bottom:12px"><h4 style="margin:0 0 10px 0;color:#6366f1">🛍️ XDRG Shop — Create Product</h4><label>Product Name:</label><input type="text" id="${p}ProdName" placeholder="e.g. XDRG T-Shirt"><label>Price (Money ₱):</label><input type="number" id="${p}ProdPriceMoney" value="0" min="0"><label>Price (Coins 🪙):</label><input type="number" id="${p}ProdPriceCoins" value="0" min="0"><label>Category:</label><select id="${p}ProdCategory"><option value="T-shirt">T-shirt</option><option value="Pants">Pants</option><option value="Staff Toy">Staff Toy</option><option value="Customize">Customize</option><option value="Accessories">Accessories</option><option value="Other">Other</option></select><label>Description (Optional):</label><textarea id="${p}ProdDesc" rows="2"></textarea><label>Image:</label><input type="file" id="${p}ProdImage" accept="image/*"><button class="btn-save" style="width:100%;background:#8b5cf6;color:#fff;font-weight:900;padding:12px" onclick="createXdrgProduct('${p}')">🛍️ Create Product</button><hr style="margin:16px 0;border:0;border-top:1px solid #c4b5fd"><h4 style="margin:0 0 10px 0;color:#6366f1">📦 Manage Orders</h4><div id="${p}ShopOrdersList">Loading...</div><button class="btn-save" style="width:100%;background:#6366f1;color:#fff;margin-top:8px" onclick="loadShopOrdersInStaff('${p}')">🔄 Refresh Orders</button></div>`;}
+function warnBlock(p){return `<label>Message:</label><textarea id="${p}WarnMessage" rows="3"></textarea><label>User (Gmail / ID / Username):</label><input type="text" id="${p}WarnTarget"><button class="btn-save" style="width:100%;background:#ff9800;color:#000" onclick="warnUser('${p}')">⚠️ Send Warning</button>`;}
+function kickBlock(p,maxDays){return `<label>User:</label><input type="text" id="${p}KickTarget"><label>Days (1–${maxDays}):</label><input type="number" id="${p}KickDays" min="1" max="${maxDays}"><label>Reason:</label><input type="text" id="${p}KickReason"><button class="btn-save" style="width:100%;background:#ffc107;color:#000" onclick="kickUser('${p}',${maxDays})">⏸️ Kick</button>`;}
+function banBlock(p){return `<label>User:</label><input type="text" id="${p}BanTarget"><label>Reason:</label><input type="text" id="${p}BanReason"><button class="btn-danger" style="width:100%" onclick="banUser('${p}')">🚫 Ban</button>`;}
+function modRoleBlock(p){return `<label>Target:</label><input type="text" id="${p}ModTarget"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:#28a745" onclick="updateUserRole(document.getElementById('${p}ModTarget').value,'Moderator','give')">Give Mod</button><button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('${p}ModTarget').value,'Moderator','remove')">Remove Mod</button></div>`;}
+function adminRoleBlock(p){return `<label>Target:</label><input type="text" id="${p}AdminTarget"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:#007bff" onclick="updateUserRole(document.getElementById('${p}AdminTarget').value,'Admin','give')">Give Admin</button><button class="btn-danger" style="flex:1" onclick="updateUserRole(document.getElementById('${p}AdminTarget').value,'Admin','remove')">Remove Admin</button></div>`;}
+function coinGiverBlock(p){return `<label>Target:</label><input type="text" id="${p}GrantTarget"><label>Amount:</label><input type="number" id="${p}GrantAmount"><button class="btn-save" style="width:100%;background:#28a745" onclick="grantCoinsToUser('${p}')">⚡ Give Coins</button>`;}
+function pollBlock(p){return `<label>Title:</label><input type="text" id="${p}PollTitle"><label>Description:</label><input type="text" id="${p}PollDesc"><label>Options (comma):</label><input type="text" id="${p}PollOptions"><label>Image:</label><input type="file" id="${p}PollImage" accept="image/*"><button class="btn-save" style="width:100%;background:#28a745" onclick="createPollWithImage('${p}')">⚡ Create Poll</button>`;}
+function announcementBlock(p){return `<label>Title:</label><input type="text" id="${p}AnnTitle"><label>Message:</label><textarea id="${p}AnnMessage" rows="3"></textarea><button class="btn-save" style="width:100%;background:#005a9c" onclick="createAnnouncement('${p}')">⚡ Deploy</button>`;}
+function verifiedBadgeBlock(p){return `<label>Target:</label><input type="text" id="${p}VerifiedTarget"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:#1DA1F2;color:#fff" onclick="giveVerifiedBadge('${p}')">🔵 Give</button><button class="btn-danger" style="flex:1" onclick="removeVerifiedBadge('${p}')">Remove</button></div>`;}
+function limitedCashOutBlock(p){return `<div style="background:linear-gradient(135deg,#fff3cd,#ffe0b2);border:2px dashed #f59e0b;border-radius:8px;padding:14px;margin-bottom:12px"><h4 style="margin:0 0 10px 0;color:#b45309">🤑 Limited Cash Out</h4><label>Money (₱):</label><input type="number" id="${p}LcoMoney" value="20" min="1"><label>Duration:</label><input type="number" id="${p}LcoDuration" value="1" min="1"><select id="${p}LcoUnit"><option value="minutes">Minutes</option><option value="hours" selected>Hours</option><option value="days">Days</option><option value="weeks">Weeks</option><option value="months">Months</option><option value="years">Years</option></select><label>Cost Coins:</label><input type="number" id="${p}LcoCostCoins" value="20000" min="1"><button class="btn-save" style="width:100%;background:linear-gradient(135deg,#ff6b6b,#feca57);color:#fff;font-weight:900;padding:14px" onclick="activateLimitedCashOut('${p}')">🚀 Activate</button><button class="btn-danger" style="width:100%;margin-top:8px" onclick="deactivateLimitedCashOut()">❌ Cancel</button></div>`;}
+function xdrgShopOwnerBlock(p){return `<div style="background:#f3e8ff;border:2px solid #8b5cf6;border-radius:8px;padding:14px;margin-bottom:12px"><h4 style="margin:0 0 10px 0;color:#6366f1">🛍️ Create Product</h4><label>Name:</label><input type="text" id="${p}ProdName"><label>Price (₱):</label><input type="number" id="${p}ProdPriceMoney" value="0" min="0"><label>Price (🪙):</label><input type="number" id="${p}ProdPriceCoins" value="0" min="0"><label>Category:</label><select id="${p}ProdCategory"><option value="T-shirt">T-shirt</option><option value="Pants">Pants</option><option value="Staff Toy">Staff Toy</option><option value="Customize">Customize</option><option value="Accessories">Accessories</option><option value="Other">Other</option></select><label>Description:</label><textarea id="${p}ProdDesc" rows="2"></textarea><label>Image:</label><input type="file" id="${p}ProdImage" accept="image/*"><button class="btn-save" style="width:100%;background:#8b5cf6;color:#fff;font-weight:900;padding:12px" onclick="createXdrgProduct('${p}')">🛍️ Create Product</button><hr style="margin:16px 0;border:0;border-top:1px solid #c4b5fd"><h4 style="margin:0 0 10px 0;color:#6366f1">📦 Manage Orders</h4><div id="${p}ShopOrdersList">Loading...</div><button class="btn-save" style="width:100%;background:#6366f1;color:#fff;margin-top:8px" onclick="loadShopOrdersInStaff('${p}')">🔄 Refresh Orders</button></div>`;}
 
 function renderStaffCommandsPage(){
   if(!currentUser||!isStaff(currentUser))return;
@@ -1651,13 +1544,13 @@ function renderStaffCommandsPage(){
   const iA=isUserAdmin(currentUser);
   const iM=isUserModerator(currentUser);
   const iOwnerLike=iO||iCO;
-  let html='<p style="font-size:.85rem;color:#54595d">Click a section to expand. All actions are delivered <b>instantly</b>.</p>';
-  if(iM||iA||iOwnerLike){html+=`<button class="accordion" id="accMod" onclick="toggleAccordion('accMod')">🔰 Moderator Commands (Warn, Kick 1–7 days, Ban)</button><div class="panel" id="accMod_panel"><h4 style="color:#856404">⚠️ Warn</h4>${warnBlock('mod')}<h4 style="margin-top:20px;color:#856404">⏸️ Kick User (1–7 days)</h4>${kickBlock('mod',7)}<h4 style="margin-top:20px;color:#c82333">🚫 Ban</h4>${banBlock('mod')}</div>`;}
-  if(iA||iOwnerLike){html+=`<button class="accordion" id="accAdmin" onclick="toggleAccordion('accAdmin')">🛡️ Admin Commands (Warn, Kick, Ban, Mod Role, Coin Giver, Poll, Announcement)</button><div class="panel" id="accAdmin_panel"><h4 style="color:#856404">⚠️ Warn</h4>${warnBlock('adm')}<h4 style="margin-top:20px;color:#856404">⏸️ Kick (1–30 days)</h4>${kickBlock('adm',30)}<h4 style="margin-top:20px;color:#c82333">🚫 Ban</h4>${banBlock('adm')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#28a745">🔰 Mod Role</h4>${modRoleBlock('adm')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#28a745">🪙 Coin Giver</h4>${coinGiverBlock('adm')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#005a9c">📊 Create Poll</h4>${pollBlock('adm')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#005a9c">📢 Announcement</h4>${announcementBlock('adm')}</div>`;}
+  let html='<p style="font-size:.85rem;color:#54595d">Click a section to expand.</p>';
+  if(iM||iA||iOwnerLike){html+=`<button class="accordion" id="accMod" onclick="toggleAccordion('accMod')">🔰 Moderator Commands</button><div class="panel" id="accMod_panel"><h4 style="color:#856404">⚠️ Warn</h4>${warnBlock('mod')}<h4 style="margin-top:20px">⏸️ Kick 1–7 days</h4>${kickBlock('mod',7)}<h4 style="margin-top:20px;color:#c82333">🚫 Ban</h4>${banBlock('mod')}</div>`;}
+  if(iA||iOwnerLike){html+=`<button class="accordion" id="accAdmin" onclick="toggleAccordion('accAdmin')">🛡️ Admin Commands</button><div class="panel" id="accAdmin_panel"><h4>⚠️ Warn</h4>${warnBlock('adm')}<h4 style="margin-top:20px">⏸️ Kick 1–30 days</h4>${kickBlock('adm',30)}<h4 style="margin-top:20px;color:#c82333">🚫 Ban</h4>${banBlock('adm')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>🔰 Mod Role</h4>${modRoleBlock('adm')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>🪙 Coin Giver</h4>${coinGiverBlock('adm')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>📊 Poll</h4>${pollBlock('adm')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>📢 Announcement</h4>${announcementBlock('adm')}</div>`;}
   if(iOwnerLike){
     html+=`<button class="accordion" id="accOwner" onclick="toggleAccordion('accOwner')">👑 ${iO?'Owner':'Co-Owner'} Commands (Full Access)</button><div class="panel" id="accOwner_panel">`;
-    if(iO){html+=`<h4 style="color:#7a00ff">👑 Owner/Co-Owner Management</h4><label>Target (Gmail / ID / Username):</label><input type="text" id="ownAddTarget"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:linear-gradient(45deg,#ff0055,#7a00ff);color:#fff" onclick="addOwnerOrCoOwner('Owner')">👑 Make Owner</button><button class="btn-save" style="flex:1;background:linear-gradient(45deg,#ff8c00,#ffd700);color:#000" onclick="addOwnerOrCoOwner('Co-Owner')">🥇 Make Co-Owner</button></div><div style="display:flex;gap:10px;margin-top:8px"><button class="btn-danger" style="flex:1" onclick="removeOwnerOrCoOwner('Owner')">Remove Owner Flag</button><button class="btn-danger" style="flex:1" onclick="removeOwnerOrCoOwner('Co-Owner')">Remove Co-Owner Flag</button></div><hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">`;}
-    html+=`<h4 style="color:#1DA1F2">🔵 Verified Badge</h4>${verifiedBadgeBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#8b5cf6">🛍️ XDRG Shop Management</h4>${xdrgShopOwnerBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#b45309">🤑 Limited Cash Out</h4>${limitedCashOutBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#8b5cf6">🪪 Age Verification Requests</h4><p style="font-size:.82rem;color:#54595d;margin-bottom:8px">Pending age requests and appeals appear here.</p><div id="ageRequestsList" style="margin-bottom:10px">Loading...</div><button class="btn-save" style="width:100%;background:#8b5cf6;color:#fff" onclick="loadAgeRequestsInStaff()">🔄 Refresh Age Requests</button><hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#856404">⚠️ Warn</h4>${warnBlock('own')}<h4 style="margin-top:20px;color:#856404">⏸️ Kick (1–100 days)</h4>${kickBlock('own',100)}<h4 style="margin-top:20px;color:#c82333">🚫 Ban</h4>${banBlock('own')}<button class="btn-save" style="width:100%;background:#6c757d;margin-top:8px" onclick="unbanUser('own')">✅ Unban User</button><hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#007bff">🛡️ Admin Role Management</h4>${adminRoleBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#28a745">🔰 Moderator Role Management</h4>${modRoleBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#28a745">🪙 Coin Giver Tool</h4>${coinGiverBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#005a9c">📊 Create Poll</h4>${pollBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#005a9c">📢 Create Announcement</h4>${announcementBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#dc3545">🔴 Owner Notification Creator</h4><label>Audience:</label><select id="ownNotifAudience" onchange="document.getElementById('ownNotifTargetBox').style.display=this.value==='specific'?'block':'none'"><option value="everyone">Everyone (Global)</option><option value="specific">Specific User</option></select><div id="ownNotifTargetBox" style="display:none;margin-top:8px"><label>Target (Email/ID/Username):</label><input type="text" id="ownNotifTarget"></div><label>Title:</label><input type="text" id="ownNotifTitle"><label>Message:</label><textarea id="ownNotifMsg" rows="3"></textarea><button class="btn-save" style="width:100%;background:#dc3545;margin-top:10px" onclick="sendGlobalOwnerNotification()">Send Notification</button><hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#9b59b6">🛡️ Upload Sneak Peek</h4><label>Title:</label><input type="text" id="ownSneakTitle"><label>Description:</label><textarea id="ownSneakDesc" rows="3"></textarea><label>Upload Image:</label><input type="file" id="ownSneakImage" accept="image/*"><button class="btn-save" style="width:100%;background:#9b59b6;margin-top:10px" onclick="uploadSneakPeek()">Upload Sneak Peek</button></div>`;
+    if(iO){html+=`<h4 style="color:#7a00ff">👑 Owner/Co-Owner Management</h4><label>Target:</label><input type="text" id="ownAddTarget"><div style="display:flex;gap:10px"><button class="btn-save" style="flex:1;background:linear-gradient(45deg,#ff0055,#7a00ff);color:#fff" onclick="addOwnerOrCoOwner('Owner')">👑 Make Owner</button><button class="btn-save" style="flex:1;background:linear-gradient(45deg,#ff8c00,#ffd700);color:#000" onclick="addOwnerOrCoOwner('Co-Owner')">🥇 Make Co-Owner</button></div><div style="display:flex;gap:10px;margin-top:8px"><button class="btn-danger" style="flex:1" onclick="removeOwnerOrCoOwner('Owner')">Remove Owner</button><button class="btn-danger" style="flex:1" onclick="removeOwnerOrCoOwner('Co-Owner')">Remove Co-Owner</button></div><hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0">`;}
+    html+=`<h4 style="color:#1DA1F2">🔵 Verified Badge</h4>${verifiedBadgeBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#8b5cf6">🛍️ XDRG Shop Management</h4>${xdrgShopOwnerBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#b45309">🤑 Limited Cash Out</h4>${limitedCashOutBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#8b5cf6">🪪 Age Requests</h4><div id="ageRequestsList" style="margin-bottom:10px">Loading...</div><button class="btn-save" style="width:100%;background:#8b5cf6;color:#fff" onclick="loadAgeRequestsInStaff()">🔄 Refresh Age Requests</button><hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>⚠️ Warn</h4>${warnBlock('own')}<h4 style="margin-top:20px">⏸️ Kick 1–100 days</h4>${kickBlock('own',100)}<h4 style="margin-top:20px;color:#c82333">🚫 Ban</h4>${banBlock('own')}<button class="btn-save" style="width:100%;background:#6c757d;margin-top:8px" onclick="unbanUser('own')">✅ Unban User</button><hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>🛡️ Admin Role</h4>${adminRoleBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>🔰 Mod Role</h4>${modRoleBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>🪙 Coin Giver</h4>${coinGiverBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>📊 Poll</h4>${pollBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4>📢 Announcement</h4>${announcementBlock('own')}<hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#dc3545">🔴 Notification</h4><label>Audience:</label><select id="ownNotifAudience" onchange="document.getElementById('ownNotifTargetBox').style.display=this.value==='specific'?'block':'none'"><option value="everyone">Everyone</option><option value="specific">Specific</option></select><div id="ownNotifTargetBox" style="display:none;margin-top:8px"><label>Target:</label><input type="text" id="ownNotifTarget"></div><label>Title:</label><input type="text" id="ownNotifTitle"><label>Message:</label><textarea id="ownNotifMsg" rows="3"></textarea><button class="btn-save" style="width:100%;background:#dc3545;margin-top:10px" onclick="sendGlobalOwnerNotification()">Send</button><hr style="margin:20px 0;border:0;border-top:1px solid #eaecf0"><h4 style="color:#9b59b6">🛡️ Sneak Peek</h4><label>Title:</label><input type="text" id="ownSneakTitle"><label>Description:</label><textarea id="ownSneakDesc" rows="3"></textarea><label>Image:</label><input type="file" id="ownSneakImage" accept="image/*"><button class="btn-save" style="width:100%;background:#9b59b6;margin-top:10px" onclick="uploadSneakPeek()">Upload</button></div>`;
   }
   document.getElementById('pageContent').innerHTML=html;
   if(iOwnerLike)setTimeout(()=>{loadAgeRequestsInStaff();if(document.getElementById('ownShopOrdersList'))loadShopOrdersInStaff('own');},100);
@@ -1671,7 +1564,7 @@ async function loadAgeRequestsInStaff(){
     if(!data||Object.keys(data).length===0){el.innerHTML='<p style="color:#777;font-size:.85rem">No age requests.</p>';return;}
     const list=Object.values(data).filter(x=>x&&x.status==='pending').sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
     if(list.length===0){el.innerHTML='<p style="color:#777;font-size:.85rem">No pending requests.</p>';return;}
-    el.innerHTML=list.map(r=>`<div style="background:#f8f5ff;border:1px solid #c4b5fd;border-radius:6px;padding:10px;margin-bottom:8px"><div style="font-weight:bold;color:#6366f1">${r.type==='appeal'?(r.isRequestAgain?'🔄 Appeal (Again)':'📩 Appeal'):'🪪 New'}: ${r.userName} (@${r.userId})${r.isOwnerAppeal?' 👑':''}</div><div style="font-size:.8rem;color:#54595d;margin:4px 0">Est: <b>${r.estimatedAge}</b> · Input: ${r.userInputAge} · ${new Date(r.timestamp).toLocaleString()}</div><button class="btn-action-sm" style="background:#8b5cf6" onclick="openAgeRequest('${r.id}')">📃 Review</button></div>`).join('');
+    el.innerHTML=list.map(r=>`<div style="background:#f8f5ff;border:1px solid #c4b5fd;border-radius:6px;padding:10px;margin-bottom:8px"><div style="font-weight:bold;color:#6366f1">${r.type==='appeal'?(r.isRequestAgain?'🔄 Appeal (Again)':'📩 Appeal'):'🪪 New'}: ${r.userName}${r.isOwnerAppeal?' 👑':''}</div><div style="font-size:.8rem;color:#54595d;margin:4px 0">Est: <b>${r.estimatedAge}</b> · Input: ${r.userInputAge}</div><button class="btn-action-sm" style="background:#8b5cf6" onclick="openAgeRequest('${r.id}')">📃 Review</button></div>`).join('');
   }catch(e){el.innerHTML='<p style="color:#dc3545">Failed to load.</p>';}
 }
 async function loadShopOrdersInStaff(prefix){
@@ -1683,7 +1576,7 @@ async function loadShopOrdersInStaff(prefix){
     if(!data||Object.keys(data).length===0){el.innerHTML='<p style="color:#777;font-size:.85rem">No orders.</p>';return;}
     const list=Object.values(data).filter(x=>x&&x.status==='Pending').sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
     if(list.length===0){el.innerHTML='<p style="color:#777;font-size:.85rem">No pending orders.</p>';return;}
-    el.innerHTML=list.map(o=>`<div style="background:#fff;border:1px solid #c4b5fd;border-radius:6px;padding:10px;margin-bottom:8px;font-size:.85rem"><div style="font-weight:bold;color:#6366f1">${o.id} — ${o.userName}</div><div>Total: ₱${(o.totalMoney||0).toLocaleString()}${o.totalCoins?` / 🪙 ${o.totalCoins.toLocaleString()}`:''}</div><div>Payment: ${o.payment}${o.paylater?` PayLater ${o.paylaterTerm}mo`:''}${o.barrow?' + Barrow':''} · Logistics: ${o.logistics}</div><div>Ship: ${o.shipping.name}, ${o.shipping.number}, ${o.shipping.address} ${o.shipping.postal}</div><div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><input type="text" id="ord_${o.id}_txt" placeholder="Order ID text" value="${o.orderIdText||''}" style="flex:1;min-width:100px;padding:6px;border:1px solid #a2a9b1;border-radius:4px"><input type="text" id="ord_${o.id}_addr" placeholder="Address Process" value="${o.addressProcess||''}" style="flex:1;min-width:100px;padding:6px;border:1px solid #a2a9b1;border-radius:4px"><button class="btn-action-sm" onclick="saveShopOrderInfo('${o.id}')">Save</button></div></div>`).join('');
+    el.innerHTML=list.map(o=>`<div style="background:#fff;border:1px solid #c4b5fd;border-radius:6px;padding:10px;margin-bottom:8px;font-size:.85rem"><div style="font-weight:bold;color:#6366f1">${o.id} — ${o.userName}</div><div>Total: ₱${(o.totalMoney||0).toLocaleString()}${o.totalCoins?` / 🪙 ${o.totalCoins.toLocaleString()}`:''}</div><div>Payment: ${o.payment}${o.paylater?` PayLater ${o.paylaterTerm}mo`:''} · Logistics: ${o.logistics}</div><div>Ship: ${o.shipping.name}, ${o.shipping.number}, ${o.shipping.address} ${o.shipping.postal}</div><div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><input type="text" id="ord_${o.id}_txt" placeholder="Order ID" value="${o.orderIdText||''}" style="flex:1;min-width:100px;padding:6px;border:1px solid #a2a9b1;border-radius:4px"><input type="text" id="ord_${o.id}_addr" placeholder="Address Process" value="${o.addressProcess||''}" style="flex:1;min-width:100px;padding:6px;border:1px solid #a2a9b1;border-radius:4px"><button class="btn-action-sm" onclick="saveShopOrderInfo('${o.id}')">Save</button></div></div>`).join('');
   }catch(e){el.innerHTML='<p style="color:#dc3545">Failed.</p>';}
 }
 async function saveShopOrderInfo(oid){
@@ -1695,242 +1588,24 @@ async function saveShopOrderInfo(oid){
   if(idx!==-1){orders[idx].orderIdText=tid;orders[idx].addressProcess=addr;orders[idx].status='Processing';saveAllShopOrders(orders);}
   try{await fetch(`${FIREBASE_BASE_URL}/xdrg_shop/orders/${oid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(orders[idx])});alert("✅ Saved!");loadShopOrdersInStaff('own');}catch(e){alert("❌ Error.");}
 }
-async function warnUser(prefix){
-  if(!currentUser||!isStaff(currentUser))return;
-  const msg=document.getElementById(prefix+'WarnMessage').value.trim();
-  const target=document.getElementById(prefix+'WarnTarget').value.trim();
-  if(!msg||!target){alert("❌ Fill all.");return;}
-  const u=findUserByIdentifier(target);
-  if(!u){alert("❌ Not found.");return;}
-  const senderRole=getSenderRoleLabel(currentUser);
-  const nid="WARN-"+Date.now();
-  const nd={id:nid,title:`⚠️ Warning from ${senderRole}`,message:msg,timestamp:Date.now(),isWarning:true,warnedBy:currentUser.username||currentUser.name,warnedByRole:senderRole};
-  try{await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`⚠️ Warning sent INSTANTLY to ${u.name||u.username}.`);}catch(e){alert("❌ Failed.");}
-}
-async function kickUser(prefix,maxDays){
-  if(!currentUser||!isStaff(currentUser))return;
-  const target=document.getElementById(prefix+'KickTarget').value.trim();
-  const days=parseInt(document.getElementById(prefix+'KickDays').value,10);
-  const reason=document.getElementById(prefix+'KickReason').value.trim()||'Violation';
-  if(!target||isNaN(days)||days<1||days>maxDays){alert("❌ Valid inputs.");return;}
-  const u=findUserByIdentifier(target);
-  if(!u){alert("❌ Not found.");return;}
-  if(isOwnerAccount(u)&&!isOwnerAccount(currentUser)){alert("👑 Can't kick Owner.");return;}
-  const kickUntil=Date.now()+days*86400000;
-  const all=safeGetJSON('app_users_db',[]);
-  const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));
-  const updated={...u,kickUntil,kickReason:reason,kickedBy:currentUser.username||currentUser.name};
-  if(idx!==-1)all[idx]=updated;else all.push(updated);
-  localStorage.setItem('app_users_db',JSON.stringify(all));
-  try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});const nid="KICK-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"⏸️ Kicked",message:`You have been kicked for ${days} day(s). Reason: ${reason}`,timestamp:Date.now(),isKick:true})}).catch(()=>{});alert(`⏸️ Kicked INSTANTLY for ${days} days.`);}catch(e){alert("❌ Failed.");}
-}
-async function banUser(prefix){
-  if(!currentUser||!isStaff(currentUser))return;
-  const target=document.getElementById(prefix+'BanTarget').value.trim();
-  const reason=document.getElementById(prefix+'BanReason').value.trim()||'Violation';
-  if(!target){alert("❌ Enter user.");return;}
-  const u=findUserByIdentifier(target);
-  if(!u){alert("❌ Not found.");return;}
-  if(isOwnerAccount(u)&&!isOwnerAccount(currentUser)){alert("👑 Can't ban Owner.");return;}
-  if(!confirm(`Ban ${u.name||u.username}?`))return;
-  const all=safeGetJSON('app_users_db',[]);
-  const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));
-  const updated={...u,isBanned:true,banReason:reason,bannedBy:currentUser.username||currentUser.name,kickUntil:0};
-  if(idx!==-1)all[idx]=updated;else all.push(updated);
-  localStorage.setItem('app_users_db',JSON.stringify(all));
-  try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});const nid="BAN-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"🚫 Banned",message:`Permanently banned. Reason: ${reason}`,timestamp:Date.now(),isBan:true})}).catch(()=>{});alert(`🚫 Banned INSTANTLY.`);}catch(e){alert("❌ Failed.");}
-}
-async function unbanUser(prefix){
-  if(!currentUser||!isOwnerOrCoOwner(currentUser))return;
-  const target=document.getElementById(prefix+'BanTarget').value.trim();
-  const u=findUserByIdentifier(target);
-  if(!u){alert("❌ Not found.");return;}
-  const all=safeGetJSON('app_users_db',[]);
-  const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));
-  const updated={...u,isBanned:false,banReason:'',kickUntil:0};
-  if(idx!==-1)all[idx]=updated;
-  localStorage.setItem('app_users_db',JSON.stringify(all));
-  try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});alert(`✅ Unbanned.`);}catch(e){alert("❌ Failed.");}
-}
-async function giveVerifiedBadge(prefix){
-  if(!currentUser||!isOwnerOrCoOwner(currentUser))return;
-  const target=document.getElementById(prefix+'VerifiedTarget').value.trim();
-  const u=findUserByIdentifier(target);
-  if(!u){alert("❌ Not found.");return;}
-  if(u.isVerified){alert("ℹ️ Already verified.");return;}
-  const all=safeGetJSON('app_users_db',[]);
-  const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));
-  const updated={...u,isVerified:true,verifiedExpiry:0,verifiedBy:currentUser.username||currentUser.name};
-  if(idx!==-1)all[idx]=updated;else all.push(updated);
-  localStorage.setItem('app_users_db',JSON.stringify(all));
-  try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});const nid="VB-"+Date.now();const nd={id:nid,title:"You Receive An Verified Badge From RgsNfs official's",message:"congratulations you been receive an Verified Badge to use it click this button",timestamp:Date.now(),isVerifiedBadge:true};await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`🔵 Badge given INSTANTLY.`);}catch(e){alert("❌ Failed.");}
-}
-async function removeVerifiedBadge(prefix){
-  if(!currentUser||!isOwnerOrCoOwner(currentUser))return;
-  const target=document.getElementById(prefix+'VerifiedTarget').value.trim();
-  const u=findUserByIdentifier(target);
-  if(!u){alert("❌ Not found.");return;}
-  const all=safeGetJSON('app_users_db',[]);
-  const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));
-  const updated={...u,isVerified:false,verifiedExpiry:0};
-  if(idx!==-1)all[idx]=updated;
-  localStorage.setItem('app_users_db',JSON.stringify(all));
-  try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});alert(`✅ Removed.`);}catch(e){alert("❌ Failed.");}
-}
-async function addOwnerOrCoOwner(type){
-  if(!currentUser||!isOwnerAccount(currentUser))return;
-  const target=document.getElementById('ownAddTarget').value.trim();
-  const u=findUserByIdentifier(target);
-  if(!u){alert("❌ Not found.");return;}
-  if(!confirm(`Promote ${u.name||u.username} to ${type}?`))return;
-  const all=safeGetJSON('app_users_db',[]);
-  const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));
-  const updated={...u};
-  if(type==='Owner'){updated.isOwner=true;updated.isAdmin=true;updated.role='Owner';}
-  else{updated.isCoOwner=true;updated.isAdmin=true;updated.role='Co-Owner';}
-  if(idx!==-1)all[idx]=updated;else all.push(updated);
-  localStorage.setItem('app_users_db',JSON.stringify(all));
-  try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});alert(`👑 ${u.name||u.username} is now ${type}!`);renderStaffCommandsPage();}catch(e){alert("❌ Failed.");}
-}
-async function removeOwnerOrCoOwner(type){
-  if(!currentUser||!isOwnerAccount(currentUser))return;
-  const target=document.getElementById('ownAddTarget').value.trim();
-  const u=findUserByIdentifier(target);
-  if(!u){alert("❌ Not found.");return;}
-  if(String(u.rblxUserId)===String(currentUser.rblxUserId)){alert("❌ Can't remove your own flags.");return;}
-  if(!confirm(`Remove ${type} flag from ${u.name||u.username}?`))return;
-  const all=safeGetJSON('app_users_db',[]);
-  const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));
-  const updated={...u};
-  if(type==='Owner'){updated.isOwner=false;updated.role=updated.isCoOwner?'Co-Owner':(updated.isAdmin?'Admin':'Member');}
-  else{updated.isCoOwner=false;updated.role=updated.isAdmin?'Admin':'Member';}
-  if(idx!==-1)all[idx]=updated;
-  localStorage.setItem('app_users_db',JSON.stringify(all));
-  try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});alert(`✅ Removed.`);renderStaffCommandsPage();}catch(e){alert("❌ Failed.");}
-}
-async function createAnnouncement(prefix){
-  if(!currentUser||!isUserAdmin(currentUser))return;
-  const title=document.getElementById(prefix+'AnnTitle').value.trim();
-  const message=document.getElementById(prefix+'AnnMessage').value.trim();
-  if(!title||!message){alert("❌ Fill all.");return;}
-  const nid="ANN-"+Date.now();
-  const nd={id:nid,title:`📢 ${title} — From ${getSenderRoleLabel(currentUser)}`,message,timestamp:Date.now(),isAnnouncement:true,sender:currentUser.name||currentUser.username,senderRole:getSenderRoleLabel(currentUser)};
-  try{await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert("📢 Deployed INSTANTLY to everyone!");syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}
-}
-async function updateUserRole(ti,role,action){
-  if(!currentUser)return;
-  if(role==='Admin'&&!isOwnerOrCoOwner(currentUser)){alert("❌ Owner / Co-Owner only!");return;}
-  if(role==='Moderator'&&!isOwnerOrCoOwner(currentUser)&&!isUserAdmin(currentUser)){alert("❌ Staff only!");return;}
-  const tt=ti.trim().toLowerCase();
-  if(!tt){alert("❌ Enter target!");return;}
-  const au=safeGetJSON('app_users_db',[]);
-  const fi=au.findIndex(u=>String(u.rblxUserId||'').toLowerCase()===tt||(u.gmail||'').toLowerCase()===tt||(u.username||'').toLowerCase()===tt);
-  if(fi===-1){alert("❌ Not found.");return;}
-  const tu=au[fi];
-  if(isOwnerAccount(tu)){alert('👑 Owner.');return;}
-  if(action==='give'){if(role==='Admin'){tu.isAdmin=true;tu.role='Admin';}else{tu.isMod=true;tu.role=tu.isAdmin?'Admin':'Moderator';}}
-  else{if(role==='Admin'){tu.isAdmin=false;tu.role=tu.isMod?'Moderator':'Member';}else{tu.isMod=false;tu.role=tu.isAdmin?'Admin':'Member';}}
-  au[fi]=tu;
-  localStorage.setItem('app_users_db',JSON.stringify(au));
-  try{await fetch(`${FIREBASE_BASE_URL}/users/${tu.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(tu)});alert(`✅ ${action==='give'?'Granted':'Removed'} ${role} INSTANTLY!`);}catch(e){alert("❌ Error.");}
-  renderStaffCommandsPage();
-}
-async function createPollWithImage(prefix){
-  const title=document.getElementById(prefix+'PollTitle').value.trim();
-  const desc=document.getElementById(prefix+'PollDesc').value.trim();
-  const optionsStr=document.getElementById(prefix+'PollOptions').value.trim();
-  const fi=document.getElementById(prefix+'PollImage');
-  if(!title||!optionsStr){alert("❌ Fill all!");return;}
-  const options=optionsStr.split(',').map(o=>({name:o.trim(),votes:0})).filter(o=>o.name!=="");
-  if(options.length<2){alert("❌ At least 2 options!");return;}
-  const savePoll=async(imageData)=>{
-    const pollId='poll_'+Date.now();
-    const pollObj={id:pollId,title,description:desc,options,timestamp:Date.now()};
-    if(imageData)pollObj.image=imageData;
-    try{await fetch(`${FIREBASE_BASE_URL}/polls/${pollId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(pollObj)});const nid="POLL-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"📊 New Poll Created!",message:`Vote now: ${title}`,timestamp:Date.now(),isNewPoll:true})});alert("✅ Poll created INSTANTLY!");syncRealtimeDatabase();openStaffCommands();}catch(e){alert("❌ Error.");}
-  };
-  if(fi.files.length>0){const file=fi.files[0];if(file.size>2*1024*1024){alert("❌ Max 2MB!");return;}const r=new FileReader();r.onload=(e)=>savePoll(e.target.result);r.readAsDataURL(file);}else savePoll(null);
-}
-async function sendGlobalOwnerNotification(){
-  if(!currentUser||!isOwnerOrCoOwner(currentUser))return;
-  const title=document.getElementById('ownNotifTitle').value.trim();
-  const message=document.getElementById('ownNotifMsg').value.trim();
-  const audience=document.getElementById('ownNotifAudience').value;
-  const ti=document.getElementById('ownNotifTarget').value.trim().toLowerCase();
-  if(!title||!message){alert("❌ Fill all!");return;}
-  const nid="NOTIF-"+Date.now();
-  const nd={id:nid,title,message,sender:currentUser.name||currentUser.username,senderRole:getSenderRoleLabel(currentUser),timestamp:Date.now()};
-  let ep=`${FIREBASE_BASE_URL}/notifications/${nid}.json`;
-  if(audience==='specific')ep=`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(ti)}/${nid}.json`;
-  try{await fetch(ep,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`📢 Sent INSTANTLY!`);syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}
-}
-async function uploadSneakPeek(){
-  if(!currentUser||!isStaff(currentUser))return;
-  const ttl=document.getElementById('ownSneakTitle').value.trim();
-  const dsc=document.getElementById('ownSneakDesc').value.trim();
-  const fi=document.getElementById('ownSneakImage');
-  if(!ttl||!dsc||fi.files.length===0){alert("❌ Fill all!");return;}
-  const file=fi.files[0];
-  if(file.size>2*1024*1024){alert("❌ Max 2MB!");return;}
-  const r=new FileReader();
-  r.onload=async(e)=>{const sid="SNEAK-"+Date.now();try{await fetch(`${FIREBASE_BASE_URL}/sneak_peeks/${sid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:sid,title:ttl,description:dsc,image:e.target.result,timestamp:Date.now(),uploader:currentUser.username||currentUser.name})});alert("✅ Uploaded INSTANTLY!");syncRealtimeDatabase();}catch(err){alert("❌ Error.");}};
-  r.readAsDataURL(file);
-}
-async function grantCoinsToUser(prefix){
-  if(!currentUser||!isUserAdmin(currentUser)){alert("❌ Admin+ only.");return;}
-  const ti=(document.getElementById(prefix+'GrantTarget').value||'').trim().toLowerCase();
-  const ca=document.getElementById(prefix+'GrantAmount').value;
-  if(!ti){alert("❌ Enter target!");return;}
-  const cta=parseInt(ca,10);
-  if(isNaN(cta)||cta<=0){alert("❌ Valid amount.");return;}
-  const au=safeGetJSON('app_users_db',[]);
-  const fi=au.findIndex(u=>String(u.rblxUserId||'').toLowerCase()===ti||(u.gmail||'').toLowerCase()===ti||(u.username||'').toLowerCase()===ti);
-  if(fi===-1){alert("❌ Not found.");return;}
-  const targetUser=au[fi];
-  targetUser.points=(targetUser.points||0)+cta;
-  targetUser.lastSeen=new Date().toISOString();
-  au[fi]=targetUser;
-  localStorage.setItem('app_users_db',JSON.stringify(au));
-  if(String(targetUser.rblxUserId)===String(currentUser.rblxUserId)){currentUser.points=targetUser.points;localStorage.setItem('app_current_user',JSON.stringify(currentUser));updateUserStatusHeader();}
-  try{await fetch(`${FIREBASE_BASE_URL}/users/${targetUser.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(targetUser)});const nid="COINGIFT-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(targetUser.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"🪙 Coins Received!",message:`You received ${cta.toLocaleString()} Coins from ${getSenderRoleLabel(currentUser)}! New balance: ${targetUser.points.toLocaleString()} Coins.`,timestamp:Date.now(),isCoinGift:true})});alert(`⚡ Granted ${cta.toLocaleString()} Coins to ${targetUser.name||targetUser.username} INSTANTLY!`);syncRealtimeDatabase();}catch(e){alert("❌ Error: "+e.message);}
-}
-async function createXdrgProduct(prefix){
-  if(!currentUser||!isOwnerOrCoOwner(currentUser)){alert("❌ Owner only.");return;}
-  const name=document.getElementById(prefix+'ProdName').value.trim();
-  const priceMoney=parseFloat(document.getElementById(prefix+'ProdPriceMoney').value)||0;
-  const priceCoins=parseInt(document.getElementById(prefix+'ProdPriceCoins').value,10)||0;
-  const category=document.getElementById(prefix+'ProdCategory').value;
-  const description=document.getElementById(prefix+'ProdDesc').value.trim();
-  const fi=document.getElementById(prefix+'ProdImage');
-  if(!name){alert("❌ Enter name.");return;}
-  if(fi.files.length===0){alert("❌ Add image.");return;}
-  const file=fi.files[0];
-  if(file.size>3*1024*1024){alert("❌ Max 3MB!");return;}
-  const r=new FileReader();
-  r.onload=async(e)=>{
-    const pid="PROD-"+Date.now();
-    const product={id:pid,name,priceMoney,priceCoins,category,description,image:e.target.result,createdBy:currentUser.username||currentUser.name,timestamp:Date.now()};
-    const all=getAllShopProducts();
-    all.push(product);
-    saveAllShopProducts(all);
-    try{await fetch(`${FIREBASE_BASE_URL}/xdrg_shop/products/${pid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(product)});alert("✅ Product created INSTANTLY!");renderStaffCommandsPage();}catch(err){alert("❌ Error.");}
-  };
-  r.readAsDataURL(file);
-}
-async function activateLimitedCashOut(prefix){
-  if(!currentUser||!isOwnerOrCoOwner(currentUser)){alert("❌ Owner only.");return;}
-  const money=parseInt(document.getElementById(prefix+'LcoMoney').value,10);
-  const duration=parseInt(document.getElementById(prefix+'LcoDuration').value,10);
-  const unit=document.getElementById(prefix+'LcoUnit').value;
-  const costCoins=parseInt(document.getElementById(prefix+'LcoCostCoins').value,10);
-  if(isNaN(money)||money<1||isNaN(duration)||duration<1||isNaN(costCoins)||costCoins<1){alert("❌ Valid inputs.");return;}
-  const mult={minutes:60000,hours:3600000,days:86400000,weeks:604800000,months:2592000000,years:31536000000};
-  const expiresAt=Date.now()+duration*mult[unit];
-  const obj={money,costCoins,expiresAt,activatedBy:currentUser.username||currentUser.name,activatedAt:Date.now()};
-  try{await fetch(`${FIREBASE_BASE_URL}/limited_cashout.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(obj)});const nid="LCO-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"Limited Cash Out 🤑🎉!!!",message:`cash out now the limited Cash out until Limited Cash out is banish!🎉📌 ₱${money}`,timestamp:Date.now(),isLimitedCashOut:true,money})});globalLimitedCashOut=obj;alert(`🚀 ACTIVATED INSTANTLY!`);syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}
-}
+async function warnUser(prefix){if(!currentUser||!isStaff(currentUser))return;const msg=document.getElementById(prefix+'WarnMessage').value.trim();const target=document.getElementById(prefix+'WarnTarget').value.trim();if(!msg||!target){alert("❌ Fill all.");return;}const u=findUserByIdentifier(target);if(!u){alert("❌ Not found.");return;}const senderRole=getSenderRoleLabel(currentUser);const nid="WARN-"+Date.now();const nd={id:nid,title:`⚠️ Warning from ${senderRole}`,message:msg,timestamp:Date.now(),isWarning:true,warnedBy:currentUser.username||currentUser.name,warnedByRole:senderRole};try{await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`⚠️ Sent!`);}catch(e){alert("❌ Failed.");}}
+async function kickUser(prefix,maxDays){if(!currentUser||!isStaff(currentUser))return;const target=document.getElementById(prefix+'KickTarget').value.trim();const days=parseInt(document.getElementById(prefix+'KickDays').value,10);const reason=document.getElementById(prefix+'KickReason').value.trim()||'Violation';if(!target||isNaN(days)||days<1||days>maxDays){alert("❌ Valid inputs.");return;}const u=findUserByIdentifier(target);if(!u){alert("❌ Not found.");return;}if(isOwnerAccount(u)&&!isOwnerAccount(currentUser)){alert("👑 Can't kick Owner.");return;}const kickUntil=Date.now()+days*86400000;const all=safeGetJSON('app_users_db',[]);const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));const updated={...u,kickUntil,kickReason:reason,kickedBy:currentUser.username||currentUser.name};if(idx!==-1)all[idx]=updated;else all.push(updated);localStorage.setItem('app_users_db',JSON.stringify(all));try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});const nid="KICK-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"⏸️ Kicked",message:`Kicked for ${days} days. Reason: ${reason}`,timestamp:Date.now(),isKick:true})}).catch(()=>{});alert(`⏸️ Kicked.`);}catch(e){alert("❌ Failed.");}}
+async function banUser(prefix){if(!currentUser||!isStaff(currentUser))return;const target=document.getElementById(prefix+'BanTarget').value.trim();const reason=document.getElementById(prefix+'BanReason').value.trim()||'Violation';if(!target){alert("❌ Enter user.");return;}const u=findUserByIdentifier(target);if(!u){alert("❌ Not found.");return;}if(isOwnerAccount(u)&&!isOwnerAccount(currentUser)){alert("👑 Can't ban Owner.");return;}if(!confirm(`Ban ${u.name||u.username}?`))return;const all=safeGetJSON('app_users_db',[]);const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));const updated={...u,isBanned:true,banReason:reason,bannedBy:currentUser.username||currentUser.name,kickUntil:0};if(idx!==-1)all[idx]=updated;else all.push(updated);localStorage.setItem('app_users_db',JSON.stringify(all));try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});const nid="BAN-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"🚫 Banned",message:`Permanently banned. Reason: ${reason}`,timestamp:Date.now(),isBan:true})}).catch(()=>{});alert(`🚫 Banned.`);}catch(e){alert("❌ Failed.");}}
+async function unbanUser(prefix){if(!currentUser||!isOwnerOrCoOwner(currentUser))return;const target=document.getElementById(prefix+'BanTarget').value.trim();const u=findUserByIdentifier(target);if(!u){alert("❌ Not found.");return;}const all=safeGetJSON('app_users_db',[]);const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));const updated={...u,isBanned:false,banReason:'',kickUntil:0};if(idx!==-1)all[idx]=updated;localStorage.setItem('app_users_db',JSON.stringify(all));try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});alert(`✅ Unbanned.`);}catch(e){alert("❌ Failed.");}}
+async function giveVerifiedBadge(prefix){if(!currentUser||!isOwnerOrCoOwner(currentUser))return;const target=document.getElementById(prefix+'VerifiedTarget').value.trim();const u=findUserByIdentifier(target);if(!u){alert("❌ Not found.");return;}if(u.isVerified){alert("ℹ️ Already.");return;}const all=safeGetJSON('app_users_db',[]);const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));const updated={...u,isVerified:true,verifiedExpiry:0,verifiedBy:currentUser.username||currentUser.name};if(idx!==-1)all[idx]=updated;else all.push(updated);localStorage.setItem('app_users_db',JSON.stringify(all));try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});const nid="VB-"+Date.now();const nd={id:nid,title:"You Receive An Verified Badge From RgsNfs official's",message:"congratulations you been receive an Verified Badge to use it click this button",timestamp:Date.now(),isVerifiedBadge:true};await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(u.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`🔵 Given.`);}catch(e){alert("❌ Failed.");}}
+async function removeVerifiedBadge(prefix){if(!currentUser||!isOwnerOrCoOwner(currentUser))return;const target=document.getElementById(prefix+'VerifiedTarget').value.trim();const u=findUserByIdentifier(target);if(!u){alert("❌ Not found.");return;}const all=safeGetJSON('app_users_db',[]);const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));const updated={...u,isVerified:false,verifiedExpiry:0};if(idx!==-1)all[idx]=updated;localStorage.setItem('app_users_db',JSON.stringify(all));try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});alert(`✅ Removed.`);}catch(e){alert("❌ Failed.");}}
+async function addOwnerOrCoOwner(type){if(!currentUser||!isOwnerAccount(currentUser))return;const target=document.getElementById('ownAddTarget').value.trim();const u=findUserByIdentifier(target);if(!u){alert("❌ Not found.");return;}if(!confirm(`Promote ${u.name||u.username} to ${type}?`))return;const all=safeGetJSON('app_users_db',[]);const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));const updated={...u};if(type==='Owner'){updated.isOwner=true;updated.isAdmin=true;updated.role='Owner';}else{updated.isCoOwner=true;updated.isAdmin=true;updated.role='Co-Owner';}if(idx!==-1)all[idx]=updated;else all.push(updated);localStorage.setItem('app_users_db',JSON.stringify(all));try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});alert(`👑 Done.`);renderStaffCommandsPage();}catch(e){alert("❌ Failed.");}}
+async function removeOwnerOrCoOwner(type){if(!currentUser||!isOwnerAccount(currentUser))return;const target=document.getElementById('ownAddTarget').value.trim();const u=findUserByIdentifier(target);if(!u){alert("❌ Not found.");return;}if(String(u.rblxUserId)===String(currentUser.rblxUserId)){alert("❌ Can't remove your own flags.");return;}if(!confirm(`Remove ${type}?`))return;const all=safeGetJSON('app_users_db',[]);const idx=all.findIndex(x=>String(x.rblxUserId)===String(u.rblxUserId));const updated={...u};if(type==='Owner'){updated.isOwner=false;updated.role=updated.isCoOwner?'Co-Owner':(updated.isAdmin?'Admin':'Member');}else{updated.isCoOwner=false;updated.role=updated.isAdmin?'Admin':'Member';}if(idx!==-1)all[idx]=updated;localStorage.setItem('app_users_db',JSON.stringify(all));try{await fetch(`${FIREBASE_BASE_URL}/users/${u.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});alert(`✅ Removed.`);renderStaffCommandsPage();}catch(e){alert("❌ Failed.");}}
+async function createAnnouncement(prefix){if(!currentUser||!isUserAdmin(currentUser))return;const title=document.getElementById(prefix+'AnnTitle').value.trim();const message=document.getElementById(prefix+'AnnMessage').value.trim();if(!title||!message){alert("❌ Fill all.");return;}const nid="ANN-"+Date.now();const nd={id:nid,title:`📢 ${title}`,message,timestamp:Date.now(),isAnnouncement:true,sender:currentUser.name||currentUser.username,senderRole:getSenderRoleLabel(currentUser)};try{await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert("📢 Deployed!");syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}}
+async function updateUserRole(ti,role,action){if(!currentUser)return;if(role==='Admin'&&!isOwnerOrCoOwner(currentUser)){alert("❌ Owner only!");return;}if(role==='Moderator'&&!isOwnerOrCoOwner(currentUser)&&!isUserAdmin(currentUser)){alert("❌ Staff only!");return;}const tt=ti.trim().toLowerCase();if(!tt){alert("❌ Enter target!");return;}const au=safeGetJSON('app_users_db',[]);const fi=au.findIndex(u=>String(u.rblxUserId||'').toLowerCase()===tt||(u.gmail||'').toLowerCase()===tt||(u.username||'').toLowerCase()===tt);if(fi===-1){alert("❌ Not found.");return;}const tu=au[fi];if(isOwnerAccount(tu)){alert('👑 Owner.');return;}if(action==='give'){if(role==='Admin'){tu.isAdmin=true;tu.role='Admin';}else{tu.isMod=true;tu.role=tu.isAdmin?'Admin':'Moderator';}}else{if(role==='Admin'){tu.isAdmin=false;tu.role=tu.isMod?'Moderator':'Member';}else{tu.isMod=false;tu.role=tu.isAdmin?'Admin':'Member';}}au[fi]=tu;localStorage.setItem('app_users_db',JSON.stringify(au));try{await fetch(`${FIREBASE_BASE_URL}/users/${tu.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(tu)});alert(`✅ INSTANT!`);}catch(e){alert("❌ Error.");}renderStaffCommandsPage();}
+async function createPollWithImage(prefix){const title=document.getElementById(prefix+'PollTitle').value.trim();const desc=document.getElementById(prefix+'PollDesc').value.trim();const optionsStr=document.getElementById(prefix+'PollOptions').value.trim();const fi=document.getElementById(prefix+'PollImage');if(!title||!optionsStr){alert("❌ Fill all!");return;}const options=optionsStr.split(',').map(o=>({name:o.trim(),votes:0})).filter(o=>o.name!=="");if(options.length<2){alert("❌ At least 2 options!");return;}const savePoll=async(imageData)=>{const pollId='poll_'+Date.now();const pollObj={id:pollId,title,description:desc,options,timestamp:Date.now()};if(imageData)pollObj.image=imageData;try{await fetch(`${FIREBASE_BASE_URL}/polls/${pollId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(pollObj)});const nid="POLL-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"📊 New Poll!",message:`Vote: ${title}`,timestamp:Date.now(),isNewPoll:true})});alert("✅ Created!");syncRealtimeDatabase();openStaffCommands();}catch(e){alert("❌ Error.");}};if(fi.files.length>0){const file=fi.files[0];if(file.size>2*1024*1024){alert("❌ Max 2MB!");return;}const r=new FileReader();r.onload=(e)=>savePoll(e.target.result);r.readAsDataURL(file);}else savePoll(null);}
+async function sendGlobalOwnerNotification(){if(!currentUser||!isOwnerOrCoOwner(currentUser))return;const title=document.getElementById('ownNotifTitle').value.trim();const message=document.getElementById('ownNotifMsg').value.trim();const audience=document.getElementById('ownNotifAudience').value;const ti=document.getElementById('ownNotifTarget').value.trim().toLowerCase();if(!title||!message){alert("❌ Fill all!");return;}const nid="NOTIF-"+Date.now();const nd={id:nid,title,message,sender:currentUser.name||currentUser.username,senderRole:getSenderRoleLabel(currentUser),timestamp:Date.now()};let ep=`${FIREBASE_BASE_URL}/notifications/${nid}.json`;if(audience==='specific')ep=`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(ti)}/${nid}.json`;try{await fetch(ep,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(nd)});alert(`📢 Sent!`);syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}}
+async function uploadSneakPeek(){if(!currentUser||!isStaff(currentUser))return;const ttl=document.getElementById('ownSneakTitle').value.trim();const dsc=document.getElementById('ownSneakDesc').value.trim();const fi=document.getElementById('ownSneakImage');if(!ttl||!dsc||fi.files.length===0){alert("❌ Fill all!");return;}const file=fi.files[0];if(file.size>2*1024*1024){alert("❌ Max 2MB!");return;}const r=new FileReader();r.onload=async(e)=>{const sid="SNEAK-"+Date.now();try{await fetch(`${FIREBASE_BASE_URL}/sneak_peeks/${sid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:sid,title:ttl,description:dsc,image:e.target.result,timestamp:Date.now(),uploader:currentUser.username||currentUser.name})});alert("✅ Uploaded!");syncRealtimeDatabase();}catch(err){alert("❌ Error.");}};r.readAsDataURL(file);}
+async function grantCoinsToUser(prefix){if(!currentUser||!isUserAdmin(currentUser)){alert("❌ Admin+ only.");return;}const ti=(document.getElementById(prefix+'GrantTarget').value||'').trim().toLowerCase();const ca=document.getElementById(prefix+'GrantAmount').value;if(!ti){alert("❌ Enter target!");return;}const cta=parseInt(ca,10);if(isNaN(cta)||cta<=0){alert("❌ Valid amount.");return;}const au=safeGetJSON('app_users_db',[]);const fi=au.findIndex(u=>String(u.rblxUserId||'').toLowerCase()===ti||(u.gmail||'').toLowerCase()===ti||(u.username||'').toLowerCase()===ti);if(fi===-1){alert("❌ Not found.");return;}const targetUser=au[fi];targetUser.points=(targetUser.points||0)+cta;targetUser.lastSeen=new Date().toISOString();au[fi]=targetUser;localStorage.setItem('app_users_db',JSON.stringify(au));if(String(targetUser.rblxUserId)===String(currentUser.rblxUserId)){currentUser.points=targetUser.points;localStorage.setItem('app_current_user',JSON.stringify(currentUser));updateUserStatusHeader();}try{await fetch(`${FIREBASE_BASE_URL}/users/${targetUser.rblxUserId}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(targetUser)});const nid="COINGIFT-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/user_notifications/${encodeURIComponent(String(targetUser.rblxUserId).toLowerCase())}/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"🪙 Coins Received!",message:`You received ${cta.toLocaleString()} Coins from ${getSenderRoleLabel(currentUser)}!`,timestamp:Date.now(),isCoinGift:true})});alert(`⚡ Granted ${cta.toLocaleString()}!`);syncRealtimeDatabase();}catch(e){alert("❌ Error: "+e.message);}}
+async function createXdrgProduct(prefix){if(!currentUser||!isOwnerOrCoOwner(currentUser)){alert("❌ Owner only.");return;}const name=document.getElementById(prefix+'ProdName').value.trim();const priceMoney=parseFloat(document.getElementById(prefix+'ProdPriceMoney').value)||0;const priceCoins=parseInt(document.getElementById(prefix+'ProdPriceCoins').value,10)||0;const category=document.getElementById(prefix+'ProdCategory').value;const description=document.getElementById(prefix+'ProdDesc').value.trim();const fi=document.getElementById(prefix+'ProdImage');if(!name){alert("❌ Enter name.");return;}if(fi.files.length===0){alert("❌ Add image.");return;}const file=fi.files[0];if(file.size>3*1024*1024){alert("❌ Max 3MB!");return;}const r=new FileReader();r.onload=async(e)=>{const pid="PROD-"+Date.now();const product={id:pid,name,priceMoney,priceCoins,category,description,image:e.target.result,createdBy:currentUser.username||currentUser.name,timestamp:Date.now()};const all=getAllShopProducts();all.push(product);saveAllShopProducts(all);try{await fetch(`${FIREBASE_BASE_URL}/xdrg_shop/products/${pid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(product)});alert("✅ Product created!");renderStaffCommandsPage();}catch(err){alert("❌ Error.");}};r.readAsDataURL(file);}
+async function activateLimitedCashOut(prefix){if(!currentUser||!isOwnerOrCoOwner(currentUser)){alert("❌ Owner only.");return;}const money=parseInt(document.getElementById(prefix+'LcoMoney').value,10);const duration=parseInt(document.getElementById(prefix+'LcoDuration').value,10);const unit=document.getElementById(prefix+'LcoUnit').value;const costCoins=parseInt(document.getElementById(prefix+'LcoCostCoins').value,10);if(isNaN(money)||money<1||isNaN(duration)||duration<1||isNaN(costCoins)||costCoins<1){alert("❌ Valid inputs.");return;}const mult={minutes:60000,hours:3600000,days:86400000,weeks:604800000,months:2592000000,years:31536000000};const expiresAt=Date.now()+duration*mult[unit];const obj={money,costCoins,expiresAt,activatedBy:currentUser.username||currentUser.name,activatedAt:Date.now()};try{await fetch(`${FIREBASE_BASE_URL}/limited_cashout.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(obj)});const nid="LCO-"+Date.now();await fetch(`${FIREBASE_BASE_URL}/notifications/${nid}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:nid,title:"Limited Cash Out 🤑🎉!!!",message:`cash out now the limited Cash out until Limited Cash out is banish!🎉📌 ₱${money}`,timestamp:Date.now(),isLimitedCashOut:true,money})});globalLimitedCashOut=obj;alert(`🚀 ACTIVATED!`);syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}}
 async function deactivateLimitedCashOut(){if(!currentUser||!isOwnerOrCoOwner(currentUser))return;if(!confirm("Cancel?"))return;try{await fetch(`${FIREBASE_BASE_URL}/limited_cashout.json`,{method:"DELETE"});globalLimitedCashOut=null;alert("✅ Cancelled.");syncRealtimeDatabase();}catch(e){alert("❌ Failed.");}}
-async function handleReportAction(rid,action){if(!currentUser||!isStaff(currentUser))return;try{await fetch(`${FIREBASE_BASE_URL}/reports/${rid}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(action)});alert(`✅ Report ${action}!`);syncRealtimeDatabase();}catch(e){alert("❌ Error.");}}
+async function handleReportAction(rid,action){if(!currentUser||!isStaff(currentUser))return;try{await fetch(`${FIREBASE_BASE_URL}/reports/${rid}/status.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(action)});alert(`✅ ${action}!`);syncRealtimeDatabase();}catch(e){alert("❌ Error.");}}
 
 window.onload=function(){
   try{
